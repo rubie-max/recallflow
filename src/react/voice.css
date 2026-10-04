@@ -154,3 +154,5 @@ main.streak-layout-shell>header{margin-bottom:14px}
 .editor-upload-remove{display:flex;align-items:center;gap:6px;color:var(--muted-foreground);background:transparent;border:0;border-top:1px solid var(--border);width:100%;padding:12px 16px;min-height:44px;font:inherit;font-size:12px;cursor:pointer}.editor-upload-remove:hover{color:var(--destructive)}
 .editor-image-upload>input[type=file]{display:none!important}
 @media(max-width:480px){.editor-upload-bottom{padding:13px;gap:10px}.editor-upload-preview{height:142px}.editor-upload-preview.has-image{height:170px}.editor-upload-choose{padding:10px;min-height:44px}.editor-upload-bottom strong{font-size:12px}.editor-upload-bottom small{font-size:10px}}
+
+.recallflow-brand-icon{color:var(--primary);flex-shrink:0}.countdown-brand>.recallflow-brand-icon{color:#8b84ff}
