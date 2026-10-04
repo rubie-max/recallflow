@@ -2,6 +2,7 @@ import React,{useEffect,useState} from 'react';
 import {Button} from './components/Button';
 import {Input} from './components/Input';
 import {SlidersHorizontal,Database,Download,Copy,RefreshCw,Trash2,Check} from 'lucide-react';
+import {readSetups} from '../quiz-setups.js';
 import {quizPreferences,saveQuizPreferences} from '../quiz-preferences.js';
 import {audioCache} from '../audio-cache.js';
 import {kokoroVoice} from '../kokoro-service.js';
@@ -31,7 +32,7 @@ export function VoiceCache(){
 }
 export function StorageSettings({questions,reports,quizCount,streakDays,theme}:{questions:any[];reports:any[];quizCount:number;streakDays:string[];theme:string}) {
   const [status,setStatus]=useState('');
-  function backupJSON(){return JSON.stringify({app:'RecallFlow',version:1,exportedAt:new Date().toISOString(),questions,reports,quizCount,streakDays,preferences:{theme,voice:localStorage.getItem('recallflow_kokoro_voice')||'af_heart',speed:Number(localStorage.getItem('recallflow_kokoro_speed')||1),quiz:quizPreferences()}},null,2);}
+  function backupJSON(){return JSON.stringify({app:'RecallFlow',version:1,exportedAt:new Date().toISOString(),questions,reports,quizCount,streakDays,preferences:{theme,voice:localStorage.getItem('recallflow_kokoro_voice')||'af_heart',speed:Number(localStorage.getItem('recallflow_kokoro_speed')||1),quiz:quizPreferences(),quizSetups:readSetups()}},null,2);}
   async function copyBackup(){try{await navigator.clipboard.writeText(backupJSON());setStatus('Backup JSON copied. Paste it into a file and keep it somewhere safe.');}catch(error:any){setStatus(`Could not copy the backup: ${error.message}`);}}
   function backup(){try{
     const url=URL.createObjectURL(new Blob([backupJSON()],{type:'application/json'}));

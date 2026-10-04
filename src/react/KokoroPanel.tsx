@@ -5,6 +5,7 @@ import {audioCache,validAudio} from '../audio-cache.js';
 import {VoiceCache} from './MoreSettings';
 import {voicePreferences,saveVoicePreferences,voices,speeds} from '../voice-preferences.js';
 import {Button} from './components/Button';
+import {VoicePreview} from './VoicePreview';
 function useVoice(){const [state,setState]=useState(kokoroVoice.state);useEffect(()=>kokoroVoice.subscribe(setState),[]);return state;}
 export function SpeechButton({text,spokenText,questionId,role='question',label='Read question'}:{text:string;spokenText?:string;questionId:string;role?:string;label?:string}) {
   const owner=`${questionId}:${role}`,state=useVoice(),own=state.owner===owner;
@@ -22,24 +23,21 @@ export function SpeechButton({text,spokenText,questionId,role='question',label='
 }
 export function SpeechEvidence(){const state=useVoice();return state.evidence?<details className="speech-evidence"><summary>Audio details</summary><pre data-testid="voice-evidence">{JSON.stringify(state.evidence,null,2)}</pre></details>:null;}
 export function KokoroPanel() {
-  const [preferences,setPreferences]=useState(voicePreferences),[backend,setBackend]=useState('auto'),[warning,setWarning]=useState('');
+  const [preferences,setPreferences]=useState(voicePreferences),[warning,setWarning]=useState('');
   const [saved,setSaved]=useState(voicePreferences),[saveMessage,setSaveMessage]=useState('');
   const state=useVoice(),player=useRef<HTMLDivElement>(null);
   useEffect(()=>{if(player.current)player.current.append(kokoroVoice.audio);return()=>kokoroVoice.stopOwner('preview');},[]);
-  const own=state.owner==='preview';
-  const busy=own&&['checking','loading','generating'].includes(state.phase),playing=own&&state.phase==='playing';
-  const previewLabel=playing?'Stop preview':own&&state.phase==='loading'?'Loading Kokoro…':own&&state.phase==='generating'?'Generating preview…':busy?'Checking saved preview…':'Preview voice';
   const dirty=preferences.voice!==saved.voice||preferences.speed!==saved.speed;
   function change(voice:string,speed:number){kokoroVoice.stop();setPreferences({voice,speed});setSaveMessage('');setWarning('');}
   function cancel(){kokoroVoice.stopOwner('preview');const current=voicePreferences();setPreferences(current);setSaved(current);setSaveMessage('Unsaved changes discarded.');setWarning('');}
   function save(){try{saveVoicePreferences(preferences.voice,preferences.speed);setSaved({...preferences});setSaveMessage('Voice settings saved.');setWarning('');}catch{setWarning('Your browser could not save the voice settings. Please try again.');}}
   return <div className="kokoro-panel"><div className="settings-heading"><span className="settings-icon"><Volume2 size={19}/></span><div><h2>Voice &amp; speech</h2><p>Make your revision sound natural.</p></div><span className="settings-badge">Kokoro</span></div>
     <div className="kokoro-options"><label>Voice<select value={preferences.voice} onChange={e=>change(e.target.value,preferences.speed)}>{voices.map(([id,name])=><option key={id} value={id}>{name}</option>)}</select></label><label>Speech speed<select value={preferences.speed} onChange={e=>change(preferences.voice,Number(e.target.value))}>{speeds.map(speed=><option key={speed} value={speed}>{speed.toFixed(1)}×</option>)}</select></label></div>
-    <div className="kokoro-controls voice-preview-control"><Button variant="outline" aria-label={playing?'Stop preview':busy?previewLabel:'Preview selected voice'} disabled={busy||state.phase==='clearing'} onClick={()=>playing?kokoroVoice.stopOwner('preview'):kokoroVoice.speak("Welcome to RecallFlow. Let's review what you've learned.",{...preferences,backend,owner:'preview'})}>{busy?<LoaderCircle size={16} className="speech-spinner"/>:playing?<Square size={16}/>:<Volume2 size={16}/>} {previewLabel}</Button></div>
-    <div className="settings-save-row"><div className="voice-save-actions"><Button onClick={save} disabled={busy}><Check size={16}/> Save voice settings</Button>{dirty&&<Button variant="ghost" onClick={cancel}>Cancel</Button>}</div><p role="status" aria-live="polite">{dirty?'Unsaved changes':saveMessage||`Saved · ${saved.speed.toFixed(1)}×`}</p></div>
-    {own&&state.status!=='Ready.'&&<p role="status" aria-live="polite">{state.status}</p>}{warning&&<p role="alert">{warning}</p>}
-    <p>Speech is generated on your device using Kokoro. First generation may take longer; audio is cached for faster playback later.</p>
+    <VoicePreview voice={preferences.voice} speed={preferences.speed}/>
+    <div className="settings-save-row"><div className="voice-save-actions"><Button onClick={save} disabled={!dirty}><Check size={16}/> Save voice settings</Button>{dirty&&<Button variant="ghost" onClick={cancel}>Cancel</Button>}</div><div><p data-testid="saved-voice-settings">Saved: {voices.find(([id])=>id===saved.voice)?.[1]} · {saved.speed.toFixed(1)}×</p>{(dirty||saveMessage)&&<p role="status" aria-live="polite">{dirty?'Unsaved changes':saveMessage}</p>}</div></div>
+    {warning&&<p role="alert">{warning}</p>}
+    <p>Question, answer and flashcard speech uses Kokoro on your device, with generated audio saved for later playback. Heart is the default voice; you can save a different preference.</p>
     <VoiceCache/>
-    <details className="voice-advanced"><summary>Advanced / Compatibility</summary><label className="kokoro-processing">Processing<select value={backend} onChange={e=>{kokoroVoice.stop();setBackend(e.target.value)}}><option value="auto">Automatic · prefer WebGPU</option><option value="wasm">WASM compatibility test</option></select></label><div ref={player} className="kokoro-player" hidden={!state.evidence}/><SpeechEvidence/></details>
+    <details className="voice-advanced"><summary>Advanced / Compatibility</summary><p>Study audio prefers WebGPU and falls back to WASM when needed. Voice previews use the included audio files.</p><div ref={player} className="kokoro-player" hidden={!state.evidence}/><SpeechEvidence/></details>
   </div>;
 }
