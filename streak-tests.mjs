@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {streakStats} from './src/streak-stats.js';
+const today='2026-10-04';
+const days=Array.from({length:12},(_,i)=>new Date(Date.parse(today+'T00:00:00Z')-i*86400000).toISOString().slice(0,10));
+assert.deepEqual(streakStats(days,today),{current:12,longest:12,total:12});
+assert.deepEqual(streakStats(days.slice(1),today),{current:11,longest:11,total:11});
+assert.deepEqual(streakStats(['2026-10-01','2026-10-02'],today),{current:0,longest:2,total:2});
+assert.deepEqual(streakStats([...days,today,'2027-01-01','invalid','2026-02-31'],today),{current:12,longest:12,total:12});
+assert.deepEqual(streakStats(['2024-02-28','2024-02-29','2024-03-01'],'2024-03-01'),{current:3,longest:3,total:3});
+assert.deepEqual(streakStats([],today),{current:0,longest:0,total:0});
+console.log('PASS: uncapped streaks, yesterday grace period, gaps, duplicates, future/invalid dates, leap days and empty history.');

@@ -36,6 +36,7 @@ export class KokoroVoice {
     this.worker.onmessage=({data})=>{
       const request=this.workerRequest;if(!request)return;
       if(data.type==='status'||data.type==='fallback') {
+        request.onProgress?.(data.message.startsWith('Generating')?'Generating voice…':'Loading voice model…');
         if(data.type==='fallback')request.fallback=data.message;
         if(this.state.key===request.key&&['checking','loading','generating'].includes(this.state.phase))this.publish({phase:data.message.startsWith('Generating')?'generating':'loading',status:data.message.startsWith('Generating')?'Generating voice…':'Loading Kokoro…'});
       }else if(data.type==='audio'||data.type==='error') {
@@ -50,17 +51,17 @@ export class KokoroVoice {
     if(this.workerRequest){clearTimeout(this.workerRequest.timeout);this.workerRequest.reject(error);this.workerRequest=null;}
     this.worker?.terminate();this.worker=null;
   }
-  generate(text,options,key) {
+  generate(text,options,key,onProgress) {
     const run=this.queue.catch(()=>{}).then(()=>new Promise((resolve,reject)=>{
       try {
         this.ensureWorker();this.inferences++;
-        this.workerRequest={resolve,reject,key,timeout:setTimeout(()=>this.failWorker(new Error('Kokoro took too long to load. Check your connection and retry.')),300000)};
+        this.workerRequest={resolve,reject,key,onProgress,timeout:setTimeout(()=>this.failWorker(new Error('Kokoro took too long to load. Check your connection and retry.')),300000)};
         this.worker.postMessage({text,...options});
       }catch(error){this.failWorker(error);reject(error);}
     }));
     this.queue=run;return run;
   }
-  async obtain(text,options,key) {
+  async obtain(text,options,key,onProgress) {
     const started=performance.now();let cacheWarning;
     const deletionVersion=this.deleted.get(options.questionId)||0;
     let entry=this.memory.get(key),source=entry?'memory':'IndexedDB';
@@ -68,7 +69,7 @@ export class KokoroVoice {
     if(entry&&await validAudio(entry))return {...entry,cacheHit:true,cacheSource:source,lookupMilliseconds:performance.now()-started,cacheWarning};
     if(entry){this.memory.delete(key);try{await audioCache.remove(key);}catch{}cacheWarning='Damaged cached audio was replaced.';}
     if(this.state.key===key&&this.state.phase==='checking')this.publish({phase:'generating',status:'Generating voice…'});
-    const {samples,sampleRate,device,rms,peak,elapsed,fallbackReason}=await this.generate(text,options,key);
+    const {samples,sampleRate,device,rms,peak,elapsed,fallbackReason}=await this.generate(text,options,key,onProgress);
     if(!Number.isFinite(sampleRate)||sampleRate<=0)throw new Error('Kokoro returned an invalid audio sample rate.');
     entry={key,questionId:options.questionId,blob:toWav(samples,sampleRate),evidence:{model,voice:options.voice,speed:options.speed,role:options.role,questionId:options.questionId,text,spokenText:options.spokenText,backend:device,sampleRate,durationSeconds:samples.length/sampleRate,rms,peak,generationSeconds:elapsed,fallbackReason},createdAt:new Date().toISOString()};
     if(deletionVersion===(this.deleted.get(options.questionId)||0)) {
@@ -76,6 +77,16 @@ export class KokoroVoice {
       try{await audioCache.put(entry);}catch(error){cacheWarning=`Audio plays, but could not be saved for your next visit: ${error.message}`;}
     }
     return {...entry,cacheHit:false,cacheSource:'generated',lookupMilliseconds:performance.now()-started,cacheWarning};
+  }
+  async prepare(text,settings={},onProgress=()=>{}) {
+    const options={...voicePreferences(),backend:'auto',...settings};
+    const key=speechKey(text,options);
+    onProgress('Checking saved voice…');
+    let request=this.requests.get(key);
+    if(!request){request=this.obtain(text,options,key,onProgress);this.requests.set(key,request);request.finally(()=>{if(this.requests.get(key)===request)this.requests.delete(key);}).catch(()=>{});}
+    const entry=await request;
+    this.publish({status:'Question voice prepared.'});
+    return entry;
   }
   speak(text,settings={}) {
     if(this.state.phase==='clearing')return Promise.resolve();

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 // Test the production service with deterministic media/inference adapters.
 // Real Kokoro, IndexedDB persistence, and playback are verified separately in the browser.
-globalThis.Audio=class {constructor(){this.volume=1;this.muted=false;this.currentTime=0;}pause(){this.paused=true;}async play(){this.paused=false;this.onplaying?.();}};
+globalThis.Audio=class {constructor(){this.paused=true;this.volume=1;this.muted=false;this.currentTime=0;}pause(){this.paused=true;}async play(){this.paused=false;this.onplaying?.();}};
 let running=0,maxRunning=0;
 globalThis.Worker=class {
   postMessage(data){running++;maxRunning=Math.max(maxRunning,running);setTimeout(()=>{
@@ -52,3 +52,14 @@ audioCache.put=async entry=>disk.set(entry.key,entry);
 const clearDuringGeneration=service.speak('Clear while generating',options);
 const cleared=service.clearCache();await Promise.all([clearDuringGeneration,cleared]);assert.equal(disk.size,0);assert.equal(service.memory.size,0);assert.equal(service.audio.paused,true);
 console.log('PASS: request deduplication, serialization, persistence reuse, keys, edit/voice/speed isolation, cancellation, corruption, deletion races, and storage/generation failures.');
+
+const preparedService=new KokoroVoice();
+const prepared=await preparedService.prepare('Prepared question?',{...options,questionId:'prepared-editor'});
+assert.equal(prepared.cacheHit,false);
+assert.equal(preparedService.audio.paused,true,'preparing question voice never autoplays');
+await preparedService.prepare('Prepared question?',{...options,questionId:'prepared-editor'});
+assert.equal(preparedService.inferences,1,'saving the same question reuses audio');
+await preparedService.speak('Prepared question?',{...options,questionId:'prepared-editor'});
+assert.equal(preparedService.state.evidence.cacheHit,true,'speaker reuses prepared editor audio');
+assert.equal(preparedService.inferences,1);
+console.log('PASS: editor audio preparation, no autoplay, repeated-save reuse, and speaker cache reuse.');
