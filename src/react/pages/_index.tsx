@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { BookOpen, Download, Upload, ArrowRight, Home, Library, History, ChartNoAxesColumnIncreasing, Check, CheckCircle2, XCircle, Flame, Sparkles, Moon, Sun, Star, Play, Settings, Plus, Pencil, Trash2, Volume2, Search, ChevronDown } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
@@ -16,6 +16,7 @@ import {QuizBuilder,ExtendedEditor,StructuredAnswer,AnalyticsPanel,BackupRestore
 import {scheduled,textGrade,duplicateIds,filterQuiz} from '../../learning-core.js';
 import {streakStats} from '../../streak-stats.js';
 import {QuestionEditor} from '../QuestionEditor';
+import {DiscardChangesDialog} from "../DiscardChangesDialog";
 import {BrandIcon} from "../BrandIcon";
 import {StreakPage} from '../StreakPage';
 type Item = { [key:string]:any;
@@ -71,6 +72,15 @@ export default function IndexPage(){
   const [draft,setDraft]=useState<any>({subject:"",topic:"",prompt:"",answer:"",type:"short_answer" as Item["type"],options:"",numericTolerance:"0"});
   const [message,setMessage]=useState("");
   const [savingQuestion,setSavingQuestion]=useState(false),[saveStatus,setSaveStatus]=useState(""),[savedQuestion,setSavedQuestion]=useState<Item|null>(null),[prepareAudio,setPrepareAudio]=useState(true);
+  const [draftBaseline,setDraftBaseline]=useState(()=>JSON.stringify({subject:"",topic:"",prompt:"",answer:"",type:"short_answer",options:"",numericTolerance:"0"}));
+  const [pendingLeave,setPendingLeave]=useState<{action:()=>void}|null>(null);
+  const navIndex=useRef(Number(history.state?.recallflowIndex)||0),activeHash=useRef(location.hash||'#/home'),restoringHistory=useRef(false),allowHistoryLeave=useRef(false);
+  const unsaved=showAdd&&!savedQuestion&&JSON.stringify(draft)!==draftBaseline;
+  function requestLeave(action:()=>void){if(savingQuestion)return;if(unsaved)setPendingLeave({action});else action();}
+  function goHome(){kokoroVoice.stop();setShowAdd(false);setSavedQuestion(null);setEditingId(null);setShowQuizBuilder(false);setCaughtUp(false);setCountdown(null);setReview(null);setTab('home');setMessage('');window.scrollTo({top:0});}
+  useEffect(()=>{const home=()=>requestLeave(goHome);window.addEventListener('recallflow-home',home);return()=>window.removeEventListener('recallflow-home',home);},[unsaved,savingQuestion]);
+  useEffect(()=>{if(!showAdd)allowHistoryLeave.current=false;},[showAdd]);
+  useEffect(()=>{const warn=(e:BeforeUnloadEvent)=>{if(unsaved||savingQuestion){e.preventDefault();e.returnValue='';}};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn);},[unsaved,savingQuestion]);
   const [loaded,setLoaded]=useState(false);
   const [quizDefaults,setQuizDefaults]=useState(quizPreferences);
   const [librarySearch,setLibrarySearch]=useState(""),[libraryType,setLibraryType]=useState("all"),[librarySubject,setLibrarySubject]=useState("all");
@@ -122,10 +132,19 @@ export default function IndexPage(){
   },[countdown]);
   useEffect(()=>{
     const path=showAdd?(editingId?'questions/edit/'+encodeURIComponent(editingId):'questions/new'):showQuizBuilder?'quiz-settings':caughtUp?'quiz-ready':review?(idx>=review.length?'quiz/results':'quiz'):({home:'home',library:'questions',results:'reports',settings:'settings',streak:'streak'} as const)[tab];
-    const hash='#/'+path;if(location.hash!==hash)history.pushState(null,'',hash);
+    const hash='#/'+path;if(location.hash!==hash){navIndex.current++;history.pushState({recallflowIndex:navIndex.current},'',hash);}else if(history.state?.recallflowIndex===undefined)history.replaceState({...history.state,recallflowIndex:navIndex.current},'',hash);activeHash.current=hash;
   },[tab,showAdd,editingId,showQuizBuilder,caughtUp,review,idx]);
   useEffect(()=>{
     function navigate(){
+      if(location.hash===activeHash.current){restoringHistory.current=false;return;}
+      if(restoringHistory.current)return;
+      if((unsaved||savingQuestion)&&!allowHistoryLeave.current){
+        const target=location.hash,targetIndex=history.state?.recallflowIndex,delta=typeof targetIndex==='number'?navIndex.current-targetIndex:0;
+        if(delta){restoringHistory.current=true;history.go(delta);}else history.replaceState({recallflowIndex:navIndex.current},'',activeHash.current);
+        if(!savingQuestion)setPendingLeave({action:()=>{allowHistoryLeave.current=true;if(delta)history.go(-delta);else{location.hash=target;}}});
+        return;
+      }
+      activeHash.current=location.hash;navIndex.current=Number(history.state?.recallflowIndex)||0;
       const path=location.hash.slice(2);
       if(path==='quiz'||path==='quiz/results'){if(!review)history.replaceState(null,'','#/home');else return;}
       kokoroVoice.stop();setCaughtUp(false);setCountdown(null);setReview(null);setShowQuizBuilder(path==='quiz-settings');
@@ -136,7 +155,7 @@ export default function IndexPage(){
     }
     window.addEventListener('popstate',navigate);window.addEventListener('hashchange',navigate);
     return()=>{window.removeEventListener('popstate',navigate);window.removeEventListener('hashchange',navigate);};
-  },[review,items]);
+  },[review,items,unsaved,savingQuestion]);
   useEffect(()=>{if(loaded){const route=editorRoute();if(route?.id){const item=items.find(x=>x.id===route.id);if(item)openAdd(item);else{closeEditor();setMessage("That question could not be found.");}}}},[loaded]);
   function retryMistakes(attempts:Result[],source?:string){
     const q=missedItems(attempts,items);
@@ -181,7 +200,7 @@ export default function IndexPage(){
   function closeEditor(){setSavedQuestion(null);setSaveStatus("");setShowAdd(false);setEditingId(null);setTab("library");setMessage("");window.scrollTo({top:0});}
   function openAdd(item?:Item){
     setSavedQuestion(null);setSaveStatus("");setMessage("");setTab("library");window.scrollTo({top:0});
-    setEditingId(item?.id||null);setDraft(item?{subject:item.subject,topic:item.topic,prompt:item.prompt,answer:item.type==="multi_select"?(item.correctAnswers||[]).join("\n"):item.answer,type:item.type||"short_answer",options:(item.options||[]).join("\n"),numericTolerance:String(item.numericTolerance??0),structured:item.type==="matching"?(item.pairs||[]).map(p=>p.left+"|"+p.right).join("\n"):item.type==="ordering"?(item.sequence||[]).join("\n"):(item.blanks||[]).join("\n"),accepted:(item.acceptedAnswers||[]).join("\n"),tags:(item.tags||[]).join(", "),fuzzy:item.fuzzy,image:item.image,optionImages:item.optionImages}:{subject:"",topic:"",prompt:"",answer:"",type:"short_answer",options:"",numericTolerance:"0"});setShowAdd(true);
+    setEditingId(item?.id||null);const nextDraft=item?{subject:item.subject,topic:item.topic,prompt:item.prompt,answer:item.type==="multi_select"?(item.correctAnswers||[]).join("\n"):item.answer,type:item.type||"short_answer",options:(item.options||[]).join("\n"),numericTolerance:String(item.numericTolerance??0),structured:item.type==="matching"?(item.pairs||[]).map(p=>p.left+"|"+p.right).join("\n"):item.type==="ordering"?(item.sequence||[]).join("\n"):(item.blanks||[]).join("\n"),accepted:(item.acceptedAnswers||[]).join("\n"),tags:(item.tags||[]).join(", "),fuzzy:item.fuzzy,image:item.image,optionImages:item.optionImages}:{subject:"",topic:"",prompt:"",answer:"",type:"short_answer",options:"",numericTolerance:"0"};setDraft(nextDraft);setDraftBaseline(JSON.stringify(nextDraft));setShowAdd(true);
   }
   async function saveQuestion(){
     if(savingQuestion)return;
@@ -220,16 +239,16 @@ export default function IndexPage(){
 
 
 
-  if(showAdd)return <main className={`${styles.reviewPage} question-editor-page`}><section className="question-editor-shell"><button className="quiz-options-back" disabled={savingQuestion} onClick={closeEditor}>← Question bank</button><header><p className={styles.eyebrow}>{editingId?"EDIT QUESTION":"NEW QUESTION"}</p><h1>{editingId?"Edit question":"Create a question"}</h1><p>{editingId?"Refine what you learn, one question at a time.":"Turn something worth remembering into practice."}</p></header><QuestionEditor draft={draft} setDraft={setDraft} onSave={saveQuestion} onCancel={closeEditor} busy={savingQuestion} status={saveStatus} saved={savedQuestion} editing={!!editingId} prepareAudio={prepareAudio} setPrepareAudio={setPrepareAudio} onAnother={()=>openAdd()}/></section></main>;
+  if(showAdd)return <main className={`${styles.reviewPage} question-editor-page`}><section className="question-editor-shell"><div className="editor-navigation-brand"><BrandIcon/><strong>RecallFlow</strong></div><button className="quiz-options-back" disabled={savingQuestion} onClick={()=>requestLeave(closeEditor)}>← Question bank</button><header><p className={styles.eyebrow}>{editingId?"EDIT QUESTION":"NEW QUESTION"}</p><h1>{editingId?"Edit question":"Create a question"}</h1><p>{editingId?"Refine what you learn, one question at a time.":"Turn something worth remembering into practice."}</p></header><QuestionEditor draft={draft} setDraft={setDraft} onSave={saveQuestion} onCancel={()=>requestLeave(closeEditor)} busy={savingQuestion} status={saveStatus} saved={savedQuestion} editing={!!editingId} prepareAudio={prepareAudio} setPrepareAudio={setPrepareAudio} onAnother={()=>openAdd()}/></section>{pendingLeave&&<DiscardChangesDialog onKeep={()=>setPendingLeave(null)} onDiscard={()=>{const action=pendingLeave.action;setPendingLeave(null);action();}}/>}</main>;
 
-  if(caughtUp&&!showQuizBuilder)return <main className="quiz-countdown-page"><button onClick={exitQuiz}>← Back home</button><section><CheckCircle2 size={32}/><h1>You’re caught up</h1><p>No questions are due today. Want some extra practice?</p><Button onClick={()=>beginReview(prepareQuiz(items,quizDefaults),"all")}>Practice all questions</Button><p><button className="quiz-options-back" onClick={()=>setShowQuizBuilder(true)}>Advanced settings</button></p></section></main>;
-  if(showQuizBuilder)return <main className={`${styles.reviewPage} quiz-options-page`}><div className="quiz-options-shell"><button className="quiz-options-back" onClick={()=>setShowQuizBuilder(false)}>← Back</button><h1>Advanced quiz settings</h1><p>Choose what to practice, then start your quiz.</p>{message&&<p role="status">{message}</p>}<QuizBuilder items={items} reports={reportHistory} defaults={quizDefaults} onClose={()=>setShowQuizBuilder(false)} onStart={(q,kind)=>beginReview(q,kind)}/></div></main>;
+  if(caughtUp&&!showQuizBuilder)return <main className="quiz-countdown-page"><div className="editor-navigation-brand"><BrandIcon/><strong>RecallFlow</strong></div><button onClick={exitQuiz}>← Back home</button><section><CheckCircle2 size={32}/><h1>You’re caught up</h1><p>No questions are due today. Want some extra practice?</p><Button onClick={()=>beginReview(prepareQuiz(items,quizDefaults),"all")}>Practice all questions</Button><p><button className="quiz-options-back" onClick={()=>setShowQuizBuilder(true)}>Advanced settings</button></p></section></main>;
+  if(showQuizBuilder)return <main className={`${styles.reviewPage} quiz-options-page`}><div className="quiz-options-shell"><div className="editor-navigation-brand"><BrandIcon/><strong>RecallFlow</strong></div><button className="quiz-options-back" onClick={()=>setShowQuizBuilder(false)}>← Back</button><h1>Advanced quiz settings</h1><p>Choose what to practice, then start your quiz.</p>{message&&<p role="status">{message}</p>}<QuizBuilder items={items} reports={reportHistory} defaults={quizDefaults} onClose={()=>setShowQuizBuilder(false)} onStart={(q,kind)=>beginReview(q,kind)}/></div></main>;
   if(review&&countdown!==null)return <main className="quiz-countdown-page quiz-countdown-focus"><header><span className="countdown-brand"><BrandIcon size={24}/><span>RecallFlow</span></span><button onClick={exitQuiz} aria-label="Cancel quiz">Cancel</button></header><section><h1>Get ready, Kaizen</h1><strong key={countdown} role="status" aria-label={`Starting in ${countdown}`}>{countdown}</strong><p className="countdown-motto">Breathe. Recall. Go.</p><p className="countdown-total">{review.length} {review.length===1?'question':'questions'}</p></section></main>;
   if(review){
     if(idx>=review.length){
       const correct=results.filter(x=>x.correct).length;
       const accuracy=results.length?Math.round(correct/results.length*100):0;
-      return <main className={styles.reviewPage}><section className={styles.finish}>
+      return <main className={styles.reviewPage}><section className={styles.finish}><div className="editor-navigation-brand"><BrandIcon/><strong>RecallFlow</strong></div>
         <div className={styles.finishBadge}><Sparkles size={18}/> {reviewKind==="retry_mistakes"?"PRACTICE COMPLETE":"QUIZ COMPLETE"}</div>
         <div className={styles.scoreRing}><strong>{accuracy}%</strong><span>accuracy</span></div>
         <h1>{reviewKind==="retry_mistakes"?"Practice complete.":"Nice work."}</h1>
@@ -299,7 +318,7 @@ export default function IndexPage(){
       {message&&<p className={styles.note}>{message}</p>}
     </section>}
     {tab==="settings"&&<section className="settings-page"><div className={styles.pageTitle}><div><p className={styles.eyebrow}>RECALLFLOW</p><h1>Settings</h1><p className="settings-intro">Your voice. Your pace. Your space.</p></div></div><div className="settings-appearance"><button onClick={toggleTheme}><span>{mode==="dark"?<Sun size={19}/>:<Moon size={19}/>} Theme</span><b>{mode==="dark"?"Dark":"Light"}</b></button></div><KokoroPanel/><QuizSettings onSaved={setQuizDefaults}/><StorageSettings questions={items} reports={reportHistory} quizCount={quizCount} streakDays={streakDays} theme={mode}/><BackupRestore/><OfflineSettings/><p className={styles.note}>Settings and data are local to this browser.</p></section>}
-    {tab==="streak"&&<StreakPage days={streakDays} onBack={()=>setTab("home")} onQuiz={startReview}/> }
+    {tab==="streak"&&<StreakPage days={streakDays} reports={reportHistory} onBack={()=>setTab("home")} onQuiz={startReview}/> }
   </main>
   <nav className={styles.nav}><button className={tab==="home"?styles.active:""} onClick={()=>setTab("home")}><Home/><span>Home</span></button><button className={tab==="library"?styles.active:""} onClick={()=>setTab("library")}><Library/><span>Questions</span></button><button className={styles.quizNav} onClick={startReview}><Play className={styles.plus} fill="currentColor"/><span>Quiz</span></button><button className={tab==="results"?styles.active:""} onClick={()=>setTab("results")}><History/><span>Report</span></button><button className={tab==="settings"?styles.active:""} onClick={()=>setTab("settings")}><Settings/><span>Settings</span></button></nav>
   </div>
