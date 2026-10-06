@@ -1,0 +1,698 @@
+{
+  "app": "RecallFlow",
+  "version": 1,
+  "exported": "2026-10-06T12:41:35.766Z",
+  "questions": [
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Type answer",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "short_answer",
+      "prompt": "What is the largest planet in our Solar System?",
+      "answer": "Jupiter",
+      "acceptedAnswers": [
+        "Planet Jupiter"
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Type answer",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "short_answer",
+      "prompt": "In which city is this famous tower?",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/500px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg",
+      "answer": "Paris"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Type answer",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "short_answer",
+      "prompt": "",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/African_Elephant_%28Loxodonta_africana%29_male_%2817289351322%29.jpg/500px-African_Elephant_%28Loxodonta_africana%29_male_%2817289351322%29.jpg",
+      "answer": "Elephant",
+      "acceptedAnswers": [
+        "African elephant"
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Fill in the blank",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": false,
+      "type": "fill_blank",
+      "prompt": "The chemical formula for water is ___.",
+      "answer": "H2O"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Fill in the blank",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "fill_blank",
+      "prompt": "This tall animal with a long neck is a ___.",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Giraffe_Mikumi_National_Park.jpg/500px-Giraffe_Mikumi_National_Park.jpg",
+      "answer": "Giraffe"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Multiple choice",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "single_choice",
+      "prompt": "Which ocean is the largest?",
+      "options": [
+        "Atlantic",
+        "Indian",
+        "Pacific",
+        "Arctic"
+      ],
+      "answer": "Pacific"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Multiple choice",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "single_choice",
+      "prompt": "Which planet is shown in the picture?",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Saturn_global_view_from_Cassini%2C_rings_open_Better_Colour.png/500px-Saturn_global_view_from_Cassini%2C_rings_open_Better_Colour.png",
+      "options": [
+        "Mars",
+        "Saturn",
+        "Jupiter",
+        "Venus"
+      ],
+      "answer": "Saturn"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Multiple choice",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "single_choice",
+      "prompt": "Which of these is a fruit?",
+      "options": [
+        "Apple",
+        "Carrot",
+        "Broccoli"
+      ],
+      "answer": "Apple",
+      "optionImages": {
+        "Apple": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg",
+        "Carrot": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Vegetable-Carrot-Bundle-wStalks.jpg/500px-Vegetable-Carrot-Bundle-wStalks.jpg",
+        "Broccoli": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Broccoli_and_cross_section_edit.jpg/500px-Broccoli_and_cross_section_edit.jpg"
+      }
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Multiple choice",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "single_choice",
+      "prompt": "Which is the flag of Japan?",
+      "options": [
+        "Picture 1",
+        "Picture 2",
+        "Picture 3",
+        "Picture 4"
+      ],
+      "answer": "Picture 1",
+      "optionImages": {
+        "Picture 1": "https://flagcdn.com/w320/jp.png",
+        "Picture 2": "https://flagcdn.com/w320/fr.png",
+        "Picture 3": "https://flagcdn.com/w320/it.png",
+        "Picture 4": "https://flagcdn.com/w320/br.png"
+      }
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Flashcard",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "flashcard",
+      "prompt": "What is photosynthesis?",
+      "answer": "How plants use sunlight to turn water and carbon dioxide into sugar and oxygen."
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Flashcard",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "flashcard",
+      "prompt": "Name this famous painting and its artist.",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Mona_Lisa.jpg/500px-Mona_Lisa.jpg",
+      "answer": "Mona Lisa, by Leonardo da Vinci"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Flashcard",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "flashcard",
+      "prompt": "What does the Taj Mahal look like?",
+      "answer": "",
+      "answerImage": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Taj_Mahal_%28Edited%29.jpeg/500px-Taj_Mahal_%28Edited%29.jpeg"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Flashcard",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "flashcard",
+      "prompt": "",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Chenille_de_Grand_porte_queue_%28macaon%29.jpg/500px-Chenille_de_Grand_porte_queue_%28macaon%29.jpg",
+      "answer": "",
+      "answerImage": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Fesoj_-_Papilio_machaon_%28by%29.jpg/500px-Fesoj_-_Papilio_machaon_%28by%29.jpg"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "True or False",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "true_false",
+      "prompt": "The Great Wall of China is easy to see from the Moon with the naked eye.",
+      "answer": "False"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "True or False",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "true_false",
+      "prompt": "This animal is a lion.",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg/500px-Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg",
+      "answer": "False"
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Multi-select",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "multi_select",
+      "prompt": "Which of these are mammals? Select all that apply.",
+      "options": [
+        "Whale",
+        "Shark",
+        "Bat",
+        "Salmon"
+      ],
+      "correctAnswers": [
+        "Whale",
+        "Bat"
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Multi-select",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "multi_select",
+      "prompt": "Which of these are fruits? Select all that apply.",
+      "options": [
+        "Apple",
+        "Banana",
+        "Carrot",
+        "Broccoli"
+      ],
+      "correctAnswers": [
+        "Apple",
+        "Banana"
+      ],
+      "optionImages": {
+        "Apple": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Pink_lady_and_cross_section.jpg/500px-Pink_lady_and_cross_section.jpg",
+        "Banana": "https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg",
+        "Carrot": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Vegetable-Carrot-Bundle-wStalks.jpg/500px-Vegetable-Carrot-Bundle-wStalks.jpg",
+        "Broccoli": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Broccoli_and_cross_section_edit.jpg/500px-Broccoli_and_cross_section_edit.jpg"
+      }
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Multi-select",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "multi_select",
+      "prompt": "Select all the birds.",
+      "options": [
+        "Picture 1",
+        "Picture 2",
+        "Picture 3",
+        "Picture 4"
+      ],
+      "correctAnswers": [
+        "Picture 1",
+        "Picture 3"
+      ],
+      "optionImages": {
+        "Picture 1": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Bubo_bubo_sibiricus_-_01.JPG/500px-Bubo_bubo_sibiricus_-_01.JPG",
+        "Picture 2": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg",
+        "Picture 3": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/South_Shetland-2016-Deception_Island%E2%80%93Chinstrap_penguin_%28Pygoscelis_antarctica%29_04.jpg/500px-South_Shetland-2016-Deception_Island%E2%80%93Chinstrap_penguin_%28Pygoscelis_antarctica%29_04.jpg",
+        "Picture 4": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg"
+      }
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Numeric answer",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "numeric",
+      "prompt": "How many minutes are in 2.5 hours?",
+      "answer": "150",
+      "numericTolerance": 0
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Numeric answer",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "numeric",
+      "prompt": "How many legs does this animal have?",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Araneus_diadematus_%28Clerck%2C_1757%29.JPG/500px-Araneus_diadematus_%28Clerck%2C_1757%29.JPG",
+      "answer": "8",
+      "numericTolerance": 0
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Matching",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "matching",
+      "prompt": "Match each country to its capital.",
+      "pairs": [
+        {
+          "left": "Japan",
+          "right": "Tokyo"
+        },
+        {
+          "left": "Italy",
+          "right": "Rome"
+        },
+        {
+          "left": "India",
+          "right": "New Delhi"
+        },
+        {
+          "left": "Brazil",
+          "right": "Brasília"
+        }
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Matching",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "matching",
+      "prompt": "Match each flag to its country.",
+      "pairs": [
+        {
+          "left": "Picture 1",
+          "right": "Japan"
+        },
+        {
+          "left": "Picture 2",
+          "right": "France"
+        },
+        {
+          "left": "Picture 3",
+          "right": "Germany"
+        },
+        {
+          "left": "Picture 4",
+          "right": "India"
+        }
+      ],
+      "optionImages": {
+        "Picture 1": "https://flagcdn.com/w320/jp.png",
+        "Picture 2": "https://flagcdn.com/w320/fr.png",
+        "Picture 3": "https://flagcdn.com/w320/de.png",
+        "Picture 4": "https://flagcdn.com/w320/in.png"
+      }
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Matching",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "matching",
+      "prompt": "Match each animal to the sound it makes.",
+      "pairs": [
+        {
+          "left": "Cow",
+          "right": "Moo"
+        },
+        {
+          "left": "Dog",
+          "right": "Woof"
+        },
+        {
+          "left": "Cat",
+          "right": "Meow"
+        },
+        {
+          "left": "Sheep",
+          "right": "Baa"
+        }
+      ],
+      "optionImages": {
+        "Cow": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Cow_%28Fleckvieh_breed%29_Oeschinensee_Slaunger_2009-07-07.jpg/500px-Cow_%28Fleckvieh_breed%29_Oeschinensee_Slaunger_2009-07-07.jpg",
+        "Dog": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg",
+        "Cat": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg",
+        "Sheep": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Flock_of_sheep.jpg/500px-Flock_of_sheep.jpg"
+      }
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Ordering",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "ordering",
+      "prompt": "Put the steps for making tea in order.",
+      "sequence": [
+        "Boil the water",
+        "Put a tea bag in the cup",
+        "Pour in the hot water",
+        "Take out the tea bag"
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Ordering",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "ordering",
+      "prompt": "Order these planets from closest to the Sun to farthest.",
+      "sequence": [
+        "Mercury",
+        "Venus",
+        "Earth",
+        "Mars",
+        "Jupiter",
+        "Saturn"
+      ],
+      "optionImages": {
+        "Mercury": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Mercury_in_true_color.jpg/500px-Mercury_in_true_color.jpg",
+        "Venus": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Venus_from_Mariner_10.jpg/500px-Venus_from_Mariner_10.jpg",
+        "Earth": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Meteosat-12-fci-march-equinox-2025-noon.jpg/500px-Meteosat-12-fci-march-equinox-2025-noon.jpg",
+        "Mars": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png/500px-Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png",
+        "Jupiter": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Jupiter_OPAL_2024.png/500px-Jupiter_OPAL_2024.png",
+        "Saturn": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Saturn_global_view_from_Cassini%2C_rings_open_Better_Colour.png/500px-Saturn_global_view_from_Cassini%2C_rings_open_Better_Colour.png"
+      }
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Ordering",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "ordering",
+      "prompt": "Order these animals from smallest to largest.",
+      "sequence": [
+        "Picture 1",
+        "Picture 2",
+        "Picture 3",
+        "Picture 4"
+      ],
+      "optionImages": {
+        "Picture 1": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Araneus_diadematus_%28Clerck%2C_1757%29.JPG/500px-Araneus_diadematus_%28Clerck%2C_1757%29.JPG",
+        "Picture 2": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg",
+        "Picture 3": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Nokota_Horses_cropped.jpg/500px-Nokota_Horses_cropped.jpg",
+        "Picture 4": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/African_Elephant_%28Loxodonta_africana%29_male_%2817289351322%29.jpg/500px-African_Elephant_%28Loxodonta_africana%29_male_%2817289351322%29.jpg"
+      }
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Multi-blank cloze",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": false,
+      "type": "cloze",
+      "prompt": "Water freezes at ___ °C and boils at ___ °C at sea level.",
+      "blanks": [
+        "0",
+        "100"
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Multi-blank cloze",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "cloze",
+      "prompt": "This is the ___ of ___, and it stands in New York.",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Front_view_of_Statue_of_Liberty_%28cropped%29.jpg/500px-Front_view_of_Statue_of_Liberty_%28cropped%29.jpg",
+      "blanks": [
+        "Statue",
+        "Liberty"
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Word bank",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "fill_blank_options",
+      "prompt": "The capital of Italy is ___.",
+      "blanks": [
+        "Rome"
+      ],
+      "options": [
+        "Rome",
+        "Madrid",
+        "Lisbon"
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Word bank",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "fill_blank_options",
+      "prompt": "A ___ says moo and a ___ says woof.",
+      "blanks": [
+        "Cow",
+        "Dog"
+      ],
+      "options": [
+        "Cow",
+        "Dog",
+        "Cat",
+        "Sheep"
+      ],
+      "optionImages": {
+        "Cow": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Cow_%28Fleckvieh_breed%29_Oeschinensee_Slaunger_2009-07-07.jpg/500px-Cow_%28Fleckvieh_breed%29_Oeschinensee_Slaunger_2009-07-07.jpg",
+        "Dog": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Huskiesatrest.jpg/500px-Huskiesatrest.jpg",
+        "Cat": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Siam_lilacpoint.jpg/500px-Siam_lilacpoint.jpg",
+        "Sheep": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Flock_of_sheep.jpg/500px-Flock_of_sheep.jpg"
+      }
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Word bank",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "fill_blank_options",
+      "prompt": "The bird in the picture is a ___ and it lives near ___.",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/South_Shetland-2016-Deception_Island%E2%80%93Chinstrap_penguin_%28Pygoscelis_antarctica%29_04.jpg/500px-South_Shetland-2016-Deception_Island%E2%80%93Chinstrap_penguin_%28Pygoscelis_antarctica%29_04.jpg",
+      "blanks": [
+        "Penguin",
+        "Antarctica"
+      ],
+      "options": [
+        "Penguin",
+        "Owl",
+        "Antarctica",
+        "the Sahara"
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Asked in several ways",
+      "tags": [
+        "sample"
+      ],
+      "fuzzy": true,
+      "type": "short_answer",
+      "prompt": "What is the capital of France?",
+      "answer": "Paris",
+      "typeMode": "random",
+      "variants": [
+        {
+          "type": "single_choice",
+          "prompt": "Which city is the capital of France?",
+          "options": [
+            "London",
+            "Paris",
+            "Berlin",
+            "Madrid"
+          ],
+          "answer": "Paris"
+        },
+        {
+          "type": "true_false",
+          "prompt": "Paris is the capital of France.",
+          "answer": "True"
+        },
+        {
+          "type": "fill_blank",
+          "prompt": "The capital of France is ___.",
+          "answer": "Paris"
+        },
+        {
+          "type": "fill_blank_options",
+          "prompt": "The capital of France is ___.",
+          "blanks": [
+            "Paris"
+          ],
+          "options": [
+            "Paris",
+            "Rome",
+            "Berlin"
+          ]
+        }
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Asked in several ways",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "single_choice",
+      "prompt": "Which animal is this?",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Bubo_bubo_sibiricus_-_01.JPG/500px-Bubo_bubo_sibiricus_-_01.JPG",
+      "options": [
+        "Owl",
+        "Eagle",
+        "Parrot",
+        "Penguin"
+      ],
+      "answer": "Owl",
+      "typeMode": "random",
+      "variants": [
+        {
+          "type": "short_answer",
+          "prompt": "Name this animal.",
+          "answer": "Owl"
+        },
+        {
+          "type": "true_false",
+          "prompt": "This bird is an owl.",
+          "answer": "True"
+        }
+      ]
+    },
+    {
+      "subject": "RecallFlow samples",
+      "topic": "Asked in several ways",
+      "tags": [
+        "sample",
+        "pictures"
+      ],
+      "fuzzy": true,
+      "type": "true_false",
+      "prompt": "This planet is Mars, the Red Planet.",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png/500px-Mars_-_August_30_2021_-_Flickr_-_Kevin_M._Gill.png",
+      "answer": "True",
+      "typeMode": "random",
+      "variants": [
+        {
+          "type": "numeric",
+          "prompt": "Counting out from the Sun, which number planet is this?",
+          "answer": "4",
+          "numericTolerance": 0
+        },
+        {
+          "type": "short_answer",
+          "prompt": "Which planet is this?",
+          "answer": "Mars"
+        }
+      ]
+    }
+  ]
+}
