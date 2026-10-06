@@ -1,0 +1,212 @@
+[
+  {
+    "type": "short_answer",
+    "topic": "01 \u00b7 Type answer",
+    "prompt": "What shape is shown in the image?",
+    "answer": "Triangle",
+    "acceptedAnswers": [
+      "A triangle"
+    ],
+    "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAADwCAIAAAD+Tyo8AAAFfklEQVR4nO3VS5LUMBBFUWDCqtmANsuIYEoQENA0/aly2ZJe5jkrsKW8yo/fv339AGT6tPoDgOMEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEXNz48nn1J3AhAdevV8OFCRiCCbisp4vXEq5KwBBMwDX9v3It4ZIEXNBrrWq4HgFDMAFX8/aatYSLEXApt/Sp4UoEDMEEXMftq9USLkPAEEzARdy7VC3hGgRcwbEaNVyAgCGYgOM9skgt4XQChmACzvb4CrWEowk42FntaTiXgCGYgFOduzYt4VACjnRFbxpOJGAIJuA8161KSziOgCGYgMNcvSQt4SwCTjKnLg0HETAEE3CMmYvREk4h4Azzi9JwBAFDMAEHWLUMLeH9CRiCCXh3a9egJbw5AW9th352+AZeI2AIJuB97bP69vkSnhEwBBPwpnZbert9D78IeEd71rLnVzUnYAgm4O3svOh2/raeBLyX/QvZ/wtbETAEE/BGUpZbynd2IGAIJuBdZK21rK8tTMBbSOwh8ZvrETAEE/B6uass98vLEDAEE/Bi6Uss/fvTCXilGtNf4y9CCRiCCXiZSour0r9kEfAa9Sa+3h9FEDAEE/ACVZdV1f/amYAhmIBnq72mav/dhgQ8VYf57vCP+xAwBBPwPH1WU58/XU7Ak3Sb6W7/u4qAIZiAZ+i5jnr+9WQChmACvlznRdT53+cQ8LVMsBO4lIAhmIAvZPk4h6sJGIIJ+CrWr9OYQMCXUK8zmUPAEEzA57N+ncw0Aj6Zep3PTAKGYAI+k/XrlCYTMAQT8GmsX2c1n4DPoV4ntoSAIZiAT2D9OrdVBAzBBPwo69fpLSTgh6j3cc7wEQKGYAI+zuo4i5M8TMAHmblzOc9jBAzBBHyEdXEFp3qAgCGYgO9mUVzH2d5LwPcxYVdzwncRMAQT8B0shzmc8+0EfCtTNZPTvpGAIZiAb2IhzOfMbyFgCCbg91kFqzj5dwn4HWZoLef/NgFDMAG/xfO/A7fwBgFDMAG/ysO/D3fxGgG/zMTsxo28SMAQTMAv8Njvyb38T8DPmZKduZ1nBAzBBPwPD/z+3NFTAoZgAv7L057CTf0h4N/MRBb39YuAIZiAf/KcJxpfPq/+hPUEDMEE7CEPNtov4e4Bm4B0o3fD3QOGaK0Dbv54lzEa32PfgDvfej2j6232DRgKaBpw2we7sNHyTpsGDDV0DLjnU93B6Hez7QJueMetjGb32y5gqKRXwN2e555Gp1tuFHCre21utLnrRgFDPV0C7vMk0+rGuwQMJbUIuMljTMN7rx9wh1uk7e3XDxgKKx5w+QeY5jNQPGCorXLAtZ9ebld4EsoGXPjOOGAUnYeyAUMHNQOu+tzyiFFxKgoGXPKeOMUoNxsFA4Y+qgVc74nlXKPWhFQLGFopFXCxx5WLjEJzUifgSrfC1UaVaakTMDRUJOAyDyrTjBIzUyRg6KlCwDWeUuYb+ZMTH3CBO2ChET4/8QFDZ9kBpz+f7GAkT1FwwNHnzlZG7CwFBwykBpz7ZLKnkTlRqQEDqQGHPpZsbgTOVV7AiadMipE2XXkBA6kBxz2QxBlRM5YUcNbJkmvkTFpSwEBqwEGPIgWMkHmLCRhIDTjlOaSSkTB1H79/+7r6G4DSGxh4kYAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIDhQ64fsG7mH4lEMLwAAAAASUVORK5CYII=",
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ],
+    "fuzzy": true
+  },
+  {
+    "type": "fill_blank",
+    "topic": "02 \u00b7 Fill in the blank",
+    "prompt": "The Earth takes about ___ days to orbit the Sun.",
+    "answer": "365",
+    "fuzzy": false,
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ]
+  },
+  {
+    "type": "single_choice",
+    "topic": "03 \u00b7 Multiple choice",
+    "prompt": "Which planet is known as the Red Planet?",
+    "answer": "Mars",
+    "options": [
+      "Venus",
+      "Mars",
+      "Jupiter",
+      "Neptune"
+    ],
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ],
+    "fuzzy": true
+  },
+  {
+    "type": "flashcard",
+    "topic": "04 \u00b7 Flashcard",
+    "prompt": "What does photosynthesis allow plants to do?",
+    "answer": "Use sunlight to turn water and carbon dioxide into sugar and oxygen.",
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ],
+    "fuzzy": true
+  },
+  {
+    "type": "true_false",
+    "topic": "05 \u00b7 True or False",
+    "prompt": "An adult human usually has 206 bones.",
+    "answer": "True",
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ],
+    "fuzzy": true
+  },
+  {
+    "type": "multi_select",
+    "topic": "06 \u00b7 Multi-select",
+    "prompt": "Which of these are prime numbers? Select all that apply.",
+    "answer": "2; 3; 5",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "correctAnswers": [
+      "2",
+      "3",
+      "5"
+    ],
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ],
+    "fuzzy": true
+  },
+  {
+    "type": "numeric",
+    "topic": "07 \u00b7 Numeric answer",
+    "prompt": "What is the value of \u03c0 rounded to two decimal places?",
+    "answer": "3.14",
+    "numericTolerance": 0.01,
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ],
+    "fuzzy": true
+  },
+  {
+    "type": "matching",
+    "topic": "08 \u00b7 Matching",
+    "prompt": "Match each country to its capital.",
+    "pairs": [
+      {
+        "left": "Japan",
+        "right": "Tokyo"
+      },
+      {
+        "left": "France",
+        "right": "Paris"
+      },
+      {
+        "left": "Italy",
+        "right": "Rome"
+      }
+    ],
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ],
+    "fuzzy": true
+  },
+  {
+    "type": "ordering",
+    "topic": "09 \u00b7 Ordering",
+    "prompt": "Put the stages of a plant\u2019s life cycle in order.",
+    "sequence": [
+      "Seed",
+      "Germination",
+      "Seedling",
+      "Mature plant"
+    ],
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ],
+    "fuzzy": true
+  },
+  {
+    "type": "cloze",
+    "topic": "10 \u00b7 Multi-blank cloze",
+    "prompt": "Water freezes at ___ \u00b0C and boils at ___ \u00b0C at sea level.",
+    "blanks": [
+      "0",
+      "100"
+    ],
+    "fuzzy": false,
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ]
+  },
+  {
+    "type": "single_choice",
+    "topic": "11 \u00b7 Image answer choices",
+    "prompt": "Which picture shows a circle?",
+    "answer": "Circle",
+    "options": [
+      "Triangle",
+      "Circle",
+      "Square"
+    ],
+    "optionImages": {
+      "Triangle": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAADwCAIAAAD+Tyo8AAAFfklEQVR4nO3VS5LUMBBFUWDCqtmANsuIYEoQENA0/aly2ZJe5jkrsKW8yo/fv339AGT6tPoDgOMEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEDMEEXNz48nn1J3AhAdevV8OFCRiCCbisp4vXEq5KwBBMwDX9v3It4ZIEXNBrrWq4HgFDMAFX8/aatYSLEXApt/Sp4UoEDMEEXMftq9USLkPAEEzARdy7VC3hGgRcwbEaNVyAgCGYgOM9skgt4XQChmACzvb4CrWEowk42FntaTiXgCGYgFOduzYt4VACjnRFbxpOJGAIJuA8161KSziOgCGYgMNcvSQt4SwCTjKnLg0HETAEE3CMmYvREk4h4Azzi9JwBAFDMAEHWLUMLeH9CRiCCXh3a9egJbw5AW9th352+AZeI2AIJuB97bP69vkSnhEwBBPwpnZbert9D78IeEd71rLnVzUnYAgm4O3svOh2/raeBLyX/QvZ/wtbETAEE/BGUpZbynd2IGAIJuBdZK21rK8tTMBbSOwh8ZvrETAEE/B6uass98vLEDAEE/Bi6Uss/fvTCXilGtNf4y9CCRiCCXiZSour0r9kEfAa9Sa+3h9FEDAEE/ACVZdV1f/amYAhmIBnq72mav/dhgQ8VYf57vCP+xAwBBPwPH1WU58/XU7Ak3Sb6W7/u4qAIZiAZ+i5jnr+9WQChmACvlznRdT53+cQ8LVMsBO4lIAhmIAvZPk4h6sJGIIJ+CrWr9OYQMCXUK8zmUPAEEzA57N+ncw0Aj6Zep3PTAKGYAI+k/XrlCYTMAQT8GmsX2c1n4DPoV4ntoSAIZiAT2D9OrdVBAzBBPwo69fpLSTgh6j3cc7wEQKGYAI+zuo4i5M8TMAHmblzOc9jBAzBBHyEdXEFp3qAgCGYgO9mUVzH2d5LwPcxYVdzwncRMAQT8B0shzmc8+0EfCtTNZPTvpGAIZiAb2IhzOfMbyFgCCbg91kFqzj5dwn4HWZoLef/NgFDMAG/xfO/A7fwBgFDMAG/ysO/D3fxGgG/zMTsxo28SMAQTMAv8Njvyb38T8DPmZKduZ1nBAzBBPwPD/z+3NFTAoZgAv7L057CTf0h4N/MRBb39YuAIZiAf/KcJxpfPq/+hPUEDMEE7CEPNtov4e4Bm4B0o3fD3QOGaK0Dbv54lzEa32PfgDvfej2j6232DRgKaBpw2we7sNHyTpsGDDV0DLjnU93B6Hez7QJueMetjGb32y5gqKRXwN2e555Gp1tuFHCre21utLnrRgFDPV0C7vMk0+rGuwQMJbUIuMljTMN7rx9wh1uk7e3XDxgKKx5w+QeY5jNQPGCorXLAtZ9ebld4EsoGXPjOOGAUnYeyAUMHNQOu+tzyiFFxKgoGXPKeOMUoNxsFA4Y+qgVc74nlXKPWhFQLGFopFXCxx5WLjEJzUifgSrfC1UaVaakTMDRUJOAyDyrTjBIzUyRg6KlCwDWeUuYb+ZMTH3CBO2ChET4/8QFDZ9kBpz+f7GAkT1FwwNHnzlZG7CwFBwykBpz7ZLKnkTlRqQEDqQGHPpZsbgTOVV7AiadMipE2XXkBA6kBxz2QxBlRM5YUcNbJkmvkTFpSwEBqwEGPIgWMkHmLCRhIDTjlOaSSkTB1H79/+7r6G4DSGxh4kYAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIAhmIDhQ64fsG7mH4lEMLwAAAAASUVORK5CYII=",
+      "Circle": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAADwCAIAAAD+Tyo8AAAF5klEQVR4nO3dXY4URxCF0RnLC6itsQ+Wwz5YGvWCeLVsLBi6Z7qru/7yRpzzbEujjPiyEhD264/v316ATH+d/QMAzxMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBPv77B+ADcxfPz/3L06fvhhAtFf/Z4YmrS6n6iACHt0Bxd6m55EJeESnR/sRMY9GwAMZtttrSh6EgM8X1O01JZ9LwKeJ7vaakk8h4BMUS/ctGR9MwMcp3O01JR9DwEdole5bMt6bgPfVNt23ZLwfAe9FuhdkvAcBb0+6N8h4W/420sbU63yO5Au8Gek+xKd4EwLegHSfJuOVPKHXUq/TO5GAV1Hves5wDU/oJ1m7zXlOP8EX+Bnq3YNTfYKAH2bP9uNsH+UJ/QDrdRjP6YV8gZdS75Gc9kICXsQ+Hc+ZLyHg+2zSWZz8XQK+ww6dy/nfJuBbbM8ITOEGAX/I3ozDLD4i4PfZmNGYyLsE/A67MiZzuSbgS7ZkZKZzQcB/sB/jM6O3BPybzUhhUr8I+H92Iot5/STgf9mGRLP/5raA7UG0uX3DvsAQrHvArvB0c++PcOuAm8++jLnxHPsG3Hnq9cxdp9k3YCigacBtL+zC5pYz7Rhwz0l3MPebbLuAG864lbnZfNsFDJX0Crjb9dzT3GnKvQKGYhoF3Opibm5uM+suAfeZKK0m3iVgKKlFwE0uYxrOvUXAUFX9gDtcw7Sdfv2AobDiAZe/gGm+A8UDhtoqB1z76mW5wptQOWAoT8AQrGzAhV9NPGEuug9lA4YOagZc9bpljbniVtQMGJoQMAQrGHDJlxKbmMvtRsGAoQ8BQ7BqAdd7I7GtudaGVAsYWhEwBCsVcLHXETuZC+1JqYChGwFDMAFDsDoBV/qFDXubq2xLnYChIQFDMAFDMAFDsCIBl/k9CQ4zl9iZIgFDTwKGYAKGYAKGYAKGYAKGYBUCrvHnARxvzt+cCgFDWwKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYAKGYBUCnj59OftHINKUvzkVAoa2BAzBBAzBBAzBBAzBBAzBigRc4M8DONhUYmeKBAw9CRiCCRiCCRiC1Qm4xu9JcIypyrbUCRgaEjAEEzAEKxVwmV/YsKup0J6UChi6ETAEqxZwpdcRe5hqbUi1gKEVAUOwggEXeyOxoancbhQMGPoQMASrGXC9lxLrTRW3ombA0ETZgEtetzxtKroPZQOGDgQMwSoHXPXVxKOmuptQOWAor3jAha9eFqq9A8UDhtrqB1z7Aqb59OsHDIW1CLj8NUzbubcIGKrqEnCHy5iGE+8ScJ+J8tJp1o0Chnp6BdznYu5s6jTlXgFDMe0CbnU9NzQ1m2+7gBvOuI+p32Q7Btxz0uVNLWfaNGCooW/APS/sqqau0+wbcOepFzM1nmPrgJvPvoap9wS7BwzRBNz9Co82tZ+dgO1Bqql9vb7AtiGVen/yBf7NTqQwqV8E/AebMT4zekvAl+zHyEzngoDfYUvGZC7XBPw+uzIaE3mXgD9kY8ZhFh8R8C32ZgSmcIOA77A953L+twn4Pjt0Fid/l4AXsUnHc+ZLCHgp+3Qkp73Q64/v35b+s/xn/vrZSexHug/xBX6YDduPs32UgJ9hz/bgVJ/gCb2K5/QmpPs0X+BVbN56znANAa9l/5zeiTyhN+M5/RAX3yYEvDEZ3yXdDXlCb8x2Op8j+QLvxaf4gqttDwLel4yluysBH6Ftxr66exPwcVplLN1jCPgEhUvW7cEEfJpiGUv3FAI+X3TJuj2XgAcSVLJuByHgEQ1bsm5HI+DRnR6zaEcm4DAH9KzYIAJuXbVW0wkYgvnbSBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwBBMwPCS6x97dLXm705wkQAAAABJRU5ErkJggg==",
+      "Square": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAADwCAIAAAD+Tyo8AAADRklEQVR4nO3dwW3CQBBAUROlLqqgDVfjNqiChjghrqkhJpLzx+9VsPLMX+3Nl/fruQBNX0cfANhPwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMIQJGMK+lxNYH/ejj8Axtutt9qe/zP69qHRZRmc8+QmtXsZvwtiAB8+MHdah+zAz4KnT4hPrxK2YGTCcxMCAR160/Il13G4MDBjOQ8AQJmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFD2MCAt+vt6CPwT23jdmNgwHAeMwOed9HyuW3iVswMeOq02G0bug9jAx48M35rm7sJl/fruUy3Pu5HH4FjbHPTPVHAMNXkJzSMJ2AIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCECRiWrh/lfC5LYtpCRQAAAABJRU5ErkJggg=="
+    },
+    "subject": "Question type samples",
+    "tags": [
+      "ui-samples"
+    ],
+    "fuzzy": true
+  },
+  {
+    "subject": "Question type samples",
+    "topic": "12 \u00b7 Word bank \u2014 one blank",
+    "type": "fill_blank_options",
+    "tags": [
+      "ui-samples"
+    ],
+    "prompt": "The capital of France is ___.",
+    "blanks": [
+      "Paris"
+    ],
+    "options": [
+      "Rome",
+      "Paris",
+      "Tokyo"
+    ]
+  },
+  {
+    "subject": "Question type samples",
+    "topic": "13 \u00b7 Word bank \u2014 multiple blanks",
+    "type": "fill_blank_options",
+    "tags": [
+      "ui-samples"
+    ],
+    "prompt": "Water freezes at ___ \u00b0C and boils at ___ \u00b0C at sea level.",
+    "blanks": [
+      "0",
+      "100"
+    ],
+    "options": [
+      "25",
+      "100",
+      "0",
+      "200"
+    ]
+  }
+]
