@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 // Test the production service with deterministic media/inference adapters.
 // Real Kokoro, IndexedDB persistence, and playback are verified separately in the browser.
 globalThis.Audio=class {constructor(){this.paused=true;this.volume=1;this.muted=false;this.currentTime=0;}pause(){this.paused=true;}async play(){this.paused=false;this.onplaying?.();}};
-let running=0,maxRunning=0;
+let running=0,maxRunning=0;const order=[];
 globalThis.Worker=class {
-  postMessage(data){running++;maxRunning=Math.max(maxRunning,running);setTimeout(()=>{
+  postMessage(data){order.push(data.text);running++;maxRunning=Math.max(maxRunning,running);setTimeout(()=>{
     running--;
     this.onmessage({data:data.text==='FAIL'?{type:'error',message:'Offline test'}:{type:'audio',samples:new Float32Array([.1,.2,-.1,.3]),sampleRate:24000,device:'webgpu',rms:.2,peak:.3,elapsed:.01}});
   },20);}
@@ -63,3 +63,34 @@ await preparedService.speak('Prepared question?',{...options,questionId:'prepare
 assert.equal(preparedService.state.evidence.cacheHit,true,'speaker reuses prepared editor audio');
 assert.equal(preparedService.inferences,1);
 console.log('PASS: editor audio preparation, no autoplay, repeated-save reuse, and speaker cache reuse.');
+
+const prefs=new Map();
+globalThis.localStorage={getItem:key=>prefs.has(key)?prefs.get(key):null,setItem:(key,value)=>prefs.set(key,String(value)),removeItem:key=>prefs.delete(key)};
+const tick=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const queued=new KokoroVoice();
+queued.prefetch([{questionId:'p1',role:'question',text:'Prefetch A'}]);await tick(40);
+assert.equal(queued.inferences,0,'prefetch waits until Kokoro has been used once');
+prefs.set('recallflow_kokoro_ready','1');order.length=0;
+queued.prefetch([{questionId:'p1',role:'question',text:'Prefetch A'},{questionId:'p1',role:'answer',text:'Prefetch B'},{questionId:'p2',role:'question',text:'Prefetch C'}]);
+await tick(5);await queued.speak('User tap',{questionId:'u1',role:'question'});
+assert.deepEqual(order.slice(0,2),['Prefetch A','User tap'],'a tap runs before queued background preparation');
+assert.equal(queued.audio.paused,false,'the tapped clip plays');
+await Promise.allSettled([...queued.requests.values()]);
+assert.deepEqual(order,['Prefetch A','User tap','Prefetch B','Prefetch C']);
+order.length=0;
+queued.prefetch([{questionId:'p3',role:'question',text:'Next D'},{questionId:'p3',role:'answer',text:'Next E'},{questionId:'p4',role:'question',text:'Next F'}]);
+await tick(5);await queued.speak('Next F',{questionId:'p4',role:'question'});
+assert.deepEqual(order.slice(0,2),['Next D','Next F'],'tapping a pending prefetched clip promotes it');
+await Promise.allSettled([...queued.requests.values()]);
+const before=queued.inferences;order.length=0;
+queued.prefetch([{questionId:'p5',role:'question',text:'Stale G'},{questionId:'p5',role:'answer',text:'Stale H'}]);
+await tick(5);queued.prefetch([{questionId:'p6',role:'question',text:'Fresh I'}]);
+await tick(5);await Promise.allSettled([...queued.requests.values()]);
+assert.deepEqual(order,['Stale G','Fresh I'],'moving to the next question cancels stale background work');
+assert.equal(queued.inferences,before+2);
+prefs.set('recallflow_speech_engine','system');
+queued.prefetch([{questionId:'p7',role:'question',text:'Device engine'}]);await tick(40);
+assert.equal(queued.inferences,before+2,'device voice never loads Kokoro');
+assert.deepEqual(await queued.prepare('Device engine',{questionId:'p7',role:'question'}),{skipped:true});
+delete globalThis.localStorage;
+console.log('PASS: tap priority over prefetch, promotion of pending clips, stale prefetch cancellation and engine gating.');

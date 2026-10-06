@@ -51,8 +51,8 @@
   --info-hover: #4338ca;
   --info-active: #3730a3;
   --border: #dcd8cf;
-  --font-family-base: 'IBM Plex Sans', sans-serif;
-  --font-family-display: 'Newsreader', serif;
+  --font-family-base: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-family-display: 'Newsreader', Georgia, 'Times New Roman', serif;
   --font-family-monospace: ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-family-cursive: cursive;
   --shadow: 0 1px 3px rgba(35, 37, 45, 0.07);

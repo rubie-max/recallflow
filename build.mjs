@@ -18,7 +18,9 @@ export async function buildApp() {
   await bundle.write({file:path.join(root,'assets/app.js'),format:'es',sourcemap:false});await bundle.close();
   const base=await fs.readFile(path.join(root,'src/react/base.css'),'utf8');
   const voice=await fs.readFile(path.join(root,'src/react/voice.css'),'utf8');
-  await fs.writeFile(path.join(root,'assets/app.css'),base+'\n'+styles.join('\n')+'\n'+voice);
+  const polish=await fs.readFile(path.join(root,'src/react/polish.css'),'utf8');
+  const bank=await fs.readFile(path.join(root,'src/react/bank.css'),'utf8');
+  await fs.writeFile(path.join(root,'assets/app.css'),base+'\n'+styles.join('\n')+'\n'+voice+'\n'+polish+'\n'+bank);
   await fs.copyFile(path.join(root,'src/tts-worker.js'),path.join(root,'assets/tts-worker.js'));
   const html='<!doctype html>\n<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>RecallFlow</title><link rel="icon" type="image/svg+xml" href="./public/recallflow-logo.svg"><link rel="manifest" href="./manifest.webmanifest"><meta name="theme-color" content="#4f46e5"><link rel="apple-touch-icon" href="./public/icon-192.png"><link rel="stylesheet" href="./assets/app.css"></head><body><div id="app"></div><script type="module" src="./assets/app.js"></script></body></html>\n';
   await fs.writeFile(path.join(root,'index.html'),html);

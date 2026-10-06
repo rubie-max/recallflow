@@ -1,7 +1,3 @@
 node_modules/
 dist/
-assets/
-index.html
 *.log
-.env
-.env.*

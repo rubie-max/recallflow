@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {validateQuestion,gradeQuestion,missedItems,numericValue} from './src/question-types.js';
+import {pictureLabel,isPictureLabel} from './src/question-variants.js';
 const make=(type,extra={})=>validateQuestion({prompt:'Question?',answer:'Yes',type,...extra});
 assert.equal(make('true_false',{answer:'false'}).answer,'False');
 assert.equal(gradeQuestion(make('true_false',{answer:'True'}),'False'),false);
@@ -20,4 +21,12 @@ assert.equal(gradeQuestion(make('short_answer',{answer:'Tokyo'}),' tokyo! '),tru
 const bank=[{id:'a',prompt:'Edited prompt'},{id:'b'},{id:'c'}];
 assert.deepEqual(missedItems([{knowledge_id:'a',correct:false},{knowledge_id:'a',correct:false},{knowledge_id:'b',correct:true},{knowledge_id:'deleted',correct:false}],bank),[bank[0]]);
 assert.deepEqual(missedItems([{knowledge_id:'a',correct:true}],bank),[]);
-console.log('PASS: exact multi-select sets, signed numeric/tolerance grading, validation, existing text grading, retry deduplication and deleted/edited questions.');
+const pic='data:image/png;base64,iVBORw0KGgo=';
+assert.equal(make('short_answer',{prompt:'',image:pic}).prompt,'');
+assert.equal(make('single_choice',{prompt:'  ',image:pic,options:['A','B'],answer:'A'}).prompt,'');
+assert.throws(()=>make('short_answer',{prompt:''}),/question/i);
+assert.throws(()=>make('fill_blank',{prompt:'',image:pic}));
+assert.equal(make('flashcard',{answer:'',answerImage:pic}).answer,'');
+assert.throws(()=>make('flashcard',{answer:''}));
+assert(isPictureLabel(pictureLabel(3))&&isPictureLabel('Picture B')&&!isPictureLabel('Picture of a cat')&&!isPictureLabel(''));
+console.log('PASS: exact multi-select sets, signed numeric/tolerance grading, validation, picture-only questions and answers, existing text grading, retry deduplication and deleted/edited questions.');

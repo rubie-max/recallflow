@@ -13,28 +13,32 @@ async function load(target) {
   });
   device = target;
 }
+async function ensureModel(backend) {
+  if (tts && lastBackend === 'wasm' && backend !== 'wasm') {
+    await tts.model?.dispose?.(); tts = undefined;
+  }
+  lastBackend = backend;
+  if (backend === 'wasm' && device !== 'wasm') {
+    await tts?.model?.dispose?.(); tts = undefined; await load('wasm');
+  }
+  if (!tts) {
+    let target = 'wasm';
+    if (backend !== 'wasm' && self.navigator.gpu) {
+      try { if (await self.navigator.gpu.requestAdapter()) target = 'webgpu'; } catch {}
+    }
+    try { await load(target); }
+    catch (e) {
+      if (target === 'wasm') throw e;
+      report('fallback', {message: `WebGPU unavailable: ${e.message}. Loading Kokoro with WASM.`});
+      await load('wasm');
+    }
+  }
+}
 self.onmessage = async ({data}) => {
   try {
     const start = performance.now();
-    if (tts && lastBackend === 'wasm' && data.backend !== 'wasm') {
-      await tts.model?.dispose?.(); tts = undefined;
-    }
-    lastBackend = data.backend;
-    if (data.backend === 'wasm' && device !== 'wasm') {
-      await tts?.model?.dispose?.(); tts = undefined; await load('wasm');
-    }
-    if (!tts) {
-      let target = 'wasm';
-      if (data.backend !== 'wasm' && self.navigator.gpu) {
-        try { if (await self.navigator.gpu.requestAdapter()) target = 'webgpu'; } catch {}
-      }
-      try { await load(target); }
-      catch (e) {
-        if (target === 'wasm') throw e;
-        report('fallback', {message: `WebGPU unavailable: ${e.message}. Loading Kokoro with WASM.`});
-        await load('wasm');
-      }
-    }
+    await ensureModel(data.backend);
+    if (data.type === 'warm') { report('ready', {device, elapsed: (performance.now()-start)/1000}); return; }
     report('status', {message: `Generating speech with Kokoro · ${device.toUpperCase()}…`});
     const speechText = data.spokenText || data.text;
     let result;
