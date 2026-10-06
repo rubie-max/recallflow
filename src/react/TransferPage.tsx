@@ -1,9 +1,10 @@
-import React,{useMemo,useRef,useState} from 'react';
+import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {FileUp,FileDown,FileJson,Sheet,Layers,FileText,Download,Copy,Check,CheckCircle2,AlertCircle,CopyCheck,UploadCloud,ClipboardPaste,ArrowLeft,X,ImageIcon,History} from 'lucide-react';
 import {Button} from './components/Button';
 import {questionTypes,typeLabel,validateQuestion} from '../question-types.js';
 import {itemTypes} from '../question-variants.js';
 import {exportFormats,importFormats,serialize,parseImport,duplicateKey,csvTemplate} from '../transfer-formats.js';
+import {inlineImages} from '../sync.js';
 
 const formatIcons:any={json:FileJson,csv:Sheet,tsv:Layers,text:FileText};
 const size=(n:number)=>n<1024?`${n} B`:n<1048576?`${Math.round(n/1024)} KB`:`${(n/1048576).toFixed(1)} MB`;
@@ -14,7 +15,10 @@ function ExportPanel({items,selectedIds,onDone}:any){
  const [scope,setScope]=useState(selectedIds.length?'selected':'all'),[subject,setSubject]=useState(subjects[0]||''),[types,setTypes]=useState<string[]>([]);
  const [format,setFormat]=useState('json'),[images,setImages]=useState(true),[progress,setProgress]=useState(true),[status,setStatus]=useState('');
  const chosen=useMemo(()=>scope==='selected'?items.filter((x:any)=>selectedIds.includes(x.id)):scope==='subject'?items.filter((x:any)=>(x.subject||'General')===subject):scope==='types'?items.filter((x:any)=>!types.length||itemTypes(x).some(t=>types.includes(t))):items,[items,scope,subject,types,selectedIds]);
- const output=useMemo(()=>chosen.length?serialize(chosen,format,{images,progress}):'',[chosen,format,images,progress]);
+ const [inlined,setInlined]=useState<any[]|null>(chosen);
+ useEffect(()=>{if(format!=='json'||!images||!chosen.some((x:any)=>JSON.stringify(x).includes('"rf-img/'))){setInlined(chosen);return;}let live=true;setInlined(null);inlineImages(chosen).then((x:any[])=>{if(live)setInlined(x);}).catch(()=>{if(live)setInlined(chosen);});return()=>{live=false;};},[chosen,format,images]);
+ const output=useMemo(()=>inlined?.length?serialize(inlined,format,{images,progress}):'',[inlined,format,images,progress]);
+ const preparing=!inlined;
  const meta=exportFormats.find(f=>f.id===format)!;
  const imageCount=chosen.filter((x:any)=>x.image||x.answerImage||Object.keys(x.optionImages||{}).length).length;
  const name=`recallflow-${scope==='subject'?subject.toLowerCase().replace(/[^a-z0-9]+/g,'-'):scope}-${new Date().toISOString().slice(0,10)}.${meta.ext}`;
@@ -32,7 +36,7 @@ function ExportPanel({items,selectedIds,onDone}:any){
    {format==='json'&&<div className="transfer-options"><label className="settings-switch"><span className="settings-switch-icon"><ImageIcon size={17}/></span><span className="settings-switch-copy"><strong>Include images</strong><small>{imageCount?`${imageCount} ${imageCount===1?'question has':'questions have'} images`:'No images in this selection'}</small></span><input type="checkbox" role="switch" checked={images} onChange={e=>setImages(e.target.checked)}/><i aria-hidden="true"/></label><label className="settings-switch"><span className="settings-switch-icon"><History size={17}/></span><span className="settings-switch-copy"><strong>Include study progress</strong><small>Next review dates and attempts</small></span><input type="checkbox" role="switch" checked={progress} onChange={e=>setProgress(e.target.checked)}/><i aria-hidden="true"/></label></div>}
    {format!=='json'&&chosen.some((x:any)=>x.variants?.length)&&<p className="transfer-note">Only the first type of multi-type questions is included. Use RecallFlow file to keep every type.</p>}
   </section>
-  <footer className="transfer-footer"><div><strong>{chosen.length} {chosen.length===1?'question':'questions'}</strong><small>{chosen.length?`${meta.label} · ${size(new Blob([output]).size)}`:'Nothing to export'}</small></div><div className="transfer-footer-actions"><Button variant="outline" disabled={!chosen.length} onClick={copy}><Copy size={16}/>Copy</Button><Button disabled={!chosen.length} onClick={()=>{download(output,name,meta.mime);setStatus(`Downloaded ${name}`);onDone?.();}}><Download size={16}/>Download</Button></div></footer>
+  <footer className="transfer-footer"><div><strong>{chosen.length} {chosen.length===1?'question':'questions'}</strong><small>{preparing?'Preparing pictures…':chosen.length?`${meta.label} · ${size(new Blob([output]).size)}`:'Nothing to export'}</small></div><div className="transfer-footer-actions"><Button variant="outline" disabled={!chosen.length||preparing} onClick={copy}><Copy size={16}/>Copy</Button><Button disabled={!chosen.length||preparing} onClick={()=>{download(output,name,meta.mime);setStatus(`Downloaded ${name}`);onDone?.();}}><Download size={16}/>Download</Button></div></footer>
   {status&&<p className="transfer-status" role="status">{status}</p>}
  </div>;
 }

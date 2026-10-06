@@ -141,6 +141,15 @@ export default function IndexPage(){
   },[]);
   useEffect(()=>{ if(loaded)try{localStorage.setItem("recallflow_bank_v2",JSON.stringify(items))}catch{setMessage("Storage is full. Export a backup and reduce image sizes before adding more questions.");} },[items,loaded]);
 
+  useEffect(()=>{
+    const reload=()=>{
+      const read=(key:string,fallback:any)=>{try{const x=localStorage.getItem(key);return x==null?fallback:JSON.parse(x);}catch{return fallback;}};
+      setItems(read("recallflow_bank_v2",[]));setReportHistory(read("recallflow_reports",[]));setStreakDays(read("recallflow_streak_days",[]));setQuizCount(Number(localStorage.getItem("recallflow_quiz_count")||0)||0);
+      const p=appPreferences();setPrefs(p);applyAppPreferences(p);setQuizDefaults(quizPreferences());
+      const theme=localStorage.getItem("recallflow_theme")||"light";setThemeChoice(theme);if(theme==="dark")switchToDarkMode();else if(theme==="system")switchToAutoMode();else switchToLightMode();
+    };
+    window.addEventListener("recallflow:remote-update",reload);return()=>window.removeEventListener("recallflow:remote-update",reload);
+  },[]);
   const due=useMemo(()=>items.filter(x=>!x.due||x.due<=today()),[items]);
   const current=review?.[idx];
   useEffect(()=>{

@@ -226,7 +226,7 @@
 .selection-bar-form input{min-width:0;height:40px;padding:0 10px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--foreground);font:inherit;font-weight:400;font-size:14px}
 .selection-bar-form-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media(min-width:620px){.selection-bar-actions,.selection-bar-info{display:grid!important;grid-column:1/-1}.selection-bar-info{display:flex!important}.question-selection-bar .selection-bar-actions button{flex-direction:row;min-height:40px!important;font-size:13px!important}.selection-bar-form{grid-column:1/-1}}
-.sequence-step button:disabled{opacity:.35;cursor:default}
+.sequence-step>button:disabled{opacity:.35;cursor:default}
 .quiz-type-chips{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 .split-choice:has(.choice-media) .split-choice-indicator{top:20px;right:20px;box-shadow:0 1px 4px #0004}
 .split-choice:has(.choice-media):has(input:checked) .split-choice-indicator{box-shadow:inset 0 0 0 4px var(--card),0 1px 4px #0004}

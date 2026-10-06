@@ -76,7 +76,7 @@ function KokoroSettings(){
 export function KokoroPanel() {
   const [engine,setEngine]=useState(speechEngine);
   function choose(next:string){kokoroVoice.stop();globalThis.speechSynthesis?.cancel();saveSpeechEngine(next);setEngine(next);}
-  const options:[string,string,string,any][]=[['kokoro','Kokoro AI voice','Natural · saved for instant replay',Sparkles],['system','Device voice','Instant · no download',Smartphone]];
+  const options:[string,string,string,any][]=[['system','Device voice','Default · instant, no download',Smartphone],['kokoro','Kokoro AI voice','Natural · downloads once, then saved',Sparkles]];
   return <section className="settings-panel kokoro-panel"><div className="settings-heading"><span className="settings-icon"><Volume2 size={19}/></span><div><h2>Voice &amp; speech</h2><p>Choose how questions are read aloud.</p></div></div>
     <div className="voice-engine-picker" role="radiogroup" aria-label="Speech engine">{options.map(([id,title,hint,Icon])=><button key={id} role="radio" aria-checked={engine===id} onClick={()=>choose(id)}><Icon size={18}/><span><strong>{title}</strong><small>{hint}</small></span>{engine===id&&<Check size={16} className="voice-engine-check"/>}</button>)}</div>
     {engine==='system'?<SystemVoiceSettings/>:<KokoroSettings/>}

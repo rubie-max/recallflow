@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node build.mjs && node server.mjs",
     "build": "node build.mjs",
-    "test": "node question-tests.mjs && node settings-tests.mjs && node audio-tests.mjs && node learning-tests.mjs && node word-bank-tests.mjs && node streak-tests.mjs && node quiz-setup-tests.mjs"
+    "test": "node question-tests.mjs && node settings-tests.mjs && node audio-tests.mjs && node learning-tests.mjs && node word-bank-tests.mjs && node streak-tests.mjs && node quiz-setup-tests.mjs && node sync-tests.mjs"
   },
   "dependencies": {
     "kokoro-js": "1.2.1",

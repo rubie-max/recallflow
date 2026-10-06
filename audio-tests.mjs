@@ -10,6 +10,8 @@ globalThis.Worker=class {
   },20);}
   terminate(){}
 };
+const store=new Map([['recallflow_speech_engine','kokoro'],['recallflow_voice_default_v2','1']]);
+globalThis.localStorage={getItem:k=>store.has(k)?store.get(k):null,setItem:(k,v)=>store.set(k,String(v)),removeItem:k=>store.delete(k)};
 const {audioCache}=await import('./src/audio-cache.js');
 const {KokoroVoice,speechKey}=await import('./src/kokoro-service.js');
 const disk=new Map();
@@ -64,7 +66,7 @@ assert.equal(preparedService.state.evidence.cacheHit,true,'speaker reuses prepar
 assert.equal(preparedService.inferences,1);
 console.log('PASS: editor audio preparation, no autoplay, repeated-save reuse, and speaker cache reuse.');
 
-const prefs=new Map();
+const prefs=new Map([['recallflow_speech_engine','kokoro'],['recallflow_voice_default_v2','1']]);
 globalThis.localStorage={getItem:key=>prefs.has(key)?prefs.get(key):null,setItem:(key,value)=>prefs.set(key,String(value)),removeItem:key=>prefs.delete(key)};
 const tick=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const queued=new KokoroVoice();

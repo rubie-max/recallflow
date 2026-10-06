@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import {UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic} from 'lucide-react';
+import {UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck} from 'lucide-react';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
 import {BackupRestore,OfflineSettings} from './LearningFeatures';
@@ -7,8 +7,9 @@ import {quizPreferences,saveQuizPreferences} from '../quiz-preferences.js';
 import {readSetups} from '../quiz-setups.js';
 import {appPreferences,saveAppPreferences,textSizes} from '../app-preferences.js';
 import {audioCache} from '../audio-cache.js';
+import {session,signOut,syncNow,syncStatus} from '../sync.js';
 
-const sections:[string,string,any][]=[['profile','Profile',UserRound],['appearance','Appearance',Palette],['voice','Voice',Volume2],['quiz','Quiz',SlidersHorizontal],['data','Data',Database],['app','App',Smartphone]];
+const sections:[string,string,any][]=[['profile','Profile',UserRound],['account','Account',Cloud],['appearance','Appearance',Palette],['voice','Voice',Volume2],['quiz','Quiz',SlidersHorizontal],['data','Data',Database],['app','App',Smartphone]];
 
 function Toggle({icon:Icon,title,detail,checked,onChange}:any){
  return <label className="settings-switch"><span className="settings-switch-icon"><Icon size={17}/></span><span className="settings-switch-copy"><strong>{title}</strong>{detail&&<small>{detail}</small>}</span><input type="checkbox" role="switch" checked={checked} onChange={e=>onChange(e.target.checked)}/><i aria-hidden="true"/></label>;
@@ -74,19 +75,32 @@ function StorageMeter({items}:any){
 
 function BackupPanel({items,reports,quizCount,streakDays,theme}:any){
  const [status,setStatus]=useState('');
- function json(){return JSON.stringify({app:'RecallFlow',version:1,exportedAt:new Date().toISOString(),questions:items,reports,quizCount,streakDays,preferences:{theme,voice:localStorage.getItem('recallflow_kokoro_voice')||'af_heart',speed:Number(localStorage.getItem('recallflow_kokoro_speed')||1),speechEngine:localStorage.getItem('recallflow_speech_engine')||'kokoro',quiz:quizPreferences(),quizSetups:readSetups(),app:appPreferences()}},null,2);}
+ function json(){return JSON.stringify({app:'RecallFlow',version:1,exportedAt:new Date().toISOString(),questions:items,reports,quizCount,streakDays,preferences:{theme,voice:localStorage.getItem('recallflow_kokoro_voice')||'af_heart',speed:Number(localStorage.getItem('recallflow_kokoro_speed')||1),speechEngine:localStorage.getItem('recallflow_speech_engine')||'system',quiz:quizPreferences(),quizSetups:readSetups(),app:appPreferences()}},null,2);}
  function download(){try{const url=URL.createObjectURL(new Blob([json()],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download=`RecallFlow_backup_${new Date().toISOString().slice(0,10)}.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Backup downloaded.');}catch(e:any){setStatus(`Could not create the backup: ${e.message}`);}}
  async function copy(){try{await navigator.clipboard.writeText(json());setStatus('Backup copied to the clipboard.');}catch{setStatus('Copy is blocked here. Use Download instead.');}}
  return <Panel icon={Download} title="Full backup" detail="Everything: questions, reports, streak and settings."><div className="settings-button-row"><Button onClick={download}><Download size={16}/>Download backup</Button><Button variant="outline" onClick={copy}><Copy size={16}/>Copy</Button></div>{status&&<p className="settings-status" role="status">{status}</p>}</Panel>;
 }
 
+function ago(ms:number){if(!ms)return 'Not synced yet';const s=Math.round((Date.now()-ms)/1000);if(s<45)return 'Synced just now';if(s<3600)return `Synced ${Math.round(s/60)} min ago`;if(s<86400)return `Synced ${Math.round(s/3600)} h ago`;return `Synced ${new Date(ms).toLocaleDateString()}`;}
+function AccountSettings(){
+ const [status,setStatus]=useState(syncStatus),[,tick]=useState(0),[confirm,setConfirm]=useState(false),user=session()?.user||'';
+ useEffect(()=>{const on=()=>setStatus(syncStatus());window.addEventListener('recallflow:sync-status',on);const t=setInterval(()=>tick(n=>n+1),30000);return()=>{window.removeEventListener('recallflow:sync-status',on);clearInterval(t);};},[]);
+ const label=status.state==='syncing'?'Syncing…':status.state==='offline'?'Offline · changes will sync when you reconnect':status.state==='error'?'Sync problem':ago(status.lastSynced);
+ const Icon=status.state==='offline'||status.state==='error'?CloudOff:status.state==='syncing'?RefreshCw:CircleCheck;
+ return <Panel icon={Cloud} title={`Signed in as ${user}`} detail="Questions, pictures, reports and settings sync across your devices.">
+  <div className="sync-status" data-state={status.state}><Icon size={20}/><div><strong>{label}</strong>{status.state==='error'&&<small>{status.error}</small>}{status.pendingImages>0&&<small>{status.pendingImages} {status.pendingImages===1?'picture':'pictures'} waiting to upload</small>}</div></div>
+  <div className="settings-button-row"><Button onClick={()=>syncNow()} disabled={status.state==='syncing'}><RefreshCw size={16}/>Sync now</Button><Button variant="outline" onClick={()=>setConfirm(!confirm)}><LogOut size={16}/>Log out</Button></div>
+  {confirm&&<div className="settings-confirm" role="alertdialog" aria-label="Confirm log out"><p>Log out on this device? Your questions stay saved online.</p><div className="settings-button-row"><Button variant="destructive" onClick={async()=>{await syncNow();await signOut();}}>Log out</Button><Button variant="outline" onClick={()=>setConfirm(false)}>Cancel</Button></div></div>}
+ </Panel>;
+}
+
 function DangerZone({onResetProgress,onDeleteAll}:any){
  const [open,setOpen]=useState<''|'progress'|'all'>(''),[typed,setTyped]=useState('');
  return <Panel icon={TriangleAlert} title="Danger zone" detail="These actions cannot be undone." className="settings-danger">
-  <div className="settings-danger-row"><div><strong>Reset progress</strong><small>Clear reports, streak and review schedule. Questions stay.</small></div><Button variant="outline" onClick={()=>{setOpen(open==='progress'?'':'progress');setTyped('');}}><RotateCcw size={15}/>Reset</Button></div>
+  <div className="settings-danger-row"><div><strong>Reset progress</strong><small>Clear reports, streak and review schedule on all your devices. Questions stay.</small></div><Button variant="outline" onClick={()=>{setOpen(open==='progress'?'':'progress');setTyped('');}}><RotateCcw size={15}/>Reset</Button></div>
   {open==='progress'&&<div className="settings-confirm" role="alertdialog" aria-label="Confirm reset progress"><p>Reset all study progress?</p><div className="settings-button-row"><Button variant="destructive" onClick={()=>{onResetProgress();setOpen('');}}>Reset progress</Button><Button variant="outline" onClick={()=>setOpen('')}>Cancel</Button></div></div>}
-  <div className="settings-danger-row"><div><strong>Delete everything</strong><small>Remove all questions, reports, voice clips and settings.</small></div><Button variant="outline" className="is-danger" onClick={()=>{setOpen(open==='all'?'':'all');setTyped('');}}><Trash2 size={15}/>Delete</Button></div>
-  {open==='all'&&<div className="settings-confirm" role="alertdialog" aria-label="Confirm delete everything"><p>Type <b>DELETE</b> to remove everything from this device.</p><input aria-label="Type DELETE to confirm" value={typed} onChange={e=>setTyped(e.target.value)} placeholder="DELETE" autoComplete="off"/><div className="settings-button-row"><Button variant="destructive" disabled={typed.trim().toUpperCase()!=='DELETE'} onClick={onDeleteAll}>Delete everything</Button><Button variant="outline" onClick={()=>setOpen('')}>Cancel</Button></div></div>}
+  <div className="settings-danger-row"><div><strong>Delete everything</strong><small>Remove all questions, reports and settings on all your devices, and voice clips here.</small></div><Button variant="outline" className="is-danger" onClick={()=>{setOpen(open==='all'?'':'all');setTyped('');}}><Trash2 size={15}/>Delete</Button></div>
+  {open==='all'&&<div className="settings-confirm" role="alertdialog" aria-label="Confirm delete everything"><p>Type <b>DELETE</b> to remove everything from all your devices.</p><input aria-label="Type DELETE to confirm" value={typed} onChange={e=>setTyped(e.target.value)} placeholder="DELETE" autoComplete="off"/><div className="settings-button-row"><Button variant="destructive" disabled={typed.trim().toUpperCase()!=='DELETE'} onClick={onDeleteAll}>Delete everything</Button><Button variant="outline" onClick={()=>setOpen('')}>Cancel</Button></div></div>}
  </Panel>;
 }
 
@@ -99,17 +113,18 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
   <nav className="settings-jump" aria-label="Settings sections">{sections.map(([id,label,Icon])=><a key={id} href="#/settings" aria-current={activeSection===id?'true':undefined} onClick={e=>{e.preventDefault();jump(id);}}><Icon size={16} aria-hidden="true"/><span>{label}</span></a>)}</nav>
   <div className="settings-content">
    <div className="settings-group" id="settings-profile"><h2 className="settings-group-title">Profile</h2><ProfileSettings/></div>
+   <div className="settings-group" id="settings-account"><h2 className="settings-group-title">Account</h2><AccountSettings/></div>
    <div className="settings-group" id="settings-appearance"><h2 className="settings-group-title">Appearance</h2><AppearanceSettings theme={theme} onTheme={onTheme}/></div>
    <div className="settings-group" id="settings-voice"><h2 className="settings-group-title">Voice</h2><KokoroPanel/><VoiceBehaviour/></div>
    <div className="settings-group" id="settings-quiz"><h2 className="settings-group-title">Quiz</h2><QuizDefaults onSaved={onQuizDefaults}/></div>
    <div className="settings-group" id="settings-data"><h2 className="settings-group-title">Data</h2>
-    <Panel icon={Database} title="Storage" detail="Saved privately in this browser."><StorageMeter items={items}/></Panel>
+    <Panel icon={Database} title="Storage" detail="A copy on this device, so it works offline."><StorageMeter items={items}/></Panel>
     <button className="settings-link-card" onClick={onOpenTransfer}><span className="settings-icon"><ArrowLeftRight size={19}/></span><span><strong>Import & export questions</strong><small>CSV, Anki, JSON or plain text</small></span><ArrowRight size={18}/></button>
     <BackupPanel items={items} reports={reports} quizCount={quizCount} streakDays={streakDays} theme={theme}/>
     <BackupRestore/>
     <DangerZone onResetProgress={onResetProgress} onDeleteAll={onDeleteAll}/>
    </div>
-   <div className="settings-group" id="settings-app"><h2 className="settings-group-title">App</h2><OfflineSettings/><Panel icon={Info} title="About RecallFlow" detail="Version 2026.10"><ul className="settings-about"><li><Check size={15}/>Works offline once installed</li><li><Check size={15}/>No account, nothing leaves your device</li><li><Check size={15}/>{items.length} questions · {reports.length} {reports.length===1?'report':'reports'}</li></ul></Panel></div>
+   <div className="settings-group" id="settings-app"><h2 className="settings-group-title">App</h2><OfflineSettings/><Panel icon={Info} title="About RecallFlow" detail="Version 2026.10"><ul className="settings-about"><li><Check size={15}/>Works offline once installed</li><li><Check size={15}/>Private login, synced through your own GitHub</li><li><Check size={15}/>{items.length} questions · {reports.length} {reports.length===1?'report':'reports'}</li></ul></Panel></div>
   </div>
  </section>;
 }

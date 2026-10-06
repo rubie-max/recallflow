@@ -11,7 +11,7 @@ export const importFormats=[['auto','Detect automatically'],['json','RecallFlow 
 
 const progressKeys=['due','interval','lastReviewed','attempts','lapses'];
 const typeIds=new Set(questionTypes.map(([id])=>id));
-const isImage=x=>typeof x==='string'&&x.startsWith('data:');
+const isImage=x=>typeof x==='string'&&(x.startsWith('data:')||x.startsWith('rf-img/'));
 
 function stripImages(item){
   const out={...item};

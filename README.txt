@@ -192,3 +192,21 @@ Picture fit: fixed picture frames (choices, items, editor thumbnails) fill the f
 Picture-only (2026-10-06): a question can be just a picture (prompt optional when a question image exists, except blank types); a flashcard back can be just a picture. Adding a picture to an empty choice, word, step or matching side names it "Picture N" (matching right side "Picture A"); the quiz hides that name and shows only the picture (screen readers still hear it).
 Quiz layouts (2026-10-06): sentence questions (fill blank, cloze, word bank) sit in a panel with dashed gaps that turn solid when filled; word-bank words show as used, tapping a filled active gap empties it, and wrong gaps show the given word struck through next to the right one. Ordering rows have a number badge, left-aligned text and per-step correct/wrong colours after checking. True/False shows two large tiles.
 Voice tools (Settings > Voice, Kokoro): "Voices for existing questions" counts ready/missing clips for every question, answer and extra way of asking (with the saved voice and speed) and generates the missing ones with progress and Stop. "Check Kokoro" lists worker/WebGPU/storage support, loads the model, generates a test sentence without saving it and reports the engine and timings (kokoroVoice.check in src/kokoro-service.js, UI in src/react/VoiceLibrary.tsx).
+
+
+LOGIN & CLOUD SYNC (Oct 2026)
+-----------------------------
+- The site opens with a login page (username Kaizen). The password is never stored in the code:
+  it unlocks public/sync-vault.json (AES-GCM, PBKDF2-SHA256 600k), which holds a GitHub key that can
+  only read/write the private repo rubie-max/RecallFlow-data.
+- Data lives in RecallFlow-data: data/state.json (questions, reports, streak, quiz count, settings)
+  and images/<hash>.<ext> (uploaded pictures). Each device keeps a full offline copy and syncs
+  automatically (a few seconds after a change, when the app is reopened, and every minute).
+- Edits on different devices are merged per question; deletions and "Reset progress" / "Delete everything"
+  apply to all devices.
+- Pictures are stored as files, so they no longer fill the browser's 5 MB storage. They are cached per device.
+- Settings > Account shows sync status, Sync now and Log out.
+- To change the password or replace the GitHub key: copy a new fine-grained token (Contents read/write on
+  RecallFlow-data only), then run  node tools/make-vault.mjs rubie-max RecallFlow-data Kaizen
+  and type the new password; publish the updated public/sync-vault.json.
+- Default voice is now the phone's built-in voice; Kokoro can be chosen in Settings > Voice.
