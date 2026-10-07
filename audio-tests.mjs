@@ -13,7 +13,7 @@ globalThis.Worker=class {
 const store=new Map([['recallflow_speech_engine','kokoro'],['recallflow_voice_default_v2','1']]);
 globalThis.localStorage={getItem:k=>store.has(k)?store.get(k):null,setItem:(k,v)=>store.set(k,String(v)),removeItem:k=>store.delete(k)};
 const {audioCache}=await import('./src/audio-cache.js');
-const {KokoroVoice,speechKey}=await import('./src/kokoro-service.js');
+const {KokoroVoice,speechKey,speakable}=await import('./src/kokoro-service.js');
 const disk=new Map();
 audioCache.get=async key=>disk.get(key);
 audioCache.put=async entry=>disk.set(entry.key,entry);
@@ -31,7 +31,9 @@ for(const changed of [{voice:'am_michael'},{speed:.9},{role:'answer'},{questionI
 await service.speak('Name Tokyo?',options);assert.equal(service.inferences,6);
 await service.speak('Tokyo?',options);assert.equal(service.inferences,6,'switching back retains previous voice audio');
 assert.notEqual(speechKey('Tokyo?',options),speechKey('Tokyo?',{...options,backend:'wasm'}));
-assert.notEqual(speechKey('____',options),speechKey('____',{...options,spokenText:'blank'}));
+assert.notEqual(speechKey('Fill ____',options),speechKey('Fill ____',{...options,spokenText:'Fill the gap'}));
+assert.equal(speechKey('____',options),speechKey('____',{...options,spokenText:'blank'}),'underscore blanks are spoken as "blank"');
+assert.equal(speakable('Paris is the ____ of ___.'),'Paris is the blank of blank.');
 const pending=service.speak('Canceled request',options);service.stop();await pending;
 assert.equal(service.state.phase,'idle');assert.equal(service.audio.paused,true,'canceled generation never auto-plays');
 const first=service.speak('Queued first',options),second=service.speak('Queued second',options);await Promise.all([first,second]);

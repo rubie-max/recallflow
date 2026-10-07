@@ -2,8 +2,9 @@ import {audioCache,validAudio} from './audio-cache.js';
 import {voicePreferences,speechEngine,systemVoicePreferences,prefetchEnabled,kokoroUsedBefore,markKokoroUsed} from './voice-preferences.js';
 const model='onnx-community/Kokoro-82M-v1.0-ONNX';
 const USER_PRIORITY=10;
+export const speakable=text=>String(text??'').replace(/_{2,}/g,' blank ').replace(/\s{2,}/g,' ').replace(/\s+([.,!?;:])/g,'$1').trim();
 export function speechKey(text,options) {
-  return JSON.stringify({version:2,engine:'kokoro-js@1.2.1',model,precision:'webgpu-fp32/wasm-q8',questionId:options.questionId,role:options.role,text,spokenText:options.spokenText,voice:options.voice,speed:options.speed,backend:options.backend||'auto'});
+  return JSON.stringify({version:2,engine:'kokoro-js@1.2.1',model,precision:'webgpu-fp32/wasm-q8',questionId:options.questionId,role:options.role,text,spokenText:options.spokenText??(/_{2,}/.test(text)?speakable(text):undefined),voice:options.voice,speed:options.speed,backend:options.backend||'auto'});
 }
 export class KokoroVoice {
   constructor() {
@@ -65,7 +66,7 @@ export class KokoroVoice {
       this.workerRequest={resolve:value=>{if(!job.warm)markKokoroUsed();job.resolve(value);finish();},reject:error=>{job.reject(error);finish();},key:job.key,onProgress:job.onProgress,timeout:setTimeout(()=>this.failWorker(new Error('Kokoro took too long to load. Check your connection and retry.')),300000)};
       this.ensureWorker();
       if(!job.warm)this.inferences++;
-      this.worker.postMessage(job.warm?{type:'warm',backend:'auto'}:{text:job.text,...job.options});
+      this.worker.postMessage(job.warm?{type:'warm',backend:'auto'}:{text:job.text,...job.options,spokenText:speakable(job.options?.spokenText||job.text)});
     }catch(error){this.failWorker(error);}
   }
   promote(key) {for(const job of this.jobs)if(job.key===key)job.priority=USER_PRIORITY;}
@@ -150,7 +151,7 @@ export class KokoroVoice {
     const synth=globalThis.speechSynthesis,owner=settings.owner||`system:${text}`;
     this.stop();const token=this.token;
     if(!synth||typeof SpeechSynthesisUtterance==='undefined'){this.publish({owner,key:owner,phase:'error',status:'This browser has no device voice. Choose Kokoro in Settings.'});return Promise.resolve();}
-    const preferences=systemVoicePreferences(),utterance=new SpeechSynthesisUtterance(settings.spokenText||text);
+    const preferences=systemVoicePreferences(),utterance=new SpeechSynthesisUtterance(speakable(settings.spokenText||text));
     const voice=synth.getVoices().find(v=>v.voiceURI===preferences.voiceURI);
     if(voice){utterance.voice=voice;utterance.lang=voice.lang;}
     utterance.rate=preferences.rate;

@@ -127,7 +127,7 @@ function seedVariant(type:string,base:any){
 }
 
 export function QuestionEditor({draft,setDraft,onSave,onCancel,busy,status,saved,editing,prepareAudio,setPrepareAudio,onAnother}:any){
- const [preview,setPreview]=useState(false),[mediaError,setMediaError]=useState(''),[mediaNote,setMediaNote]=useState(''),[step,setStep]=useState(0),[zoom,setZoom]=useState<string|null>(null),[vi,setVi]=useState(0),[addingType,setAddingType]=useState(false),[editImg,setEditImg]=useState<{src:string;key?:string;target:'image'|'answerImage'}|null>(null);
+ const [preview,setPreview]=useState(false),[mediaError,setMediaError]=useState(''),[mediaNote,setMediaNote]=useState(''),[step,setStep]=useState(0),[zoom,setZoom]=useState<string|null>(null),[vi,setVi]=useState(0),[addingType,setAddingType]=useState(false),[editImg,setEditImg]=useState<{src:string;key?:string;target:'image'|'answerImage';temp?:boolean}|null>(null);
  const tabs=useRef<HTMLDivElement>(null);
  const tabLabels=['Question','Images','Optional'];
  const variants:any[]=draft.variants||[];
@@ -147,8 +147,14 @@ export function QuestionEditor({draft,setDraft,onSave,onCancel,busy,status,saved
  function choiceChange(i:number,value:string){const old=choices[i],next=[...choices];next[i]=value;setD((v:any)=>({...v,options:next.join('\n'),answer:v.type==='single_choice'?(v.answer===old?value:v.answer):String(v.answer).split('\n').map((x:string)=>x===old?value:x).join('\n'),optionImages:old&&v.optionImages?.[old]?{...v.optionImages,[old]:undefined,[value]:v.optionImages[old]}:v.optionImages}));}
  function removeChoice(i:number){const old=choices[i];setD((v:any)=>({...v,options:choices.filter((_:string,j:number)=>j!==i).join('\n'),answer:v.type==='single_choice'?(v.answer===old?'':v.answer):String(v.answer).split('\n').filter((x:string)=>x!==old).join('\n'),optionImages:Object.fromEntries(Object.entries(v.optionImages||{}).filter(([k])=>k!==old&&v.optionImages[k]))}));}
  async function place(data:string,key?:string,target:'image'|'answerImage'='image'){const image=await storeImage(data).catch(()=>data);if(key)setD((v:any)=>({...v,optionImages:{...v.optionImages,[key]:image}}));else shared(target,image);}
- async function upload(file:File,key?:string,target:'image'|'answerImage'='image'){setMediaError('');try{await place(await compressImage(file),key,target);setMediaError('');setMediaNote('');}catch(e:any){setMediaError(e.message);}}
- async function link(url:string,key?:string,target:'image'|'answerImage'='image'){setMediaError('');try{const {image,linked}=await imageFromLink(url);await place(image,key,target);setMediaError('');setMediaNote(linked?'This site only allows linking, so the picture appears when you are online.':'');return true;}catch(e:any){setMediaError(e.message);return false;}}
+ async function upload(file:File,key?:string,target:'image'|'answerImage'='image'){
+  setMediaError('');setMediaNote('');
+  if(!file.type.startsWith('image/')){setMediaError('Choose an image file (PNG, JPEG, WebP or GIF).');return;}
+  if(file.size>25*1024*1024){setMediaError('Choose an image under 25 MB.');return;}
+  setEditImg({src:URL.createObjectURL(file),key,target,temp:true});
+ }
+ async function link(url:string,key?:string,target:'image'|'answerImage'='image'){setMediaError('');try{const {image,linked}=await imageFromLink(url);if(linked){await place(image,key,target);setMediaNote('This site only allows linking, so the picture appears when you are online.');}else{setMediaNote('');setEditImg({src:image,key,target});}return true;}catch(e:any){setMediaError(e.message);return false;}}
+ function closeEditor(){if(editImg?.temp)URL.revokeObjectURL(editImg.src);setEditImg(null);}
  const removeChoiceImage=(choice:string)=>field('optionImages',Object.fromEntries(Object.entries(d.optionImages||{}).filter(([key])=>key!==choice)));
  const choiceImages=imageTypes.includes(d.type);
  function nameChoice(i:number,choice:string){if(choice.trim())return choice;const name=pictureLabel(i+1);choiceChange(i,name);return name;}
@@ -191,7 +197,7 @@ export function QuestionEditor({draft,setDraft,onSave,onCancel,busy,status,saved
  </fieldset>
  {preview&&<section className="editor-live-preview" aria-label="Question preview"><div className="editor-live-preview-heading"><Eye size={16}/><strong>Preview{allTypes.length>1?` · type ${active+1}`:''}</strong><button type="button" aria-label="Close preview" onClick={()=>setPreview(false)}><X size={16}/></button></div><QuestionTypePreview key={active} draft={{...draft,...d,image:draft.image,answerImage:draft.answerImage}} choices={choices} pairs={pairs} steps={steps}/></section>}
  <ImageLightbox src={zoom} onClose={()=>setZoom(null)}/>
- {editImg&&<ImageEditor src={editImg.src} onCancel={()=>setEditImg(null)} onSave={(image:string)=>{place(image,editImg.key,editImg.target);setMediaNote('');setEditImg(null);}}/>}
+ {editImg&&<ImageEditor src={editImg.src} onCancel={closeEditor} onSave={(image:string)=>{place(image,editImg.key,editImg.target);setMediaNote('');closeEditor();}}/>}
  {status&&<p className="editor-save-message" id={statusId} role={busy?'status':'alert'} aria-live="polite">{busy&&<LoaderCircle size={17} className="speech-spinner"/>}{status}</p>}
  <footer className="question-editor-actions editor-tab-actions"><div className="editor-step-controls"><Button variant="outline" onClick={()=>step===0?onCancel():goStep(step-1)} disabled={busy}>{step===0?'Cancel':'Back'}</Button><Button variant="outline" onClick={()=>goStep(step+1)} disabled={busy||step===tabLabels.length-1}>Next</Button><Button variant="ghost" className="editor-preview-toggle" aria-pressed={preview} onClick={()=>setPreview(v=>!v)}>{preview?<EyeOff size={16}/>:<Eye size={16}/>}{preview?'Hide preview':'Preview'}</Button></div><Button onClick={onSave} disabled={busy}>{busy?<LoaderCircle size={16} className="speech-spinner"/>:<Save size={16}/>} {busy?'Saving…':editing?'Save changes':'Create question'}</Button></footer>
  </div>;

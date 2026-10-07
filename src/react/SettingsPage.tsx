@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import {UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck} from 'lucide-react';
+import {UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight} from 'lucide-react';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
 import {BackupRestore,OfflineSettings} from './LearningFeatures';
@@ -104,27 +104,52 @@ function DangerZone({onResetProgress,onDeleteAll}:any){
  </Panel>;
 }
 
+function useNarrow(){
+ const query='(max-width: 819px)',[narrow,setNarrow]=useState(()=>window.matchMedia(query).matches);
+ useEffect(()=>{const m=window.matchMedia(query),on=()=>setNarrow(m.matches);m.addEventListener('change',on);return()=>m.removeEventListener('change',on);},[]);
+ return narrow;
+}
+
 export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,onQuizDefaults,onOpenTransfer,onResetProgress,onDeleteAll}:any){
- const [activeSection,setActiveSection]=useState('profile');
- useEffect(()=>{const els=sections.map(([id])=>document.getElementById(`settings-${id}`)).filter(Boolean) as HTMLElement[];const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];if(visible)setActiveSection(visible.target.id.slice(9));},{rootMargin:'-20% 0px -65% 0px'});els.forEach(el=>observer.observe(el));return()=>observer.disconnect();},[]);
+ const narrow=useNarrow(),[activeSection,setActiveSection]=useState('profile'),[openSection,setOpenSection]=useState<string|null>(()=>history.state?.rfSettings??null);
+ const [prefs]=usePrefs();
+ useEffect(()=>{if(narrow)return;const els=sections.map(([id])=>document.getElementById(`settings-${id}`)).filter(Boolean) as HTMLElement[];const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];if(visible)setActiveSection(visible.target.id.slice(9));},{rootMargin:'-20% 0px -65% 0px'});els.forEach(el=>observer.observe(el));return()=>observer.disconnect();},[narrow]);
+ useEffect(()=>{const back=(e:PopStateEvent)=>setOpenSection(e.state?.rfSettings??null);window.addEventListener('popstate',back);return()=>window.removeEventListener('popstate',back);},[]);
  const jump=(id:string)=>{setActiveSection(id);document.getElementById(`settings-${id}`)?.scrollIntoView({behavior:document.documentElement.classList.contains('rf-reduce-motion')?'auto':'smooth',block:'start'});};
+ const open=(id:string)=>{history.pushState({...history.state,rfSettings:id},'',location.href);setOpenSection(id);window.scrollTo(0,0);};
+ const close=()=>{if(history.state?.rfSettings)history.back();else setOpenSection(null);window.scrollTo(0,0);};
+ const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Device voice or Kokoro, speed',quiz:'Questions per quiz, shuffle, countdown',data:'Import, export, backup, reset',app:'Install, offline, about'};
+ const groups:Record<string,React.ReactNode>={
+  profile:<ProfileSettings/>,
+  account:<AccountSettings/>,
+  appearance:<AppearanceSettings theme={theme} onTheme={onTheme}/>,
+  voice:<><KokoroPanel/><VoiceBehaviour/></>,
+  quiz:<QuizDefaults onSaved={onQuizDefaults}/>,
+  data:<>
+   <Panel icon={Database} title="Storage" detail="A copy on this device, so it works offline."><StorageMeter items={items}/></Panel>
+   <button className="settings-link-card" onClick={onOpenTransfer}><span className="settings-icon"><ArrowLeftRight size={19}/></span><span><strong>Import & export questions</strong><small>CSV, Anki, JSON or plain text</small></span><ArrowRight size={18}/></button>
+   <BackupPanel items={items} reports={reports} quizCount={quizCount} streakDays={streakDays} theme={theme}/>
+   <BackupRestore/>
+   <DangerZone onResetProgress={onResetProgress} onDeleteAll={onDeleteAll}/>
+  </>,
+  app:<><OfflineSettings/><Panel icon={Info} title="About RecallFlow" detail="Version 2026.10"><ul className="settings-about"><li><Check size={15}/>Works offline once installed</li><li><Check size={15}/>Private login, synced through your own GitHub</li><li><Check size={15}/>{items.length} {items.length===1?'question':'questions'} · {reports.length} {reports.length===1?'report':'reports'}</li></ul></Panel></>
+ };
+ if(narrow){
+  const current=sections.find(([id])=>id===openSection);
+  if(current)return <section className="settings-page settings-mobile is-detail">
+   <header className="settings-detail-head"><button type="button" className="settings-back" onClick={close}><ChevronLeft size={20}/>Settings</button><h1>{current[1]}</h1></header>
+   <div className="settings-content" id={`settings-${current[0]}`}>{groups[current[0]]}</div>
+  </section>;
+  return <section className="settings-page settings-mobile">
+   <header className="settings-hero"><h1>Settings</h1></header>
+   <nav className="settings-menu" aria-label="Settings sections">{sections.map(([id,label,Icon])=><button type="button" key={id} onClick={()=>open(id)}><span className="settings-menu-icon" data-section={id}><Icon size={18} aria-hidden="true"/></span><span className="settings-menu-copy"><strong>{label}</strong><small>{summaries[id]}</small></span><ChevronRight size={18} aria-hidden="true"/></button>)}</nav>
+  </section>;
+ }
  return <section className="settings-page settings-layout">
-  <header className="settings-hero"><p>RECALLFLOW</p><h1>Settings</h1></header>
+  <header className="settings-hero"><h1>Settings</h1></header>
   <nav className="settings-jump" aria-label="Settings sections">{sections.map(([id,label,Icon])=><a key={id} href="#/settings" aria-current={activeSection===id?'true':undefined} onClick={e=>{e.preventDefault();jump(id);}}><Icon size={16} aria-hidden="true"/><span>{label}</span></a>)}</nav>
   <div className="settings-content">
-   <div className="settings-group" id="settings-profile"><h2 className="settings-group-title">Profile</h2><ProfileSettings/></div>
-   <div className="settings-group" id="settings-account"><h2 className="settings-group-title">Account</h2><AccountSettings/></div>
-   <div className="settings-group" id="settings-appearance"><h2 className="settings-group-title">Appearance</h2><AppearanceSettings theme={theme} onTheme={onTheme}/></div>
-   <div className="settings-group" id="settings-voice"><h2 className="settings-group-title">Voice</h2><KokoroPanel/><VoiceBehaviour/></div>
-   <div className="settings-group" id="settings-quiz"><h2 className="settings-group-title">Quiz</h2><QuizDefaults onSaved={onQuizDefaults}/></div>
-   <div className="settings-group" id="settings-data"><h2 className="settings-group-title">Data</h2>
-    <Panel icon={Database} title="Storage" detail="A copy on this device, so it works offline."><StorageMeter items={items}/></Panel>
-    <button className="settings-link-card" onClick={onOpenTransfer}><span className="settings-icon"><ArrowLeftRight size={19}/></span><span><strong>Import & export questions</strong><small>CSV, Anki, JSON or plain text</small></span><ArrowRight size={18}/></button>
-    <BackupPanel items={items} reports={reports} quizCount={quizCount} streakDays={streakDays} theme={theme}/>
-    <BackupRestore/>
-    <DangerZone onResetProgress={onResetProgress} onDeleteAll={onDeleteAll}/>
-   </div>
-   <div className="settings-group" id="settings-app"><h2 className="settings-group-title">App</h2><OfflineSettings/><Panel icon={Info} title="About RecallFlow" detail="Version 2026.10"><ul className="settings-about"><li><Check size={15}/>Works offline once installed</li><li><Check size={15}/>Private login, synced through your own GitHub</li><li><Check size={15}/>{items.length} questions · {reports.length} {reports.length===1?'report':'reports'}</li></ul></Panel></div>
+   {sections.map(([id,label])=><div className="settings-group" id={`settings-${id}`} key={id}><h2 className="settings-group-title">{label}</h2>{groups[id]}</div>)}
   </div>
  </section>;
 }
