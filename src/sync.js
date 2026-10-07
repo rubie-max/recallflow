@@ -2,6 +2,7 @@
 // that data to data/state.json in a private GitHub repo and stores uploaded pictures there too.
 // Sync keys use the rfsync_ prefix so "Delete everything" (which clears recallflow_*) keeps the
 // sync base, letting the deletion reach the other devices instead of being undone by them.
+import {encryptBackupPassword} from './backup-password.js';
 const SESSION_KEY='rfsync_session',META_KEY='rfsync_meta',PENDING_KEY='rfsync_pending_images';
 const STATE_PATH='data/state.json',IMAGE_CACHE='recallflow-images';
 export const IMAGE_DIR='rf-img/';
@@ -127,6 +128,27 @@ export async function backupStatus(){
   if(res.status===404)return null;
   if(!res.ok)throw new Error(`GitHub said ${res.status} while checking the backup.`);
   return parse(await res.text(),null);
+}
+const PASSWORD_PATH='backup-password.json';
+export async function setBackupPassword(pw){
+  const auth=session();if(!auth)throw new Error('Sign in to change the backup password.');
+  if(!navigator.onLine)throw new Error('You are offline. Connect to the internet to change the password.');
+  const file={version:1,alg:'RSA-OAEP-256',data:await encryptBackupPassword(pw),changedAt:new Date().toISOString(),from:navigator.userAgent.includes('Mobile')?'phone':'computer'};
+  for(let i=0;i<3;i++){
+    const cur=await gh(auth,`contents/${PASSWORD_PATH}`),sha=cur.ok?(await cur.json()).sha:undefined;
+    const res=await gh(auth,`contents/${PASSWORD_PATH}`,{method:'PUT',body:JSON.stringify({message:'Change the backup password',content:b64(utf8(JSON.stringify(file,null,2))),branch:'main',...(sha?{sha}:{})})});
+    if(res.ok)return file.changedAt;
+    if(res.status!==409&&res.status!==422)throw new Error(`GitHub said ${res.status} while saving the password.`);
+  }
+  throw new Error('GitHub was busy. Try again in a moment.');
+}
+export async function backupPasswordInfo(){
+  const auth=session();if(!auth)return null;
+  const res=await gh(auth,`contents/${PASSWORD_PATH}`,{headers:{Accept:'application/vnd.github.raw+json'}});
+  if(res.status===404)return {changedAt:null};
+  if(!res.ok)throw new Error(`GitHub said ${res.status} while checking the password.`);
+  const file=parse(await res.text(),null);
+  return {changedAt:Date.parse(file?.changedAt)?file.changedAt:null};
 }
 
 // ---------- pictures ----------

@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight} from 'lucide-react';
+import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight} from 'lucide-react';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
 import {BackupRestore,OfflineSettings} from './LearningFeatures';
@@ -7,7 +7,8 @@ import {quizPreferences,saveQuizPreferences} from '../quiz-preferences.js';
 import {readSetups} from '../quiz-setups.js';
 import {appPreferences,saveAppPreferences,textSizes} from '../app-preferences.js';
 import {audioCache} from '../audio-cache.js';
-import {session,signOut,syncNow,syncStatus,requestBackup,backupStatus} from '../sync.js';
+import {session,signOut,syncNow,syncStatus,requestBackup,backupStatus,setBackupPassword,backupPasswordInfo} from '../sync.js';
+import {passwordProblem,MIN_PASSWORD,MAX_PASSWORD} from '../backup-password.js';
 import {openPhoto,saveProfilePhoto,profilePhoto,profilePhotoKey} from '../profile-photo.js';
 import {useProfilePhoto,PhotoEditor} from './ProfilePhoto';
 
@@ -140,7 +141,38 @@ function TelegramBackup(){
    {phase==='slow'&&<p className="settings-status">This is taking longer than usual. Check Telegram in a few minutes.</p>}
    {phase==='failed'&&<p className="tg-backup-result" role="alert"><CircleAlert size={16}/>{error}</p>}
   </div>
+  <BackupPassword/>
  </Panel>;
+}
+
+function BackupPassword(){
+ const [info,setInfo]=useState<{changedAt:string|null}|null|'unknown'>(null),[open,setOpen]=useState(false),[pw,setPw]=useState(''),[confirm,setConfirm]=useState(''),[show,setShow]=useState(false),[tried,setTried]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(''),[saved,setSaved]=useState(false);
+ useEffect(()=>{let active=true;backupPasswordInfo().then(i=>active&&setInfo(i)).catch(()=>active&&setInfo('unknown'));return()=>{active=false;};},[]);
+ const problem=passwordProblem(pw,confirm),date=(iso:string)=>new Date(iso).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});
+ const reset=()=>{setPw('');setConfirm('');setShow(false);setTried(false);setError('');};
+ async function save(e:React.FormEvent){
+  e.preventDefault();setTried(true);if(problem)return;
+  setSaving(true);setError('');
+  try{const changedAt=await setBackupPassword(pw);setInfo({changedAt});reset();setOpen(false);setSaved(true);}
+  catch(err:any){setError(err.message||'The password could not be saved.');}
+  finally{setSaving(false);}
+ }
+ return <div className="tg-password">
+  <div className="tg-password-row">
+   <span className="tg-password-icon"><KeyRound size={17}/></span>
+   <div><strong>Backup file password</strong><small>{info===null?'Checking…':info==='unknown'?'Couldn’t check right now':info.changedAt?`Changed on ${date(info.changedAt)}`:'Using your original password'}</small></div>
+   {!open&&<Button variant="outline" size="sm" onClick={()=>{reset();setSaved(false);setOpen(true);}}>Change</Button>}
+  </div>
+  {saved&&!open&&<p className="tg-backup-result" data-ok="" role="status"><CircleCheck size={16}/>Password changed. The next backup will use it — send one now to try it.</p>}
+  {open&&<form className="tg-password-form" onSubmit={save} noValidate>
+   <label><span>New password</span><span className="tg-password-input"><input type={show?'text':'password'} value={pw} maxLength={MAX_PASSWORD} autoComplete="new-password" autoFocus disabled={saving} onChange={e=>setPw(e.target.value)} aria-invalid={tried&&!!passwordProblem(pw)||undefined}/><button type="button" onClick={()=>setShow(!show)} aria-label={show?'Hide password':'Show password'} aria-pressed={show}>{show?<EyeOff size={16}/>:<Eye size={16}/>}</button></span></label>
+   <label><span>Type it again</span><input type={show?'text':'password'} value={confirm} maxLength={MAX_PASSWORD} autoComplete="new-password" disabled={saving} onChange={e=>setConfirm(e.target.value)} aria-invalid={tried&&!!problem&&!passwordProblem(pw)||undefined}/></label>
+   <p className="tg-password-hint">{tried&&problem?<b role="alert">{problem}</b>:`At least ${MIN_PASSWORD} characters. You’ll type it when restoring a backup from Telegram.`}</p>
+   <p className="tg-password-note"><Info size={15}/>Backups you already have keep the password they were made with. Write the new one down somewhere safe — it can’t be recovered.</p>
+   {error&&<p className="tg-backup-result" role="alert"><CircleAlert size={16}/>{error}</p>}
+   <div className="settings-button-row"><Button type="submit" disabled={saving}>{saving?<RefreshCw size={16} className="tg-spin"/>:<KeyRound size={16}/>}{saving?'Saving…':'Save password'}</Button><Button type="button" variant="outline" disabled={saving} onClick={()=>{reset();setOpen(false);}}>Cancel</Button></div>
+  </form>}
+ </div>;
 }
 
 function ago(ms:number){if(!ms)return 'Not synced yet';const s=Math.round((Date.now()-ms)/1000);if(s<45)return 'Synced just now';if(s<3600)return `Synced ${Math.round(s/60)} min ago`;if(s<86400)return `Synced ${Math.round(s/3600)} h ago`;return `Synced ${new Date(ms).toLocaleDateString()}`;}

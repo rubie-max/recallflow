@@ -585,4 +585,24 @@ header.settings-hero,header.transfer-hero{display:grid!important;justify-content
 .tg-backup-result{display:flex;align-items:flex-start;gap:8px;margin:10px 0 0;font-size:13px;color:var(--error)}
 .tg-backup-result svg{flex-shrink:0;margin-top:1px}
 .tg-backup-result[data-ok]{color:var(--success,#16a34a)}
-@media (prefers-reduced-motion:reduce){.tg-backup-send[data-busy] svg{animation:none}}
+.tg-password{margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+.tg-password-row{display:flex;align-items:center;gap:11px}
+.tg-password-icon{display:grid;place-items:center;flex-shrink:0;width:34px;height:34px;border-radius:10px;background:var(--muted,rgba(127,127,127,.12));color:var(--muted-foreground)}
+.tg-password-row>div{display:grid;gap:3px;flex:1;min-width:0}
+.tg-password-row strong{font-size:14px}
+.tg-password-row small{color:var(--muted-foreground);font-size:12px}
+.tg-password-form{display:grid;gap:12px;margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+.tg-password-form label{display:grid;gap:6px;font-size:12px;font-weight:600;color:var(--muted-foreground)}
+.tg-password-form input{width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--border);border-radius:11px;background:var(--background);color:var(--foreground);font-size:15px}
+.tg-password-form input[aria-invalid]{border-color:var(--error)}
+.tg-password-input{position:relative;display:block}
+.tg-password-input input{padding-right:46px}
+.settings-page .tg-password-input button{position:absolute;top:50%;right:4px;transform:translateY(-50%);display:grid;place-items:center;width:38px;height:38px;padding:0;border:0;border-radius:9px;background:none;color:var(--muted-foreground);cursor:pointer}
+.settings-page .tg-password-input button:hover{color:var(--foreground)}
+.tg-password-hint{margin:-4px 0 0;font-size:12px;color:var(--muted-foreground)}
+.tg-password-hint b{font-weight:600;color:var(--error)}
+.tg-password-note{display:flex;gap:8px;margin:0;padding:10px 12px;border-radius:11px;background:var(--muted,rgba(127,127,127,.1));font-size:12px;line-height:1.45;color:var(--muted-foreground)}
+.tg-password-note svg{flex-shrink:0;margin-top:1px}
+.tg-password-form .settings-button-row{margin-top:2px}
+.tg-spin{animation:rf-spin 1s linear infinite}
+@media (prefers-reduced-motion:reduce){.tg-backup-send[data-busy] svg,.tg-spin{animation:none}}
