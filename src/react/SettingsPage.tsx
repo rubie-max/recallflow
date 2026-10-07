@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Camera,ImagePlus,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight} from 'lucide-react';
+import {Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight} from 'lucide-react';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
 import {BackupRestore,OfflineSettings} from './LearningFeatures';
@@ -7,9 +7,9 @@ import {quizPreferences,saveQuizPreferences} from '../quiz-preferences.js';
 import {readSetups} from '../quiz-setups.js';
 import {appPreferences,saveAppPreferences,textSizes} from '../app-preferences.js';
 import {audioCache} from '../audio-cache.js';
-import {session,signOut,syncNow,syncStatus} from '../sync.js';
-import {photoFromFile,saveProfilePhoto,profilePhoto,profilePhotoKey} from '../profile-photo.js';
-import {useProfilePhoto} from './ProfilePhoto';
+import {session,signOut,syncNow,syncStatus,requestBackup,backupStatus} from '../sync.js';
+import {openPhoto,saveProfilePhoto,profilePhoto,profilePhotoKey} from '../profile-photo.js';
+import {useProfilePhoto,PhotoEditor} from './ProfilePhoto';
 
 const sections:[string,string,any][]=[['profile','Profile',UserRound],['account','Account',Cloud],['appearance','Appearance',Palette],['voice','Voice',Volume2],['quiz','Quiz',SlidersHorizontal],['data','Data',Database],['app','App',Smartphone]];
 
@@ -26,19 +26,22 @@ function usePrefs(){
 }
 
 function ProfileSettings(){
- const [prefs,update]=usePrefs(),[name,setName]=useState(prefs.name),photo=useProfilePhoto(),[busy,setBusy]=useState(false),[photoError,setPhotoError]=useState(''),picker=useRef<HTMLInputElement>(null);
+ const [prefs,update]=usePrefs(),[name,setName]=useState(prefs.name),photo=useProfilePhoto(),[busy,setBusy]=useState(false),[photoError,setPhotoError]=useState(''),[editing,setEditing]=useState<ImageBitmap|null>(null),picker=useRef<HTMLInputElement>(null);
  const commit=()=>{if(name.trim()!==prefs.name)update({name});};
  const pick=()=>picker.current?.click();
- async function choose(file?:File){if(!file)return;setBusy(true);setPhotoError('');try{saveProfilePhoto(await photoFromFile(file));}catch(e:any){setPhotoError(e.message||'This picture could not be used.');}finally{setBusy(false);}}
+ async function edit(source?:File|string){if(!source)return;setBusy(true);setPhotoError('');try{setEditing(await openPhoto(source));}catch(e:any){setPhotoError(e.message||'This picture could not be used.');}finally{setBusy(false);}}
+ const close=()=>{editing?.close();setEditing(null);};
+ function save(url:string){try{saveProfilePhoto(url);close();}catch(e:any){setPhotoError(e.message);close();}}
  const remove=()=>{setPhotoError('');saveProfilePhoto('');};
  return <Panel icon={UserRound} title="Name & picture" detail="Shown in greetings, before each quiz and on the home screen.">
   <div className="settings-profile">
-   <button type="button" className="settings-avatar" data-photo={photo?'':undefined} data-busy={busy||undefined} onClick={pick} disabled={busy} aria-label={photo?'Change profile picture':'Add profile picture'} title={photo?'Change picture':'Add a picture'}>{photo?<img src={photo} alt=""/>:(name.trim()[0]||'?').toUpperCase()}<span className="settings-avatar-badge" aria-hidden="true">{busy?<RefreshCw size={12}/>:<Camera size={12}/>}</span></button>
+   <button type="button" className="settings-avatar" data-photo={photo?'':undefined} data-busy={busy||undefined} onClick={()=>photo?edit(photo):pick()} disabled={busy} aria-label={photo?'Edit profile picture':'Add profile picture'} title={photo?'Edit picture':'Add a picture'}>{photo?<img src={photo} alt=""/>:(name.trim()[0]||'?').toUpperCase()}<span className="settings-avatar-badge" aria-hidden="true">{busy?<RefreshCw size={12}/>:photo?<Pencil size={12}/>:<Camera size={12}/>}</span></button>
    <label className="settings-profile-field">Name<input value={name} maxLength={40} placeholder="Your name" autoComplete="given-name" onChange={e=>setName(e.target.value)} onBlur={commit} onKeyDown={e=>{if(e.key==='Enter')(e.target as HTMLInputElement).blur();}}/></label>
   </div>
-  <div className="settings-photo-actions"><Button variant="outline" size="sm" onClick={pick} disabled={busy}><ImagePlus size={15}/>{busy?'Preparing…':photo?'Change picture':'Upload picture'}</Button>{photo&&<Button variant="ghost" size="sm" className="settings-photo-remove" onClick={remove} disabled={busy}><Trash2 size={15}/>Remove</Button>}<small>Square crop · synced to your devices</small></div>
-  <input ref={picker} type="file" accept="image/*" hidden onChange={e=>{choose(e.target.files?.[0]);e.target.value='';}}/>
+  <div className="settings-photo-actions"><Button variant="outline" size="sm" onClick={pick} disabled={busy}><ImagePlus size={15}/>{busy?'Opening…':photo?'New picture':'Upload picture'}</Button>{photo&&<Button variant="outline" size="sm" onClick={()=>edit(photo)} disabled={busy}><Pencil size={15}/>Edit</Button>}{photo&&<Button variant="ghost" size="sm" className="settings-photo-remove" onClick={remove} disabled={busy}><Trash2 size={15}/>Remove</Button>}</div>
+  <input ref={picker} type="file" accept="image/*" hidden onChange={e=>{edit(e.target.files?.[0]);e.target.value='';}}/>
   {photoError&&<p className="settings-error" role="alert">{photoError}</p>}
+  {editing&&<PhotoEditor image={editing} onCancel={close} onSave={save}/>}
   <p className="settings-preview-line">“Good to see you again, <b>{name.trim()||'there'}</b>”</p>
  </Panel>;
 }
@@ -95,6 +98,51 @@ function BackupPanel({items,reports,quizCount,streakDays,theme}:any){
  return <Panel icon={Download} title="Full backup" detail="Everything: questions, reports, streak and settings."><div className="settings-button-row"><Button onClick={download}><Download size={16}/>Download backup</Button><Button variant="outline" onClick={copy}><Copy size={16}/>Copy</Button></div>{status&&<p className="settings-status" role="status">{status}</p>}</Panel>;
 }
 
+const PENDING_BACKUP='rf_backup_pending',WAIT_MS=6*60000;
+function when(iso:string){const d=new Date(iso),days=Math.round((new Date().setHours(0,0,0,0)-new Date(iso).setHours(0,0,0,0))/864e5),time=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});return days===0?`Today, ${time}`:days===1?`Yesterday, ${time}`:`${d.toLocaleDateString([],{day:'numeric',month:'short'})}, ${time}`;}
+function TelegramBackup(){
+ const [last,setLast]=useState<any>(null),[note,setNote]=useState(''),[phase,setPhase]=useState<'idle'|'saving'|'waiting'|'done'|'failed'|'slow'>('idle'),[error,setError]=useState(''),[started,setStarted]=useState(0),[,tick]=useState(0),[online,setOnline]=useState(navigator.onLine);
+ const alive=useRef(true);
+ async function wait(id:string,since:number){
+  setPhase('waiting');setStarted(since);
+  while(alive.current&&Date.now()-since<WAIT_MS){
+   await new Promise(r=>setTimeout(r,5000));if(!alive.current)return;
+   const s=await backupStatus().catch(()=>null);
+   if(s?.id===id){sessionStorage.removeItem(PENDING_BACKUP);setLast(s);if(s.ok)setPhase('done');else{setPhase('failed');setError(s.error||'The backup could not be sent.');}return;}
+  }
+  if(alive.current){sessionStorage.removeItem(PENDING_BACKUP);setPhase('slow');}
+ }
+ useEffect(()=>{
+  alive.current=true;backupStatus().then(s=>alive.current&&setLast(s)).catch(()=>{});
+  try{const p=JSON.parse(sessionStorage.getItem(PENDING_BACKUP)||'null');if(p&&Date.now()-p.at<WAIT_MS)wait(p.id,p.at);}catch{}
+  const net=()=>setOnline(navigator.onLine);
+  window.addEventListener('online',net);window.addEventListener('offline',net);
+  return()=>{alive.current=false;window.removeEventListener('online',net);window.removeEventListener('offline',net);};
+ },[]);
+ useEffect(()=>{if(phase!=='waiting')return;const t=setInterval(()=>tick(n=>n+1),1000);return()=>clearInterval(t);},[phase]);
+ async function send(){
+  setPhase('saving');setError('');
+  try{const id=await requestBackup(note),at=Date.now();sessionStorage.setItem(PENDING_BACKUP,JSON.stringify({id,at}));setNote('');await wait(id,at);}
+  catch(e:any){setPhase('failed');setError(e.message||'The backup could not be requested.');}
+ }
+ const busy=phase==='saving'||phase==='waiting',secs=Math.max(0,Math.floor((Date.now()-started)/1000)),clock=`${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}`;
+ return <Panel icon={Send} title="Telegram backup" detail="An encrypted backup goes to your Telegram every night at 3 AM. Send one now whenever you like.">
+  <div className="tg-backup-last" data-state={last?(last.ok?'ok':'failed'):'none'}>
+   {last?(last.ok?<CircleCheck size={18}/>:<CircleAlert size={18}/>):<CalendarClock size={18}/>}
+   <div>{last?<><strong>{last.ok?'Last backup':'Last backup failed'} · {when(last.at)}</strong><small>{last.ok?`${last.trigger==='manual'?'Sent by you':'Nightly backup'} · ${last.summary}`:last.error}</small></>:<><strong>Next backup tonight at 3:00 AM</strong><small>Sent automatically every day</small></>}</div>
+  </div>
+  <label className="tg-backup-note"><span>Note <i>(optional)</i></span><input value={note} maxLength={120} placeholder="e.g. Before deleting old questions" disabled={busy} onChange={e=>setNote(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!busy&&online)send();}}/></label>
+  <Button onClick={send} disabled={busy||!online} className="tg-backup-send" data-busy={busy||undefined}>{busy?<RefreshCw size={16}/>:<Send size={16}/>}{phase==='saving'?'Saving your latest changes…':phase==='waiting'?`Sending… ${clock}`:'Send backup now'}</Button>
+  <div aria-live="polite">
+   {!online&&!busy&&<p className="settings-status">You’re offline. Connect to send a backup.</p>}
+   {phase==='waiting'&&<p className="settings-status">Packing and encrypting your backup. It usually reaches Telegram in about 2 minutes — you can keep using the app.</p>}
+   {phase==='done'&&<p className="tg-backup-result" data-ok=""><CircleCheck size={16}/>Sent to Telegram. Check your chat with the RecallFlow bot.</p>}
+   {phase==='slow'&&<p className="settings-status">This is taking longer than usual. Check Telegram in a few minutes.</p>}
+   {phase==='failed'&&<p className="tg-backup-result" role="alert"><CircleAlert size={16}/>{error}</p>}
+  </div>
+ </Panel>;
+}
+
 function ago(ms:number){if(!ms)return 'Not synced yet';const s=Math.round((Date.now()-ms)/1000);if(s<45)return 'Synced just now';if(s<3600)return `Synced ${Math.round(s/60)} min ago`;if(s<86400)return `Synced ${Math.round(s/3600)} h ago`;return `Synced ${new Date(ms).toLocaleDateString()}`;}
 function AccountSettings(){
  const [status,setStatus]=useState(syncStatus),[,tick]=useState(0),[confirm,setConfirm]=useState(false),user=session()?.user||'';
@@ -142,6 +190,7 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
   data:<>
    <Panel icon={Database} title="Storage" detail="A copy on this device, so it works offline."><StorageMeter items={items}/></Panel>
    <button className="settings-link-card" onClick={onOpenTransfer}><span className="settings-icon"><ArrowLeftRight size={19}/></span><span><strong>Import & export questions</strong><small>CSV, Anki, JSON or plain text</small></span><ArrowRight size={18}/></button>
+   {session()&&<TelegramBackup/>}
    <BackupPanel items={items} reports={reports} quizCount={quizCount} streakDays={streakDays} theme={theme}/>
    <BackupRestore/>
    <DangerZone onResetProgress={onResetProgress} onDeleteAll={onDeleteAll}/>

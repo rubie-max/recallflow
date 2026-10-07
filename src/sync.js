@@ -103,6 +103,32 @@ async function writeRemote(auth,state,sha){
   return (await res.json()).content.sha;
 }
 
+// ---------- Telegram backup ----------
+// Writing backup-request.json starts the backup workflow in the data repo; it answers in backup-status.json.
+const REQUEST_PATH='backup-request.json',STATUS_PATH='backup-status.json';
+export async function requestBackup(note=''){
+  const auth=session();if(!auth)throw new Error('Sign in to send a backup.');
+  if(!navigator.onLine)throw new Error('You are offline. Connect to the internet to send a backup.');
+  await syncNow();
+  if(syncStatus().state==='error')throw new Error('Your latest changes could not be saved yet, so the backup would be out of date. Try again in a moment.');
+  const id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+  const request={id,requestedAt:new Date().toISOString(),from:navigator.userAgent.includes('Mobile')?'phone':'computer',note:String(note).replace(/\s+/g,' ').trim().slice(0,120)};
+  for(let i=0;i<3;i++){
+    const cur=await gh(auth,`contents/${REQUEST_PATH}`),sha=cur.ok?(await cur.json()).sha:undefined;
+    const res=await gh(auth,`contents/${REQUEST_PATH}`,{method:'PUT',body:JSON.stringify({message:'Request a backup',content:b64(utf8(JSON.stringify(request))),branch:'main',...(sha?{sha}:{})})});
+    if(res.ok)return id;
+    if(res.status!==409&&res.status!==422)throw new Error(`GitHub said ${res.status} while asking for the backup.`);
+  }
+  throw new Error('GitHub was busy. Try again in a moment.');
+}
+export async function backupStatus(){
+  const auth=session();if(!auth)return null;
+  const res=await gh(auth,`contents/${STATUS_PATH}`,{headers:{Accept:'application/vnd.github.raw+json'}});
+  if(res.status===404)return null;
+  if(!res.ok)throw new Error(`GitHub said ${res.status} while checking the backup.`);
+  return parse(await res.text(),null);
+}
+
 // ---------- pictures ----------
 const imageUrl=name=>new URL(IMAGE_DIR+name,document.baseURI).href;
 const pending=()=>parse(localStorage.getItem(PENDING_KEY),[]);
