@@ -6,7 +6,7 @@ const SESSION_KEY='rfsync_session',META_KEY='rfsync_meta',PENDING_KEY='rfsync_pe
 const STATE_PATH='data/state.json',IMAGE_CACHE='recallflow-images';
 export const IMAGE_DIR='rf-img/';
 const BANK='recallflow_bank_v2',REPORTS='recallflow_reports',STREAK='recallflow_streak_days',COUNT='recallflow_quiz_count';
-export const PREF_KEYS=['recallflow_theme','recallflow_app_preferences_v1','recallflow_quiz_preferences_v1','recallflow_quiz_setups_v1','recallflow_kokoro_voice','recallflow_kokoro_speed','recallflow_speech_engine','recallflow_system_voice','recallflow_system_rate','recallflow_voice_prefetch'];
+export const PREF_KEYS=['recallflow_theme','recallflow_app_preferences_v1','recallflow_quiz_preferences_v1','recallflow_quiz_setups_v1','recallflow_kokoro_voice','recallflow_kokoro_speed','recallflow_speech_engine','recallflow_system_voice','recallflow_system_rate','recallflow_voice_prefetch','recallflow_profile_photo'];
 const SYNCED_KEYS=new Set([BANK,REPORTS,STREAK,COUNT,...PREF_KEYS]);
 const EXT={'image/webp':'webp','image/jpeg':'jpg','image/png':'png','image/gif':'gif'};
 
@@ -136,6 +136,14 @@ async function mapImages(items,fn){
     if(Array.isArray(x.variants))x.variants=await Promise.all(x.variants.map(async v=>v.optionImages?{...v,optionImages:await convOptions(v.optionImages)}:v));
     return x;}));
   return {items:out,changed};
+}
+// Pictures from a restored backup archive: cache them under their rf-img/ path and, when signed in,
+// queue them so they are uploaded again if the data repo no longer has them.
+export async function restoreImages(images){
+  if(!images.length)return;
+  const cache=await caches.open(IMAGE_CACHE);
+  for(const {name,blob} of images)await cache.put(imageUrl(name),new Response(blob,{headers:{'Content-Type':blob.type||'image/png'}}));
+  if(session())setPending([...pending(),...images.map(x=>x.name)]);
 }
 // For exports to other apps or accounts: turns rf-img/ paths back into embedded pictures.
 export async function inlineImages(items){

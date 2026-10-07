@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "node build.mjs && node server.mjs",
     "build": "node build.mjs",
-    "test": "node question-tests.mjs && node settings-tests.mjs && node audio-tests.mjs && node learning-tests.mjs && node word-bank-tests.mjs && node streak-tests.mjs && node quiz-setup-tests.mjs && node sync-tests.mjs"
+    "test": "node question-tests.mjs && node settings-tests.mjs && node audio-tests.mjs && node learning-tests.mjs && node word-bank-tests.mjs && node streak-tests.mjs && node quiz-setup-tests.mjs && node sync-tests.mjs && node backup-archive-tests.mjs"
   },
   "dependencies": {
+    "@zip.js/zip.js": "2.23.0",
     "kokoro-js": "1.2.1",
     "react": "19.2.1",
     "react-dom": "19.2.1",

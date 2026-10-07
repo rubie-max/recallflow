@@ -25,6 +25,7 @@ import {DiscardChangesDialog} from "../DiscardChangesDialog";
 import {Brand} from "../BrandIcon";
 import {ZoomableImage,openZoom} from "../ImageViewer";
 import {StreakPage} from '../StreakPage';
+import {useProfilePhoto} from '../ProfilePhoto';
 type Item = { [key:string]:any;
   id: string; subject: string; topic: string; prompt: string; answer: string;
   type?: "short_answer" | "fill_blank" | "single_choice" | "flashcard" | "true_false" | "multi_select" | "numeric" | "matching" | "ordering" | "cloze" | "fill_blank_options";
@@ -67,7 +68,7 @@ export default function IndexPage(){
   const { mode, switchToDarkMode, switchToLightMode, switchToAutoMode } = useThemeMode();
   const isDark=mode==="dark"||(mode==="auto"&&document.body.classList.contains("dark"));
   const [themeChoice,setThemeChoice]=useState<string>(()=>{try{return localStorage.getItem("recallflow_theme")||"light";}catch{return "light";}});
-  const [prefs,setPrefs]=useState(appPreferences);
+  const [prefs,setPrefs]=useState(appPreferences),profilePhoto=useProfilePhoto();
   useEffect(()=>{applyAppPreferences(prefs);const sync=(e:any)=>setPrefs(e.detail);window.addEventListener("recallflow:preferences",sync);return()=>window.removeEventListener("recallflow:preferences",sync);},[]);
   const [transferTab,setTransferTab]=useState<"import"|"export">("import"),[transferSelection,setTransferSelection]=useState<string[]>([]);
   const [confirmLeaveQuiz,setConfirmLeaveQuiz]=useState(false);
@@ -386,7 +387,7 @@ export default function IndexPage(){
   }
 
   return <div className={styles.shell}><main className={`${styles.main} ${tab==="streak"?'streak-layout-shell':tab==="home"?styles.homeMain:''}`}>
-    <header className="app-top-bar" data-scrolled={scrolled||undefined}><div><Brand size={28}/></div><div className={styles.headerRight}>{tab!=="home"&&<span className={styles.mini}>{items.length} questions</span>}<Button variant="ghost" size="icon-md" className={tab==="home"?styles.homeTheme:undefined} aria-label="Change theme" onClick={toggleTheme}>{tab==="home"?<><Sun size={13}/><span className={`${styles.themeSwitch} ${isDark?styles.themeDark:''}`}/><Moon size={13}/></>:isDark?<Sun size={18}/>:<Moon size={18}/>}</Button>{tab==="home"&&<button className={styles.profilePlaceholder} aria-label="Profile settings" title="Profile settings" onClick={()=>{setTab("settings");window.setTimeout(()=>document.getElementById("settings-profile")?.scrollIntoView({block:"start"}),50);}}>{(prefs.name[0]||"?").toUpperCase()}</button>}</div></header>
+    <header className="app-top-bar" data-scrolled={scrolled||undefined}><div><Brand size={28}/></div><div className={styles.headerRight}>{tab!=="home"&&<span className={styles.mini}>{items.length} questions</span>}<Button variant="ghost" size="icon-md" className={tab==="home"?styles.homeTheme:undefined} aria-label="Change theme" onClick={toggleTheme}>{tab==="home"?<><Sun size={13}/><span className={`${styles.themeSwitch} ${isDark?styles.themeDark:''}`}/><Moon size={13}/></>:isDark?<Sun size={18}/>:<Moon size={18}/>}</Button>{tab==="home"&&<button className={styles.profilePlaceholder} aria-label="Profile settings" title="Profile settings" onClick={()=>{setTab("settings");window.setTimeout(()=>document.getElementById("settings-profile")?.scrollIntoView({block:"start"}),50);}}>{profilePhoto?<img src={profilePhoto} alt=""/>:(prefs.name[0]||"?").toUpperCase()}</button>}</div></header>
     {tab==="home"&&<><section className={styles.intro}><h1>Good to see you again{prefs.name?<>, <strong>{prefs.name}</strong></>:""}</h1></section>
       <section className={styles.hero}><span className={styles.homeQuizIcon}><BookOpen size={23}/></span><div className={styles.heroCopy}><div className={styles.homeQuizTitle}><h2>Today's quiz</h2><span>{quizSize} {quizSize===1?'question':'questions'}</span></div><p>A little practice, every day.</p></div><Button onClick={startReview} disabled={!items.length}>Start quiz <ArrowRight size={16}/></Button></section>
       <div className={styles.quickQuizOptions}><button onClick={()=>{setMessage("");setShowQuizBuilder(true);window.scrollTo({top:0});}}>Advanced settings <Settings size={12}/></button></div>

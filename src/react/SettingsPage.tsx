@@ -1,5 +1,5 @@
-import React,{useEffect,useState} from 'react';
-import {UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight} from 'lucide-react';
+import React,{useEffect,useRef,useState} from 'react';
+import {Camera,ImagePlus,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight} from 'lucide-react';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
 import {BackupRestore,OfflineSettings} from './LearningFeatures';
@@ -8,6 +8,8 @@ import {readSetups} from '../quiz-setups.js';
 import {appPreferences,saveAppPreferences,textSizes} from '../app-preferences.js';
 import {audioCache} from '../audio-cache.js';
 import {session,signOut,syncNow,syncStatus} from '../sync.js';
+import {photoFromFile,saveProfilePhoto,profilePhoto,profilePhotoKey} from '../profile-photo.js';
+import {useProfilePhoto} from './ProfilePhoto';
 
 const sections:[string,string,any][]=[['profile','Profile',UserRound],['account','Account',Cloud],['appearance','Appearance',Palette],['voice','Voice',Volume2],['quiz','Quiz',SlidersHorizontal],['data','Data',Database],['app','App',Smartphone]];
 
@@ -24,9 +26,21 @@ function usePrefs(){
 }
 
 function ProfileSettings(){
- const [prefs,update]=usePrefs(),[name,setName]=useState(prefs.name);
+ const [prefs,update]=usePrefs(),[name,setName]=useState(prefs.name),photo=useProfilePhoto(),[busy,setBusy]=useState(false),[photoError,setPhotoError]=useState(''),picker=useRef<HTMLInputElement>(null);
  const commit=()=>{if(name.trim()!==prefs.name)update({name});};
- return <Panel icon={UserRound} title="Your name" detail="Used in greetings and before each quiz."><div className="settings-profile"><span className="settings-avatar" aria-hidden="true">{(name.trim()[0]||'?').toUpperCase()}</span><label className="settings-profile-field">Name<input value={name} maxLength={40} placeholder="Your name" autoComplete="given-name" onChange={e=>setName(e.target.value)} onBlur={commit} onKeyDown={e=>{if(e.key==='Enter')(e.target as HTMLInputElement).blur();}}/></label></div><p className="settings-preview-line">“Good to see you again, <b>{name.trim()||'there'}</b>”</p></Panel>;
+ const pick=()=>picker.current?.click();
+ async function choose(file?:File){if(!file)return;setBusy(true);setPhotoError('');try{saveProfilePhoto(await photoFromFile(file));}catch(e:any){setPhotoError(e.message||'This picture could not be used.');}finally{setBusy(false);}}
+ const remove=()=>{setPhotoError('');saveProfilePhoto('');};
+ return <Panel icon={UserRound} title="Name & picture" detail="Shown in greetings, before each quiz and on the home screen.">
+  <div className="settings-profile">
+   <button type="button" className="settings-avatar" data-photo={photo?'':undefined} data-busy={busy||undefined} onClick={pick} disabled={busy} aria-label={photo?'Change profile picture':'Add profile picture'} title={photo?'Change picture':'Add a picture'}>{photo?<img src={photo} alt=""/>:(name.trim()[0]||'?').toUpperCase()}<span className="settings-avatar-badge" aria-hidden="true">{busy?<RefreshCw size={12}/>:<Camera size={12}/>}</span></button>
+   <label className="settings-profile-field">Name<input value={name} maxLength={40} placeholder="Your name" autoComplete="given-name" onChange={e=>setName(e.target.value)} onBlur={commit} onKeyDown={e=>{if(e.key==='Enter')(e.target as HTMLInputElement).blur();}}/></label>
+  </div>
+  <div className="settings-photo-actions"><Button variant="outline" size="sm" onClick={pick} disabled={busy}><ImagePlus size={15}/>{busy?'Preparing…':photo?'Change picture':'Upload picture'}</Button>{photo&&<Button variant="ghost" size="sm" className="settings-photo-remove" onClick={remove} disabled={busy}><Trash2 size={15}/>Remove</Button>}<small>Square crop · synced to your devices</small></div>
+  <input ref={picker} type="file" accept="image/*" hidden onChange={e=>{choose(e.target.files?.[0]);e.target.value='';}}/>
+  {photoError&&<p className="settings-error" role="alert">{photoError}</p>}
+  <p className="settings-preview-line">“Good to see you again, <b>{name.trim()||'there'}</b>”</p>
+ </Panel>;
 }
 
 function AppearanceSettings({theme,onTheme}:any){
@@ -75,7 +89,7 @@ function StorageMeter({items}:any){
 
 function BackupPanel({items,reports,quizCount,streakDays,theme}:any){
  const [status,setStatus]=useState('');
- function json(){return JSON.stringify({app:'RecallFlow',version:1,exportedAt:new Date().toISOString(),questions:items,reports,quizCount,streakDays,preferences:{theme,voice:localStorage.getItem('recallflow_kokoro_voice')||'af_heart',speed:Number(localStorage.getItem('recallflow_kokoro_speed')||1),speechEngine:localStorage.getItem('recallflow_speech_engine')||'system',quiz:quizPreferences(),quizSetups:readSetups(),app:appPreferences()}},null,2);}
+ function json(){return JSON.stringify({app:'RecallFlow',version:1,exportedAt:new Date().toISOString(),questions:items,reports,quizCount,streakDays,preferences:{theme,voice:localStorage.getItem('recallflow_kokoro_voice')||'af_heart',speed:Number(localStorage.getItem('recallflow_kokoro_speed')||1),speechEngine:localStorage.getItem('recallflow_speech_engine')||'system',quiz:quizPreferences(),quizSetups:readSetups(),app:appPreferences()},...(profilePhoto()?{synced:{[profilePhotoKey]:profilePhoto()}}:{})},null,2);}
  function download(){try{const url=URL.createObjectURL(new Blob([json()],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download=`RecallFlow_backup_${new Date().toISOString().slice(0,10)}.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Backup downloaded.');}catch(e:any){setStatus(`Could not create the backup: ${e.message}`);}}
  async function copy(){try{await navigator.clipboard.writeText(json());setStatus('Backup copied to the clipboard.');}catch{setStatus('Copy is blocked here. Use Download instead.');}}
  return <Panel icon={Download} title="Full backup" detail="Everything: questions, reports, streak and settings."><div className="settings-button-row"><Button onClick={download}><Download size={16}/>Download backup</Button><Button variant="outline" onClick={copy}><Copy size={16}/>Copy</Button></div>{status&&<p className="settings-status" role="status">{status}</p>}</Panel>;
