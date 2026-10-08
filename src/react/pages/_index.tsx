@@ -9,17 +9,17 @@ import {SpeechButton} from "../KokoroPanel";
 import {SettingsPage} from "../SettingsPage";
 import {TransferPage} from "../TransferPage";
 import {appPreferences, applyAppPreferences} from "../../app-preferences.js";
-import {resolveVariant, seededShuffle, itemTypes, draftFromSpec, specFromDraft, isPictureLabel} from "../../question-variants.js";
+import {resolveVariant, variantAt, retakeVariant, seededShuffle, itemTypes, draftFromSpec, specFromDraft, isPictureLabel} from "../../question-variants.js";
 import {audioCache} from "../../audio-cache.js";
 import {quizPreferences, prepareQuiz} from "../../quiz-preferences.js";
 import {kokoroVoice} from "../../kokoro-service.js";
 import {speechEngine} from "../../voice-preferences.js";
-import {questionTypes, typeLabel, validateQuestion, gradeQuestion, missedItems} from "../../question-types.js";
+import {questionTypes, typeLabel, validateQuestion, gradeQuestion, missedItems, answerText} from "../../question-types.js";
 
 import {WordBankAnswer,InlineBlankAnswer} from '../QuestionInteractions';
 import {QuizBuilder,StructuredAnswer} from '../LearningFeatures';
-import {scheduled,textGrade,duplicateIds,filterQuiz,analytics} from '../../learning-core.js';
-import {streakStats} from '../../streak-stats.js';
+import {scheduled,reviewedOn,openMistakes,textGrade,duplicateIds,filterQuiz,analytics} from '../../learning-core.js';
+import {streakStats,localDay} from '../../streak-stats.js';
 import {QuestionEditor} from '../QuestionEditor';
 import {DiscardChangesDialog} from "../DiscardChangesDialog";
 import {Brand} from "../BrandIcon";
@@ -34,7 +34,14 @@ type Item = { [key:string]:any;
 const typeIcons:Record<string,any>={short_answer:PenLine,fill_blank:TextCursorInput,single_choice:CircleDot,flashcard:GalleryVerticalEnd,true_false:ToggleLeft,multi_select:ListChecks,numeric:Hash,matching:ArrowLeftRight,ordering:ListOrdered,cloze:Brackets,fill_blank_options:Puzzle};
 function dueBadge(item:Item){if(!item.due)return {state:"new",label:"New"};if(item.due<=today())return {state:"due",label:"Due"};const days=Math.max(1,Math.round((Date.parse(item.due)-Date.parse(today()))/864e5));return {state:"later",label:days<30?`In ${days}d`:`In ${Math.round(days/30)}mo`};}
 function questionCardDetail(item:Item){if(item.type==="single_choice")return `${item.options?.length||0} choices`;if(item.type==="matching")return `${item.pairs?.length||0} pairs`;if(item.type==="ordering")return `${item.sequence?.length||0} steps`;if(["cloze","fill_blank_options"].includes(item.type||""))return `${item.blanks?.length||0} blanks`;if(item.type==="multi_select")return `${item.options?.length||0} options`;return "";}
-function prepareForQuiz(q:Item[],types:string[]=[]){const prefs=appPreferences(),seed=String(Date.now());return q.map(item=>{const shaped:Item={...resolveVariant(item,types),shuffleSeed:seed};if(prefs.shuffleChoices&&["single_choice","multi_select","fill_blank_options"].includes(shaped.type||"")&&shaped.options)shaped.options=seededShuffle(shaped.options,shaped.id+seed);return shaped;});}
+const choiceTypes=["single_choice","multi_select","fill_blank_options"];
+function prepareForQuiz(q:Item[],types:string[]=[]){const prefs=appPreferences(),seed=String(Date.now());return q.map(item=>{const shaped:Item={...resolveVariant(item,types),shuffleSeed:seed};if(prefs.shuffleChoices&&choiceTypes.includes(shaped.type||"")&&shaped.options)shaped.options=seededShuffle(shaped.options,shaped.id+seed);return shaped;});}
+function prepareRetake(q:Item[],attempts:Result[]){const seed=String(Date.now()),missedAs=new Map(attempts.filter(a=>!a.correct).map(a=>[a.knowledge_id,a.type]));return seededShuffle(q,seed).map(item=>{const shaped:Item={...retakeVariant(item,missedAs.get(item.id)),shuffleSeed:seed};if(choiceTypes.includes(shaped.type||"")&&shaped.options)shaped.options=seededShuffle(shaped.options,shaped.id+seed);return shaped;});}
+// An unfinished quiz is kept on this device until the end of the day so it can be continued.
+const PROGRESS_KEY="recallflow_quiz_progress";
+type SavedQuiz={day:string;kind:"all"|"retry_mistakes"|"daily"|"due";source?:string;questions:{id:string;variant:number;options?:string[]}[];results:Result[]};
+function savedQuiz():SavedQuiz|null{try{const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||"null");return p&&p.day===today()&&Array.isArray(p.questions)&&Array.isArray(p.results)&&p.results.length<p.questions.length?p:null;}catch{return null;}}
+function clearSavedQuiz(){try{localStorage.removeItem(PROGRESS_KEY);}catch{}}
 type Result = { grading?:string; knowledge_id:string; subject:string; topic:string; type:string; prompt:string; correct_answer:string; user_answer:string; correct:boolean; response_time_seconds:number; selected_answers?:string[] };
 type QuizReport = { id:string; date:string; duration_seconds:number; total:number; correct:number; accuracy:number; questions:Result[]; mode?:"all"|"retry_mistakes"|"daily"|"due"; source_report_id?:string };
 function ReportHistoryCard({report:r,index:i,openId,setOpenId,items,retry,copy}:{report:QuizReport;index:number;openId:string|null;setOpenId:(id:string|null)=>void;items:Item[];retry:(attempts:Result[],source?:string)=>void;copy:(report:QuizReport)=>void}){return <article className={styles.reportCard}>
@@ -43,7 +50,7 @@ function ReportHistoryCard({report:r,index:i,openId,setOpenId,items,retry,copy}:
     <div className={styles.reportScore}><strong>{r.accuracy}%</strong><span>{r.correct}/{r.total}</span></div>
   </button>
   {openId===r.id&&<div className={styles.reportDetails}><div className={styles.reportMiniStats}><div><b>{r.correct}</b><span>Correct</span></div><div><b>{r.total-r.correct}</b><span>Missed</span></div><div><b>{Math.round(r.duration_seconds/60)}m</b><span>Time</span></div></div>
-    <div className={styles.reportQuestions}>{r.questions.map((q,qi)=><div className={q.correct?styles.reportQuestionGood:styles.reportQuestionBad} key={qi}><span>{q.correct?<CheckCircle2 size={16}/>:<XCircle size={16}/>}</span><div><b>{q.prompt}</b><small>Your answer: {q.user_answer||"No answer"}</small>{!q.correct&&<small>Correct: {q.correct_answer}</small>}</div><em>{q.response_time_seconds}s</em></div>)}</div>
+    <div className={styles.reportQuestions}>{r.questions.map((q,qi)=><div className={q.correct?styles.reportQuestionGood:styles.reportQuestionBad} key={qi}><span>{q.correct?<CheckCircle2 size={16}/>:<XCircle size={16}/>}</span><div><b>{q.prompt}</b><small>Your answer: {q.user_answer||"No answer"}</small>{!q.correct&&<small>Correct: {q.correct_answer||answerText(items.find(x=>x.id===q.knowledge_id)||{})||"—"}</small>}</div><em>{q.response_time_seconds}s</em></div>)}</div>
     {missedItems(r.questions,items).length>0&&<Button onClick={()=>retry(r.questions,r.id)}>Retry mistakes ({missedItems(r.questions,items).length})</Button>}<Button variant="outline" onClick={()=>copy(r)}><Copy size={16}/> Copy full report</Button>
   </div>}
 </article>}
@@ -61,7 +68,7 @@ function editorRoute(){
   if(path.startsWith('questions/edit/')){try{return {id:decodeURIComponent(path.slice(15))};}catch{return null;}}
   return null;
 }
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>localDay();
 
 const toggleIn=(list:string[],value:string)=>list.includes(value)?list.filter(x=>x!==value):[...list,value];
 export default function IndexPage(){
@@ -87,6 +94,7 @@ export default function IndexPage(){
   const [reviewKind,setReviewKind]=useState<"all"|"retry_mistakes"|"daily"|"due">("all");
   const [sourceReportId,setSourceReportId]=useState<string|undefined>();
   const [completedReportId,setCompletedReportId]=useState<string|undefined>();
+  const [resumable,setResumable]=useState<SavedQuiz|null>(savedQuiz),[retakeDismissed,setRetakeDismissed]=useState(false);
   const [revealed,setRevealed]=useState(false);
   const [result,setResult]=useState<boolean|null>(null);
   const [started,setStarted]=useState(Date.now());
@@ -161,13 +169,31 @@ export default function IndexPage(){
   },[idx,result,review]);
   const quizSize=quizDefaults.count?Math.min(quizDefaults.count,due.length):due.length;
 
-  function startReview(){
+  function startReview(fresh?:unknown){
     if(!items.length){setTab("library");setMessage("Add a question before starting a quiz.");return;}
+    if(fresh!==true&&savedQuiz()){resumeQuiz();return;}
+    if(fresh===true){clearSavedQuiz();setResumable(null);}
     const q=filterQuiz(items,reportHistory,{mode:'daily',count:quizDefaults.count,subject:'',topic:'',types:[],shuffle:quizDefaults.shuffle,focus:'all'});
     if(!q.length){setCaughtUp(true);return;}
     beginReview(q,"daily");
   }
-  function exitQuiz(){setConfirmLeaveQuiz(false);setCaughtUp(false);kokoroVoice.stop();kokoroVoice.cancelPrefetch();setCountdown(null);setReview(null);setTab("home");}
+  function exitQuiz(){if(review&&idx<review.length&&results.length===review.length)saveFinished();setConfirmLeaveQuiz(false);setCaughtUp(false);kokoroVoice.stop();kokoroVoice.cancelPrefetch();setCountdown(null);setReview(null);setResumable(savedQuiz());setTab("home");}
+  function resumeQuiz(){
+    const p=savedQuiz();setResumable(p);if(!p)return;
+    const n=p.results.length,shape=(s:SavedQuiz["questions"][number])=>{const item=items.find(x=>x.id===s.id);if(!item)return null;const shaped:Item={...variantAt(item,s.variant),shuffleSeed:p.day};if(s.options&&shaped.options&&s.options.length===shaped.options.length&&s.options.every(o=>shaped.options!.includes(o)))shaped.options=s.options;return shaped;};
+    const done=p.questions.slice(0,n).map(s=>shape(s)||{id:s.id,subject:"",topic:"",prompt:"",answer:""}),rest=p.questions.slice(n).map(shape).filter(Boolean) as Item[];
+    if(!rest.length){clearSavedQuiz();setResumable(null);setMessage("The rest of that quiz was deleted, so it can’t be continued.");return;}
+    setCaughtUp(false);setShowQuizBuilder(false);setConfirmLeaveQuiz(false);setCountdown(null);setRetakeDismissed(false);window.scrollTo({top:0});
+    kokoroVoice.stop();kokoroVoice.warm();setReview([...done,...rest]);setReviewKind(p.kind);setSourceReportId(p.source);setCompletedReportId(undefined);
+    setIdx(n);setResults(p.results);setAnswer("");setSelected([]);setRevealed(false);setResult(null);setStarted(Date.now());setMessage("");
+  }
+  useEffect(()=>{
+    if(!review||countdown!==null)return;
+    if(results.length>=review.length){clearSavedQuiz();return;}
+    if(!results.length)return;
+    const p:SavedQuiz={day:today(),kind:reviewKind,source:sourceReportId,questions:review.map(x=>({id:x.id,variant:x.variantIndex||0,...(x.options?{options:x.options}:{})})),results};
+    try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(p));}catch{}
+  },[review,results,countdown]);
   function requestExitQuiz(){if(prefs.confirmExit&&review&&idx<review.length&&(idx>0||result!==null))setConfirmLeaveQuiz(true);else exitQuiz();}
   useEffect(()=>{
     if(!prefs.autoRead||!review||countdown!==null||idx>=review.length||result!==null)return;
@@ -185,10 +211,11 @@ export default function IndexPage(){
     const speech=(item?:Item)=>item?[{questionId:item.id,role:"question",text:item.prompt,spokenText:item.type==="fill_blank"?item.prompt.replace(/_{2,}/g,"blank"):undefined},{questionId:item.id,role:"answer",text:item.answer}].filter(x=>x.text):[];
     kokoroVoice.prefetch([...speech(review[idx]),...speech(review[idx+1])]);
   },[review,idx]);
-  function beginReview(q:Item[],kind:"all"|"retry_mistakes"|"daily"|"due",source?:string,types:string[]=[]){
+  function beginReview(q:Item[],kind:"all"|"retry_mistakes"|"daily"|"due",source?:string,types:string[]=[],prepared=false){
     if(!q.length)return;
+    clearSavedQuiz();setResumable(null);setRetakeDismissed(false);
     setCaughtUp(false);setShowQuizBuilder(false);setConfirmLeaveQuiz(false);setCountdown(appPreferences().countdown?3:null);window.scrollTo({top:0});
-    kokoroVoice.stop();kokoroVoice.warm();setReview(prepareForQuiz(q,types));setReviewKind(kind);setSourceReportId(source);setCompletedReportId(undefined);
+    kokoroVoice.stop();kokoroVoice.warm();setReview(prepared?q:prepareForQuiz(q,types));setReviewKind(kind);setSourceReportId(source);setCompletedReportId(undefined);
     setIdx(0);setResults([]);setAnswer("");setSelected([]);setRevealed(false);setResult(null);setStarted(Date.now());setMessage("");
   }
   useEffect(()=>{
@@ -210,6 +237,12 @@ export default function IndexPage(){
         if(!savingQuestion)setPendingLeave({action:()=>{allowHistoryLeave.current=true;if(delta)history.go(-delta);else{location.hash=target;}}});
         return;
       }
+      if(review&&idx<review.length&&results.length>0&&countdown===null&&appPreferences().confirmExit){
+        const targetIndex=history.state?.recallflowIndex,delta=typeof targetIndex==='number'?navIndex.current-targetIndex:0;
+        if(delta){restoringHistory.current=true;history.go(delta);}else history.replaceState({recallflowIndex:navIndex.current},'',activeHash.current);
+        setConfirmLeaveQuiz(true);
+        return;
+      }
       activeHash.current=location.hash;navIndex.current=Number(history.state?.recallflowIndex)||0;
       const path=location.hash.slice(2);
       if(path==='quiz'||path==='quiz/results'){if(!review)history.replaceState(null,'','#/home');else return;}
@@ -221,12 +254,12 @@ export default function IndexPage(){
     }
     window.addEventListener('popstate',navigate);window.addEventListener('hashchange',navigate);
     return()=>{window.removeEventListener('popstate',navigate);window.removeEventListener('hashchange',navigate);};
-  },[review,items,unsaved,savingQuestion]);
+  },[review,items,unsaved,savingQuestion,idx,results.length,countdown]);
   useEffect(()=>{if(loaded){const route=editorRoute();if(route?.id){const item=items.find(x=>x.id===route.id);if(item)openAdd(item);else{closeEditor();setMessage("That question could not be found.");}}}},[loaded]);
   function retryMistakes(attempts:Result[],source?:string){
     const q=missedItems(attempts,items);
     if(!q.length){setMessage("No missed questions remain in your question bank.");return;}
-    beginReview(q,"retry_mistakes",source);
+    beginReview(prepareRetake(q,attempts),"retry_mistakes",source,[],true);
   }
   function grade(forced?:boolean,givenAnswer:any=answer){
     if(!current||result!==null)return;
@@ -234,19 +267,19 @@ export default function IndexPage(){
     const category=forced!==undefined?(ok?"correct":"wrong"):["short_answer","fill_blank"].includes(current.type||"short_answer")?textGrade(current,givenAnswer):(ok?"correct":"wrong");
     const seconds=Math.max(1,Math.round((Date.now()-started)/1000));
     setResult(ok);setRevealed(true);
-    setResults(r=>[...r,{grading:category,knowledge_id:current.id,subject:current.subject,topic:current.topic,type:current.type||"short_answer",prompt:current.prompt||"Picture question",correct_answer:current.answer||(current.answerImage?"(answer picture)":""),user_answer:current.type==="flashcard"?(ok?"self-marked: knew":"self-marked: did not know"):["multi_select","matching","ordering","cloze","fill_blank_options"].includes(current.type||"")?(Array.isArray(givenAnswer)?givenAnswer:selected).join("; "):givenAnswer,selected_answers:current.type==="multi_select"?selected:undefined,correct:ok,response_time_seconds:seconds}]);
-    setItems(xs=>xs.map(x=>x.id===current.id?scheduled(x,ok):x));
+    setResults(r=>[...r,{grading:category,knowledge_id:current.id,subject:current.subject,topic:current.topic,type:current.type||"short_answer",prompt:current.prompt||"Picture question",correct_answer:answerText(current),user_answer:current.type==="flashcard"?(ok?"self-marked: knew":"self-marked: did not know"):["multi_select","matching","ordering","cloze","fill_blank_options"].includes(current.type||"")?(Array.isArray(givenAnswer)?givenAnswer:selected).join("; "):givenAnswer,selected_answers:current.type==="multi_select"?selected:undefined,correct:ok,response_time_seconds:seconds}]);
+    setItems(xs=>xs.map(x=>x.id===current.id&&(!reviewedOn(x,today())||!x.due||x.due<=today())?scheduled(x,ok):x));
+  }
+  function saveFinished(){
+    setQuizCount(c=>{const n=c+1;localStorage.setItem("recallflow_quiz_count",String(n));return n});
+    setStreakDays(ds=>{const t=today();const n=ds.includes(t)?ds:[...ds,t];localStorage.setItem("recallflow_streak_days",JSON.stringify(n));return n});
+    const report:QuizReport={id:`report_${Date.now()}`,mode:reviewKind,source_report_id:sourceReportId,date:new Date().toISOString(),duration_seconds:results.reduce((a,b)=>a+b.response_time_seconds,0),total:results.length,correct:results.filter(x=>x.correct).length,accuracy:results.length?Math.round(results.filter(x=>x.correct).length/results.length*100):0,questions:results};
+    setCompletedReportId(report.id);clearSavedQuiz();setResumable(null);
+    setReportHistory(prev=>{const nextReports=[report,...prev];localStorage.setItem("recallflow_reports",JSON.stringify(nextReports));return nextReports});
   }
   function next(){
     if(!review)return;
-    if(idx+1>=review.length){
-      setQuizCount(c=>{const n=c+1;localStorage.setItem("recallflow_quiz_count",String(n));return n});
-      setStreakDays(ds=>{const t=today();const n=ds.includes(t)?ds:[...ds,t];localStorage.setItem("recallflow_streak_days",JSON.stringify(n));return n});
-      const report:QuizReport={id:`report_${Date.now()}`,mode:reviewKind,source_report_id:sourceReportId,date:new Date().toISOString(),duration_seconds:results.reduce((a,b)=>a+b.response_time_seconds,0),total:results.length,correct:results.filter(x=>x.correct).length,accuracy:results.length?Math.round(results.filter(x=>x.correct).length/results.length*100):0,questions:results};
-      setCompletedReportId(report.id);
-      setReportHistory(prev=>{const nextReports=[report,...prev];localStorage.setItem("recallflow_reports",JSON.stringify(nextReports));return nextReports});
-      setIdx(review.length);return
-    }
+    if(idx+1>=review.length){saveFinished();setIdx(review.length);return;}
     setIdx(i=>i+1);setAnswer("");setSelected([]);setRevealed(false);setResult(null);setStarted(Date.now());
   }
   function importItems(clean:Item[]){
@@ -336,8 +369,8 @@ export default function IndexPage(){
   const {current:streak}=streakStats(streakDays,today());
   const reportAnalytics=useMemo(()=>analytics(reportHistory),[reportHistory]);
   const reportTotals=useMemo(()=>reportHistory.reduce((a,r)=>({quizzes:a.quizzes+1,answers:a.answers+r.total,correct:a.correct+r.correct,missed:a.missed+r.total-r.correct}),{quizzes:0,answers:0,correct:0,missed:0}),[reportHistory]);
-  const missedQuestions=useMemo(()=>{const latest=new Map<string,Result>();for(const report of reportHistory)for(const q of report.questions||[])if(!q.correct)latest.set(q.knowledge_id,q);return [...latest.values()]},[reportHistory]);
-  const reportDays=useMemo(()=>{const counts=new Map<string,number>();for(const r of reportHistory){const day=String(r.date).slice(0,10);counts.set(day,(counts.get(day)||0)+1)}return counts},[reportHistory]);
+  const missedQuestions=useMemo(()=>openMistakes(reportHistory) as Result[],[reportHistory]);
+  const reportDays=useMemo(()=>{const counts=new Map<string,number>();for(const r of reportHistory){const day=localDay(new Date(r.date));counts.set(day,(counts.get(day)||0)+1)}return counts},[reportHistory]);
 
 
 
@@ -351,13 +384,18 @@ export default function IndexPage(){
     if(idx>=review.length){
       const correct=results.filter(x=>x.correct).length;
       const accuracy=results.length?Math.round(correct/results.length*100):0;
+      const missed=missedItems(results,items),missedAs=new Set(results.filter(x=>!x.correct).map(x=>x.knowledge_id+"|"+x.type)),canSwitch=missed.some(x=>itemTypes(x).some(t=>!missedAs.has(x.id+"|"+t)));
       return <main className={styles.reviewPage}><section className={styles.finish}><div className="editor-navigation-brand"><Brand/></div>
         <div className={styles.finishBadge}><Sparkles size={18}/> {reviewKind==="retry_mistakes"?"PRACTICE COMPLETE":"QUIZ COMPLETE"}</div>
         <div className={styles.scoreRing}><strong>{accuracy}%</strong><span>accuracy</span></div>
         <h1>{reviewKind==="retry_mistakes"?"Practice complete.":accuracy>=80?"Great work.":accuracy>=50?"Nice work.":"Keep practising."}</h1>
         <div className={styles.finishStats}><div><b>{correct}</b><span>Correct</span></div><div><b>{results.length-correct}</b><span>Missed</span></div><div><b>{results.length}</b><span>Total</span></div></div>
-        {missedItems(results,items).length>0&&<Button onClick={()=>retryMistakes(results,completedReportId)}>Retry mistakes ({missedItems(results,items).length})</Button>}
-        <Button onClick={exportReport}><Copy size={17}/> Copy full report</Button>
+        {missed.length>0&&(!retakeDismissed?<section className="retake-offer" aria-labelledby="retake-offer-title">
+          <span className="retake-offer-icon" aria-hidden="true"><RotateCcw size={20}/></span>
+          <div className="retake-offer-copy"><h2 id="retake-offer-title">{reviewKind==="retry_mistakes"?(missed.length===1?"Try the last one again?":`Try the ${missed.length} you still missed again?`):(missed.length===1?"Retake the one you missed?":`Retake the ${missed.length} you missed?`)}</h2><p>{canSwitch?"Shuffled into a new order, and asked a different way where possible.":"Shuffled into a new order."} It’s extra practice — they’ll still come back in your next daily quiz.</p></div>
+          <div className="retake-offer-actions"><Button variant="outline" onClick={()=>setRetakeDismissed(true)}>Not now</Button><Button onClick={()=>retryMistakes(results,completedReportId)}><RotateCcw size={16}/> Retake {missed.length}</Button></div>
+        </section>:<p className="retake-later">No problem — they’ll come back in your next daily quiz.</p>)}
+        <Button variant="outline" onClick={exportReport}><Copy size={17}/> Copy full report</Button>
         <Button variant="outline" onClick={exitQuiz}>Back home</Button>
         {message&&<p className={styles.note}>{message}</p>}
       </section></main>
@@ -379,17 +417,17 @@ export default function IndexPage(){
         </section>
         <section className="quiz-answer-card" aria-label="Answer area" data-type={current?.type}><h2 className={current?.type==="true_false"?"visually-hidden":undefined}>{answerTitle}</h2>
           {current?.type==="fill_blank_options"?<WordBankAnswer key={current.id} item={current} value={selected} onChange={setSelected} disabled={revealed} onGrade={values=>{setSelected(values);grade(undefined,values);}}/>:["fill_blank","cloze"].includes(current?.type||"")?<InlineBlankAnswer key={current.id} item={current} value={current.type==="cloze"?selected:answer} onChange={current.type==="cloze"?setSelected:setAnswer} disabled={revealed} onGrade={values=>{if(Array.isArray(values))setSelected(values);else setAnswer(values);grade(undefined,values);}}/>:["matching","ordering"].includes(current?.type||"")?<StructuredAnswer item={current} value={selected} onChange={setSelected} disabled={revealed} onGrade={values=>{setSelected(values);grade(undefined,values);}}/>:current?.type==="flashcard"?<div className="split-flash-actions"><p className="split-answer-help">{revealed?"Mark whether you recalled the answer.":"Recall the answer, then reveal the card."}</p>{!revealed&&<Button onClick={()=>setRevealed(true)}>Reveal answer</Button>}{revealed&&result===null&&<div className={styles.two}><Button variant="outline" onClick={()=>grade(false)}>Didn't know</Button><Button onClick={()=>grade(true)}>Knew it</Button></div>}</div>:current?.type==="multi_select"?<div className={styles.options}><p className="split-answer-help">Select all correct answers.</p>{(current.options||[]).map((o,i)=><label key={o} className="split-choice" data-state={revealed?((current.correctAnswers||current.answer.split('; ')).includes(o)?"correct":selected.includes(o)?"incorrect":"idle"):selected.includes(o)?"selected":"idle"}><input type="checkbox" aria-label={o} checked={selected.includes(o)} disabled={revealed} onChange={e=>setSelected(xs=>e.target.checked?[...xs,o]:xs.filter(x=>x!==o))}/><span className="split-choice-letter">{String.fromCharCode(65+i)}</span><span className="split-choice-text">{current?.optionImages?.[o]&&<ZoomableImage className="choice-media-zoom" imgClassName="choice-media" src={current.optionImages[o]} alt={o} label={`Enlarge picture for ${o}`} tapImage={false}/>} {isPictureLabel(o)&&current.optionImages?.[o]?<span className="visually-hidden">{o}</span>:o}</span><span className="split-choice-indicator" aria-hidden="true"/></label>)}{!revealed&&<Button className="split-submit" disabled={!selected.length} onClick={()=>grade()}>Check selections</Button>}</div>:current?.type==="true_false"?<div className="tf-buttons" role="group" aria-label="Choose an answer">{["False","True"].map(o=>{const picked=revealed&&answer===o,showAnswer=revealed&&result===false&&!picked&&gradeQuestion(current,o),state=!revealed?undefined:picked?(result?"correct":"wrong"):"faded";return <button key={o} type="button" className="tf-button" data-value={o.toLowerCase()} data-state={state} disabled={revealed} aria-label={picked?`${o}, your answer, ${result?"correct":"wrong"}`:showAnswer?`${o}, correct answer`:o} onClick={()=>{setAnswer(o);grade(undefined,o);}}><span className="tf-circle">{o==="True"?<Check size={32} strokeWidth={3}/>:<X size={32} strokeWidth={3}/>}</span>{picked?<span className="tf-chip" data-kind={result?"correct":"wrong"}>{result?<Check size={12} strokeWidth={3.6}/>:<X size={12} strokeWidth={3.6}/>}{result?"Correct":"Wrong"}</span>:showAnswer?<span className="tf-chip" data-kind="answer">Answer</span>:<span className="tf-label">{o}</span>}</button>;})}</div>:choiceQuestion?<div className={styles.options}><fieldset className="split-choice-group" aria-label="Choose an answer">{(current?.options||[]).map((o,i)=><label key={o} className="split-choice" data-state={revealed?(gradeQuestion(current,o)?"correct":answer===o?"incorrect":"idle"):answer===o?"selected":"idle"}><input type="radio" name={`quiz-answer-${current.id}`} aria-label={o} checked={answer===o} disabled={revealed} onChange={()=>setAnswer(o)}/><span className="split-choice-letter">{String.fromCharCode(65+i)}</span><span className="split-choice-text">{current?.optionImages?.[o]&&<ZoomableImage className="choice-media-zoom" imgClassName="choice-media" src={current.optionImages[o]} alt={o} label={`Enlarge picture for ${o}`} tapImage={false}/>} {isPictureLabel(o)&&current.optionImages?.[o]?<span className="visually-hidden">{o}</span>:o}</span><span className="split-choice-indicator" aria-hidden="true"/></label>)}</fieldset>{!revealed&&<Button className="split-submit" disabled={!answer} onClick={()=>grade()}>Check answer</Button>}</div>:<div className={styles.answerArea}><p className="split-answer-help">{current?.type==="numeric"?"Enter a number.":"Write what you remember."}</p><Input aria-label={current?.type==="numeric"?"Numeric answer":"Your answer"} inputMode={current?.type==="numeric"?"decimal":undefined} value={answer} onChange={e=>setAnswer(e.target.value)} placeholder={current?.type==="numeric"?"Enter a number…":"Type your answer…"} disabled={revealed} onKeyDown={e=>{if(e.key==="Enter"&&answer&&!revealed)grade()}}/>{!revealed&&<Button className="split-submit" disabled={!answer} onClick={()=>grade()}>Check answer</Button>}</div>}
-          {result!==null&&<div className={`${result?styles.feedbackGood:styles.feedbackBad} split-feedback`} data-result={result?"correct":"incorrect"} role="status"><div className={styles.feedbackIcon}>{result?<CheckCircle2/>:<XCircle/>}</div><div className={styles.feedbackCopy}><strong>{result?(results[results.length-1]?.grading==="typo"?"Accepted — likely typo":"Correct!"):"Not quite"}</strong>{current?.answer&&<span>{result?`Answer: ${current?.answer||""}`:`Correct answer: ${current?.answer||""}`}</span>}{current&&<SpeechButton questionId={current.id} role="answer" text={current.answer} label="Read correct answer"/>}{current?.answerImage&&current.type!=="flashcard"&&<ZoomableImage className="feedback-answer-zoom" imgClassName="feedback-answer-media" src={current.answerImage} alt="Answer illustration" label="Enlarge answer image"/>}</div><Button onClick={next}>{idx+1===review.length?"See results":"Continue"} <ArrowRight size={17}/></Button></div>}
+          {result!==null&&<div className={`${result?styles.feedbackGood:styles.feedbackBad} split-feedback`} data-result={result?"correct":"incorrect"} role="status"><div className={styles.feedbackIcon}>{result?<CheckCircle2/>:<XCircle/>}</div><div className={styles.feedbackCopy}><strong>{result?(results[results.length-1]?.grading==="typo"?"Accepted — likely typo":"Correct!"):"Not quite"}</strong>{current&&answerText(current)&&!/^\(answer picture\)$/.test(answerText(current))&&<span>{result?`Answer: ${answerText(current)}`:`Correct answer: ${answerText(current)}`}</span>}{current&&<SpeechButton questionId={current.id} role="answer" text={current.answer||answerText(current)} label="Read correct answer"/>}{current?.answerImage&&current.type!=="flashcard"&&<ZoomableImage className="feedback-answer-zoom" imgClassName="feedback-answer-media" src={current.answerImage} alt="Answer illustration" label="Enlarge answer image"/>}</div><Button onClick={next}>{idx+1===review.length?"See results":"Continue"} <ArrowRight size={17}/></Button></div>}
         </section>
       </div>
-      {confirmLeaveQuiz&&<div className="quiz-leave-layer" role="presentation"><button className="question-tools-scrim" aria-label="Keep practising" onClick={()=>setConfirmLeaveQuiz(false)}/><section className="quiz-leave-dialog" role="alertdialog" aria-modal="true" aria-labelledby="quiz-leave-title"><h2 id="quiz-leave-title">Leave this quiz?</h2><p>{results.length} of {review.length} answered. Answers so far keep their review dates, but no report is saved.</p><div><Button variant="outline" onClick={()=>setConfirmLeaveQuiz(false)}>Keep going</Button><Button variant="destructive" onClick={exitQuiz}>Leave quiz</Button></div></section></div>}
+      {confirmLeaveQuiz&&<div className="quiz-leave-layer" role="presentation"><button className="question-tools-scrim" aria-label="Keep practising" onClick={()=>setConfirmLeaveQuiz(false)}/><section className="quiz-leave-dialog" role="alertdialog" aria-modal="true" aria-labelledby="quiz-leave-title"><h2 id="quiz-leave-title">Leave this quiz?</h2><p>{results.length} of {review.length} answered. Your progress is saved — continue any time today from the home screen.</p><div><Button variant="outline" onClick={()=>setConfirmLeaveQuiz(false)}>Keep going</Button><Button variant="destructive" onClick={exitQuiz}>Leave quiz</Button></div></section></div>}
     </section></main>
   }
 
   return <div className={styles.shell}><main className={`${styles.main} ${tab==="streak"?'streak-layout-shell':tab==="home"?styles.homeMain:''}`}>
     <header className="app-top-bar" data-scrolled={scrolled||undefined}><div><Brand size={28}/></div><div className={styles.headerRight}>{tab!=="home"&&<span className={styles.mini}>{items.length} questions</span>}<Button variant="ghost" size="icon-md" className={tab==="home"?styles.homeTheme:undefined} aria-label="Change theme" onClick={toggleTheme}>{tab==="home"?<><Sun size={13}/><span className={`${styles.themeSwitch} ${isDark?styles.themeDark:''}`}/><Moon size={13}/></>:isDark?<Sun size={18}/>:<Moon size={18}/>}</Button>{tab==="home"&&<button className={styles.profilePlaceholder} aria-label="Profile settings" title="Profile settings" onClick={()=>{setTab("settings");window.setTimeout(()=>document.getElementById("settings-profile")?.scrollIntoView({block:"start"}),50);}}>{profilePhoto?<img src={profilePhoto} alt=""/>:(prefs.name[0]||"?").toUpperCase()}</button>}</div></header>
     {tab==="home"&&<><section className={styles.intro}><h1>Good to see you again{prefs.name?<>, <strong>{prefs.name}</strong></>:""}</h1></section>
-      <section className={styles.hero}><span className={styles.homeQuizIcon}><BookOpen size={23}/></span><div className={styles.heroCopy}><div className={styles.homeQuizTitle}><h2>Today's quiz</h2><span>{quizSize} {quizSize===1?'question':'questions'}</span></div><p>A little practice, every day.</p></div><Button onClick={startReview} disabled={!items.length}>Start quiz <ArrowRight size={16}/></Button></section>
+      <section className={styles.hero}><span className={styles.homeQuizIcon}><BookOpen size={23}/></span><div className={styles.heroCopy}>{resumable?<><div className={styles.homeQuizTitle}><h2>Quiz in progress</h2><span>{resumable.results.length} of {resumable.questions.length} answered</span></div><p>Pick up where you left off.</p></>:<><div className={styles.homeQuizTitle}><h2>Today's quiz</h2><span>{quizSize} {quizSize===1?'question':'questions'}</span></div><p>{quizSize||!items.length?"A little practice, every day.":"All caught up — nothing is due right now."}</p></>}</div>{resumable?<div className="resume-actions"><Button variant="outline" onClick={()=>startReview(true)}>Start over</Button><Button onClick={resumeQuiz}>Continue <ArrowRight size={16}/></Button></div>:<Button onClick={startReview} disabled={!items.length}>Start quiz <ArrowRight size={16}/></Button>}</section>
       <div className={styles.quickQuizOptions}><button onClick={()=>{setMessage("");setShowQuizBuilder(true);window.scrollTo({top:0});}}>Advanced settings <Settings size={12}/></button></div>
       <section className={styles.streakCard}>
         <button className={styles.streakOpen} onClick={()=>setTab("streak")} aria-label={`Current streak: ${streak} ${streak===1?"day":"days"}. View streak details`}>
@@ -419,9 +457,9 @@ export default function IndexPage(){
           <div className="report-shortcuts"><button onClick={()=>setReportView("progress")}><ChartNoAxesColumnIncreasing/><span><b>Track progress</b><small>See how accuracy changes</small></span><ArrowRight/></button><button onClick={()=>setReportView("mistakes")}><XCircle/><span><b>Review mistakes</b><small>{missedQuestions.length} {missedQuestions.length===1?"question":"questions"} to revisit</small></span><ArrowRight/></button></div>
         </>}
         {reportView==="history"&&<><div className={styles.reportSectionTitle}><strong>Quiz history</strong><span>{reportHistory.length} completed {reportHistory.length===1?"quiz":"quizzes"} · Select one for answers</span></div><div className={styles.reportList}>{reportHistory.map((r,i)=><ReportHistoryCard key={r.id} report={r} index={i} openId={openReportId} setOpenId={setOpenReportId} items={items} retry={retryMistakes} copy={copySavedReport}/>)}</div></>}
-        {reportView==="progress"&&<section className="report-content-card"><div className="report-content-heading"><div><p>ACCURACY OVER TIME</p><h2>Your progress</h2></div><strong>{reportHistory.at(-1)?.accuracy??0}%</strong></div><p className="report-muted">Each point is one completed quiz, shown from oldest to newest.</p>{reportAnalytics.trend.length>1?<div className="report-trend">{reportAnalytics.trend.map((r:any)=><div key={r.id} title={`${new Date(r.date).toLocaleDateString()}: ${r.accuracy}%`}><span>{r.accuracy}%</span><i><b style={{height:`${Math.max(5,r.accuracy)}%`}}/></i><small>{new Date(r.date).toLocaleDateString(undefined,{month:"short",day:"numeric"})}</small></div>)}</div>:<div className="report-inline-empty">Complete another quiz to see your progress trend.</div>}<div className="report-progress-stats"><div><strong>{reportTotals.correct}</strong><span>Correct answers</span></div><div><strong>{reportTotals.missed}</strong><span>Missed answers</span></div><div><strong>{(()=>{const seconds=reportHistory.length?Math.round(reportHistory.reduce((n,r)=>n+r.duration_seconds,0)/reportHistory.length):0;return seconds<60?`${seconds}s`:`${Math.round(seconds/60)}m`})()}</strong><span>Avg. quiz time</span></div></div></section>}
-        {reportView==="mistakes"&&<section className="report-content-card"><div className="report-content-heading"><div><p>WHAT TO PRACTICE NEXT</p><h2>Mistake review</h2></div><span className="report-count-pill">{missedQuestions.length} to revisit</span></div>{missedQuestions.length?<><p className="report-muted">Questions you missed at least once, with your latest answer.</p><div className={styles.reportQuestions}>{missedQuestions.map((q,i)=><div className={styles.reportQuestionBad} key={`${q.knowledge_id}-${i}`}><span><XCircle size={16}/></span><div><b>{q.prompt}</b><small>Your answer: {q.user_answer||"No answer"}</small><small>Correct: {q.correct_answer}</small></div><em>{reportAnalytics.mistakes.find((m:any)=>m.prompt===q.prompt)?.count||1}× missed</em></div>)}</div><Button onClick={()=>retryMistakes([...missedQuestions])}><Play size={16} fill="currentColor"/> Practice missed questions</Button></>:<div className="report-inline-empty">No missed answers so far. Nice work!</div>}</section>}
-        {reportView==="activity"&&<section className="report-content-card"><div className="report-content-heading"><div><p>YOUR STUDY RHYTHM</p><h2>Activity</h2></div><strong>{streak} day{streak===1?"":"s"}</strong></div><p className="report-muted">Quiz days from the last four weeks.</p><div className="report-activity-weekdays" aria-hidden="true">{["M","T","W","T","F","S","S"].map((d,i)=><span key={i}>{d}</span>)}</div><div className="report-activity-grid">{(()=>{const end=new Date();end.setUTCHours(0,0,0,0);const start=new Date(end);start.setUTCDate(start.getUTCDate()-((end.getUTCDay()+6)%7)-21);return Array.from({length:28},(_,i)=>{const date=new Date(start);date.setUTCDate(start.getUTCDate()+i);const key=date.toISOString().slice(0,10);const count=reportDays.get(key)||0;const future=date.getTime()>end.getTime();return <div key={key} className={count?"is-active":""} data-future={future||undefined} data-today={date.getTime()===end.getTime()||undefined} title={future?key:`${key}: ${count} ${count===1?"quiz":"quizzes"}`}><span>{date.getUTCDate()}</span><b>{count?`${count}×`:""}</b></div>;});})()}</div><div className="report-activity-summary"><strong>{reportDays.size}</strong><span>{reportDays.size===1?"day":"days"} with a quiz in your report history</span><span>{streakDays.length} practice {streakDays.length===1?"day":"days"} tracked</span></div></section>}
+        {reportView==="progress"&&<section className="report-content-card"><div className="report-content-heading"><div><p>ACCURACY OVER TIME</p><h2>Your progress</h2></div><strong title="Latest quiz">{reportHistory[0]?.accuracy??0}%</strong></div><p className="report-muted">Each point is one completed quiz, shown from oldest to newest.</p>{reportAnalytics.trend.length>1?<div className="report-trend">{reportAnalytics.trend.map((r:any)=><div key={r.id} title={`${new Date(r.date).toLocaleDateString()}: ${r.accuracy}%`}><span>{r.accuracy}%</span><i><b style={{height:`${Math.max(5,r.accuracy)}%`}}/></i><small>{new Date(r.date).toLocaleDateString(undefined,{month:"short",day:"numeric"})}</small></div>)}</div>:<div className="report-inline-empty">Complete another quiz to see your progress trend.</div>}<div className="report-progress-stats"><div><strong>{reportTotals.correct}</strong><span>Correct answers</span></div><div><strong>{reportTotals.missed}</strong><span>Missed answers</span></div><div><strong>{(()=>{const seconds=reportHistory.length?Math.round(reportHistory.reduce((n,r)=>n+r.duration_seconds,0)/reportHistory.length):0;return seconds<60?`${seconds}s`:`${Math.round(seconds/60)}m`})()}</strong><span>Avg. quiz time</span></div></div></section>}
+        {reportView==="mistakes"&&<section className="report-content-card"><div className="report-content-heading"><div><p>WHAT TO PRACTICE NEXT</p><h2>Mistake review</h2></div><span className="report-count-pill">{missedQuestions.length} to revisit</span></div>{missedQuestions.length?<><p className="report-muted">Questions you’ve missed, with your latest wrong answer. Each one drops off after you get it right twice in a row.</p><div className={styles.reportQuestions}>{missedQuestions.map((q,i)=><div className={styles.reportQuestionBad} key={`${q.knowledge_id}-${i}`}><span><XCircle size={16}/></span><div><b>{q.prompt}</b><small>Your answer: {q.user_answer||"No answer"}</small><small>Correct: {q.correct_answer||answerText(items.find(x=>x.id===q.knowledge_id)||{})||"—"}</small></div><em>{reportAnalytics.mistakes.find((m:any)=>m.prompt===q.prompt)?.count||1}× missed</em></div>)}</div><Button onClick={()=>retryMistakes([...missedQuestions])}><Play size={16} fill="currentColor"/> Practice missed questions</Button></>:<div className="report-inline-empty">No missed answers so far. Nice work!</div>}</section>}
+        {reportView==="activity"&&<section className="report-content-card"><div className="report-content-heading"><div><p>YOUR STUDY RHYTHM</p><h2>Activity</h2></div><strong>{streak} day{streak===1?"":"s"}</strong></div><p className="report-muted">Quiz days from the last four weeks.</p><div className="report-activity-weekdays" aria-hidden="true">{["M","T","W","T","F","S","S"].map((d,i)=><span key={i}>{d}</span>)}</div><div className="report-activity-grid">{(()=>{const end=new Date(today()+"T00:00:00Z");const start=new Date(end);start.setUTCDate(start.getUTCDate()-((end.getUTCDay()+6)%7)-21);return Array.from({length:28},(_,i)=>{const date=new Date(start);date.setUTCDate(start.getUTCDate()+i);const key=date.toISOString().slice(0,10);const count=reportDays.get(key)||0;const future=date.getTime()>end.getTime();return <div key={key} className={count?"is-active":""} data-future={future||undefined} data-today={date.getTime()===end.getTime()||undefined} title={future?key:`${key}: ${count} ${count===1?"quiz":"quizzes"}`}><span>{date.getUTCDate()}</span><b>{count?`${count}×`:""}</b></div>;});})()}</div><div className="report-activity-summary"><strong>{reportDays.size}</strong><span>{reportDays.size===1?"day":"days"} with a quiz in your report history</span><span>{streakDays.length} practice {streakDays.length===1?"day":"days"} tracked</span></div></section>}
         {reportView==="insights"&&<section className="report-content-card"><div className="report-content-heading"><div><p>WHERE YOU’RE STRONG</p><h2>Learning insights</h2></div><Sparkles/></div>{reportAnalytics.total?<><p className="report-muted">Accuracy by subject, topic and question format.</p>{Object.entries(reportAnalytics.groups).map(([key,groups]:any)=><div className="report-insight-group" key={key}><h3>By {key}</h3>{Object.entries(groups).sort(([,a]:any,[,b]:any)=>a.correct/a.total-b.correct/b.total).map(([name,s]:any)=><div className="report-insight-row" key={name}><div><span>{key==="type"?typeLabel(name):name}</span><strong>{Math.round(s.correct/s.total*100)}%</strong></div><div className="report-insight-track"><i style={{width:`${Math.round(s.correct/s.total*100)}%`}}/></div><small>{s.correct}/{s.total} correct · {(s.seconds/s.total).toFixed(1)}s average</small></div>)}</div>)}<h3>Repeated mistakes</h3>{reportAnalytics.mistakes.filter((x:any)=>x.count>1).slice(0,8).map((x:any)=><p className="report-repeat-mistake" key={x.prompt}>{x.prompt}<strong>{x.count} misses</strong></p>)}{!reportAnalytics.mistakes.some((x:any)=>x.count>1)&&<div className="report-inline-empty">No repeated mistakes yet.</div>}</>:<div className="report-inline-empty">Finish a quiz to see learning insights.</div>}</section>}
       </>}
       {message&&<p className={styles.note}>{message}</p>}

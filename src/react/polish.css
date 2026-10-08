@@ -606,3 +606,16 @@ header.settings-hero,header.transfer-hero{display:grid!important;justify-content
 .tg-password-form .settings-button-row{margin-top:2px}
 .tg-spin{animation:rf-spin 1s linear infinite}
 @media (prefers-reduced-motion:reduce){.tg-backup-send[data-busy] svg,.tg-spin{animation:none}}
+
+.retake-offer{display:grid;grid-template-columns:auto 1fr;gap:12px 14px;width:100%;margin:6px 0 4px;padding:18px;border:1px solid color-mix(in srgb,var(--primary) 30%,var(--border));border-radius:18px;background:color-mix(in srgb,var(--primary) 6%,var(--card));text-align:left;animation:retake-in .35s ease-out both}
+.retake-offer-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--accent);color:var(--primary)}
+.retake-offer-copy h2{margin:2px 0 4px;font-size:17px;font-weight:650;letter-spacing:-.01em;color:var(--foreground)}
+.retake-offer-copy p{margin:0;font-size:13px;line-height:1.5;color:var(--muted-foreground)}
+.retake-offer-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.retake-offer-actions>*{width:100%;justify-content:center}
+.retake-later{margin:4px 0;padding:12px 14px;width:100%;border-radius:14px;background:var(--surface);font-size:13px;color:var(--muted-foreground);text-align:center}
+@keyframes retake-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.retake-offer{animation:none}}
+.resume-actions{display:flex;flex-direction:column-reverse;gap:6px;flex-shrink:0}
+.resume-actions>*{justify-content:center}
+@media (min-width:600px){.resume-actions{flex-direction:row}}

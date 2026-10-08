@@ -14,12 +14,21 @@ export function resolveVariant(item,types=[],random=Math.random){
   const allowed=types?.length?all.filter(x=>types.includes(x.type)):all;
   const pool=allowed.length?allowed:all;
   const choice=item.typeMode==='primary'&&pool.some(x=>x.index===0)?pool.find(x=>x.index===0):pool[Math.min(pool.length-1,Math.floor(random()*pool.length))];
-  if(choice.index===0)return {...item,variantIndex:0};
-  const variant=item.variants[choice.index-1],shaped={...item};
+  return variantAt(item,choice.index);
+}
+export function variantAt(item,index){
+  const variant=index>0&&item.variants?.[index-1];
+  if(!variant)return {...item,variantIndex:0};
+  const shaped={...item};
   for(const key of variantFields)shaped[key]=variant[key];
   shaped.prompt=variant.prompt||item.prompt;
-  shaped.variantIndex=choice.index;
+  shaped.variantIndex=index;
   return shaped;
+}
+// A retake asks a missed question as one of its other types when it has any.
+export function retakeVariant(item,missedType,random=Math.random){
+  const others=itemTypes(item).filter(type=>type!==missedType);
+  return resolveVariant({...item,typeMode:undefined},others,random);
 }
 
 const lines=text=>String(text||'').split('\n').map(x=>x.trim()).filter(Boolean);

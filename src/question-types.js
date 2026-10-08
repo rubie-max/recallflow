@@ -19,4 +19,13 @@ if(result.typeMode!==undefined&&!['random','primary'].includes(result.typeMode))
 return result;}
 export function imageSafe(x){return typeof x==='string'&&((/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(x)&&x.length<2800000)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048)||/^rf-img\/[a-f0-9]{32}\.(webp|jpg|png|gif)$/.test(x));}
 export function gradeQuestion(item,given){if(item.type==='fill_blank_options')return Array.isArray(given)&&given.length===item.blanks.length&&item.blanks.every((a,i)=>given[i]===a);if(item.type==='matching')return Array.isArray(given)&&given.length===item.pairs.length&&item.pairs.every((p,i)=>given[i]===p.right);if(item.type==='ordering')return Array.isArray(given)&&JSON.stringify(given)===JSON.stringify(item.sequence);if(item.type==='cloze')return Array.isArray(given)&&given.length===item.blanks.length&&item.blanks.every((a,i)=>textGrade({answer:a,fuzzy:item.fuzzy},given[i])!=='wrong');if(item.type==='multi_select'){const expected=new Set(item.correctAnswers||[]),actual=new Set(Array.isArray(given)?given:[]);return expected.size>0&&expected.size===actual.size&&[...expected].every(value=>actual.has(value));}if(item.type==='numeric'){const value=numericValue(given),expected=numericValue(item.answer),tolerance=Number(item.numericTolerance||0);return value!==null&&expected!==null&&Number.isFinite(tolerance)&&tolerance>=0&&Math.abs(value-expected)<=tolerance+Number.EPSILON*Math.max(1,Math.abs(value),Math.abs(expected))*4;}if(['single_choice','true_false'].includes(item.type))return String(given).trim()===item.answer;return textGrade(item,given)!=='wrong';}
+export function answerText(item){
+  if(!item)return '';
+  if(item.type==='multi_select'&&item.correctAnswers?.length)return item.correctAnswers.join('; ');
+  if(String(item.answer??'').trim())return String(item.answer);
+  if(item.blanks?.length)return item.blanks.join('; ');
+  if(item.pairs?.length)return item.pairs.map(p=>`${p.left} → ${p.right}`).join('; ');
+  if(item.sequence?.length)return item.sequence.join(' → ');
+  return item.answerImage?'(answer picture)':'';
+}
 export function missedItems(attempts,bank){const ids=new Set(attempts.filter(attempt=>!attempt.correct).map(attempt=>attempt.knowledge_id));return bank.filter(item=>ids.has(item.id));}
