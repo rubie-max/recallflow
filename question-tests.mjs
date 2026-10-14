@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {validateQuestion,gradeQuestion,missedItems,numericValue,answerText} from './src/question-types.js';
+import {exampleQuestions} from './src/example-questions.js';
 import {specFromDraft,draftFromSpec} from './src/question-variants.js';
 import {pictureLabel,isPictureLabel} from './src/question-variants.js';
 const make=(type,extra={})=>validateQuestion({prompt:'Question?',answer:'Yes',type,...extra});
@@ -52,4 +53,9 @@ assert.equal(gradeQuestion(make('two_step',{steps:[{prompt:'Name?',answer:'Jana 
 assert.equal(make('dictation',{audio:tone,answer:'Hello'}).fuzzy,false);
 const roundTrip=draftFromSpec(make('timeline',{sequence:['1947 · Independence','1950 · Republic']}));
 assert.equal(specFromDraft(roundTrip).sequence.join('|'),'1947 · Independence|1950 · Republic');
+const examples=exampleQuestions.map(q=>validateQuestion(q));
+assert.equal(examples.length,16);assert.equal(new Set(examples.map(q=>q.type)).size,16);
+assert.equal(examples.find(q=>q.type==='audio_name').audio,'./public/examples/doorbell.wav');
+assert.equal(examples.find(q=>q.type==='image_label').spots.map(s=>s.label).join('|'),'Circle|Square');
+assert.equal(examples.every(q=>q.subject==='Examples'),true);
 console.log('PASS: exact multi-select sets, signed numeric/tolerance grading, validation, picture-only questions and answers, existing text grading, retry deduplication and deleted/edited questions, and the new sound, picture and arrange types.');

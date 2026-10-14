@@ -15,6 +15,7 @@ import {quizPreferences, prepareQuiz} from "../../quiz-preferences.js";
 import {kokoroVoice} from "../../kokoro-service.js";
 import {speechEngine} from "../../voice-preferences.js";
 import {questionTypes, typeLabel, validateQuestion, gradeQuestion, missedItems, answerText, answerHeading, formatGiven, isExtraType} from "../../question-types.js";
+import {exampleQuestions} from "../../example-questions.js";
 import {ExtraAnswer, typeIcon} from "../NewQuestionTypes";
 
 import {WordBankAnswer,InlineBlankAnswer} from '../QuestionInteractions';
@@ -35,7 +36,7 @@ type Item = { [key:string]:any;
   options?: string[]; correctAnswers?:string[]; numericTolerance?:number; alt?: string; due?: string; interval?: number;
 };
 const typeIcons:Record<string,any>={short_answer:PenLine,fill_blank:TextCursorInput,single_choice:CircleDot,flashcard:GalleryVerticalEnd,true_false:ToggleLeft,multi_select:ListChecks,numeric:Hash,matching:ArrowLeftRight,ordering:ListOrdered,cloze:Brackets,fill_blank_options:Puzzle};
-function dueBadge(item:Item){if(!item.due)return {state:"new",label:"New"};if(item.due<=today())return {state:"due",label:"Due"};const days=Math.max(1,Math.round((Date.parse(item.due)-Date.parse(today()))/864e5));return {state:"later",label:days<30?`In ${days}d`:`In ${Math.round(days/30)}mo`};}
+function dueBadge(item:Item){if(item.tags?.includes("example"))return {state:"later",label:"Example"};if(!item.due)return {state:"new",label:"New"};if(item.due<=today())return {state:"due",label:"Due"};const days=Math.max(1,Math.round((Date.parse(item.due)-Date.parse(today()))/864e5));return {state:"later",label:days<30?`In ${days}d`:`In ${Math.round(days/30)}mo`};}
 function questionCardDetail(item:Item){if(item.type==="single_choice")return `${item.options?.length||0} choices`;if(item.type==="matching")return `${item.pairs?.length||0} pairs`;if(item.type==="ordering")return `${item.sequence?.length||0} steps`;if(["cloze","fill_blank_options"].includes(item.type||""))return `${item.blanks?.length||0} blanks`;if(item.type==="multi_select")return `${item.options?.length||0} options`;return "";}
 const choiceTypes=["single_choice","multi_select","fill_blank_options","odd_one_out"];
 function prepareForQuiz(q:Item[],types:string[]=[]){const prefs=appPreferences(),seed=String(Date.now());return q.map(item=>{const shaped:Item={...resolveVariant(item,types),shuffleSeed:seed};if(prefs.shuffleChoices&&choiceTypes.includes(shaped.type||"")&&shaped.options)shaped.options=seededShuffle(shaped.options,shaped.id+seed);return shaped;});}
@@ -84,7 +85,8 @@ export default function IndexPage(){
   const [confirmLeaveQuiz,setConfirmLeaveQuiz]=useState(false);
   const [showQuizBuilder,setShowQuizBuilder]=useState(location.hash==="#/quiz-settings");
   const [libraryTag,setLibraryTag]=useState<string[]>([]),[libraryTopic,setLibraryTopic]=useState<string[]>([]),[librarySort,setLibrarySort]=useState("recent"),[duplicatesOnly,setDuplicatesOnly]=useState(false);
-  const [items,setItems]=useState<Item[]>(()=>{try{const x=localStorage.getItem("recallflow_bank_v2");return x?JSON.parse(x):starter;}catch{return starter;}});
+  function bankWithExamples(list:Item[]){try{if(localStorage.getItem("recallflow_examples_v1")==="1")return list;localStorage.setItem("recallflow_examples_v1","1");}catch{return list;}const ids=new Set(list.map(x=>x.id));const add=exampleQuestions.filter(x=>!ids.has(x.id));return add.length?[...list,...add]:list;}
+  const [items,setItems]=useState<Item[]>(()=>{try{const x=localStorage.getItem("recallflow_bank_v2");return bankWithExamples(x?JSON.parse(x):starter);}catch{return bankWithExamples(starter);}});
   const [quizCount,setQuizCount]=useState(()=>{try{return Number(localStorage.getItem("recallflow_quiz_count")||0)||0;}catch{return 0;}});
   const [streakDays,setStreakDays]=useState<string[]>(()=>{try{return JSON.parse(localStorage.getItem("recallflow_streak_days")||"[]");}catch{return [];}});
   const [tab,setTab]=useState<"home"|"library"|"results"|"settings"|"streak"|"transfer">((({questions:"library",reports:"results",settings:"settings",streak:"streak",transfer:"transfer"} as any)[location.hash.slice(2)]||"home"));
