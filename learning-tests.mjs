@@ -21,6 +21,12 @@ const bank=[{id:'a',prompt:'A',answer:'A',subject:'S',topic:'T',type:'short_answ
 const reports=[{id:'r',accuracy:0,questions:[{knowledge_id:'a',subject:'S',topic:'T',type:'short_answer',prompt:'A',correct:false,response_time_seconds:3}]}];assert.equal(filterQuiz(bank,reports,{...controls,focus:'weak'}).length,1);assert.equal(analytics(reports).groups.subject.S.seconds,3);
 const backup={app:'RecallFlow',version:1,questions:bank,reports,quizCount:1,streakDays:['2026-10-04'],preferences:{theme:'dark',voice:'af_bella',speed:1,quiz:{count:5,shuffle:true}}};assert.equal(validateBackup(backup,validateQuestion).questions.length,2);assert.throws(()=>validateBackup({...backup,questions:[bank[0],bank[0]]},validateQuestion));
 const store=new Map([['recallflow_personal_lock_v1','private-lock']]);globalThis.localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)};restoreBackup(backup);assert.equal(store.get('recallflow_personal_lock_v1'),'private-lock');assert.equal(JSON.parse(store.get('recallflow_quiz_preferences_v1')).count,5);
+const clip='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+const sound=validateQuestion({id:'s',type:'audio_name',answer:'Jana Gana Mana',audio:clip});
+const mixed=validateBackup({...backup,questions:[...bank,sound]},validateQuestion);
+assert.equal(mixed.version,1);assert.equal(mixed.app,'RecallFlow');assert.equal(mixed.questions[2].type,'audio_name');assert.equal(mixed.questions[2].audio,clip);
+restoreBackup(mixed);const saved=JSON.parse(store.get('recallflow_bank_v2'));
+assert.equal(saved[0].type,'short_answer');assert.equal(saved[0].audio,undefined);assert.equal(saved[2].audio,clip);assert.equal(saved[2].answer,'Jana Gana Mana');
 const before=new Map(store);let once=true;localStorage.setItem=(k,v)=>{if(k==='recallflow_reports'&&once){once=false;throw new Error('quota');}store.set(k,v);};assert.throws(()=>restoreBackup({...backup,quizCount:2}));assert.deepEqual(store,before);
 console.log('PASS: structured grading, conservative typos, alternatives, Unicode, schedule, quiz filters, duplicates, analytics, validated restore and quota rollback.');
 

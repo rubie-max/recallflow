@@ -1,6 +1,6 @@
 // A question can be asked as several types. The primary type lives on the item itself
 // (so older banks keep working); extra types live in item.variants.
-export const variantFields=['type','prompt','answer','options','correctAnswers','numericTolerance','acceptedAnswers','fuzzy','optionImages','pairs','sequence','blanks'];
+export const variantFields=['type','prompt','answer','options','correctAnswers','numericTolerance','acceptedAnswers','fuzzy','optionImages','pairs','sequence','blanks','audio','clips','spots','groups','steps'];
 export const MAX_VARIANTS=5;
 
 export function itemTypes(item){return [item.type||'short_answer',...(item.variants||[]).map(v=>v.type||'short_answer')];}
@@ -32,18 +32,19 @@ export function retakeVariant(item,missedType,random=Math.random){
 }
 
 const lines=text=>String(text||'').split('\n').map(x=>x.trim()).filter(Boolean);
-export function emptyDraft(type='short_answer',prompt=''){return {type,prompt,answer:type==='true_false'?'True':'',options:'',numericTolerance:'0',structured:'',accepted:'',fuzzy:true,optionImages:{}};}
+export function emptyDraft(type='short_answer',prompt=''){return {type,prompt,answer:type==='true_false'?'True':'',options:'',numericTolerance:'0',structured:'',accepted:'',fuzzy:type!=='dictation',optionImages:{},audio:'',clips:[{label:'',audio:''},{label:'',audio:''}],spots:[],groups:[{name:'',items:''},{name:'',items:''}],steps:[{prompt:'',answer:''},{prompt:'',answer:''}]};}
 
 export function draftFromSpec(item){
   const type=item.type||'short_answer';
-  return {type,prompt:item.prompt||'',answer:type==='multi_select'?(item.correctAnswers||[]).join('\n'):String(item.answer??''),options:(item.options||[]).join('\n'),numericTolerance:String(item.numericTolerance??0),structured:type==='matching'?(item.pairs||[]).map(p=>p.left+'|'+p.right).join('\n'):type==='ordering'?(item.sequence||[]).join('\n'):(item.blanks||[]).join('\n'),accepted:(item.acceptedAnswers||[]).join('\n'),fuzzy:item.fuzzy,optionImages:item.optionImages||{}};
+  const structured=type==='matching'?(item.pairs||[]).map(p=>p.left+'|'+p.right).join('\n'):type==='ordering'||type==='build_answer'?(item.sequence||[]).join('\n'):type==='timeline'?(item.sequence||[]).map(row=>{const [year,...rest]=String(row).split(' · ');return rest.length?`${year}|${rest.join(' · ')}`:row;}).join('\n'):(item.blanks||[]).join('\n');
+  return {type,prompt:item.prompt||'',answer:type==='multi_select'?(item.correctAnswers||[]).join('\n'):String(item.answer??''),options:(item.options||[]).join('\n'),numericTolerance:String(item.numericTolerance??0),structured,accepted:(item.acceptedAnswers||[]).join('\n'),fuzzy:item.fuzzy!==false,optionImages:item.optionImages||{},audio:item.audio||'',clips:item.clips?.length?item.clips:[{label:'',audio:''},{label:'',audio:''}],spots:item.spots||[],groups:item.groups?.length?item.groups.map(g=>({name:g.name,items:(g.items||[]).join('\n')})):[{name:'',items:''},{name:'',items:''}],steps:item.steps?.length?item.steps:[{prompt:'',answer:''},{prompt:'',answer:''}]};
 }
 
 // Items added as a picture with no text get an automatic name; the quiz shows only the picture.
 export const pictureLabel=index=>`Picture ${index}`;
 export function isPictureLabel(text){return /^Picture (\d+|[A-Z])$/.test(String(text||'').trim());}
 
-export const imageTypes=['single_choice','multi_select','fill_blank_options','matching','ordering'];
+export const imageTypes=['single_choice','multi_select','fill_blank_options','matching','ordering','odd_one_out'];
 
 // optionImages is keyed by the text of a choice, word-bank word, matching side or ordering step.
 export function imageKeys(item){
@@ -55,17 +56,22 @@ export function imageKeys(item){
 export function specFromDraft(d){
   const type=d.type||'short_answer',options=lines(d.options);
   const pairs=type==='matching'?String(d.structured||'').split('\n').filter(x=>x.trim()).map(line=>{const [left,...rest]=line.split('|');return {left:left?.trim(),right:rest.join('|').trim()};}):undefined;
-  const sequence=type==='ordering'?lines(d.structured):undefined;
+  const sequence=type==='ordering'||type==='build_answer'?lines(d.structured):type==='timeline'?String(d.structured||'').split('\n').map(row=>row.trim()).filter(Boolean).map(row=>{const [year,...rest]=row.split('|');const event=rest.join('|').trim();return event?(year.trim()?`${year.trim()} · ${event}`:event):year.trim();}):undefined;
   const keys=imageKeys({type,options,pairs,sequence});
   return {type,prompt:d.prompt,answer:d.answer,
-    options:['single_choice','multi_select','fill_blank_options'].includes(type)?options:undefined,
+    options:['single_choice','multi_select','fill_blank_options','odd_one_out','build_answer'].includes(type)?options:undefined,
     correctAnswers:type==='multi_select'?lines(d.answer):undefined,
     numericTolerance:d.numericTolerance,
     acceptedAnswers:lines(d.accepted),
     fuzzy:d.fuzzy!==false,
     optionImages:imageTypes.includes(type)?Object.fromEntries(Object.entries(d.optionImages||{}).map(([key,value])=>[key.trim(),value]).filter(([key,value])=>value&&keys.includes(key))):undefined,
     pairs,sequence,
-    blanks:['cloze','fill_blank_options'].includes(type)?lines(d.structured):undefined};
+    blanks:['cloze','fill_blank_options'].includes(type)?lines(d.structured):undefined,
+    audio:['audio_name','audio_voice','dictation','lyric'].includes(type)?d.audio:undefined,
+    clips:['audio_choice','audio_order'].includes(type)?(d.clips||[]).map(c=>({label:String(c.label||'').trim(),audio:c.audio})).filter(c=>c.label||c.audio):undefined,
+    spots:['image_tap','image_label'].includes(type)?d.spots:undefined,
+    groups:type==='categorize'?(d.groups||[]).map(g=>({name:String(g.name||'').trim(),items:String(g.items||'').split('\n').map(x=>x.trim()).filter(Boolean)})):undefined,
+    steps:type==='two_step'?d.steps:undefined};
 }
 
 // Deterministic per question, so the same quiz attempt keeps a stable order across re-renders.
