@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import {buildApp} from './build.mjs';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const clients = new Set();
-const types = {'.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.json':'application/json', '.webmanifest':'application/manifest+json', '.png':'image/png', '.wav':'audio/wav', '.wasm':'application/wasm'};
+const types = {'.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.json':'application/json', '.webmanifest':'application/manifest+json', '.png':'image/png', '.wasm':'application/wasm'};
 const server = http.createServer(async(req,res)=>{
   const pathname = new URL(req.url,'http://localhost').pathname;
   if(pathname==='/__reload') {res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-cache'});res.write(': ready\n\n');clients.add(res);req.on('close',()=>clients.delete(res));return;}

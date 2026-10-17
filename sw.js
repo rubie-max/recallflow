@@ -1,7 +1,7 @@
-const CACHE='recallflow-shell-v39';
+const CACHE='recallflow-shell-v40';
 const IMAGE_CACHE='recallflow-images';
 const ROOT=new URL('./',self.location.href);
-const FILES=['./','./index.html','./assets/app.js','./assets/app.css','./public/recallflow-logo.png','./public/recallflow-logo.svg','./manifest.webmanifest','./public/icon-192.png','./public/icon-512.png',...['af_heart','af_bella','am_michael','am_fenrir','bf_emma'].map(voice=>'./public/voice-previews/'+voice+'.wav'),...['doorbell','voice-woman','dictation','lyric','tone-low','tone-mid','tone-high'].map(name=>'./public/examples/'+name+'.wav'),...['tap-sun','label-shapes','before-plain','after-star'].map(name=>'./public/examples/'+name+'.png')];
+const FILES=['./','./index.html','./assets/app.js','./assets/app.css','./public/recallflow-logo.png','./public/recallflow-logo.svg','./manifest.webmanifest','./public/icon-192.png','./public/icon-512.png',...['af_heart','af_bella','am_michael','am_fenrir','bf_emma'].map(voice=>'./public/voice-previews/'+voice+'.wav')];
 const TYPES={webp:'image/webp',jpg:'image/jpeg',png:'image/png',gif:'image/gif'};
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES.map(x=>new URL(x,ROOT).href))).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('recallflow-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
