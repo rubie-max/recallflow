@@ -1,6 +1,8 @@
 // A question can be asked as several types. The primary type lives on the item itself
 // (so older banks keep working); extra types live in item.variants.
-export const variantFields=['type','prompt','answer','options','correctAnswers','numericTolerance','acceptedAnswers','fuzzy','optionImages','pairs','sequence','blanks'];
+export const variantFields=['type','prompt','answer','options','correctAnswers','numericTolerance','acceptedAnswers','fuzzy','optionImages','pairs','sequence','blanks','listItems','listCount','groups','passage','hotspot','sliderMin','sliderMax','sliderStep','unit'];
+// Editor draft fields that belong to one type (the rest, like images and tags, are shared).
+export const draftTypeFields=['type','prompt','answer','options','numericTolerance','structured','accepted','fuzzy','optionImages','listCount','groups','passage','hotspot','sliderMin','sliderMax','sliderStep','unit'];
 export const MAX_VARIANTS=5;
 
 export function itemTypes(item){return [item.type||'short_answer',...(item.variants||[]).map(v=>v.type||'short_answer')];}
@@ -32,11 +34,14 @@ export function retakeVariant(item,missedType,random=Math.random){
 }
 
 const lines=text=>String(text||'').split('\n').map(x=>x.trim()).filter(Boolean);
-export function emptyDraft(type='short_answer',prompt=''){return {type,prompt,answer:type==='true_false'?'True':'',options:'',numericTolerance:'0',structured:'',accepted:'',fuzzy:true,optionImages:{}};}
+export const emptyGroups=()=>[{name:'',items:''},{name:'',items:''}];
+export function emptyDraft(type='short_answer',prompt=''){return {type,prompt,answer:type==='true_false'?'True':'',options:'',numericTolerance:'0',structured:'',accepted:'',fuzzy:true,optionImages:{},...(type==='categorize'?{groups:emptyGroups()}:{}),...(type==='slider'?{sliderMin:'0',sliderMax:'100',sliderStep:'1'}:{})};}
 
 export function draftFromSpec(item){
   const type=item.type||'short_answer';
-  return {type,prompt:item.prompt||'',answer:type==='multi_select'?(item.correctAnswers||[]).join('\n'):String(item.answer??''),options:(item.options||[]).join('\n'),numericTolerance:String(item.numericTolerance??0),structured:type==='matching'?(item.pairs||[]).map(p=>p.left+'|'+p.right).join('\n'):type==='ordering'?(item.sequence||[]).join('\n'):(item.blanks||[]).join('\n'),accepted:(item.acceptedAnswers||[]).join('\n'),fuzzy:item.fuzzy,optionImages:item.optionImages||{}};
+  return {type,prompt:item.prompt||'',answer:type==='multi_select'?(item.correctAnswers||[]).join('\n'):['list_recall','categorize','highlight'].includes(type)||(type==='image_tap'&&item.answer==='The marked spot')?'':String(item.answer??''),options:(item.options||[]).join('\n'),numericTolerance:String(item.numericTolerance??0),structured:type==='matching'?(item.pairs||[]).map(p=>p.left+'|'+p.right).join('\n'):type==='ordering'?(item.sequence||[]).join('\n'):type==='list_recall'?(item.listItems||[]).join('\n'):(item.blanks||[]).join('\n'),accepted:(item.acceptedAnswers||[]).join('\n'),fuzzy:item.fuzzy,optionImages:item.optionImages||{},
+    listCount:item.listCount?String(item.listCount):'',groups:item.groups?.length?item.groups.map(g=>({name:g.name,items:(g.items||[]).join('\n')})):undefined,passage:item.passage||'',hotspot:item.hotspot,
+    sliderMin:item.sliderMin===undefined?undefined:String(item.sliderMin),sliderMax:item.sliderMax===undefined?undefined:String(item.sliderMax),sliderStep:item.sliderStep===undefined?undefined:String(item.sliderStep),unit:item.unit||''};
 }
 
 // Items added as a picture with no text get an automatic name; the quiz shows only the picture.
@@ -65,7 +70,14 @@ export function specFromDraft(d){
     fuzzy:d.fuzzy!==false,
     optionImages:imageTypes.includes(type)?Object.fromEntries(Object.entries(d.optionImages||{}).map(([key,value])=>[key.trim(),value]).filter(([key,value])=>value&&keys.includes(key))):undefined,
     pairs,sequence,
-    blanks:['cloze','fill_blank_options'].includes(type)?lines(d.structured):undefined};
+    blanks:['cloze','fill_blank_options'].includes(type)?lines(d.structured):undefined,
+    listItems:type==='list_recall'?lines(d.structured):undefined,
+    listCount:type==='list_recall'&&String(d.listCount||'').trim()?Number(d.listCount):undefined,
+    groups:type==='categorize'?(d.groups||[]).map(g=>({name:String(g?.name||'').trim(),items:lines(g?.items)})).filter(g=>g.name||g.items.length):undefined,
+    passage:type==='highlight'?String(d.passage||''):undefined,
+    hotspot:type==='image_tap'?d.hotspot:undefined,
+    sliderMin:type==='slider'?d.sliderMin??'0':undefined,sliderMax:type==='slider'?d.sliderMax??'100':undefined,sliderStep:type==='slider'?d.sliderStep??'1':undefined,
+    unit:type==='slider'?String(d.unit||'').trim()||undefined:undefined};
 }
 
 // Deterministic per question, so the same quiz attempt keeps a stable order across re-renders.

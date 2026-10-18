@@ -15,7 +15,7 @@ const isImage=x=>typeof x==='string'&&(x.startsWith('data:')||x.startsWith('rf-i
 
 function stripImages(item){
   const out={...item};
-  for(const key of ['image','answerImage'])if(isImage(out[key]))delete out[key];
+  for(const key of ['image','answerImage','audio'])if(isImage(out[key]))delete out[key];
   if(out.optionImages)out.optionImages=Object.fromEntries(Object.entries(out.optionImages).filter(([,v])=>!isImage(v)));
   if(out.variants)out.variants=out.variants.map(v=>v.optionImages?{...v,optionImages:Object.fromEntries(Object.entries(v.optionImages).filter(([,x])=>!isImage(x)))}:v);
   return out;
