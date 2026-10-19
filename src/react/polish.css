@@ -505,7 +505,8 @@ header.settings-hero,header.transfer-hero{display:grid!important;justify-content
 .transfer-help ul{display:grid;gap:5px;margin:0;padding-left:18px;color:var(--muted-foreground)}
 .transfer-help b{color:var(--foreground);font-weight:600}
 .transfer-help code{padding:1px 5px;border-radius:5px;background:var(--card);font-size:12px}
-.transfer-help button{display:inline-flex;align-items:center;gap:6px;justify-self:start;padding:0;border:0;background:none;color:var(--primary);font:600 12.5px var(--font-family-base);cursor:pointer}
+.transfer-help-actions{display:flex;flex-wrap:wrap;gap:10px 16px}
+.transfer-help button,.transfer-help-actions button{display:inline-flex;align-items:center;gap:6px;padding:0;border:0;background:none;color:var(--primary);font:600 12.5px var(--font-family-base);cursor:pointer}
 .transfer-file{display:flex;align-items:center;gap:12px;color:var(--primary)}
 .transfer-file span{display:grid;gap:2px;flex:1;min-width:0}
 .transfer-file strong{font-size:14px;color:var(--foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -848,6 +849,10 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .editor-sound{flex-wrap:wrap}
 .editor-sound .editor-inline-icon{color:var(--primary)}
 .editor-sound[data-recording] .editor-inline-icon{background:color-mix(in srgb,var(--error,#dc2626) 14%,var(--card))}
+.editor-sound-link{flex:1 1 100%;display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:0;padding:10px 12px;border:1px dashed var(--border);border-radius:12px;background:var(--surface)}
+.editor-sound-link-label{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted-foreground);white-space:nowrap}
+.editor-sound-link input{min-width:0;border:1px solid var(--border);border-radius:10px;padding:8px 10px;font:inherit;background:var(--card)}
+.editor-sound-link button{padding:8px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card);font:600 12px var(--font-family-base);cursor:pointer}
 .sound-rec-dot{width:12px;height:12px;border-radius:50%;background:var(--error,#dc2626);animation:sound-rec 1s ease-in-out infinite}
 @keyframes sound-rec{50%{opacity:.35}}
 .editor-inline-actions button.is-recording{border-color:var(--error,#dc2626)!important;color:var(--error,#dc2626)!important}

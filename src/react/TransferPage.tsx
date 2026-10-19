@@ -1,9 +1,9 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {FileUp,FileDown,FileJson,Sheet,Layers,FileText,Download,Copy,Check,CheckCircle2,AlertCircle,CopyCheck,UploadCloud,ClipboardPaste,ArrowLeft,X,ImageIcon,History} from 'lucide-react';
+import {FileUp,FileDown,FileJson,Sheet,Layers,FileText,Download,Copy,Check,CheckCircle2,AlertCircle,CopyCheck,UploadCloud,ClipboardPaste,ArrowLeft,X,ImageIcon,History,AudioLines,Sparkles} from 'lucide-react';
 import {Button} from './components/Button';
 import {questionTypes,typeLabel,validateQuestion} from '../question-types.js';
 import {itemTypes} from '../question-variants.js';
-import {exportFormats,importFormats,serialize,parseImport,duplicateKey,csvTemplate} from '../transfer-formats.js';
+import {exportFormats,importFormats,serialize,parseImport,duplicateKey,csvTemplate,aiImportPrompt,embeddedAudioCount} from '../transfer-formats.js';
 import {inlineImages} from '../sync.js';
 
 const formatIcons:any={json:FileJson,csv:Sheet,tsv:Layers,text:FileText};
@@ -13,14 +13,16 @@ function download(text:string,name:string,mime:string){const url=URL.createObjec
 function ExportPanel({items,selectedIds,onDone}:any){
  const subjects=useMemo(()=>[...new Set(items.map((x:any)=>x.subject||'General'))].sort() as string[],[items]);
  const [scope,setScope]=useState(selectedIds.length?'selected':'all'),[subject,setSubject]=useState(subjects[0]||''),[types,setTypes]=useState<string[]>([]);
- const [format,setFormat]=useState('json'),[images,setImages]=useState(true),[progress,setProgress]=useState(true),[status,setStatus]=useState('');
+ const [format,setFormat]=useState('json'),[images,setImages]=useState(true),[audio,setAudio]=useState(false),[progress,setProgress]=useState(true),[status,setStatus]=useState('');
  const chosen=useMemo(()=>scope==='selected'?items.filter((x:any)=>selectedIds.includes(x.id)):scope==='subject'?items.filter((x:any)=>(x.subject||'General')===subject):scope==='types'?items.filter((x:any)=>!types.length||itemTypes(x).some(t=>types.includes(t))):items,[items,scope,subject,types,selectedIds]);
  const [inlined,setInlined]=useState<any[]|null>(chosen);
  useEffect(()=>{if(format!=='json'||!images||!chosen.some((x:any)=>JSON.stringify(x).includes('"rf-img/'))){setInlined(chosen);return;}let live=true;setInlined(null);inlineImages(chosen).then((x:any[])=>{if(live)setInlined(x);}).catch(()=>{if(live)setInlined(chosen);});return()=>{live=false;};},[chosen,format,images]);
- const output=useMemo(()=>inlined?.length?serialize(inlined,format,{images,progress}):'',[inlined,format,images,progress]);
+ const output=useMemo(()=>inlined?.length?serialize(inlined,format,{images,audio,progress}):'',[inlined,format,images,audio,progress]);
  const preparing=!inlined;
  const meta=exportFormats.find(f=>f.id===format)!;
  const imageCount=chosen.filter((x:any)=>x.image||x.answerImage||Object.keys(x.optionImages||{}).length).length;
+ const soundCount=embeddedAudioCount(chosen);
+ const linkSoundCount=chosen.filter((x:any)=>typeof x.audio==='string'&&x.audio.startsWith('https://')).length;
  const name=`recallflow-${scope==='subject'?subject.toLowerCase().replace(/[^a-z0-9]+/g,'-'):scope}-${new Date().toISOString().slice(0,10)}.${meta.ext}`;
  async function copy(){try{await navigator.clipboard.writeText(output);setStatus('Copied to the clipboard.');}catch{setStatus('Copy is blocked here. Use Download instead.');}}
  return <div className="transfer-panel">
@@ -33,7 +35,8 @@ function ExportPanel({items,selectedIds,onDone}:any){
   </section>
   <section className="transfer-card"><h2><span>2</span>Format</h2>
    <div className="transfer-formats" role="radiogroup" aria-label="Export format">{exportFormats.map(f=>{const Icon=formatIcons[f.id];return <button key={f.id} role="radio" aria-checked={format===f.id} onClick={()=>setFormat(f.id)}><Icon size={20}/><span><strong>{f.label}</strong><small>{f.detail}</small></span>{format===f.id&&<Check size={16} className="transfer-check"/>}</button>;})}</div>
-   {format==='json'&&<div className="transfer-options"><label className="settings-switch"><span className="settings-switch-icon"><ImageIcon size={17}/></span><span className="settings-switch-copy"><strong>Include images</strong><small>{imageCount?`${imageCount} ${imageCount===1?'question has':'questions have'} images`:'No images in this selection'}</small></span><input type="checkbox" role="switch" checked={images} onChange={e=>setImages(e.target.checked)}/><i aria-hidden="true"/></label><label className="settings-switch"><span className="settings-switch-icon"><History size={17}/></span><span className="settings-switch-copy"><strong>Include study progress</strong><small>Next review dates and attempts</small></span><input type="checkbox" role="switch" checked={progress} onChange={e=>setProgress(e.target.checked)}/><i aria-hidden="true"/></label></div>}
+   {format==='json'&&<div className="transfer-options"><label className="settings-switch"><span className="settings-switch-icon"><ImageIcon size={17}/></span><span className="settings-switch-copy"><strong>Include pictures</strong><small>{imageCount?`${imageCount} ${imageCount===1?'question has':'questions have'} pictures`:'No pictures in this selection'}</small></span><input type="checkbox" role="switch" checked={images} onChange={e=>setImages(e.target.checked)}/><i aria-hidden="true"/></label><label className="settings-switch"><span className="settings-switch-icon"><AudioLines size={17}/></span><span className="settings-switch-copy"><strong>Include recorded sounds</strong><small>{soundCount?`${soundCount} embedded ${soundCount===1?'clip':'clips'} (can make the file very large)`:linkSoundCount?'Only https sound links are kept when this is off':'No question sounds here'}</small></span><input type="checkbox" role="switch" checked={audio} onChange={e=>setAudio(e.target.checked)}/><i aria-hidden="true"/></label><label className="settings-switch"><span className="settings-switch-icon"><History size={17}/></span><span className="settings-switch-copy"><strong>Include study progress</strong><small>Next review dates and attempts</small></span><input type="checkbox" role="switch" checked={progress} onChange={e=>setProgress(e.target.checked)}/><i aria-hidden="true"/></label></div>}
+   {format==='json'&&soundCount>0&&!audio&&<p className="transfer-note">Recorded sounds are left out of this export. https sound links are still included. Turn on “Include recorded sounds” to copy clips inside the file.</p>}
    {format!=='json'&&chosen.some((x:any)=>x.variants?.length)&&<p className="transfer-note">Only the first type of multi-type questions is included. Use RecallFlow file to keep every type.</p>}
   </section>
   <footer className="transfer-footer"><div><strong>{chosen.length} {chosen.length===1?'question':'questions'}</strong><small>{preparing?'Preparing pictures…':chosen.length?`${meta.label} · ${size(new Blob([output]).size)}`:'Nothing to export'}</small></div><div className="transfer-footer-actions"><Button variant="outline" disabled={!chosen.length||preparing} onClick={copy}><Copy size={16}/>Copy</Button><Button disabled={!chosen.length||preparing} onClick={()=>{download(output,name,meta.mime);setStatus(`Downloaded ${name}`);onDone?.();}}><Download size={16}/>Download</Button></div></footer>
@@ -42,7 +45,7 @@ function ExportPanel({items,selectedIds,onDone}:any){
 }
 
 function ImportPanel({items,onImport,onBack}:any){
- const [text,setText]=useState(''),[fileName,setFileName]=useState(''),[format,setFormat]=useState('auto'),[pasting,setPasting]=useState(false),[drag,setDrag]=useState(false);
+ const [text,setText]=useState(''),[fileName,setFileName]=useState(''),[format,setFormat]=useState('auto'),[pasting,setPasting]=useState(false),[drag,setDrag]=useState(false),[promptCopied,setPromptCopied]=useState('');
  const [subject,setSubject]=useState(''),[topic,setTopic]=useState(''),[tag,setTag]=useState(''),[dupes,setDupes]=useState<'skip'|'keep'>('skip'),[keepProgress,setKeepProgress]=useState(false),[excluded,setExcluded]=useState<Set<number>>(new Set()),[done,setDone]=useState<number|null>(null);
  const input=useRef<HTMLInputElement>(null);
  const parsed=useMemo(()=>{
@@ -57,13 +60,15 @@ function ImportPanel({items,onImport,onBack}:any){
  const rows=(parsed as any)?.rows||[];
  const ready=rows.filter((r:any)=>r.item&&!excluded.has(r.i)&&(dupes==='keep'||!r.duplicate));
  const [fileError,setFileError]=useState('');
- async function readFile(file?:File){if(!file)return;if(file.size>15*1024*1024){setFileName('');setText('');setFileError('Choose a file under 15 MB.');return;}setFileError('');setText(await file.text());setFileName(file.name);setExcluded(new Set());setDone(null);setPasting(false);}
+ async function readFile(file?:File){if(!file)return;if(file.size>15*1024*1024){setFileName('');setText('');setFileError('Choose a file under 15 MB.');return;}setFileError('');setText(await file.text());setFileName(file.name);setFormat('auto');setExcluded(new Set());setDone(null);setPasting(false);}
+ async function copyPrompt(){try{await navigator.clipboard.writeText(aiImportPrompt);setPromptCopied('AI formatting guide copied.');}catch{setPromptCopied('Copy is blocked here. Select the text from RecallFlow on another device.');}}
  function commit(){
   const stamp=Date.now(),extraTags=tag.split(',').map(x=>x.trim()).filter(Boolean);
   const clean=ready.map((r:any,n:number)=>{const {id:_id,...item}=r.item;const out:any={...item,id:`item_${stamp}_${n}`,subject:subject.trim()||String(item.subject||'').trim()||'General',topic:topic.trim()||String(item.topic||'').trim()||'Imported',tags:[...new Set([...(item.tags||[]),...extraTags])]};if(!out.tags.length)delete out.tags;if(!keepProgress)for(const k of ['due','interval','lastReviewed','attempts','lapses'])delete out[k];for(const k of Object.keys(out))if(out[k]===undefined)delete out[k];return out;});
   onImport(clean);setDone(clean.length);
  }
- function reset(){setText('');setFileName('');setExcluded(new Set());setDone(null);setSubject('');setTopic('');setTag('');}
+ function reset(){setText('');setFileName('');setFormat('auto');setExcluded(new Set());setDone(null);setSubject('');setTopic('');setTag('');setPromptCopied('');}
+ const detectedLabel=(parsed as any)?.detected?importFormats.find(([id])=>id===(parsed as any).detected)?.[1]:'';
  if(done!==null)return <div className="transfer-panel"><section className="transfer-card transfer-done"><span className="transfer-done-icon"><CheckCircle2 size={30}/></span><h2>Added {done} {done===1?'question':'questions'}</h2><p>They are in your question bank and ready to practise.</p><div className="transfer-footer-actions"><Button onClick={onBack}>View questions</Button><Button variant="outline" onClick={reset}>Import more</Button></div></section></div>;
  return <div className="transfer-panel">
   {!text.trim()||pasting?<section className="transfer-card"><h2><span>1</span>Add your questions</h2>
@@ -72,10 +77,12 @@ function ImportPanel({items,onImport,onBack}:any){
    <input ref={input} type="file" hidden aria-label="Choose a file to import" accept=".json,.csv,.tsv,.txt,.md,application/json,text/csv,text/plain,text/tab-separated-values" onChange={e=>{void readFile(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
    {pasting?<label className="transfer-field">Paste questions<textarea autoFocus value={text} onChange={e=>{setText(e.target.value);setFileName('');setExcluded(new Set());}} placeholder={'One per line, for example:\nCapital of France? | Paris\nLargest planet? | Jupiter'}/></label>:<button type="button" className="transfer-paste-toggle" onClick={()=>setPasting(true)}><ClipboardPaste size={16}/>Paste text instead</button>}
    {pasting&&<div className="transfer-footer-actions"><Button variant="outline" onClick={()=>{setPasting(false);setText('');}}>Cancel</Button><Button disabled={!text.trim()} onClick={()=>setPasting(false)}>Preview</Button></div>}
-   <div className="transfer-help"><strong>Supported formats</strong><ul><li><b>RecallFlow file</b> – exported from RecallFlow, keeps everything</li><li><b>CSV</b> – columns: subject, topic, type, prompt, answer, options…</li><li><b>Anki / Quizlet</b> – front and back separated by a tab</li><li><b>Plain lines</b> – <code>question | answer</code> on each line</li></ul><button type="button" onClick={()=>download(csvTemplate,'recallflow-template.csv','text/csv')}><Download size={14}/>Download CSV template</button></div>
+   <div className="transfer-help"><strong>Supported formats</strong><ul><li><b>RecallFlow file</b> – JSON from Export; best for every question type</li><li><b>CSV</b> – columns: subject, topic, type, prompt, answer, options…</li><li><b>Anki / Quizlet</b> – front and back separated by a tab</li><li><b>Plain lines</b> – <code>question | answer</code> on each line</li></ul><div className="transfer-help-actions"><button type="button" onClick={()=>download(csvTemplate,'recallflow-template.csv','text/csv')}><Download size={14}/>Download CSV template</button><button type="button" onClick={()=>void copyPrompt()}><Sparkles size={14}/>Copy AI formatting guide</button></div>{promptCopied&&<p className="transfer-status" role="status">{promptCopied}</p>}<p className="transfer-note">Paste the guide into ChatGPT or another AI, ask it to build your questions, then paste or upload the JSON here. Use https links for pictures and sounds — not base64.</p></div>
   </section>:<>
-   <section className="transfer-card"><div className="transfer-file"><FileUp size={20}/><span><strong>{fileName||'Pasted text'}</strong><small>{(parsed as any)?.detected?importFormats.find(([id])=>id===(parsed as any).detected)?.[1]:'Could not read'}</small></span><button type="button" aria-label="Remove file" onClick={reset}><X size={16}/></button></div>
+   <section className="transfer-card"><div className="transfer-file"><FileUp size={20}/><span><strong>{fileName||'Pasted text'}</strong><small>{(parsed as any)?.error?'Could not read':format==='auto'&&detectedLabel?`Detected: ${detectedLabel}`:detectedLabel||'Choose a format'}</small></span><button type="button" aria-label="Remove file" onClick={reset}><X size={16}/></button></div>
     <label className="transfer-field transfer-inline">Read as<select value={format} onChange={e=>{setFormat(e.target.value);setExcluded(new Set());}}>{importFormats.map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label>
+    {format==='auto'&&detectedLabel&&!((parsed as any)?.error)&&<p className="transfer-note">Automatic: treating this as <b>{detectedLabel}</b>. Pick another format if that looks wrong.</p>}
+    <div className="transfer-help-actions"><button type="button" onClick={()=>void copyPrompt()}><Sparkles size={14}/>Copy AI formatting guide</button></div>
     {(parsed as any)?.error&&<p className="transfer-error" role="alert"><AlertCircle size={16}/>{(parsed as any).error}</p>}
    </section>
    {!!rows.length&&<>

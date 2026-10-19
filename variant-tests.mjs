@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {validateQuestion,gradeQuestion,imageSafe} from './src/question-types.js';
 import {resolveVariant,itemTypes,seededShuffle,draftFromSpec,specFromDraft,emptyDraft} from './src/question-variants.js';
 import {filterQuiz} from './src/learning-core.js';
-import {serialize,parseImport,detectFormat,parseCSV,csvTemplate} from './src/transfer-formats.js';
+import {serialize,parseImport,detectFormat,parseCSV,csvTemplate,prepareExport,embeddedAudioCount,aiImportPrompt} from './src/transfer-formats.js';
 
 // Multi-type questions
 const multi=validateQuestion({id:'q1',subject:'Chem',topic:'Symbols',type:'single_choice',prompt:'Symbol for sodium?',answer:'Na',options:['Na','So','Sd'],typeMode:'random',variants:[
@@ -73,5 +73,15 @@ assert.equal(lines.format,'lines');assert.deepEqual(lines.records.map(r=>r.answe
 assert.match(serialize(items,'text'),/\*\*Answer:\*\* Na[\s\S]*Also asked as: Type answer, Matching/);
 assert.throws(()=>parseImport('{"nope":1}'),/no questions/);
 assert.throws(()=>parseImport('subject,answer\nA,B','csv'),/prompt/);
+
+const clip='data:audio/wav;base64,YQ==',link='https://example.com/chime.mp3';
+const audioItem=validateQuestion({type:'short_answer',prompt:'What sound?',answer:'Bell',audio:clip});
+const linkItem=validateQuestion({type:'short_answer',prompt:'Which note?',answer:'A',audio:link});
+assert.equal(embeddedAudioCount([audioItem,linkItem]),1);
+assert.equal(JSON.parse(serialize([audioItem,linkItem],'json',{images:true,audio:false})).questions[0].audio,undefined);
+assert.equal(JSON.parse(serialize([audioItem,linkItem],'json',{images:true,audio:false})).questions[1].audio,link);
+assert.equal(JSON.parse(serialize([audioItem],'json',{audio:true})).questions[0].audio,clip);
+assert.equal(prepareExport([{image:'data:image/png;base64,abc',audio:clip}],{images:false,audio:false})[0].audio,undefined);
+assert.match(aiImportPrompt,/list_recall/);
 
 console.log('PASS: multi-type validation, variant selection and filters, draft round-trip, seeded shuffle, image links, item pictures, and CSV/JSON/TSV/text import-export.');

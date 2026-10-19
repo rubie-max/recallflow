@@ -2,7 +2,7 @@ import {normalize} from './learning-core.js';
 import {typeLabel,questionTypes} from './question-types.js';
 
 export const exportFormats=[
-  {id:'json',label:'RecallFlow file',ext:'json',mime:'application/json',detail:'Keeps every type, image and setting. Best for moving to another device.'},
+  {id:'json',label:'RecallFlow file',ext:'json',mime:'application/json',detail:'Keeps every type and setting. Use the toggles below to leave out pictures or recorded sounds and keep the file small.'},
   {id:'csv',label:'Spreadsheet (CSV)',ext:'csv',mime:'text/csv',detail:'Open or edit in Excel, Google Sheets or Numbers.'},
   {id:'tsv',label:'Anki / Quizlet',ext:'txt',mime:'text/tab-separated-values',detail:'Tab-separated front and back, ready for flashcard apps.'},
   {id:'text',label:'Printable sheet',ext:'md',mime:'text/markdown',detail:'Readable questions and answers for printing or sharing.'},
@@ -11,19 +11,85 @@ export const importFormats=[['auto','Detect automatically'],['json','RecallFlow 
 
 const progressKeys=['due','interval','lastReviewed','attempts','lapses'];
 const typeIds=new Set(questionTypes.map(([id])=>id));
-const isImage=x=>typeof x==='string'&&(x.startsWith('data:')||x.startsWith('rf-img/'));
+const isEmbeddedImage=x=>typeof x==='string'&&(x.startsWith('data:image/')||x.startsWith('rf-img/'));
+const isEmbeddedAudio=x=>typeof x==='string'&&/^data:audio\//i.test(x);
 
-function stripImages(item){
+function stripEmbeddedImages(item){
   const out={...item};
-  for(const key of ['image','answerImage','audio'])if(isImage(out[key]))delete out[key];
-  if(out.optionImages)out.optionImages=Object.fromEntries(Object.entries(out.optionImages).filter(([,v])=>!isImage(v)));
-  if(out.variants)out.variants=out.variants.map(v=>v.optionImages?{...v,optionImages:Object.fromEntries(Object.entries(v.optionImages).filter(([,x])=>!isImage(x)))}:v);
+  for(const key of ['image','answerImage'])if(isEmbeddedImage(out[key]))delete out[key];
+  if(out.optionImages)out.optionImages=Object.fromEntries(Object.entries(out.optionImages).filter(([,v])=>!isEmbeddedImage(v)));
+  if(out.variants)out.variants=out.variants.map(v=>v.optionImages?{...v,optionImages:Object.fromEntries(Object.entries(v.optionImages).filter(([,x])=>!isEmbeddedImage(x)))}:v);
   return out;
 }
 
-export function prepareExport(items,{images=true,progress=true}={}){
-  return items.map(item=>{let out={...item};if(!images)out=stripImages(out);if(!progress)for(const key of progressKeys)delete out[key];return out;});
+export function prepareExport(items,{images=true,audio=false,progress=true}={}){
+  return items.map(item=>{
+    let out={...item};
+    if(!images)out=stripEmbeddedImages(out);
+    if(!audio&&isEmbeddedAudio(out.audio))delete out.audio;
+    if(!progress)for(const key of progressKeys)delete out[key];
+    return out;
+  });
 }
+
+export function embeddedAudioCount(items){
+  return items.filter(x=>isEmbeddedAudio(x?.audio)).length;
+}
+
+export const aiImportPrompt=`You are preparing questions for RecallFlow (a quiz app). Reply with ONE JSON object only — no markdown fences, no commentary.
+
+Shape:
+{"questions":[ ... ]}
+
+Each question is an object. Use these fields when they apply:
+
+Always useful:
+- "type" — one of: short_answer, fill_blank, single_choice, flashcard, true_false, multi_select, numeric, matching, ordering, cloze, fill_blank_options, list_recall, categorize, highlight, image_tap, slider
+- "prompt" — the question text (required for most types)
+- "answer" — the correct answer text (see type notes below)
+- "subject", "topic", "tags" (array of strings)
+
+Choices & lists:
+- "options" — array of strings (single_choice, multi_select, fill_blank_options)
+- "correctAnswers" — array of strings (multi_select only; each must match an option)
+- "acceptedAnswers" — array of extra spellings that count as correct (short_answer, etc.)
+- "pairs" — [{ "left":"...", "right":"..." }, ...] (matching)
+- "sequence" — array of strings in correct order (ordering)
+- "blanks" — array of answers, one per ___ in the prompt (cloze, fill_blank_options)
+- "listItems" — array of strings (list_recall); optional "listCount" if they only need to name some
+- "groups" — [{ "name":"Group A", "items":["a","b"] }, ...] (categorize, 2–4 groups)
+
+Special types:
+- "passage" — sentence with correct words wrapped in *asterisks* (highlight), e.g. "The *cat* sat."
+- "hotspot" — { "x":0.5, "y":0.4, "r":0.08, "aspect":0.75 } fractions of picture width/height (image_tap; needs "image")
+- "sliderMin", "sliderMax", "sliderStep", "numericTolerance", "unit" (slider)
+- "numericTolerance" — allowed difference (numeric and slider)
+
+Pictures & sound (optional):
+- "image", "answerImage" — https:// image URLs only (no base64)
+- "audio" — https:// sound URL only (no base64)
+- "fuzzy" — true/false for forgiving spelling (default true for text types)
+
+Multi-type questions (optional):
+- "variants" — array of extra type objects (same fields, often share the main prompt)
+- "typeMode" — "random" or "primary"
+
+Type-specific answer rules:
+- true_false: answer is "True" or "False"
+- multi_select: use correctAnswers; answer can be "2; 3" style summary
+- matching / ordering: answer is auto-derived from pairs/sequence if omitted
+- list_recall: answer like "Red; Blue; Yellow"
+- categorize: answer like "Fruit: Apple; Vegetable: Carrot"
+- highlight: answer lists marked words, e.g. "sat, slept"
+- image_tap: answer can describe the spot; include hotspot + image
+- slider: answer is the number as a string
+
+Example (minimal):
+{"questions":[
+  {"type":"short_answer","subject":"Geography","topic":"Capitals","prompt":"Capital of Japan?","answer":"Tokyo","tags":["asia"]},
+  {"type":"single_choice","prompt":"Largest planet?","answer":"Jupiter","options":["Earth","Jupiter","Mars"]},
+  {"type":"list_recall","prompt":"Name two primary colours.","listItems":["Red","Blue","Yellow"],"listCount":2,"answer":"Red; Blue; Yellow"}
+]}`;
 
 const csvCell=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
 const list=a=>(a||[]).join(' | ');
@@ -87,9 +153,10 @@ function fromRecord(rec){
 export function detectFormat(text,filename=''){
   const t=text.trim(),ext=filename.split('.').pop()?.toLowerCase();
   if(ext==='json'||t.startsWith('{')||t.startsWith('['))return 'json';
-  const first=t.split(/\r?\n/)[0]||'';
-  if(ext==='csv'||(/,/.test(first)&&/\b(prompt|question|front|term)\b/i.test(first)))return 'csv';
-  if(/\t/.test(first))return 'tsv';
+  const first=t.split(/\r?\n/).find(l=>l.trim())||'';
+  if(ext==='csv'||(/,/.test(first)&&/\b(prompt|question|front|term|type|subject)\b/i.test(first)))return 'csv';
+  if(ext==='tsv'||ext==='txt'&&/\t/.test(first))return 'tsv';
+  if(/\t/.test(first)&&first.split('\t').length>=2)return 'tsv';
   return 'lines';
 }
 
