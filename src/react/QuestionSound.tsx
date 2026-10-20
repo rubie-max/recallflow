@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2} from 'lucide-react';
+import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines} from 'lucide-react';
+import {MediaLinkForm} from './MediaLinkForm';
 import {MAX_AUDIO_CHARS} from '../question-types.js';
 
 const MAX_SECONDS=60,BITRATE=32000;
@@ -55,14 +56,14 @@ export function SoundPlayer({src,label='Play sound',className=''}:{src:string,la
  </div>;
 }
 
-export function SoundField({audio,onChange,onError}:{audio?:string,onChange:(value?:string)=>void,onError:(message:string)=>void}){
+export function SoundField({audio,onChange,onError,onClearError}:{audio?:string,onChange:(value?:string)=>void,onError:(message:string)=>void,onClearError?:()=>void}){
  const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState('');
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
  useEffect(()=>()=>{const l=live.current;if(l){window.clearInterval(l.timer);l.stream.getTracks().forEach(t=>t.stop());}},[]);
  useEffect(()=>{if(audio?.startsWith('https://'))setLink(audio);else if(!audio)setLink('');},[audio]);
- function applyLink(){
+ function applyLink(next?:string){
   onError('');
-  const url=link.trim();
+  const url=(next??link).trim();
   if(!url){onChange(undefined);return;}
   if(!/^https:\/\//i.test(url)){onError('Use an https link to the sound file.');return;}
   if(url.length>2048){onError('That link is too long.');return;}
@@ -103,6 +104,6 @@ export function SoundField({audio,onChange,onError}:{audio?:string,onChange:(val
    </>}
   </div>
   <input ref={input} type="file" hidden aria-label="Upload question sound" accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>
-  {!recording&&<label className="editor-sound-link"><span className="editor-sound-link-label"><Link2 size={14} aria-hidden="true"/>Sound link</span><input type="url" inputMode="url" value={link} placeholder="https://example.com/sound.mp3" onChange={e=>setLink(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'){e.preventDefault();applyLink();}}} onBlur={()=>{if(link.trim()&&link.trim()!==audio)applyLink();}}/><button type="button" disabled={!!busy||!link.trim()} onClick={applyLink}>Use link</button></label>}
+  {!recording&&<MediaLinkForm label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');onClearError?.();}} onSubmit={url=>{setLink(url);applyLink(url);}}/>}
  </div>;
 }
