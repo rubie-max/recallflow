@@ -241,8 +241,8 @@
 .tf-circle{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:var(--secondary);border:2px solid var(--border);transition:transform .1s,border-color .15s,box-shadow .15s,opacity .15s}
 .tf-button[data-value=true] .tf-circle{color:var(--success)}
 .tf-button[data-value=false] .tf-circle{color:var(--error)}
-.dark .tf-button[data-value=true] .tf-circle{color:#3fbf7f}
-.dark .tf-button[data-value=false] .tf-circle{color:#ef5d5d}
+.dark .tf-button[data-value=true] .tf-circle{color:var(--success)}
+.dark .tf-button[data-value=false] .tf-circle{color:var(--error)}
 .tf-button:hover:not(:disabled) .tf-circle{border-color:var(--muted-foreground)}
 .tf-button:active:not(:disabled) .tf-circle{transform:scale(.94)}
 .tf-button:focus-visible{outline:none}

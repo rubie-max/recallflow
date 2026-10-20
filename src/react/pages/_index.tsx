@@ -259,7 +259,7 @@ export default function IndexPage(){
       kokoroVoice.stop();setCaughtUp(false);setCountdown(null);setReview(null);setShowQuizBuilder(path==='quiz-settings');
       const editor=editorRoute();
       if(editor){if(editor.id){const item=items.find(x=>x.id===editor.id);if(item)openAdd(item);else{closeEditor();setMessage('That question could not be found.');}}else openAdd();return;}
-      setShowAdd(false);setEditingId(null);
+      setShowAdd(false);setEditingId(null);setCardMenuId(null);
       setTab(({questions:'library',reports:'results',settings:'settings',streak:'streak',transfer:'transfer'} as any)[path]||'home');window.scrollTo({top:0});
     }
     window.addEventListener('popstate',navigate);window.addEventListener('hashchange',navigate);
@@ -319,7 +319,7 @@ export default function IndexPage(){
   function copySavedReport(report:QuizReport){navigator.clipboard?.writeText(JSON.stringify(report,null,2));setMessage("Saved report copied to clipboard.")}
   function closeEditor(){setSavedQuestion(null);setSaveStatus("");setShowAdd(false);setEditingId(null);setTab("library");setMessage("");window.scrollTo({top:0});}
   function openAdd(item?:Item){
-    setSavedQuestion(null);setSaveStatus("");setMessage("");setTab("library");window.scrollTo({top:0});
+    setCardMenuId(null);setSavedQuestion(null);setSaveStatus("");setMessage("");setTab("library");window.scrollTo({top:0});
     setEditingId(item?.id||null);const nextDraft=item?{...draftFromSpec(item),subject:item.subject,topic:item.topic,tags:(item.tags||[]).join(", "),image:item.image,answerImage:item.answerImage,audio:(item as any).audio,variants:item.variants?.length?item.variants.map(draftFromSpec):undefined,typeMode:item.variants?.length?item.typeMode||"random":undefined}:{subject:"",topic:"",prompt:"",answer:"",type:"short_answer",options:"",numericTolerance:"0"};setDraft(nextDraft);setDraftBaseline(JSON.stringify(nextDraft));setShowAdd(true);
   }
   async function saveQuestion(){
