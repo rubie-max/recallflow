@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {FileUp,FileDown,FileJson,Sheet,Layers,FileText,Download,Copy,Check,CheckCircle2,AlertCircle,CopyCheck,UploadCloud,ClipboardPaste,ArrowLeft,X,ImageIcon,History,AudioLines,Sparkles} from 'lucide-react';
+import {FileUp,FileDown,FileJson,Sheet,Layers,FileText,Download,Copy,Check,CheckCircle2,AlertCircle,CopyCheck,UploadCloud,ClipboardPaste,ArrowLeft,X,ImageIcon,History,AudioLines,Sparkles,ChevronRight} from 'lucide-react';
 import {Button} from './components/Button';
 import {questionTypes,typeLabel,validateQuestion} from '../question-types.js';
 import {itemTypes} from '../question-variants.js';
@@ -44,8 +44,27 @@ function ExportPanel({items,selectedIds,onDone}:any){
  </div>;
 }
 
+function AiHelper({onCopyPrompt,promptCopied}:any){
+ const example=`{
+  "prompt": "Capital of France?",
+  "type": "short_answer",
+  "answer": "Paris",
+  "audio": "https://…/paris.mp3",
+  "variants": [
+    { "type": "single_choice", "options": ["Paris","Lyon","Nice"] }
+  ]
+}`;
+ return <div className="transfer-ai-panel">
+  <div className="transfer-ai-tags"><span><Layers size={14}/>Several types per question</span><span><AudioLines size={14}/>Question sound (https)</span><span><ImageIcon size={14}/>Pictures (https)</span></div>
+  <div className="transfer-ai-example"><div className="transfer-ai-example-head"><span>Example — one question, two types + sound</span><button type="button" onClick={()=>void navigator.clipboard?.writeText(example)}><Copy size={13}/>Copy</button></div><pre>{example}</pre></div>
+  <Button className="transfer-ai-copy-btn" onClick={onCopyPrompt}><Sparkles size={16}/>Copy AI formatting guide</Button>
+  {promptCopied&&<p className="transfer-status" role="status">{promptCopied}</p>}
+  <p className="transfer-note">Use https links for pictures and sound — not base64. CSV keeps only the first type; use the RecallFlow / JSON format to keep every type.</p>
+ </div>;
+}
+
 function ImportPanel({items,onImport,onBack}:any){
- const [text,setText]=useState(''),[fileName,setFileName]=useState(''),[format,setFormat]=useState('auto'),[pasting,setPasting]=useState(false),[drag,setDrag]=useState(false),[promptCopied,setPromptCopied]=useState('');
+ const [text,setText]=useState(''),[fileName,setFileName]=useState(''),[format,setFormat]=useState('auto'),[pasting,setPasting]=useState(false),[drag,setDrag]=useState(false),[promptCopied,setPromptCopied]=useState(''),[aiOpen,setAiOpen]=useState(false);
  const [subject,setSubject]=useState(''),[topic,setTopic]=useState(''),[tag,setTag]=useState(''),[dupes,setDupes]=useState<'skip'|'keep'>('skip'),[keepProgress,setKeepProgress]=useState(false),[excluded,setExcluded]=useState<Set<number>>(new Set()),[done,setDone]=useState<number|null>(null);
  const input=useRef<HTMLInputElement>(null);
  const parsed=useMemo(()=>{
@@ -67,7 +86,7 @@ function ImportPanel({items,onImport,onBack}:any){
   const clean=ready.map((r:any,n:number)=>{const {id:_id,...item}=r.item;const out:any={...item,id:`item_${stamp}_${n}`,subject:subject.trim()||String(item.subject||'').trim()||'General',topic:topic.trim()||String(item.topic||'').trim()||'Imported',tags:[...new Set([...(item.tags||[]),...extraTags])]};if(!out.tags.length)delete out.tags;if(!keepProgress)for(const k of ['due','interval','lastReviewed','attempts','lapses'])delete out[k];for(const k of Object.keys(out))if(out[k]===undefined)delete out[k];return out;});
   onImport(clean);setDone(clean.length);
  }
- function reset(){setText('');setFileName('');setFormat('auto');setExcluded(new Set());setDone(null);setSubject('');setTopic('');setTag('');setPromptCopied('');}
+ function reset(){setText('');setFileName('');setFormat('auto');setExcluded(new Set());setDone(null);setSubject('');setTopic('');setTag('');setPromptCopied('');setAiOpen(false);}
  const detectedLabel=(parsed as any)?.detected?importFormats.find(([id])=>id===(parsed as any).detected)?.[1]:'';
  if(done!==null)return <div className="transfer-panel"><section className="transfer-card transfer-done"><span className="transfer-done-icon"><CheckCircle2 size={30}/></span><h2>Added {done} {done===1?'question':'questions'}</h2><p>They are in your question bank and ready to practise.</p><div className="transfer-footer-actions"><Button onClick={onBack}>View questions</Button><Button variant="outline" onClick={reset}>Import more</Button></div></section></div>;
  return <div className="transfer-panel">
@@ -75,9 +94,13 @@ function ImportPanel({items,onImport,onBack}:any){
    {!pasting&&<button type="button" className="transfer-drop" data-drag={drag||undefined} onClick={()=>input.current?.click()} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);void readFile(e.dataTransfer.files?.[0]);}}><UploadCloud size={30}/><strong>Choose a file or drop it here</strong><small>JSON, CSV, TSV or TXT</small></button>}
    {fileError&&<p className="transfer-error" role="alert"><AlertCircle size={16}/>{fileError}</p>}
    <input ref={input} type="file" hidden aria-label="Choose a file to import" accept=".json,.csv,.tsv,.txt,.md,application/json,text/csv,text/plain,text/tab-separated-values" onChange={e=>{void readFile(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
-   {pasting?<label className="transfer-field">Paste questions<textarea autoFocus value={text} onChange={e=>{setText(e.target.value);setFileName('');setExcluded(new Set());}} placeholder={'One per line, for example:\nCapital of France? | Paris\nLargest planet? | Jupiter'}/></label>:<button type="button" className="transfer-paste-toggle" onClick={()=>setPasting(true)}><ClipboardPaste size={16}/>Paste text instead</button>}
-   {pasting&&<div className="transfer-footer-actions"><Button variant="outline" onClick={()=>{setPasting(false);setText('');}}>Cancel</Button><Button disabled={!text.trim()} onClick={()=>setPasting(false)}>Preview</Button></div>}
-   <div className="transfer-help"><strong>Supported formats</strong><ul><li><b>RecallFlow file</b> – JSON from Export; best for every question type</li><li><b>CSV</b> – columns: subject, topic, type, prompt, answer, options…</li><li><b>Anki / Quizlet</b> – front and back separated by a tab</li><li><b>Plain lines</b> – <code>question | answer</code> on each line</li></ul><div className="transfer-help-actions"><button type="button" onClick={()=>download(csvTemplate,'recallflow-template.csv','text/csv')}><Download size={14}/>Download CSV template</button><button type="button" onClick={()=>void copyPrompt()}><Sparkles size={14}/>Copy AI formatting guide</button></div>{promptCopied&&<p className="transfer-status" role="status">{promptCopied}</p>}<p className="transfer-note">Paste the guide into ChatGPT or another AI, ask it to build your questions, then paste or upload the JSON here. Use https links for pictures and sounds — not base64.</p></div>
+   {pasting?<><label className="transfer-field">Paste questions<textarea autoFocus value={text} onChange={e=>{setText(e.target.value);setFileName('');setFormat('auto');setExcluded(new Set());}} placeholder={'One per line, for example:\nCapital of France? | Paris\nLargest planet? | Jupiter'}/></label><div className="transfer-footer-actions"><Button variant="outline" onClick={()=>{setPasting(false);setText('');}}>Cancel</Button><Button disabled={!text.trim()} onClick={()=>setPasting(false)}>Preview</Button></div></>:<>
+    <div className="transfer-or" aria-hidden="true"><span/><span>OR</span><span/></div>
+    <button type="button" className="transfer-ai-card" aria-expanded={aiOpen} onClick={()=>setAiOpen(o=>!o)}><span className="transfer-ai-icon"><Sparkles size={20}/></span><span className="transfer-ai-copy"><strong>Make questions with AI</strong><small>Copy the guide, paste your notes into any AI, bring the result back</small></span><ChevronRight size={18} className="transfer-ai-chevron"/></button>
+    {aiOpen&&<AiHelper onCopyPrompt={()=>void copyPrompt()} promptCopied={promptCopied}/>}
+    <div className="transfer-quick"><button type="button" onClick={()=>setPasting(true)}><ClipboardPaste size={16}/>Paste text</button><button type="button" onClick={()=>download(csvTemplate,'recallflow-template.csv','text/csv')}><Download size={16}/>CSV template</button></div>
+    <details className="transfer-formats-note"><summary>Supported formats</summary><ul><li><b>RecallFlow file</b> – JSON from Export; best for every question type</li><li><b>CSV</b> – columns: subject, topic, type, prompt, answer, options, variants, audio</li><li><b>Anki / Quizlet</b> – front and back separated by a tab</li><li><b>Plain lines</b> – <code>question | answer</code> on each line</li></ul></details>
+   </>}
   </section>:<>
    <section className="transfer-card"><div className="transfer-file"><FileUp size={20}/><span><strong>{fileName||'Pasted text'}</strong><small>{(parsed as any)?.error?'Could not read':format==='auto'&&detectedLabel?`Detected: ${detectedLabel}`:detectedLabel||'Choose a format'}</small></span><button type="button" aria-label="Remove file" onClick={reset}><X size={16}/></button></div>
     <label className="transfer-field transfer-inline">Read as<select value={format} onChange={e=>{setFormat(e.target.value);setExcluded(new Set());}}>{importFormats.map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label>

@@ -89,7 +89,33 @@ Example (minimal):
   {"type":"short_answer","subject":"Geography","topic":"Capitals","prompt":"Capital of Japan?","answer":"Tokyo","tags":["asia"]},
   {"type":"single_choice","prompt":"Largest planet?","answer":"Jupiter","options":["Earth","Jupiter","Mars"]},
   {"type":"list_recall","prompt":"Name two primary colours.","listItems":["Red","Blue","Yellow"],"listCount":2,"answer":"Red; Blue; Yellow"}
-]}`;
+]}
+
+Several types for one question — add a "variants" array. Each item has its own "type" plus the fields that type needs ("options" for choice types, "answer" otherwise). The top-level type is the first way to ask it.
+Example: { "prompt": "Capital of France?", "type": "short_answer", "answer": "Paris", "variants": [ { "type": "single_choice", "options": ["Paris","Lyon","Nice"] } ] }
+In CSV, put extra types in the "variants" column: type=opt|opt, separate several with ;
+
+Question sound — add "audio": "https://..." (direct mp3/wav link). Links only, never base64.
+In CSV, use an "audio" column with the https link.`;
+
+export function parseVariantsCell(cell){
+  if(!cell||!String(cell).trim())return undefined;
+  const out=String(cell).split(';').map(part=>{
+    const eq=part.indexOf('=');
+    const type=(eq>=0?part.slice(0,eq):part).trim();
+    const rest=eq>=0?part.slice(eq+1):'';
+    if(!type||!typeIds.has(type))return null;
+    const v={type};
+    const opts=rest.split('|').map(s=>s.trim()).filter(Boolean);
+    if(['single_choice','fill_blank_options'].includes(type))v.options=opts;
+    else if(type==='multi_select'){v.options=opts;v.correctAnswers=opts;}
+    else if(type==='true_false')v.answer=/^t/i.test(opts[0]||rest.trim())?'True':'False';
+    else if(opts.length)v.answer=opts[0];
+    else if(rest.trim())v.answer=rest.trim();
+    return v;
+  }).filter(Boolean);
+  return out.length?out:undefined;
+}
 
 const csvCell=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
 const list=a=>(a||[]).join(' | ');
@@ -147,6 +173,13 @@ function fromRecord(rec){
   if(rec.tolerance)out.numericTolerance=rec.tolerance;
   if(rec.tags)out.tags=String(rec.tags).split(/[|,]/).map(x=>x.trim()).filter(Boolean);
   if(type==='true_false')out.answer=/^t/i.test(out.answer)?'True':'False';
+  if(rec.audio?.trim())out.audio=rec.audio.trim();
+  const variants=parseVariantsCell(rec.variants);
+  if(variants)out.variants=variants.map(v=>{
+    if(v.type==='single_choice'&&!v.answer&&out.answer)return {...v,answer:out.answer};
+    if(v.type==='multi_select'&&(!v.options?.length)&&split(rec.options).length)return {...v,options:split(rec.options),correctAnswers:v.correctAnswers||split(rec.correct_answers)};
+    return v;
+  });
   return out;
 }
 
@@ -182,9 +215,9 @@ export function parseImport(text,format='auto',filename=''){
 
 export function duplicateKey(item){return (item.prompt?normalize(item.prompt):'image:'+String(item.image||'').slice(-80))+'|'+normalize(item.answer)+'|'+(item.type||'short_answer');}
 
-export const csvTemplate=[csvColumns.join(','),
-  'Geography,Capitals,short_answer,What is the capital of Japan?,Tokyo,,,,,,,,',
-  'Space,Planets,single_choice,Which planet is the largest?,Jupiter,Mars | Jupiter | Saturn,,,,,,,',
-  'Biology,Cells,true_false,Mitochondria produce energy for the cell.,True,,,,,,,,',
-  'Chemistry,Symbols,matching,Match each element to its symbol.,,,,,Oxygen => O | Sodium => Na | Iron => Fe,,,,',
-].join('\r\n');
+export const csvTemplate=`subject,topic,type,prompt,answer,options,variants,audio
+Geography,Capitals,short_answer,Capital of France?,Paris,,single_choice=Paris|Lyon|Nice,
+Science,Physics,true_false,Light is faster than sound.,true,,short_answer=sound,
+Biology,Cells,single_choice,Which stores DNA?,Nucleus,Nucleus|Ribosome|Vacuole,multi_select=Nucleus|Mitochondria,
+Maths,Basics,short_answer,What is 7 x 8?,56,,numeric=56;true_false=true,
+Art,Colour,short_answer,Name one primary colour.,Red,,,`;

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {validateQuestion,gradeQuestion,imageSafe} from './src/question-types.js';
 import {resolveVariant,itemTypes,seededShuffle,draftFromSpec,specFromDraft,emptyDraft} from './src/question-variants.js';
 import {filterQuiz} from './src/learning-core.js';
-import {serialize,parseImport,detectFormat,parseCSV,csvTemplate,prepareExport,embeddedAudioCount,aiImportPrompt} from './src/transfer-formats.js';
+import {serialize,parseImport,detectFormat,parseCSV,csvTemplate,prepareExport,embeddedAudioCount,aiImportPrompt,parseVariantsCell} from './src/transfer-formats.js';
 
 // Multi-type questions
 const multi=validateQuestion({id:'q1',subject:'Chem',topic:'Symbols',type:'single_choice',prompt:'Symbol for sodium?',answer:'Na',options:['Na','So','Sd'],typeMode:'random',variants:[
@@ -65,7 +65,11 @@ const csv=serialize(items,'csv');
 const fromCsv=parseImport(csv,'auto','x.csv').records.map(r=>validateQuestion(r));
 assert.deepEqual(fromCsv.map(x=>x.type),['single_choice','multi_select','ordering']);
 assert.deepEqual(fromCsv[1].correctAnswers,['2','3']);assert.equal(fromCsv[1].prompt,'Pick "primes", please');assert.deepEqual(fromCsv[2].sequence,['One','Two, then','Three']);
-assert.equal(parseImport(csvTemplate,'csv').records.map(r=>validateQuestion(r)).length,4);
+const fromTemplate=parseImport(csvTemplate,'csv').records;
+assert.equal(fromTemplate.length,5);
+assert.equal(validateQuestion(fromTemplate[0]).variants?.[0]?.type,'single_choice');
+assert.deepEqual(parseVariantsCell('numeric=56;true_false=true').map(v=>v.type),['numeric','true_false']);
+assert.equal(validateQuestion({type:'short_answer',prompt:'p',answer:'Paris',audio:'https://example.com/a.mp3'}).audio,'https://example.com/a.mp3');
 assert.deepEqual(parseCSV('a,"b\nc",d\r\n1,2,3'),[['a','b\nc','d'],['1','2','3']]);
 const tsv=serialize(items,'tsv');assert.equal(detectFormat(tsv),'tsv');assert.equal(parseImport(tsv).records[0].answer,'Na');
 const lines=parseImport('Capital of France? | Paris\nLargest planet :: Jupiter\n# comment\n','auto');
