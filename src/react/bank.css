@@ -190,7 +190,7 @@
 .word-bank-options button:hover:not(:disabled){border-color:var(--primary)!important;color:var(--primary)}
 .word-bank-options button:active:not(:disabled){transform:translateY(2px);box-shadow:none}
 .word-bank-options button[data-used]{opacity:.45;box-shadow:none;border-style:dashed!important}
-.word-bank-options button[data-used]::after{content:"✓";margin-left:6px;font-size:13px;color:var(--primary)}
+.word-bank-options button[data-used]::after{content:"\2713";margin-left:6px;font-size:13px;color:var(--primary)}
 .word-bank-options:has(.item-media) button[data-used]::after{position:absolute;top:6px;right:8px;margin:0}
 .word-bank-options:has(.item-media) button{position:relative}
 .word-bank-tools{padding:0 2px}
@@ -230,7 +230,7 @@
 .voice-check-list li:first-child{border-top:0}
 .voice-check-list li span{color:var(--muted-foreground)}
 .voice-check-list li b{font-weight:600;text-align:right}
-.voice-check-list li[data-ok=true] b::before,.voice-check-list li[data-ok=""] b::before{content:"✓ ";color:var(--success,#16a34a)}
+.voice-check-list li[data-ok=true] b::before,.voice-check-list li[data-ok=""] b::before{content:"\2713 ";color:var(--success,#16a34a)}
 .voice-check-list li[data-ok=false] b{color:var(--error)}
 .voice-check-list li[data-neutral] b{color:var(--muted-foreground)}
 
@@ -239,8 +239,8 @@
 .tf-button{display:flex;flex-direction:column;align-items:center;gap:9px;min-width:84px;padding:0;border:0;background:none;color:var(--muted-foreground);font:600 13px var(--font-family-base);cursor:pointer;-webkit-tap-highlight-color:transparent}
 .tf-button:disabled{cursor:default}
 .tf-circle{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:var(--secondary);border:2px solid var(--border);transition:transform .1s,border-color .15s,box-shadow .15s,opacity .15s}
-.tf-button[data-value=true] .tf-circle{color:#2f9e68}
-.tf-button[data-value=false] .tf-circle{color:#d94c4c}
+.tf-button[data-value=true] .tf-circle{color:var(--success)}
+.tf-button[data-value=false] .tf-circle{color:var(--error)}
 .dark .tf-button[data-value=true] .tf-circle{color:#3fbf7f}
 .dark .tf-button[data-value=false] .tf-circle{color:#ef5d5d}
 .tf-button:hover:not(:disabled) .tf-circle{border-color:var(--muted-foreground)}
@@ -422,8 +422,8 @@ main header.settings-detail-head{display:grid;justify-content:stretch;align-item
 .matching-board button[data-left]::after{right:-7px}
 .matching-board button[data-right]::after{left:-7px}
 .matching-board button[data-state=paired]::after,.matching-board button[data-state=active]::after,.matching-board button[data-drawing]::after{background:var(--primary);border-color:var(--primary)}
-.matching-board button[data-state=correct]::after{background:#4d9a70;border-color:#4d9a70}
-.matching-board button[data-state=wrong]::after{background:#c76a65;border-color:#c76a65}
+.matching-board button[data-state=correct]::after{background:var(--success);border-color:var(--success)}
+.matching-board button[data-state=wrong]::after{background:var(--error);border-color:var(--error)}
 .matching-board button[data-drawing]{border:2px solid var(--primary)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 18%,transparent)}
 .matching-board[data-drawing] button:not([data-drawing]){opacity:.75}
 .matching-board[data-drawing]{cursor:crosshair}

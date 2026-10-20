@@ -77,12 +77,13 @@ export function ImageTapAnswer({item,disabled,onGrade}:any){
   else if((e.key==='Enter'||e.key===' ')&&!spot){e.preventDefault();setSpot({x:.5,y:.5});}
  }
  return <div className="extra-answer tap-answer">
-  <p className="split-answer-help">{disabled?(hit?'You found the right spot.':'The green circle shows the right spot.'):spot?'Tap again to move your pin, then check.':'Tap the right place on the picture.'}</p>
+  {!disabled&&<p className="split-answer-help">{spot?'Tap again to move your pin, then check.':'Tap the right place on the picture.'}</p>}
   <div className="tap-board" ref={board} data-locked={disabled||undefined} role="button" tabIndex={disabled?-1:0} aria-label="Picture. Tap to place your pin; arrow keys move it." onClick={place} onKeyDown={key}>
    <img src={item.image} alt={item.imageAlt||'Question picture'} draggable={false}/>
    {disabled&&item.hotspot&&<TapTarget spot={item.hotspot}/>}
    {spot&&<span className="tap-pin" data-state={disabled?(hit?'correct':'wrong'):undefined} style={{left:`${spot.x*100}%`,top:`${spot.y*100}%`}} aria-hidden="true"/>}
   </div>
+  {disabled&&<div className="tap-result" data-state={hit?'correct':'wrong'} role="status">{hit?<Check size={18}/>:<X size={18}/>}<div><strong>{hit?'You found it':'Not quite'}</strong><span>{hit?'Right on the spot.':'The ringed spot is the right place.'}</span></div></div>}
   {!disabled&&<Button className="split-submit" disabled={!spot} onClick={()=>onGrade(spot)}>Check</Button>}
  </div>;
 }
