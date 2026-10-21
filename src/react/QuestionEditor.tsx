@@ -3,7 +3,7 @@ import {Plus,Trash2,ArrowUp,ArrowDown,Check,Save,LoaderCircle,ImagePlus,Eye,EyeO
 import {MediaLinkForm,MediaErrorBanner} from './MediaLinkForm';
 import {ImageEditor} from './ImageEditor';
 import {ImageViewer} from './ImageViewer';
-import {typeLabel,gradeQuestion,extraTypes,resolveMediaLink} from '../question-types.js';
+import {typeLabel,gradeQuestion,extraTypes,resolveImageLink} from '../question-types.js';
 import {TypeField,TypeSheet} from './TypeSheet';
 import {MAX_VARIANTS,emptyDraft,seededShuffle,imageTypes,pictureLabel,specFromDraft,draftTypeFields} from '../question-variants.js';
 import {ExtraAnswer} from './ExtraAnswers';
@@ -39,7 +39,7 @@ export async function compressImage(file:File):Promise<string>{
 }
 // Copies the picture into the question when the site allows it; otherwise keeps the https link.
 export async function imageFromLink(link:string):Promise<{image:string;linked:boolean}>{
- const resolved=resolveMediaLink(link.trim());
+ const resolved=resolveImageLink(link.trim());
  let url:URL;try{url=new URL(resolved);}catch{throw new Error('Paste a full image link that starts with https://');}
  if(!['https:','http:'].includes(url.protocol))throw new Error('Paste a full image link that starts with https://');
  try{
@@ -50,7 +50,7 @@ export async function imageFromLink(link:string):Promise<{image:string;linked:bo
  }catch{}
  if(url.protocol!=='https:')throw new Error('This site blocks copying the image. Use an https:// link or upload the file.');
  if(url.href.length>2048)throw new Error('This link is too long. Upload the image instead.');
- await new Promise<void>((resolve,reject)=>{const img=new Image(),timer=window.setTimeout(()=>reject(new Error('The image took too long to load.')),12000);img.onload=()=>{window.clearTimeout(timer);resolve();};img.onerror=()=>{window.clearTimeout(timer);reject(new Error('No image was found at this link.'));};img.src=url.href;});
+ await new Promise<void>((resolve,reject)=>{const img=new Image(),timer=window.setTimeout(()=>reject(new Error('The image took too long to load.')),12000);img.onload=()=>{window.clearTimeout(timer);resolve();};img.onerror=()=>{window.clearTimeout(timer);reject(new Error(/drive\.google\.com/i.test(link)?'No image was found at this Google Drive link. Share the file as “Anyone with the link” (Viewer), then try again.':'No image was found at this link.'));};img.src=url.href;});
  return {image:url.href,linked:true};
 }
 export function ImageLightbox({src,onClose}:{src:string|null;onClose:()=>void}){
