@@ -1,5 +1,11 @@
 import {textGrade,normalize} from './learning-core.js';
 import {MAX_VARIANTS,pickVariant} from './question-variants.js';
+
+export function driveFileId(url){const s=String(url||'');const m=s.match(/\/file\/d\/([\w-]{20,})/)||s.match(/[?&]id=([\w-]{20,})/)||s.match(/\/d\/([\w-]{20,})/);return m?m[1]:'';}
+export function isDriveLink(url){return /^https:\/\/(drive|docs)\.google\.com\//i.test(String(url||''))&&!!driveFileId(url);}
+export function driveDirectUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/uc?export=view&id=${id}`:String(url||'');}
+export function drivePreviewUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/file/d/${id}/preview`:String(url||'');}
+export function resolveMediaLink(url){return isDriveLink(url)?driveDirectUrl(url):String(url||'').trim();}
 export const questionTypes=[['short_answer','Type answer'],['fill_blank','Fill in the blank'],['single_choice','Multiple choice'],['flashcard','Flashcard'],['true_false','True / False'],['multi_select','Multi-select'],['numeric','Numeric answer'],['matching','Matching'],['ordering','Ordering / sequence'],['cloze','Multi-blank / cloze'],['fill_blank_options','Fill blanks with options'],['list_recall','List recall'],['categorize','Sort into groups'],['highlight','Highlight words'],['image_tap','Tap the picture'],['slider','Slider / estimate']];
 export const extraTypes=['list_recall','categorize','highlight','image_tap','slider'];
 
@@ -34,7 +40,9 @@ export function hotspotHit(spot,given){return !!spot&&!!given&&Number.isFinite(g
 
 // Sounds are stored inside the question, so they sync and back up with it; keep each clip small.
 export const MAX_AUDIO_CHARS=700000;
+export const MAX_VIDEO_CHARS=3500000;
 export function audioSafe(x){return typeof x==='string'&&((/^data:audio\/[a-z0-9.+-]+(?:;codecs=[a-z0-9.,"=-]+)?;base64,[A-Za-z0-9+/=]+$/i.test(x)&&x.length<=MAX_AUDIO_CHARS)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048));}
+export function videoSafe(x){return typeof x==='string'&&((/^data:video\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]+$/i.test(x)&&x.length<=MAX_VIDEO_CHARS)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048));}
 
 const trimmed=x=>typeof x==='string'?x.trim():'';
 function validateExtra(type,input,prompt,answer){
@@ -95,9 +103,12 @@ if(type==='ordering'){if(!Array.isArray(input.sequence)||input.sequence.length<2
 if(['cloze','fill_blank_options'].includes(type)){if(!Array.isArray(input.blanks)||!input.blanks.length||input.blanks.some(x=>typeof x!=='string'||!x.trim())||(input.prompt.match(/_{2,}/g)||[]).length!==input.blanks.length)throw new Error('Use one ___ marker for each blank answer.');answer=input.blanks.join('; ');}
 if(type==='fill_blank_options'){if(!Array.isArray(input.options)||input.options.length<2||input.options.some(x=>typeof x!=='string'||!x.trim()))throw new Error('Add at least two word-bank options.');options=input.options.map(x=>x.trim());if(new Set(options).size!==options.length||input.blanks.some(x=>!options.includes(x)))throw new Error('Use unique options and include every blank answer in the word bank.');}
 const extra=extraTypes.includes(type)?validateExtra(type,input,prompt,answer):null;if(extra)answer=extra.answer;
-if(input.audio&&!audioSafe(input.audio))throw new Error('Use a sound clip of about 1 minute or less, or an https sound link.');
+if(input.audio&&!audioSafe(input.audio))throw new Error('Use a sound clip of about 1 minute or less, or an https / Drive sound link.');
+if(input.answerAudio&&!audioSafe(input.answerAudio))throw new Error('Use an answer sound of about 1 minute or less, or an https / Drive sound link.');
+if(input.video&&!videoSafe(input.video))throw new Error('Use an https or Google Drive video link (or a small video file).');
+if(input.answerVideo&&!videoSafe(input.answerVideo))throw new Error('Use an https or Google Drive answer-video link.');
 if(input.image&&!imageSafe(input.image))throw new Error('Use a PNG, JPEG or WebP image under 2 MB, or an https image link.');if(input.answerImage&&!imageSafe(input.answerImage))throw new Error('Use a PNG, JPEG or WebP answer image under 2 MB, or an https image link.');if(input.optionImages&&(typeof input.optionImages!=='object'||Object.values(input.optionImages).some(x=>!imageSafe(x))))throw new Error('Invalid image choices.');
-if(input.acceptedAnswers&&(!Array.isArray(input.acceptedAnswers)||input.acceptedAnswers.some(a=>typeof a!=='string'||!a.trim())))throw new Error('Alternative answers must be non-empty text.');if(input.tags&&(!Array.isArray(input.tags)||input.tags.some(a=>typeof a!=='string')))throw new Error('Tags must be text.');if(!answer&&!(type==='flashcard'&&input.answerImage))throw new Error(type==='flashcard'?'Add an answer or a back image first.':'Add a correct answer first.');
+if(input.acceptedAnswers&&(!Array.isArray(input.acceptedAnswers)||input.acceptedAnswers.some(a=>typeof a!=='string'||!a.trim())))throw new Error('Alternative answers must be non-empty text.');if(input.tags&&(!Array.isArray(input.tags)||input.tags.some(a=>typeof a!=='string')))throw new Error('Tags must be text.');if(!answer&&!(type==='flashcard'&&(input.answerImage||input.answerVideo||input.answerAudio)))throw new Error(type==='flashcard'?'Add an answer, a back image, video or sound first.':'Add a correct answer first.');
 const result={...input,type,prompt,answer,options,correctAnswers,numericTolerance,...(extra?.fields||{})};
 if(input.variants!==undefined){if(!Array.isArray(input.variants)||input.variants.length>MAX_VARIANTS)throw new Error(`Use up to ${MAX_VARIANTS} extra question types.`);result.variants=input.variants.map((variant,i)=>{try{return pickVariant(validateQuestion({...pickVariant(variant||{}),prompt:variant?.prompt||input.prompt,image:input.image}));}catch(error){throw new Error(`${typeLabel(variant?.type)} (type ${i+2}): ${error.message}`);}});if(!result.variants.length)delete result.variants;}
 if(result.typeMode!==undefined&&!['random','primary'].includes(result.typeMode))delete result.typeMode;
@@ -119,7 +130,7 @@ export function answerText(item){
   if(item.blanks?.length)return item.blanks.join('; ');
   if(item.pairs?.length)return item.pairs.map(p=>`${p.left} → ${p.right}`).join('; ');
   if(item.sequence?.length)return item.sequence.join(' → ');
-  return item.answerImage?'(answer picture)':'';
+  return item.answerImage?'(answer picture)':item.answerVideo?'(answer video)':item.answerAudio?'(answer sound)':'';
 }
 // What the learner answered, as text for quiz reports.
 export function describeAnswer(item,given){

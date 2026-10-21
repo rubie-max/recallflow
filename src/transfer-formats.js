@@ -1,5 +1,5 @@
 import {normalize} from './learning-core.js';
-import {typeLabel,questionTypes} from './question-types.js';
+import {typeLabel,questionTypes,resolveMediaLink} from './question-types.js';
 
 export const exportFormats=[
   {id:'json',label:'RecallFlow file',ext:'json',mime:'application/json',detail:'Keeps every type and setting. Use the toggles below to leave out pictures or recorded sounds and keep the file small.'},
@@ -13,6 +13,8 @@ const progressKeys=['due','interval','lastReviewed','attempts','lapses'];
 const typeIds=new Set(questionTypes.map(([id])=>id));
 const isEmbeddedImage=x=>typeof x==='string'&&(x.startsWith('data:image/')||x.startsWith('rf-img/'));
 const isEmbeddedAudio=x=>typeof x==='string'&&/^data:audio\//i.test(x);
+const isEmbeddedVideo=x=>typeof x==='string'&&/^data:video\//i.test(x);
+const mediaLink=v=>typeof v==='string'&&!v.startsWith('data:')?v:'';
 
 function stripEmbeddedImages(item){
   const out={...item};
@@ -22,18 +24,22 @@ function stripEmbeddedImages(item){
   return out;
 }
 
-export function prepareExport(items,{images=true,audio=false,progress=true}={}){
+export function prepareExport(items,{images=true,audio=false,video=false,progress=true}={}){
   return items.map(item=>{
     let out={...item};
     if(!images)out=stripEmbeddedImages(out);
-    if(!audio&&isEmbeddedAudio(out.audio))delete out.audio;
+    if(!audio){for(const k of ['audio','answerAudio'])if(isEmbeddedAudio(out[k]))delete out[k];}
+    if(!video){for(const k of ['video','answerVideo'])if(isEmbeddedVideo(out[k]))delete out[k];}
     if(!progress)for(const key of progressKeys)delete out[key];
     return out;
   });
 }
 
 export function embeddedAudioCount(items){
-  return items.filter(x=>isEmbeddedAudio(x?.audio)).length;
+  return items.filter(x=>isEmbeddedAudio(x?.audio)||isEmbeddedAudio(x?.answerAudio)).length;
+}
+export function embeddedVideoCount(items){
+  return items.filter(x=>isEmbeddedVideo(x?.video)||isEmbeddedVideo(x?.answerVideo)).length;
 }
 
 export const aiImportPrompt=`You are preparing questions for RecallFlow (a quiz app). Reply with ONE JSON object only — no markdown fences, no commentary.
@@ -65,9 +71,11 @@ Special types:
 - "sliderMin", "sliderMax", "sliderStep", "numericTolerance", "unit" (slider)
 - "numericTolerance" — allowed difference (numeric and slider)
 
-Pictures & sound (optional):
-- "image", "answerImage" — https:// image URLs only (no base64)
-- "audio" — https:// sound URL only (no base64)
+Pictures, sound & video (optional):
+- "image", "answerImage" — https:// or Google Drive image link
+- "audio" — question sound; "answerAudio" — answer sound (https / Drive)
+- "video" — question video; "answerVideo" — answer video (https / Drive)
+- Use links, not base64. Google Drive “anyone with the link” URLs are accepted.
 - "fuzzy" — true/false for forgiving spelling (default true for text types)
 
 Multi-type questions (optional):
@@ -119,8 +127,8 @@ export function parseVariantsCell(cell){
 
 const csvCell=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
 const list=a=>(a||[]).join(' | ');
-export const csvColumns=['subject','topic','type','prompt','answer','options','correct_answers','accepted_answers','pairs','sequence','blanks','tolerance','tags'];
-function csvRow(item){return [item.subject,item.topic,item.type||'short_answer',item.prompt,item.type==='multi_select'?'':item.answer,list(item.options),list(item.correctAnswers),list(item.acceptedAnswers),list((item.pairs||[]).map(p=>p.left+' => '+p.right)),list(item.sequence),list(item.blanks),item.type==='numeric'?item.numericTolerance??0:'',list(item.tags)];}
+export const csvColumns=['subject','topic','type','prompt','answer','options','correct_answers','accepted_answers','pairs','sequence','blanks','tolerance','tags','audio','video','answer_audio','answer_video'];
+function csvRow(item){return [item.subject,item.topic,item.type||'short_answer',item.prompt,item.type==='multi_select'?'':item.answer,list(item.options),list(item.correctAnswers),list(item.acceptedAnswers),list((item.pairs||[]).map(p=>p.left+' => '+p.right)),list(item.sequence),list(item.blanks),item.type==='numeric'?item.numericTolerance??0:'',list(item.tags),mediaLink(item.audio),mediaLink(item.video),mediaLink(item.answerAudio),mediaLink(item.answerVideo)];}
 
 export function serialize(items,format,options={}){
   const data=prepareExport(items,options);
@@ -173,7 +181,7 @@ function fromRecord(rec){
   if(rec.tolerance)out.numericTolerance=rec.tolerance;
   if(rec.tags)out.tags=String(rec.tags).split(/[|,]/).map(x=>x.trim()).filter(Boolean);
   if(type==='true_false')out.answer=/^t/i.test(out.answer)?'True':'False';
-  if(rec.audio?.trim())out.audio=rec.audio.trim();
+  for(const [col,key] of [['audio','audio'],['video','video'],['answer_audio','answerAudio'],['answer_video','answerVideo']])if(rec[col]?.trim())out[key]=resolveMediaLink(rec[col].trim());
   const variants=parseVariantsCell(rec.variants);
   if(variants)out.variants=variants.map(v=>{
     if(v.type==='single_choice'&&!v.answer&&out.answer)return {...v,answer:out.answer};
@@ -215,8 +223,8 @@ export function parseImport(text,format='auto',filename=''){
 
 export function duplicateKey(item){return (item.prompt?normalize(item.prompt):'image:'+String(item.image||'').slice(-80))+'|'+normalize(item.answer)+'|'+(item.type||'short_answer');}
 
-export const csvTemplate=`subject,topic,type,prompt,answer,options,variants,audio
-Geography,Capitals,short_answer,Capital of France?,Paris,,single_choice=Paris|Lyon|Nice,
+export const csvTemplate=`subject,topic,type,prompt,answer,options,variants,audio,video,answer_audio,answer_video
+Geography,Capitals,short_answer,Capital of France?,Paris,,single_choice=Paris|Lyon|Nice,,,
 Science,Physics,true_false,Light is faster than sound.,true,,short_answer=sound,
 Biology,Cells,single_choice,Which stores DNA?,Nucleus,Nucleus|Ribosome|Vacuole,multi_select=Nucleus|Mitochondria,
 Maths,Basics,short_answer,What is 7 x 8?,56,,numeric=56;true_false=true,
