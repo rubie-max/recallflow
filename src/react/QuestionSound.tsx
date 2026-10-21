@@ -2,6 +2,8 @@ import React,{useEffect,useRef,useState} from 'react';
 import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2} from 'lucide-react';
 import {MediaLinkForm} from './MediaLinkForm';
 import {MAX_AUDIO_CHARS,resolveMediaLink} from '../question-types.js';
+import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
+import {Scissors} from 'lucide-react';
 
 const MAX_SECONDS=60,BITRATE=32000;
 const time=(s:number)=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -42,24 +44,29 @@ async function soundFromFile(file:File,progress:(pct:number)=>void){
  }finally{ctx.close().catch(()=>{});}
 }
 
-export function SoundPlayer({src,label='Play sound',className='',overlay=false,bars=16}:{src:string;label?:string;className?:string;overlay?:boolean;bars?:number}){
+export function SoundPlayer({src,label='Play sound',className='',overlay=false,bars=16,edit}:{src:string;label?:string;className?:string;overlay?:boolean;bars?:number;edit?:MediaEdit}){
  const audio=useRef<HTMLAudioElement>(null),[playing,setPlaying]=useState(false),[at,setAt]=useState(0),[length,setLength]=useState(0),[failed,setFailed]=useState(false);
+ const clip=length>0?normalizeEdit(edit,length):edit;
  useEffect(()=>{setPlaying(false);setAt(0);setLength(0);setFailed(false);return()=>audio.current?.pause();},[src]);
+ useEffect(()=>{const a=audio.current;if(a)a.muted=!!clip?.muted;},[clip?.muted,src]);
  const known=Number.isFinite(length)&&length>0;
- const progress=known?at/length:playing?0.35:0;
- function toggle(){const a=audio.current;if(!a)return;if(a.paused){setFailed(false);a.play().catch(()=>setFailed(true));}else a.pause();}
- function seek(e:React.MouseEvent<HTMLElement>){const a=audio.current;if(!a||!known)return;const r=e.currentTarget.getBoundingClientRect();a.currentTime=Math.min(length,Math.max(0,(e.clientX-r.left)/r.width*length));setAt(a.currentTime);}
+ const span=clip&&known?Math.max(0.05,clip.trimEnd-clip.trimStart):length;
+ const rel=clip&&known?Math.max(0,Math.min(span,at-clip.trimStart)):at;
+ const progress=known&&span>0?rel/span:playing?0.35:0;
+ function toggle(){const a=audio.current;if(!a)return;if(a.paused){setFailed(false);if(clip&&a.currentTime<clip.trimStart)a.currentTime=clip.trimStart;a.play().catch(()=>setFailed(true));}else a.pause();}
+ function seek(e:React.MouseEvent<HTMLElement>){const a=audio.current;if(!a||!known)return;const r=e.currentTarget.getBoundingClientRect();const t=(e.clientX-r.left)/r.width*length;const next=clip?Math.min(clip.trimEnd,Math.max(clip.trimStart,t)):Math.min(length,Math.max(0,t));a.currentTime=next;setAt(next);}
+ function onTime(){const a=audio.current;if(!a)return;setAt(a.currentTime);if(clip&&a.currentTime>=clip.trimEnd-0.02&&!a.paused){a.pause();a.currentTime=clip.trimStart;setAt(a.currentTime);setPlaying(false);}}
  const bar=overlay?<span className="sound-wave" onClick={seek} aria-hidden="true">{Array.from({length:bars},(_,i)=><i key={i} data-on={progress*bars>i||undefined} style={{height:`${18+((i*7)%24)}%`}}/>)}</span>:<span className="sound-bar" onClick={seek}><i style={{width:`${progress*100}%`}} data-live={!known&&playing||undefined}/></span>;
  return <div className={`sound-player ${overlay?'is-overlay':''} ${className}`.trim()} data-playing={playing||undefined}>
   <button type="button" className="sound-play" aria-label={playing?'Pause sound':label} onClick={toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
   <span className="sound-body">{!overlay&&<span className="sound-title">{failed?'This sound could not play':playing?'Playing':'Listen'}</span>}{bar}</span>
   {!overlay&&<span className="sound-time">{known?time(playing||at?at:length):at?time(at):''}</span>}
-  <audio ref={audio} src={src} preload="metadata" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={e=>{setPlaying(false);setAt(0);e.currentTarget.currentTime=0;}} onTimeUpdate={e=>setAt(e.currentTarget.currentTime)} onLoadedMetadata={e=>setLength(e.currentTarget.duration)} onDurationChange={e=>setLength(e.currentTarget.duration)} onError={()=>setFailed(true)}/>
+  <audio ref={audio} src={src} preload="metadata" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={e=>{setPlaying(false);const start=clip?.trimStart??0;e.currentTarget.currentTime=start;setAt(start);}} onTimeUpdate={onTime} onLoadedMetadata={e=>setLength(e.currentTarget.duration)} onDurationChange={e=>setLength(e.currentTarget.duration)} onError={()=>setFailed(true)}/>
  </div>;
 }
 
-export function SoundField({audio,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https / Drive link'}:{audio?:string;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string}){
- const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false);
+export function SoundField({audio,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https / Drive link'}:{audio?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string}){
+ const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false);
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
  useEffect(()=>()=>{const l=live.current;if(l){window.clearInterval(l.timer);l.stream.getTracks().forEach(t=>t.stop());}},[]);
  useEffect(()=>{if(audio?.startsWith('https://')){setLink(audio);setLinking(true);}else if(!audio){setLink('');setLinking(false);}},[audio]);
@@ -69,7 +76,7 @@ export function SoundField({audio,onChange,onError,onClearError,title='Question 
   if(!url){onChange(undefined);return true;}
   if(!/^https:\/\//i.test(url)){onError('Use an https or Google Drive link to the sound file.');return false;}
   if(url.length>2048){onError('That link is too long.');return false;}
-  onChange(url);
+  onEditChange?.(undefined);onChange(url);
   return true;
  }
  async function start(){
@@ -86,12 +93,12 @@ export function SoundField({audio,onChange,onError,onClearError,title='Question 
   if(!blob.size){onError('Nothing was recorded. Try again.');return;}
   const data=await dataUrl(blob);
   if(data.length>MAX_AUDIO_CHARS){onError('This recording is too large. '+tooLong);return;}
-  onChange(data);
+  onEditChange?.(undefined);onChange(data);
  }
  function stop(){const r=live.current?.recorder;if(r&&r.state==='recording')r.stop();}
  async function upload(file?:File){
   if(!file)return;onError('');setBusy('Adding…');
-  try{onChange(await soundFromFile(file,pct=>setBusy(`Shrinking… ${pct}%`)));}
+  try{onEditChange?.(undefined);onChange(await soundFromFile(file,pct=>setBusy(`Shrinking… ${pct}%`)));}
   catch(e:any){onError(e.message||'This sound could not be added.');}
   finally{setBusy('');}
  }
@@ -104,10 +111,12 @@ export function SoundField({audio,onChange,onError,onClearError,title='Question 
     <button type="button" disabled={!!busy} onClick={start}><Mic size={14}/>{audio?'Re-record':'Record'}</button>
     <button type="button" disabled={!!busy} onClick={()=>input.current?.click()}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{audio&&!audio.startsWith('https://')?'Change':'Upload'}</button>
     {!recording&&<button type="button" aria-label="Add question sound from a link" aria-expanded={linking} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>}
-    {audio&&<button type="button" className="is-remove" aria-label="Remove question sound" disabled={!!busy} onClick={()=>{setLinking(false);setLink('');onChange(undefined);}}><Trash2 size={14}/></button>}
+    {audio&&!recording&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
+    {audio&&<button type="button" className="is-remove" aria-label="Remove question sound" disabled={!!busy} onClick={()=>{setLinking(false);setLink('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
    </>}
   </div>
   <input ref={input} type="file" hidden aria-label="Upload question sound" accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>
   {!recording&&linking&&<MediaLinkForm autoFocus label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={url=>{setLink(url);if(applyLink(url))setLinking(false);}}/>}
+  {clipOpen&&audio&&<MediaClipEditor kind="audio" title={`Edit ${title.toLowerCase()}`} src={audio} initial={edit} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>}
  </div>;
 }

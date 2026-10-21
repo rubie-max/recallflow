@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {validateQuestion,gradeQuestion,imageSafe} from './src/question-types.js';
+import {validateQuestion,gradeQuestion,imageSafe,mediaEditSafe} from './src/question-types.js';
 import {resolveVariant,itemTypes,seededShuffle,draftFromSpec,specFromDraft,emptyDraft} from './src/question-variants.js';
 import {filterQuiz} from './src/learning-core.js';
 import {serialize,parseImport,detectFormat,parseCSV,csvTemplate,prepareExport,embeddedAudioCount,aiImportPrompt,parseVariantsCell} from './src/transfer-formats.js';
@@ -87,5 +87,8 @@ assert.equal(JSON.parse(serialize([audioItem,linkItem],'json',{images:true,audio
 assert.equal(JSON.parse(serialize([audioItem],'json',{audio:true})).questions[0].audio,clip);
 assert.equal(prepareExport([{image:'data:image/png;base64,abc',audio:clip}],{images:false,audio:false})[0].audio,undefined);
 assert.match(aiImportPrompt,/list_recall/);
+assert.equal(mediaEditSafe({trimStart:0,trimEnd:3,muted:false}),true);
+assert.throws(()=>validateQuestion({type:'short_answer',prompt:'p',answer:'x',audio:'https://example.com/a.mp3',audioEdit:{trimStart:2,trimEnd:1,muted:false}}),/Clip edit/);
+assert.equal(validateQuestion({type:'short_answer',prompt:'p',answer:'x',audio:clip,audioEdit:{trimStart:0.5,trimEnd:2,muted:true}}).audioEdit.trimStart,0.5);
 
 console.log('PASS: multi-type validation, variant selection and filters, draft round-trip, seeded shuffle, image links, item pictures, and CSV/JSON/TSV/text import-export.');
