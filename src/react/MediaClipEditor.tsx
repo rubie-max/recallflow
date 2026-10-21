@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {X,Check,Undo2,Redo2,Volume2,VolumeX,Download,ChevronDown,RotateCcw} from 'lucide-react';
 import {Button} from './components/Button';
+import {driveDownloadUrl,isDriveLink} from '../question-types.js';
 
 export type MediaEdit={trimStart:number;trimEnd:number;muted:boolean};
 
@@ -86,6 +87,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel}:Props){
  const hist=useHistory(normalizeEdit(initial,duration||0));
  const edit=normalizeEdit(hist.state,duration||0);
  const embedded=isEmbeddedMedia(src);
+ const playSrc=isDriveLink(src)?driveDownloadUrl(src):src;
 
  useEffect(()=>{
   const el=media.current;if(!el)return;
@@ -153,7 +155,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel}:Props){
   <button type="button" className="question-tools-scrim" aria-label="Close editor" onClick={onCancel}/>
   <section className="media-clip-editor" role="dialog" aria-modal="true" aria-labelledby="media-clip-title">
    <header className="media-clip-head"><button type="button" aria-label="Cancel" onClick={onCancel}><X size={18}/></button><h2 id="media-clip-title">{title}</h2><Button size="sm" onClick={done}><Check size={15}/>Done</Button></header>
-   <div className="media-clip-stage">{kind==='video'?<video ref={media as React.RefObject<HTMLVideoElement>} src={src} playsInline controls preload="metadata"/>:<audio ref={media as React.RefObject<HTMLAudioElement>} src={src} controls preload="metadata"/>}</div>
+   <div className="media-clip-stage">{kind==='video'?<video ref={media as React.RefObject<HTMLVideoElement>} src={playSrc} playsInline controls preload="metadata"/>:<audio ref={media as React.RefObject<HTMLAudioElement>} src={playSrc} controls preload="metadata"/>}</div>
    <div className="media-clip-scrubber" ref={scrub} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp} onClick={e=>{if((e.target as HTMLElement).closest('.media-clip-handle'))return;seekTo(frac(e.clientX)*duration);}}>
     {duration>0&&<span className="media-clip-range" style={{left:`${left}%`,width:`${width}%`}}/>}
     {duration>0&&<button type="button" className="media-clip-handle is-start" style={{left:`calc(${left}% - 7px)`}} aria-label="Trim start" onPointerDown={e=>pointerDown('start',e)}/>}
