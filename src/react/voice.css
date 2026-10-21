@@ -206,3 +206,16 @@ html,body{overscroll-behavior-y:none}html{scroll-padding-bottom:calc(82px + env(
 .media-clip-download{position:relative;margin-left:auto}
 .media-clip-download-menu{position:absolute;right:0;bottom:calc(100% + 6px);display:grid;gap:2px;min-width:180px;padding:6px;border:1px solid var(--border);border-radius:12px;background:var(--card);box-shadow:var(--shadow-lg);z-index:2}
 .media-clip-download-menu button{width:100%;justify-content:flex-start;border:0;background:transparent}
+
+/* Option D: audio overlaid on the question image */
+.quiz-media-stack{position:relative;display:block;width:100%}
+.quiz-media-stack .question-media-zoom{margin-bottom:0!important}
+.quiz-media-stack .zoomable-image-btn.zoomable-image-btn.zoomable-image-btn{top:8px!important;right:8px!important;bottom:auto!important;left:auto!important}
+.sound-player.is-overlay.quiz-sound-overlay{position:absolute;left:8px;right:8px;bottom:8px;z-index:2;display:flex;align-items:center;gap:10px;max-width:none;padding:7px 12px 7px 7px;border:0;border-radius:12px;background:rgba(12,12,16,.72);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);box-shadow:0 8px 24px #0003}
+.sound-player.is-overlay .sound-play{width:34px;height:34px;flex:none}
+.sound-player.is-overlay .sound-time{flex:none;font-size:11px;color:#cfcfe0}
+.sound-wave{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:0;height:22px;cursor:pointer}
+.sound-wave i{width:3px;flex:none;border-radius:2px;background:rgba(255,255,255,.42);align-self:center}
+.sound-wave i[data-on]{background:var(--primary)}
+.sound-player:not(.is-overlay) .sound-wave i{background:var(--muted)}
+.sound-player:not(.is-overlay) .sound-wave i[data-on]{background:var(--primary)}
