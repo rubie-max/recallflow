@@ -39,9 +39,15 @@ export async function compressImage(file:File):Promise<string>{
 }
 // Copies the picture into the question when the site allows it; otherwise keeps the https link.
 export async function imageFromLink(link:string):Promise<{image:string;linked:boolean}>{
- const resolved=resolveImageLink(link.trim());
+ const trimmed=link.trim();
+ const resolved=resolveImageLink(trimmed);
  let url:URL;try{url=new URL(resolved);}catch{throw new Error('Paste a full image link that starts with https://');}
  if(!['https:','http:'].includes(url.protocol))throw new Error('Paste a full image link that starts with https://');
+ if(driveFileId(trimmed)||driveFileId(resolved)){
+  if(url.protocol!=='https:')throw new Error('This site blocks copying the image. Use an https:// link or upload the file.');
+  if(url.href.length>2048)throw new Error('This link is too long. Upload the image instead.');
+  return {image:url.href,linked:true};
+ }
  try{
   const controller=new AbortController(),timer=window.setTimeout(()=>controller.abort(),10000);
   const response=await fetch(url.href,{mode:'cors',signal:controller.signal}).finally(()=>window.clearTimeout(timer));
