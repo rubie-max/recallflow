@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines} from 'lucide-react';
+import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2} from 'lucide-react';
 import {MediaLinkForm} from './MediaLinkForm';
 import {MAX_AUDIO_CHARS} from '../question-types.js';
 
@@ -57,17 +57,18 @@ export function SoundPlayer({src,label='Play sound',className=''}:{src:string,la
 }
 
 export function SoundField({audio,onChange,onError,onClearError}:{audio?:string,onChange:(value?:string)=>void,onError:(message:string)=>void,onClearError?:()=>void}){
- const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState('');
+ const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false);
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
  useEffect(()=>()=>{const l=live.current;if(l){window.clearInterval(l.timer);l.stream.getTracks().forEach(t=>t.stop());}},[]);
- useEffect(()=>{if(audio?.startsWith('https://'))setLink(audio);else if(!audio)setLink('');},[audio]);
+ useEffect(()=>{if(audio?.startsWith('https://')){setLink(audio);setLinking(true);}else if(!audio){setLink('');setLinking(false);}},[audio]);
  function applyLink(next?:string){
   onError('');
   const url=(next??link).trim();
-  if(!url){onChange(undefined);return;}
-  if(!/^https:\/\//i.test(url)){onError('Use an https link to the sound file.');return;}
-  if(url.length>2048){onError('That link is too long.');return;}
+  if(!url){onChange(undefined);return true;}
+  if(!/^https:\/\//i.test(url)){onError('Use an https link to the sound file.');return false;}
+  if(url.length>2048){onError('That link is too long.');return false;}
   onChange(url);
+  return true;
  }
  async function start(){
   onError('');
@@ -92,18 +93,19 @@ export function SoundField({audio,onChange,onError,onClearError}:{audio?:string,
   catch(e:any){onError(e.message||'This sound could not be added.');}
   finally{setBusy('');}
  }
- return <div className={`editor-inline-image editor-sound${audio?' has-image':''}`} data-recording={recording||undefined}>
+ return <div className={`editor-inline-image editor-sound${audio?' has-image':''}${linking?' is-linking':''}`} data-recording={recording||undefined}>
   <span className="editor-inline-icon">{recording?<span className="sound-rec-dot" aria-hidden="true"/>:<AudioLines size={18}/>}</span>
   <div className="editor-inline-copy"><strong>Question sound</strong><small>{recording?`Recording… ${time(seconds)} of ${time(MAX_SECONDS)}`:busy||(audio?.startsWith('https://')?'Plays from a link':audio?'Plays with the question':'Optional · record, upload, or paste an https link')}</small></div>
   {audio&&!recording&&<SoundPlayer src={audio} label="Play question sound" className="is-compact"/>}
   <div className="editor-inline-actions">
    {recording?<button type="button" className="is-recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
     <button type="button" disabled={!!busy} onClick={start}><Mic size={14}/>{audio?'Re-record':'Record'}</button>
-    <button type="button" disabled={!!busy} onClick={()=>input.current?.click()}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio?<RefreshCw size={14}/>:<Upload size={14}/>}{audio?'Change':'Upload'}</button>
-    {audio&&<button type="button" className="is-remove" aria-label="Remove question sound" disabled={!!busy} onClick={()=>onChange(undefined)}><Trash2 size={14}/></button>}
+    <button type="button" disabled={!!busy} onClick={()=>input.current?.click()}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{audio&&!audio.startsWith('https://')?'Change':'Upload'}</button>
+    {!recording&&<button type="button" aria-label="Add question sound from a link" aria-expanded={linking} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>}
+    {audio&&<button type="button" className="is-remove" aria-label="Remove question sound" disabled={!!busy} onClick={()=>{setLinking(false);setLink('');onChange(undefined);}}><Trash2 size={14}/></button>}
    </>}
   </div>
   <input ref={input} type="file" hidden aria-label="Upload question sound" accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>
-  {!recording&&<MediaLinkForm label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');onClearError?.();}} onSubmit={url=>{setLink(url);applyLink(url);}}/>}
+  {!recording&&linking&&<MediaLinkForm autoFocus label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={url=>{setLink(url);if(applyLink(url))setLinking(false);}}/>}
  </div>;
 }
