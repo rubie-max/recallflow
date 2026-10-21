@@ -1,14 +1,14 @@
 import React,{useEffect,useState} from 'react';
 import {Link2,X,LoaderCircle,AlertCircle} from 'lucide-react';
-import {resolveMediaLink} from '../question-types.js';
+import {resolveMediaLink,resolveImageLink} from '../question-types.js';
 
-export function MediaLinkForm({label,placeholder='https://…',submitLabel='Add',initialUrl='',autoFocus=false,onSubmit,onCancel,onClearError}:{
+export function MediaLinkForm({label,placeholder='https://…',submitLabel='Add',initialUrl='',autoFocus=false,resolve=resolveMediaLink,onSubmit,onCancel,onClearError}:{
   label:string;placeholder?:string;submitLabel?:string;initialUrl?:string;autoFocus?:boolean;
-  onSubmit:(url:string)=>void|Promise<void>;onCancel:()=>void;onClearError?:()=>void;
+  resolve?:(url:string)=>string;onSubmit:(url:string)=>void|Promise<void>;onCancel:()=>void;onClearError?:()=>void;
 }){
   const [url,setUrl]=useState(initialUrl),[busy,setBusy]=useState(false);
   useEffect(()=>{setUrl(initialUrl);},[initialUrl]);
-  const submit=async()=>{if(!url.trim()||busy)return;setBusy(true);try{await onSubmit(resolveMediaLink(url.trim()));}finally{setBusy(false);}};
+  const submit=async()=>{if(!url.trim()||busy)return;setBusy(true);try{await onSubmit(resolve(url.trim()));}finally{setBusy(false);}};
   const cancel=()=>{setUrl('');onClearError?.();onCancel();};
   return <div className="editor-media-link">
     <Link2 size={16} aria-hidden="true"/>
