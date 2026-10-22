@@ -3,6 +3,25 @@ import {MAX_VARIANTS,itemTypes,pickVariant} from './question-variants.js';
 
 export function driveFileId(url){const s=String(url||'');const m=s.match(/\/file\/d\/([\w-]{20,})/)||s.match(/[?&]id=([\w-]{20,})/)||s.match(/\/d\/([\w-]{20,})/);return m?m[1]:'';}
 export function isDriveLink(url){return /^https:\/\/(drive|docs)\.google\.com\//i.test(String(url||''))&&!!driveFileId(url);}
+// Shown when someone pastes a Drive share URL. Those links cannot play in our player; pick the file instead.
+export const DRIVE_SHARE_REJECT='Google Drive share links do not play here. Use Upload or tap Drive, then pick the file from your Google Drive.';
+export const DRIVE_SHARE_LEGACY_HINT='This was saved as a Google Drive link. Edit the question, remove it, then tap Drive and pick the file so it plays in RecallFlow.';
+const IMAGE_EXT={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',avif:'image/avif',bmp:'image/bmp'};
+const AUDIO_EXT={mp3:'audio/mpeg',m4a:'audio/mp4',aac:'audio/aac',wav:'audio/wav',ogg:'audio/ogg',oga:'audio/ogg',opus:'audio/ogg',webm:'audio/webm'};
+const VIDEO_EXT={mp4:'video/mp4',webm:'video/webm',mov:'video/quicktime',m4v:'video/mp4',ogv:'video/ogg'};
+// Drive's file picker often sends files with an empty type; fill it in from the filename so Upload still works.
+export function typedMediaFile(file,kind){
+ if(!file)return null;
+ const name=String(file.name||'');
+ const ext=name.split('.').pop()?.toLowerCase()||'';
+ const declared=String(file.type||'');
+ const map=kind==='image'?IMAGE_EXT:kind==='audio'?AUDIO_EXT:VIDEO_EXT;
+ const prefix=kind==='image'?'image/':kind==='audio'?'audio/':'video/';
+ const type=declared.startsWith(prefix)?declared:(map[ext]||'');
+ if(!type)return null;
+ if(declared===type)return file;
+ try{return new File([file],name||`drive.${ext||kind}`,{type,lastModified:file.lastModified});}catch{return new Blob([file],{type});}
+}
 export function driveDirectUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/uc?export=view&id=${id}`:String(url||'');}
 export function drivePreviewUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/file/d/${id}/preview`:String(url||'');}
 // Direct Drive download stream. Google refuses cross-origin <audio>/<video> requests to this URL
@@ -130,10 +149,14 @@ if(type==='ordering'){if(!Array.isArray(input.sequence)||input.sequence.length<2
 if(['cloze','fill_blank_options'].includes(type)){if(!Array.isArray(input.blanks)||!input.blanks.length||input.blanks.some(x=>typeof x!=='string'||!x.trim())||(input.prompt.match(/_{2,}/g)||[]).length!==input.blanks.length)throw new Error('Use one ___ marker for each blank answer.');answer=input.blanks.join('; ');}
 if(type==='fill_blank_options'){if(!Array.isArray(input.options)||input.options.length<2||input.options.some(x=>typeof x!=='string'||!x.trim()))throw new Error('Add at least two word-bank options.');options=input.options.map(x=>x.trim());if(new Set(options).size!==options.length||input.blanks.some(x=>!options.includes(x)))throw new Error('Use unique options and include every blank answer in the word bank.');}
 const extra=extraTypes.includes(type)?validateExtra(type,input,prompt,answer):null;if(extra)answer=extra.answer;
-if(input.audio&&!audioSafe(input.audio))throw new Error('Use a sound clip of about 1 minute or less, or an https / Drive sound link.');
-if(input.answerAudio&&!audioSafe(input.answerAudio))throw new Error('Use an answer sound of about 1 minute or less, or an https / Drive sound link.');
-if(input.video&&!videoSafe(input.video))throw new Error('Use an https or Google Drive video link (or a small video file).');
-if(input.answerVideo&&!videoSafe(input.answerVideo))throw new Error('Use an https or Google Drive answer-video link.');
+if(input.audio&&!audioSafe(input.audio))throw new Error('Use a sound clip of about 1 minute or less, or an https sound file.');
+if(input.answerAudio&&!audioSafe(input.answerAudio))throw new Error('Use an answer sound of about 1 minute or less, or an https sound file.');
+if(input.video&&!videoSafe(input.video))throw new Error('Use an https video file (or a small uploaded video).');
+if(input.answerVideo&&!videoSafe(input.answerVideo))throw new Error('Use an https answer video (or a small uploaded video).');
+if(input.audio&&isDriveLink(input.audio))throw new Error(DRIVE_SHARE_REJECT);
+if(input.answerAudio&&isDriveLink(input.answerAudio))throw new Error(DRIVE_SHARE_REJECT);
+if(input.video&&isDriveLink(input.video))throw new Error(DRIVE_SHARE_REJECT);
+if(input.answerVideo&&isDriveLink(input.answerVideo))throw new Error(DRIVE_SHARE_REJECT);
 for(const [editKey,mediaKey] of [['audioEdit','audio'],['videoEdit','video'],['answerAudioEdit','answerAudio'],['answerVideoEdit','answerVideo']])if(input[editKey]!==undefined&&(!input[mediaKey]||!mediaEditSafe(input[editKey])))throw new Error('Clip edit settings are invalid.');
 if(input.image&&!imageSafe(input.image))throw new Error('Use a PNG, JPEG or WebP image under 2 MB, or an https image link.');if(input.answerImage&&!imageSafe(input.answerImage))throw new Error('Use a PNG, JPEG or WebP answer image under 2 MB, or an https image link.');if(input.optionImages&&(typeof input.optionImages!=='object'||Object.values(input.optionImages).some(x=>!imageSafe(x))))throw new Error('Invalid image choices.');
 if(input.acceptedAnswers&&(!Array.isArray(input.acceptedAnswers)||input.acceptedAnswers.some(a=>typeof a!=='string'||!a.trim())))throw new Error('Alternative answers must be non-empty text.');if(input.tags&&(!Array.isArray(input.tags)||input.tags.some(a=>typeof a!=='string')))throw new Error('Tags must be text.');if(!answer&&!(type==='flashcard'&&(input.answerImage||input.answerVideo||input.answerAudio)))throw new Error(type==='flashcard'?'Add an answer, a back image, video or sound first.':'Add a correct answer first.');

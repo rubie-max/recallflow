@@ -1,6 +1,23 @@
 import React,{useEffect,useState} from 'react';
-import {Link2,X,LoaderCircle,AlertCircle} from 'lucide-react';
-import {resolveMediaLink,resolveImageLink} from '../question-types.js';
+import {Link2,X,LoaderCircle,AlertCircle,Cloud} from 'lucide-react';
+import {resolveMediaLink,resolveImageLink,DRIVE_SHARE_LEGACY_HINT} from '../question-types.js';
+
+/** Opens the hidden file input; on many phones and Chromebooks the chooser includes Google Drive. */
+export function openMediaFilePicker(input:HTMLInputElement|null){
+ if(!input)return;
+ const show=(input as HTMLInputElement&{showPicker?:()=>void}).showPicker;
+ if(typeof show==='function'){try{show.call(input);return;}catch{}}
+ input.click();
+}
+
+export function DrivePickButton({disabled,busy,fileInputRef}:{disabled?:boolean;busy?:boolean;fileInputRef:React.RefObject<HTMLInputElement|null>}){
+ return <button type="button" disabled={disabled} aria-label="Pick a file from Google Drive" onClick={()=>openMediaFilePicker(fileInputRef.current)}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:<Cloud size={14}/>}Drive</button>;
+}
+
+export function DriveShareLegacyNotice({kind='media'}:{kind?:'sound'|'video'|'media'}){
+ const what=kind==='sound'?'Sound':kind==='video'?'Video':'Media';
+ return <p className="media-drive-legacy" role="status"><strong>{what} needs updating.</strong> {DRIVE_SHARE_LEGACY_HINT}</p>;
+}
 
 export function MediaLinkForm({id,label,placeholder='https://…',submitLabel='Add',initialUrl='',autoFocus=false,resolve=resolveMediaLink,onSubmit,onCancel,onClearError}:{
   id?:string;label:string;placeholder?:string;submitLabel?:string;initialUrl?:string;autoFocus?:boolean;

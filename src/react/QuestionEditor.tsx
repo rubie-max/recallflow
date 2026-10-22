@@ -1,9 +1,9 @@
 import React,{useState,useRef} from 'react';
 import {Plus,Trash2,ArrowUp,ArrowDown,Check,Save,LoaderCircle,ImagePlus,Eye,Volume2,X,Maximize2,RefreshCw,Link2,Shuffle,Layers,Upload,Crop,Info,AlertCircle} from 'lucide-react';
-import {MediaLinkForm} from './MediaLinkForm';
+import {MediaLinkForm,DrivePickButton} from './MediaLinkForm';
 import {ImageEditor} from './ImageEditor';
 import {ImageViewer} from './ImageViewer';
-import {typeLabel,gradeQuestion,extraTypes,questionTypes,resolveImageLink,driveFileId} from '../question-types.js';
+import {typeLabel,gradeQuestion,extraTypes,questionTypes,resolveImageLink,driveFileId,DRIVE_SHARE_REJECT,typedMediaFile} from '../question-types.js';
 import {TypeField,TypeSheet} from './TypeSheet';
 import {MAX_VARIANTS,emptyDraft,seededShuffle,imageTypes,pictureLabel,specFromDraft,draftTypeFields} from '../question-variants.js';
 import {ExtraAnswer} from './ExtraAnswers';
@@ -18,7 +18,9 @@ const promptHints:any={matching:'Match each country to its capital.',list_recall
 const imageAccept='image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp';
 // Stored images live in localStorage (about 5 MB in total), so keep each one small.
 export async function compressImage(file:File):Promise<string>{
- if(!file.type.startsWith('image/'))throw new Error('Choose an image file (PNG, JPEG, WebP or GIF).');
+ const typed=typedMediaFile(file,'image') as File|null;
+ if(!typed||!String(typed.type||'').startsWith('image/'))throw new Error('Choose an image file (PNG, JPEG, WebP or GIF).');
+ file=typed instanceof File?typed:new File([typed],'image.jpg',{type:(typed as Blob).type});
  if(file.size>25*1024*1024)throw new Error('Choose an image under 25 MB.');
  const url=URL.createObjectURL(file);
  try{
@@ -43,11 +45,7 @@ export async function imageFromLink(link:string):Promise<{image:string;linked:bo
  const resolved=resolveImageLink(trimmed);
  let url:URL;try{url=new URL(resolved);}catch{throw new Error('Paste a full image link that starts with https://');}
  if(!['https:','http:'].includes(url.protocol))throw new Error('Paste a full image link that starts with https://');
- if(driveFileId(trimmed)||driveFileId(resolved)){
-  if(url.protocol!=='https:')throw new Error('This site blocks copying the image. Use an https:// link or upload the file.');
-  if(url.href.length>2048)throw new Error('This link is too long. Upload the image instead.');
-  return {image:url.href,linked:true};
- }
+ if(driveFileId(trimmed)||driveFileId(resolved))throw new Error(DRIVE_SHARE_REJECT);
  try{
   const controller=new AbortController(),timer=window.setTimeout(()=>controller.abort(),10000);
   const response=await fetch(url.href,{mode:'cors',signal:controller.signal}).finally(()=>window.clearTimeout(timer));
@@ -68,7 +66,7 @@ function InlineImage({label,hint,image,onPick,onLink,onRemove,onView,onEdit,onCl
  return <div className={`editor-inline-image${image?' has-image':''}${linking?' is-linking':''}`}>
   {image?<button type="button" className="editor-inline-thumb" aria-label={`Enlarge ${label.toLowerCase()}`} onClick={()=>onView(image)}><img src={image} alt=""/><span><Maximize2 size={13}/></span></button>:<span className="editor-inline-icon"><ImagePlus size={18}/></span>}
   <div className="editor-inline-copy"><strong>{label}</strong><small>{image?(image.startsWith('https:')?'Linked image · tap to preview':'Tap the image to preview it'):hint}</small></div>
-  <div className="editor-inline-actions">{image&&onEdit&&<button type="button" aria-label={`Edit ${label.toLowerCase()}`} disabled={loading} onClick={onEdit}><Crop size={14}/>Edit</button>}<button type="button" disabled={loading} onClick={()=>{setLinking(false);input.current?.click();}}>{loading?<LoaderCircle size={14} className="speech-spinner"/>:image?<RefreshCw size={14}/>:<Upload size={14}/>}{loading?'Adding…':image?'Change':'Upload'}</button> <button type="button" aria-label={image?`Replace ${label.toLowerCase()} with a link`:`Add ${label.toLowerCase()} from a link`} aria-expanded={linking} disabled={loading} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>{image&&<button type="button" className="is-remove" aria-label={`Remove ${label.toLowerCase()}`} disabled={loading} onClick={onRemove}><Trash2 size={14}/></button>}</div>
+  <div className="editor-inline-actions">{image&&onEdit&&<button type="button" aria-label={`Edit ${label.toLowerCase()}`} disabled={loading} onClick={onEdit}><Crop size={14}/>Edit</button>}<button type="button" disabled={loading} onClick={()=>{setLinking(false);input.current?.click();}}>{loading?<LoaderCircle size={14} className="speech-spinner"/>:image?<RefreshCw size={14}/>:<Upload size={14}/>}{loading?'Adding…':image?'Change':'Upload'}</button><DrivePickButton disabled={loading} fileInputRef={input}/><button type="button" aria-label={image?`Replace ${label.toLowerCase()} with a link`:`Add ${label.toLowerCase()} from a link`} aria-expanded={linking} disabled={loading} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>{image&&<button type="button" className="is-remove" aria-label={`Remove ${label.toLowerCase()}`} disabled={loading} onClick={onRemove}><Trash2 size={14}/></button>}</div>
   {linking&&<MediaLinkForm autoFocus resolve={resolveImageLink} label={`${label} link`} placeholder="https://…/picture.jpg" initialUrl={image?.startsWith('https://')?image:''} onClearError={onClearError} onCancel={()=>setLinking(false)} onSubmit={async(url:string)=>{if(await onLink(url))setLinking(false);}}/>}
   <input ref={input} type="file" hidden aria-label={`Upload ${label.toLowerCase()}`} accept={imageAccept} onChange={e=>{const file=e.currentTarget.files?.[0];e.currentTarget.value='';void pick(file);}}/>
  </div>;

@@ -1,7 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2,AlertCircle} from 'lucide-react';
-import {MediaLinkForm} from './MediaLinkForm';
-import {MAX_AUDIO_CHARS,driveFileId,isDriveLink,drivePreviewUrl,resolveMediaLink,resolveMediaPlaybackSrc} from '../question-types.js';
+import {MediaLinkForm,DrivePickButton,DriveShareLegacyNotice} from './MediaLinkForm';
+import {MAX_AUDIO_CHARS,driveFileId,isDriveLink,resolveMediaLink,resolveMediaPlaybackSrc,DRIVE_SHARE_REJECT,DRIVE_SHARE_LEGACY_HINT,typedMediaFile} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
 import {Scissors} from 'lucide-react';
 
@@ -22,16 +22,17 @@ function record(stream:MediaStream,type:string){
 
 // Large files are played through a recorder once, which shrinks them to a small voice-quality clip.
 async function soundFromFile(file:File,progress:(pct:number)=>void){
- const type=file.type.startsWith('audio/')?file.type:guessType(file.name);
- if(!type)throw new Error('Choose a sound file (MP3, M4A, WAV, OGG or WebM).');
- if(file.size*1.37+64<=MAX_AUDIO_CHARS)return dataUrl(file.type?file:new Blob([file],{type}));
- if(file.size>40*1024*1024)throw new Error('This file is too large. '+tooLong);
+ const typed=typedMediaFile(file,'audio') as File|Blob|null;
+ if(!typed)throw new Error('Choose a sound file (MP3, M4A, WAV, OGG or WebM).');
+ const type=typed.type||guessType((file as File).name);
+ if(typed.size*1.37+64<=MAX_AUDIO_CHARS)return dataUrl(typed instanceof File&&typed.type?typed:new Blob([typed],{type}));
+ if(typed.size>40*1024*1024)throw new Error('This file is too large. '+tooLong);
  const mime=recorderType();if(!mime)throw new Error('This sound is too large to store. '+tooLong);
  const ctx=new AudioContext();
  try{
   await ctx.resume().catch(()=>{});
   if(ctx.state!=='running')throw new Error('This sound is too large to store. '+tooLong);
-  const buffer=await ctx.decodeAudioData(await file.arrayBuffer()).catch(()=>{throw new Error('This sound file could not be opened.');});
+  const buffer=await ctx.decodeAudioData(await typed.arrayBuffer()).catch(()=>{throw new Error('This sound file could not be opened.');});
   if(buffer.duration>MAX_SECONDS+5)throw new Error(`This clip is ${time(buffer.duration)} long. ${tooLong}`);
   const out=ctx.createMediaStreamDestination(),source=ctx.createBufferSource();source.buffer=buffer;source.connect(out);
   const {recorder,done}=record(out.stream,mime),started=ctx.currentTime;
@@ -66,9 +67,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  function toggle(){const a=audio.current;if(!a)return;if(a.paused){setFailed(false);if(clip&&a.currentTime<clip.trimStart)a.currentTime=clip.trimStart;a.play().catch(()=>setFailed(true));}else a.pause();}
  function seek(e:React.MouseEvent<HTMLSpanElement>){const a=audio.current;if(!a||!known)return;const r=e.currentTarget.getBoundingClientRect();const t=(e.clientX-r.left)/r.width*length;const next=clip?Math.min(clip.trimEnd,Math.max(clip.trimStart,t)):Math.min(length,Math.max(0,t));a.currentTime=next;setAt(next);}
  function onTime(){const a=audio.current;if(!a)return;setAt(a.currentTime);if(clip&&a.currentTime>=clip.trimEnd-0.02&&!a.paused){a.pause();a.currentTime=clip.trimStart;setAt(a.currentTime);setPlaying(false);}}
- // Google does not allow websites to stream Drive-hosted audio in an <audio> element (no CORS, cookie-gated),
- // so a Drive link plays through Google's own preview player embedded in an iframe — the same path video uses.
- if(isDriveLink(src))return <div className={`sound-player is-embed ${className}`.trim()}><iframe title={label} src={drivePreviewUrl(src)} allow="autoplay; encrypted-media"/></div>;
+ if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
  return <div className={`sound-player ${variant==='overlay'?'is-overlay':''} ${className}`.trim()} data-playing={playing||undefined}>
   <button type="button" className="sound-play" aria-label={playing?'Pause sound':label} onClick={toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
   {variant==='overlay'
@@ -79,15 +78,15 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  </div>;
 }
 
-export function SoundField({audio,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https / Drive link'}:{audio?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string}){
+export function SoundField({audio,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload from your files or Drive, or paste an https audio file'}:{audio?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string}){
  const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false),[warn,setWarn]=useState('');
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
  useEffect(()=>()=>{const l=live.current;if(l){window.clearInterval(l.timer);l.stream.getTracks().forEach(t=>t.stop());}},[]);
  useEffect(()=>{if(audio?.startsWith('https://'))setLink(audio);else if(!audio){setLink('');setLinking(false);}},[audio]);
  useEffect(()=>{
   setWarn('');
-  // Drive links play via the embedded preview player, so only direct https audio needs the playability probe.
-  if(!audio?.startsWith('https://')||isDriveLink(audio))return;
+  if(!audio?.startsWith('https://'))return;
+  if(isDriveLink(audio)){setWarn(DRIVE_SHARE_LEGACY_HINT);return;}
   let cancelled=false;
   void probeAudioLink(audio).then(ok=>{if(!cancelled&&!ok)setWarn('This linked sound cannot play. Remove it, then use a direct audio URL or upload the file.');});
   return()=>{cancelled=true;};
@@ -97,10 +96,9 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   const raw=(next??link).trim();
   if(!raw){onChange(undefined);return true;}
   const url=resolveMediaLink(raw);
-  if(!/^https:\/\//i.test(url)){onError('Use an https or Google Drive link to the sound file.');return false;}
+  if(driveFileId(raw)||isDriveLink(url)){onError(DRIVE_SHARE_REJECT);return false;}
+  if(!/^https:\/\//i.test(url)){onError('Use an https link to the sound file, or upload it from Drive.');return false;}
   if(url.length>2048){onError('That link is too long.');return false;}
-  // Drive links play through the embedded preview player, so they are accepted without the <audio> probe.
-  if(driveFileId(raw)){onEditChange?.(undefined);onChange(url);return true;}
   setBusy('Checking sound…');
   const ok=await probeAudioLink(raw);
   setBusy('');
@@ -140,16 +138,18 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   <div className="editor-inline-actions">
    {recording?<button type="button" className="is-recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
     <button type="button" disabled={!!busy} onClick={start}><Mic size={14}/>{audio?'Re-record':'Record'}</button>
-    <button type="button" disabled={!!busy} onClick={()=>input.current?.click()}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{audio&&!audio.startsWith('https://')?'Change':'Upload'}</button>
+    <button type="button" disabled={!!busy} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{audio&&!audio.startsWith('https://')?'Change':'Upload'}</button>
+    {!recording&&<DrivePickButton disabled={!!busy} fileInputRef={input}/>}
     {!recording&&<button type="button" aria-label="Add question sound from a link" aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>}
     {audio&&!recording&&!isDriveLink(audio)&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
     {audio&&<button type="button" className="is-remove" aria-label="Remove question sound" disabled={!!busy} onClick={()=>{setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
    </>}
   </div>
   <input ref={input} type="file" hidden aria-label="Upload question sound" accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>
-  {audio&&!recording&&<SoundPlayer src={audio} edit={edit} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/>}
+  {audio&&!recording&&!isDriveLink(audio)&&<SoundPlayer src={audio} edit={edit} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/>}
+  {audio&&!recording&&isDriveLink(audio)&&<DriveShareLegacyNotice kind="sound"/>}
   {warn&&!recording&&<p className="editor-inline-warn" role="status"><AlertCircle size={14} aria-hidden="true"/><span>{warn}</span></p>}
-  {!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3 or Google Drive link" submitLabel="Add" initialUrl={audio?.startsWith('https://')?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={async url=>{setLink(url);if(await applyLink(url))setLinking(false);}}/>}
+  {!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')&&!isDriveLink(audio)?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={async url=>{setLink(url);if(await applyLink(url))setLinking(false);}}/>}
   {clipOpen&&audio&&<MediaClipEditor kind="audio" title={`Edit ${title.toLowerCase()}`} src={audio} initial={edit} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>}
  </div>;
 }
