@@ -924,6 +924,9 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .video-player video,.video-player iframe{display:block;width:100%;aspect-ratio:16/10;background:#000;border:0}
 .video-player.is-compact{max-width:320px;border-radius:12px}
 .video-player.is-embed iframe{min-height:200px}
+/* Drive-hosted sound plays through Google's embedded preview player instead of the custom audio bar. */
+.sound-player.is-embed{display:block;width:100%;padding:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card)}
+.sound-player.is-embed iframe{display:block;width:100%;height:74px;border:0;background:#000}
 .video-fallback{margin:0;padding:8px 12px;font-size:12px;color:var(--muted-foreground)}
 .quiz-video{width:100%;max-width:480px}
 .sound-rec-dot{width:12px;height:12px;border-radius:50%;background:var(--error,#dc2626);animation:sound-rec 1s ease-in-out infinite}

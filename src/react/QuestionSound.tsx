@@ -1,7 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2,AlertCircle} from 'lucide-react';
 import {MediaLinkForm} from './MediaLinkForm';
-import {MAX_AUDIO_CHARS,driveFileId,resolveMediaLink,resolveMediaPlaybackSrc} from '../question-types.js';
+import {MAX_AUDIO_CHARS,driveFileId,isDriveLink,drivePreviewUrl,resolveMediaLink,resolveMediaPlaybackSrc} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
 import {Scissors} from 'lucide-react';
 
@@ -66,6 +66,9 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  function toggle(){const a=audio.current;if(!a)return;if(a.paused){setFailed(false);if(clip&&a.currentTime<clip.trimStart)a.currentTime=clip.trimStart;a.play().catch(()=>setFailed(true));}else a.pause();}
  function seek(e:React.MouseEvent<HTMLSpanElement>){const a=audio.current;if(!a||!known)return;const r=e.currentTarget.getBoundingClientRect();const t=(e.clientX-r.left)/r.width*length;const next=clip?Math.min(clip.trimEnd,Math.max(clip.trimStart,t)):Math.min(length,Math.max(0,t));a.currentTime=next;setAt(next);}
  function onTime(){const a=audio.current;if(!a)return;setAt(a.currentTime);if(clip&&a.currentTime>=clip.trimEnd-0.02&&!a.paused){a.pause();a.currentTime=clip.trimStart;setAt(a.currentTime);setPlaying(false);}}
+ // Google does not allow websites to stream Drive-hosted audio in an <audio> element (no CORS, cookie-gated),
+ // so a Drive link plays through Google's own preview player embedded in an iframe — the same path video uses.
+ if(isDriveLink(src))return <div className={`sound-player is-embed ${className}`.trim()}><iframe title={label} src={drivePreviewUrl(src)} allow="autoplay; encrypted-media"/></div>;
  return <div className={`sound-player ${variant==='overlay'?'is-overlay':''} ${className}`.trim()} data-playing={playing||undefined}>
   <button type="button" className="sound-play" aria-label={playing?'Pause sound':label} onClick={toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
   {variant==='overlay'
@@ -83,7 +86,8 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
  useEffect(()=>{if(audio?.startsWith('https://'))setLink(audio);else if(!audio){setLink('');setLinking(false);}},[audio]);
  useEffect(()=>{
   setWarn('');
-  if(!audio?.startsWith('https://'))return;
+  // Drive links play via the embedded preview player, so only direct https audio needs the playability probe.
+  if(!audio?.startsWith('https://')||isDriveLink(audio))return;
   let cancelled=false;
   void probeAudioLink(audio).then(ok=>{if(!cancelled&&!ok)setWarn('This linked sound cannot play. Remove it, then use a direct audio URL or upload the file.');});
   return()=>{cancelled=true;};
@@ -95,11 +99,13 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   const url=resolveMediaLink(raw);
   if(!/^https:\/\//i.test(url)){onError('Use an https or Google Drive link to the sound file.');return false;}
   if(url.length>2048){onError('That link is too long.');return false;}
+  // Drive links play through the embedded preview player, so they are accepted without the <audio> probe.
+  if(driveFileId(raw)){onEditChange?.(undefined);onChange(url);return true;}
   setBusy('Checking sound…');
   const ok=await probeAudioLink(raw);
   setBusy('');
   if(!ok){
-   onError(driveFileId(raw)||/drive\.google\.com/i.test(raw)?'No sound was found at this Google Drive link. Use an audio file (MP3, WAV, …) shared as “Anyone with the link” (Viewer), or upload the file instead.':'No sound was found at this link. Paste a direct link to an audio file (MP3, WAV, OGG, …), or upload the file.');
+   onError('No sound was found at this link. Paste a direct link to an audio file (MP3, WAV, OGG, …), or upload the file.');
    return false;
   }
   onEditChange?.(undefined);onChange(url);
@@ -136,7 +142,7 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
     <button type="button" disabled={!!busy} onClick={start}><Mic size={14}/>{audio?'Re-record':'Record'}</button>
     <button type="button" disabled={!!busy} onClick={()=>input.current?.click()}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{audio&&!audio.startsWith('https://')?'Change':'Upload'}</button>
     {!recording&&<button type="button" aria-label="Add question sound from a link" aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>}
-    {audio&&!recording&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
+    {audio&&!recording&&!isDriveLink(audio)&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
     {audio&&<button type="button" className="is-remove" aria-label="Remove question sound" disabled={!!busy} onClick={()=>{setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
    </>}
   </div>
