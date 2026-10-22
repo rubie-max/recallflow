@@ -14,4 +14,4 @@ function App(){
 }
 createRoot(document.getElementById('app')!).render(<ThemeModeProvider><App/></ThemeModeProvider>);
 
-if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if('serviceWorker' in navigator)void navigator.serviceWorker.register('./sw.js').then(r=>r.update()).catch(()=>{});

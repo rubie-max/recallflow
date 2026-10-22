@@ -1,4 +1,4 @@
-const CACHE='recallflow-shell-v56';
+const CACHE='recallflow-shell-v57';
 const IMAGE_CACHE='recallflow-images';
 const ROOT=new URL('./',self.location.href);
 const FILES=['./','./index.html','./assets/app.js','./assets/app.css','./public/recallflow-logo.png','./public/recallflow-logo.svg','./manifest.webmanifest','./public/icon-192.png','./public/icon-512.png',...['af_heart','af_bella','am_michael','am_fenrir','bf_emma'].map(voice=>'./public/voice-previews/'+voice+'.wav')];
@@ -15,11 +15,21 @@ async function storedImage(request,name){
   const response=new Response(await res.blob(),{headers:{'Content-Type':TYPES[name.split('.').pop()]||'image/png'}});
   await cache.put(request.url,response.clone());return response;
 }
+async function driveThumbFetch(id){
+ const urls=[`https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w1600`,`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`,`https://drive.google.com/uc?export=view&id=${encodeURIComponent(id)}`];
+ for(const u of urls){
+  const res=await fetch(u,{redirect:'follow'}).catch(()=>null);
+  if(!res?.ok)continue;
+  const blob=await res.blob();
+  if(blob.type.startsWith('image/')||blob.size>1000)return {blob,type:blob.type.startsWith('image/')?blob.type:(res.headers.get('Content-Type')||'image/jpeg')};
+ }
+ return null;
+}
 async function driveThumb(request,id){
  const cache=await caches.open(IMAGE_CACHE),hit=await cache.match(request.url);if(hit)return hit;
- const res=await fetch(`https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w1600`).catch(()=>null);
- if(!res?.ok)return new Response('',{status:res?.status||504});
- const out=new Response(await res.blob(),{headers:{'Content-Type':res.headers.get('Content-Type')||'image/jpeg','Cache-Control':'private, max-age=86400'}});
+ const got=await driveThumbFetch(id);
+ if(!got)return new Response('',{status:502});
+ const out=new Response(got.blob,{headers:{'Content-Type':got.type,'Cache-Control':'private, max-age=86400'}});
  await cache.put(request.url,out.clone());return out;
 }
 self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==ROOT.origin||!url.pathname.startsWith(ROOT.pathname)||url.pathname.endsWith('/__reload'))return;const rel=url.pathname.slice(ROOT.pathname.length);const drive=rel.match(/^rf-drive-thumb\/([^/?#]+)$/);if(drive){event.respondWith(driveThumb(event.request,decodeURIComponent(drive[1])));return;}const image=rel.match(/^rf-img\/([a-f0-9]{32}\.(?:webp|jpg|png|gif))$/);if(image){event.respondWith(storedImage(event.request,image[1]));return;}if(!FILES.some(x=>new URL(x,ROOT).pathname===url.pathname)&&event.request.mode!=='navigate')return;event.respondWith(fetch(event.request).then(response=>{if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(event.request,copy)));}return response;}).catch(async()=>{return await caches.match(event.request)|| (event.request.mode==='navigate'?await caches.match(new URL('./index.html',ROOT).href):null)||Response.error();}));});

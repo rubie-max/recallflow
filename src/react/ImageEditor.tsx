@@ -7,11 +7,24 @@ export const IMAGE_W=1200,IMAGE_H=900;
 type View={k:number;x:number;y:number};
 const SOURCE_MAX=2400;
 
-function loadImage(src:string){
+async function ensureDriveEditReady(){
+ if(!('serviceWorker' in navigator))return false;
+ try{
+  await navigator.serviceWorker.register('./sw.js');
+  await navigator.serviceWorker.ready;
+  if(!navigator.serviceWorker.controller)await new Promise(r=>setTimeout(r,400));
+  return !!navigator.serviceWorker.controller;
+ }catch{return false;}
+}
+async function loadImage(src:string){
  let loadSrc=src;
- if(driveFileId(src)||/drive\.google\.com/i.test(src)){
+ const drive=driveFileId(src)||/drive\.google\.com/i.test(src);
+ if(drive){
+  if(!await ensureDriveEditReady())throw new Error('Refresh this page once, then tap Edit again to crop a Google Drive picture.');
   const proxied=driveImageEditUrl(src);
-  if(proxied===src)return Promise.reject(new Error('This Google Drive link could not be opened for editing. Use Change or Upload and pick the file from your device.'));
+  if(proxied===src)throw new Error('This Google Drive link could not be opened for editing. Use Change or Upload and pick the file from your device.');
+  const probe=await fetch(proxied).catch(()=>null);
+  if(!probe?.ok)throw new Error('This Google Drive picture could not be loaded for editing. Confirm “Anyone with the link” (Viewer), or use Change/Upload with the file from your device.');
   loadSrc=proxied;
  }
  const sameOrigin=(()=>{try{return new URL(loadSrc,location.href).origin===location.origin;}catch{return false;}})();
@@ -19,7 +32,7 @@ function loadImage(src:string){
   const img=new Image();
   if(/^https?:/i.test(loadSrc)&&!sameOrigin)img.crossOrigin='anonymous';
   img.onload=()=>resolve(img);
-  img.onerror=()=>reject(new Error(driveFileId(src)?'This Google Drive picture could not be loaded for editing. Confirm “Anyone with the link” (Viewer), or use Change/Upload with the file from your device.':/^https?:/i.test(src)?'This linked image cannot be edited because its site blocks it. Upload the file instead.':'This image could not be opened. Try a PNG, JPEG or WebP file.'));
+  img.onerror=()=>reject(new Error(drive?'This Google Drive picture could not be loaded for editing. Confirm “Anyone with the link” (Viewer), or use Change/Upload with the file from your device.':/^https?:/i.test(src)?'This linked image cannot be edited because its site blocks it. Upload the file instead.':'This image could not be opened. Try a PNG, JPEG or WebP file.'));
   img.src=loadSrc;
  });
 }
