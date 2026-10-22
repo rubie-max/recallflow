@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {driveFileId} from '../question-types.js';
+import {driveFileId,driveImageEditUrl} from '../question-types.js';
 import {X,RotateCcw,RotateCw,FlipHorizontal2,FlipVertical2,Undo2,Check,LoaderCircle,Crop,ZoomIn,ZoomOut,Shrink,Expand} from 'lucide-react';
 
 // Every stored picture uses this shape so cards, options and thumbnails line up.
@@ -7,15 +7,20 @@ export const IMAGE_W=1200,IMAGE_H=900;
 type View={k:number;x:number;y:number};
 const SOURCE_MAX=2400;
 
-const driveEditHelp='This picture is linked from Google Drive. RecallFlow can show it, but Google blocks crop/zoom in the browser. Use Change or Upload and pick the file from your device (download from Drive first if needed). This is not a sharing setting — upload is the workaround.';
 function loadImage(src:string){
- if(driveFileId(src)||/drive\.google\.com/i.test(src))return Promise.reject(new Error(driveEditHelp));
+ let loadSrc=src;
+ if(driveFileId(src)||/drive\.google\.com/i.test(src)){
+  const proxied=driveImageEditUrl(src);
+  if(proxied===src)return Promise.reject(new Error('This Google Drive link could not be opened for editing. Use Change or Upload and pick the file from your device.'));
+  loadSrc=proxied;
+ }
+ const sameOrigin=(()=>{try{return new URL(loadSrc,location.href).origin===location.origin;}catch{return false;}})();
  return new Promise<HTMLImageElement>((resolve,reject)=>{
   const img=new Image();
-  if(/^https?:/i.test(src)&&!src.startsWith(location.origin))img.crossOrigin='anonymous';
+  if(/^https?:/i.test(loadSrc)&&!sameOrigin)img.crossOrigin='anonymous';
   img.onload=()=>resolve(img);
-  img.onerror=()=>reject(new Error(/^https?:/i.test(src)?'This linked image cannot be edited because its site blocks it. Upload the file instead.':'This image could not be opened. Try a PNG, JPEG or WebP file.'));
-  img.src=src;
+  img.onerror=()=>reject(new Error(driveFileId(src)?'This Google Drive picture could not be loaded for editing. Confirm “Anyone with the link” (Viewer), or use Change/Upload with the file from your device.':/^https?:/i.test(src)?'This linked image cannot be edited because its site blocks it. Upload the file instead.':'This image could not be opened. Try a PNG, JPEG or WebP file.'));
+  img.src=loadSrc;
  });
 }
 function canvasFrom(w:number,h:number,draw:(ctx:CanvasRenderingContext2D)=>void){

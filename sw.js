@@ -1,4 +1,4 @@
-const CACHE='recallflow-shell-v55';
+const CACHE='recallflow-shell-v56';
 const IMAGE_CACHE='recallflow-images';
 const ROOT=new URL('./',self.location.href);
 const FILES=['./','./index.html','./assets/app.js','./assets/app.css','./public/recallflow-logo.png','./public/recallflow-logo.svg','./manifest.webmanifest','./public/icon-192.png','./public/icon-512.png',...['af_heart','af_bella','am_michael','am_fenrir','bf_emma'].map(voice=>'./public/voice-previews/'+voice+'.wav')];
@@ -15,4 +15,11 @@ async function storedImage(request,name){
   const response=new Response(await res.blob(),{headers:{'Content-Type':TYPES[name.split('.').pop()]||'image/png'}});
   await cache.put(request.url,response.clone());return response;
 }
-self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==ROOT.origin||!url.pathname.startsWith(ROOT.pathname)||url.pathname.endsWith('/__reload'))return;const image=url.pathname.slice(ROOT.pathname.length).match(/^rf-img\/([a-f0-9]{32}\.(?:webp|jpg|png|gif))$/);if(image){event.respondWith(storedImage(event.request,image[1]));return;}if(!FILES.some(x=>new URL(x,ROOT).pathname===url.pathname)&&event.request.mode!=='navigate')return;event.respondWith(fetch(event.request).then(response=>{if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(event.request,copy)));}return response;}).catch(async()=>{return await caches.match(event.request)|| (event.request.mode==='navigate'?await caches.match(new URL('./index.html',ROOT).href):null)||Response.error();}));});
+async function driveThumb(request,id){
+ const cache=await caches.open(IMAGE_CACHE),hit=await cache.match(request.url);if(hit)return hit;
+ const res=await fetch(`https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w1600`).catch(()=>null);
+ if(!res?.ok)return new Response('',{status:res?.status||504});
+ const out=new Response(await res.blob(),{headers:{'Content-Type':res.headers.get('Content-Type')||'image/jpeg','Cache-Control':'private, max-age=86400'}});
+ await cache.put(request.url,out.clone());return out;
+}
+self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==ROOT.origin||!url.pathname.startsWith(ROOT.pathname)||url.pathname.endsWith('/__reload'))return;const rel=url.pathname.slice(ROOT.pathname.length);const drive=rel.match(/^rf-drive-thumb\/([^/?#]+)$/);if(drive){event.respondWith(driveThumb(event.request,decodeURIComponent(drive[1])));return;}const image=rel.match(/^rf-img\/([a-f0-9]{32}\.(?:webp|jpg|png|gif))$/);if(image){event.respondWith(storedImage(event.request,image[1]));return;}if(!FILES.some(x=>new URL(x,ROOT).pathname===url.pathname)&&event.request.mode!=='navigate')return;event.respondWith(fetch(event.request).then(response=>{if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(event.request,copy)));}return response;}).catch(async()=>{return await caches.match(event.request)|| (event.request.mode==='navigate'?await caches.match(new URL('./index.html',ROOT).href):null)||Response.error();}));});

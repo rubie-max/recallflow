@@ -12,6 +12,12 @@ export function resolveMediaPlaybackSrc(url){const s=String(url||'');return driv
 export function driveImageUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w1600`:String(url||'');}
 export function resolveMediaLink(url){return isDriveLink(url)?driveDirectUrl(url):String(url||'').trim();}
 export function resolveImageLink(url){const s=String(url||'').trim();return driveFileId(s)?driveImageUrl(s):resolveMediaLink(s);}
+// Same-origin path the service worker uses to stream a Drive thumbnail for crop/zoom (avoids tainted canvas).
+export function driveImageEditUrl(url){
+ const id=driveFileId(url);
+ if(!id||typeof location==='undefined')return String(url||'');
+ return new URL(`rf-drive-thumb/${encodeURIComponent(id)}`,new URL('./',location.href)).href;
+}
 export const questionTypes=[['short_answer','Type answer'],['fill_blank','Fill in the blank'],['single_choice','Multiple choice'],['flashcard','Flashcard'],['true_false','True / False'],['multi_select','Multi-select'],['numeric','Numeric answer'],['matching','Matching'],['ordering','Ordering / sequence'],['cloze','Multi-blank / cloze'],['fill_blank_options','Fill blanks with options'],['list_recall','List recall'],['categorize','Sort into groups'],['highlight','Highlight words'],['image_tap','Tap the picture'],['slider','Slider / estimate']];
 export const extraTypes=['list_recall','categorize','highlight','image_tap','slider'];
 
