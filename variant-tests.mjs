@@ -14,7 +14,7 @@ assert.equal(multi.variants[0].prompt,'Symbol for sodium?','empty variant prompt
 assert.equal(multi.variants[1].answer,'Sodium → Na; Iron → Fe');
 assert.deepEqual(itemTypes(multi),['single_choice','short_answer','matching']);
 assert.throws(()=>validateQuestion({...multi,variants:[{type:'matching',pairs:[{left:'a',right:'b'}]}]}),/Matching \(type 2\)/);
-assert.throws(()=>validateQuestion({...multi,variants:Array(6).fill({type:'short_answer',answer:'Na'})}),/up to 5/);
+assert.throws(()=>validateQuestion({...multi,variants:[{type:'short_answer',answer:'Na'},{type:'short_answer',answer:'Na'}]}),/can only be used once/);
 assert.equal(validateQuestion({...multi,variants:[]}).variants,undefined);
 
 const asMatching=resolveVariant(multi,[],()=>.99);

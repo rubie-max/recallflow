@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {X,Check,Undo2,Redo2,Volume2,VolumeX,Download,ChevronDown,RotateCcw} from 'lucide-react';
+import {X,Check,Undo2,Redo2,Volume2,VolumeX,Download,ChevronDown,RotateCcw,Play,Pause,Scissors} from 'lucide-react';
 import {Button} from './components/Button';
 import {driveFileId,isDriveLink,resolveMediaPlaybackSrc} from '../question-types.js';
 
@@ -83,6 +83,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel}:Props){
  const [drag,setDrag]=useState<'start'|'end'|null>(null);
  const [menu,setMenu]=useState(false);
  const [exporting,setExporting]=useState('');
+ const [playing,setPlaying]=useState(false);
  const base=defaultEdit(duration);
  const hist=useHistory(normalizeEdit(initial,duration||0));
  const edit=normalizeEdit(hist.state,duration||0);
@@ -99,6 +100,16 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel}:Props){
  },[playback,initial]);
 
  useEffect(()=>{const el=media.current;if(!el)return;el.muted=edit.muted;},[edit.muted,src]);
+
+ // Track play state so the transport button stays in sync with the media element.
+ useEffect(()=>{const el=media.current;if(!el)return;const p=()=>setPlaying(true),q=()=>setPlaying(false);el.addEventListener('play',p);el.addEventListener('pause',q);el.addEventListener('ended',q);return()=>{el.removeEventListener('play',p);el.removeEventListener('pause',q);el.removeEventListener('ended',q);};},[src]);
+
+ // Play only the trimmed selection, looping back to its start when it reaches the end.
+ function toggleSelection(){
+  const el=media.current;if(!el)return;
+  if(el.paused){if(el.currentTime<edit.trimStart||el.currentTime>=edit.trimEnd-0.02)el.currentTime=edit.trimStart;el.play().catch(()=>{});}
+  else el.pause();
+ }
 
  useEffect(()=>{
   const el=media.current;if(!el)return;
@@ -156,13 +167,19 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel}:Props){
   <button type="button" className="question-tools-scrim" aria-label="Close editor" onClick={onCancel}/>
   <section className="media-clip-editor" role="dialog" aria-modal="true" aria-labelledby="media-clip-title">
    <header className="media-clip-head"><button type="button" aria-label="Cancel" onClick={onCancel}><X size={18}/></button><h2 id="media-clip-title">{title}</h2><Button size="sm" onClick={done}><Check size={15}/>Done</Button></header>
-   <div className="media-clip-stage">{kind==='video'?<video ref={media as React.RefObject<HTMLVideoElement>} src={playback} playsInline controls preload="metadata"/>:<audio ref={media as React.RefObject<HTMLAudioElement>} src={playback} controls preload="metadata"/>}</div>
-   <div className="media-clip-scrubber" ref={scrub} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp} onClick={e=>{if((e.target as HTMLElement).closest('.media-clip-handle'))return;seekTo(frac(e.clientX)*duration);}}>
-    {duration>0&&<span className="media-clip-range" style={{left:`${left}%`,width:`${width}%`}}/>}
-    {duration>0&&<button type="button" className="media-clip-handle is-start" style={{left:`calc(${left}% - 7px)`}} aria-label="Trim start" onPointerDown={e=>pointerDown('start',e)}/>}
-    {duration>0&&<button type="button" className="media-clip-handle is-end" style={{left:`calc(${left+width}% - 7px)`}} aria-label="Trim end" onPointerDown={e=>pointerDown('end',e)}/>}
+   <div className="media-clip-stage" data-kind={kind}>{kind==='video'?<video ref={media as React.RefObject<HTMLVideoElement>} src={playback} playsInline controls preload="metadata"/>:<audio ref={media as React.RefObject<HTMLAudioElement>} src={playback} preload="metadata" hidden/>}{kind==='audio'&&<div className="media-clip-audio-face" aria-hidden="true"><Scissors size={26}/><span>{title}</span></div>}</div>
+   <div className="media-clip-transport">
+    <button type="button" className="media-clip-play" onClick={toggleSelection} disabled={!duration} aria-label={playing?'Pause':'Play selection'}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}{playing?'Pause':'Play selection'}</button>
+    <span className="media-clip-clock"><b>{time(at)}</b> / {time(edit.trimEnd)}</span>
    </div>
-   <p className="media-clip-times"><span>{time(edit.trimStart)}</span><span>{time(at)} playing</span><span>{time(edit.trimEnd)}</span><small>{time(duration)} total</small></p>
+   <div className="media-clip-scrubber" ref={scrub} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp} onClick={e=>{if((e.target as HTMLElement).closest('.media-clip-handle'))return;seekTo(frac(e.clientX)*duration);}}>
+    {duration>0&&<><span className="media-clip-cut" style={{left:0,width:`${left}%`}}/><span className="media-clip-cut" style={{left:`${left+width}%`,right:0}}/></>}
+    {duration>0&&<span className="media-clip-range" style={{left:`${left}%`,width:`${width}%`}}/>}
+    {duration>0&&<span className="media-clip-playhead" style={{left:`${Math.min(100,Math.max(0,at/duration*100))}%`}}/>}
+    {duration>0&&<button type="button" className="media-clip-handle is-start" style={{left:`calc(${left}% - 9px)`}} aria-label="Trim start" onPointerDown={e=>pointerDown('start',e)}><b>{time(edit.trimStart)}</b></button>}
+    {duration>0&&<button type="button" className="media-clip-handle is-end" style={{left:`calc(${left+width}% - 9px)`}} aria-label="Trim end" onPointerDown={e=>pointerDown('end',e)}><b>{time(edit.trimEnd)}</b></button>}
+   </div>
+   <p className="media-clip-times"><span><i>Start</i>{time(edit.trimStart)}</span><span className="is-len"><i>Length</i>{time(Math.max(0,edit.trimEnd-edit.trimStart))}</span><span><i>End</i>{time(edit.trimEnd)}</span></p>
    {!embedded&&<p className="media-clip-note">{drive?'Google Drive clip: trim and mute apply in the quiz. If nothing plays, confirm sharing is “Anyone with the link” (Viewer), or upload the file instead.':'Linked clips: trim and mute apply in the quiz; export trimmed file is only for uploaded clips.'}</p>}
    {exporting&&<p className="media-clip-note" role="status">{exporting}</p>}
    <div className="media-clip-toolbar">

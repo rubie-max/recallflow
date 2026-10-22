@@ -7,24 +7,13 @@ export const IMAGE_W=1200,IMAGE_H=900;
 type View={k:number;x:number;y:number};
 const SOURCE_MAX=2400;
 
-async function ensureDriveEditReady(){
- if(!('serviceWorker' in navigator))return false;
- try{
-  await navigator.serviceWorker.register('./sw.js');
-  await navigator.serviceWorker.ready;
-  if(!navigator.serviceWorker.controller)await new Promise(r=>setTimeout(r,400));
-  return !!navigator.serviceWorker.controller;
- }catch{return false;}
-}
 async function loadImage(src:string){
  let loadSrc=src;
  const drive=driveFileId(src)||/drive\.google\.com/i.test(src);
  if(drive){
-  if(!await ensureDriveEditReady())throw new Error('Refresh this page once, then tap Edit again to crop a Google Drive picture.');
+  // Route Drive pictures through a CORS-enabling proxy so the canvas stays untainted and exportable.
   const proxied=driveImageEditUrl(src);
   if(proxied===src)throw new Error('This Google Drive link could not be opened for editing. Use Change or Upload and pick the file from your device.');
-  const probe=await fetch(proxied).catch(()=>null);
-  if(!probe?.ok)throw new Error('This Google Drive picture could not be loaded for editing. Confirm “Anyone with the link” (Viewer), or use Change/Upload with the file from your device.');
   loadSrc=proxied;
  }
  const sameOrigin=(()=>{try{return new URL(loadSrc,location.href).origin===location.origin;}catch{return false;}})();
