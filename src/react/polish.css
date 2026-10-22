@@ -898,6 +898,13 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .editor-sound .editor-sound-player{flex:1 1 100%;max-width:100%;margin-top:6px}
 .editor-sound .editor-sound-player .sound-body{gap:4px}
 .editor-sound .editor-sound-player .sound-bar{height:8px}
+/* Media card layout: header row, then full-width extras */
+.editor-inline-image.editor-sound,.editor-inline-image.editor-video{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px 12px}
+.editor-sound .editor-inline-actions,.editor-video .editor-inline-actions{grid-column:1/-1;flex-wrap:wrap;margin-left:0}
+@media(min-width:480px){.editor-sound .editor-inline-actions,.editor-video .editor-inline-actions{grid-column:3;justify-self:end}}
+.editor-sound .editor-sound-player,.editor-sound .editor-media-link,.editor-video .video-player.is-compact,.editor-video .editor-media-link{grid-column:1/-1}
+.editor-inline-warn{grid-column:1/-1;display:flex;align-items:flex-start;gap:8px;margin:0;padding:9px 11px;border-radius:10px;background:color-mix(in srgb,var(--error) 11%,var(--card));color:var(--error);font-size:12.5px;line-height:1.35}
+.editor-inline-warn svg{flex-shrink:0;margin-top:1px}
 .editor-video{flex-wrap:wrap}
 .editor-video .video-player.is-compact{flex:1 1 100%;max-width:360px}
 .video-player{display:grid;gap:8px;width:100%;max-width:560px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card)}
