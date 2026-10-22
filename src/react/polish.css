@@ -313,6 +313,8 @@
 .type-sheet-item .type-sheet-icon{width:32px;height:32px;border-radius:9px}
 .type-sheet-item:hover{background:var(--muted)}
 .type-sheet-item[aria-selected="true"]{background:color-mix(in srgb,var(--primary) 14%,var(--card))}
+.type-sheet-item:disabled{opacity:.5;cursor:not-allowed}
+.type-sheet-item:disabled:hover{background:transparent}
 .type-sheet-check{flex:none;color:var(--primary)}
 @keyframes type-sheet-up{from{transform:translateY(100%)}}
 @keyframes type-sheet-fade{from{opacity:0}}

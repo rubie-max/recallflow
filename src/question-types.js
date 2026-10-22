@@ -1,5 +1,5 @@
 import {textGrade,normalize} from './learning-core.js';
-import {MAX_VARIANTS,pickVariant} from './question-variants.js';
+import {MAX_VARIANTS,itemTypes,pickVariant} from './question-variants.js';
 
 export function driveFileId(url){const s=String(url||'');const m=s.match(/\/file\/d\/([\w-]{20,})/)||s.match(/[?&]id=([\w-]{20,})/)||s.match(/\/d\/([\w-]{20,})/);return m?m[1]:'';}
 export function isDriveLink(url){return /^https:\/\/(drive|docs)\.google\.com\//i.test(String(url||''))&&!!driveFileId(url);}
@@ -127,6 +127,7 @@ if(input.image&&!imageSafe(input.image))throw new Error('Use a PNG, JPEG or WebP
 if(input.acceptedAnswers&&(!Array.isArray(input.acceptedAnswers)||input.acceptedAnswers.some(a=>typeof a!=='string'||!a.trim())))throw new Error('Alternative answers must be non-empty text.');if(input.tags&&(!Array.isArray(input.tags)||input.tags.some(a=>typeof a!=='string')))throw new Error('Tags must be text.');if(!answer&&!(type==='flashcard'&&(input.answerImage||input.answerVideo||input.answerAudio)))throw new Error(type==='flashcard'?'Add an answer, a back image, video or sound first.':'Add a correct answer first.');
 const result={...input,type,prompt,answer,options,correctAnswers,numericTolerance,...(extra?.fields||{})};
 if(input.variants!==undefined){if(!Array.isArray(input.variants)||input.variants.length>MAX_VARIANTS)throw new Error(`Use up to ${MAX_VARIANTS} extra question types.`);result.variants=input.variants.map((variant,i)=>{try{return pickVariant(validateQuestion({...pickVariant(variant||{}),prompt:variant?.prompt||input.prompt,image:input.image}));}catch(error){throw new Error(`${typeLabel(variant?.type)} (type ${i+2}): ${error.message}`);}});if(!result.variants.length)delete result.variants;}
+const types=itemTypes(result);if(new Set(types).size!==types.length)throw new Error('Each question type can only be used once on the same question.');
 if(result.typeMode!==undefined&&!['random','primary'].includes(result.typeMode))delete result.typeMode;
 for(const [editKey,mediaKey] of [['audioEdit','audio'],['videoEdit','video'],['answerAudioEdit','answerAudio'],['answerVideoEdit','answerVideo']])if(!result[mediaKey])delete result[editKey];
 return result;}

@@ -3,7 +3,7 @@ import {Plus,Trash2,ArrowUp,ArrowDown,Check,Save,LoaderCircle,ImagePlus,Eye,EyeO
 import {MediaLinkForm,MediaErrorBanner} from './MediaLinkForm';
 import {ImageEditor} from './ImageEditor';
 import {ImageViewer} from './ImageViewer';
-import {typeLabel,gradeQuestion,extraTypes,resolveImageLink,driveFileId} from '../question-types.js';
+import {typeLabel,gradeQuestion,extraTypes,questionTypes,resolveImageLink,driveFileId} from '../question-types.js';
 import {TypeField,TypeSheet} from './TypeSheet';
 import {MAX_VARIANTS,emptyDraft,seededShuffle,imageTypes,pictureLabel,specFromDraft,draftTypeFields} from '../question-variants.js';
 import {ExtraAnswer} from './ExtraAnswers';
@@ -158,6 +158,8 @@ export function QuestionEditor({draft,setDraft,onSave,onCancel,busy,status,saved
  const variants:any[]=draft.variants||[];
  const active=Math.min(vi,variants.length),d=active===0?draft:variants[active-1];
  const allTypes=[draft,...variants];
+ const usedTypes=allTypes.map((v:any)=>v.type||'short_answer');
+ const canAddType=variants.length<MAX_VARIANTS&&usedTypes.length<questionTypes.length;
  function goStep(next:number){setStep(next);tabs.current?.scrollIntoView({block:'start',behavior:'smooth'});}
  function tabKey(e:React.KeyboardEvent,index:number){let next=index;if(e.key==='ArrowRight')next=(index+1)%tabLabels.length;else if(e.key==='ArrowLeft')next=(index+tabLabels.length-1)%tabLabels.length;else if(e.key==='Home')next=0;else if(e.key==='End')next=tabLabels.length-1;else return;e.preventDefault();goStep(next);(tabs.current?.querySelectorAll('button')[next] as HTMLButtonElement)?.focus();}
  const setD=(fn:(v:any)=>any)=>setDraft((x:any)=>active===0?fn(x):{...x,variants:(x.variants||[]).map((v:any,i:number)=>i===active-1?fn(v):v)});
@@ -186,7 +188,8 @@ export function QuestionEditor({draft,setDraft,onSave,onCancel,busy,status,saved
  const imageButton=(text:string,label=text,name?:()=>string)=>{const key=text.trim(),keyFor=()=>key||name!();return <ChoiceImageButton choice={label} disabled={!key&&!name} image={d.optionImages?.[key]} onPick={(file:File)=>upload(file,keyFor())} onLink={(url:string)=>link(url,keyFor())} onRemove={()=>removeChoiceImage(key)} onView={setZoom} onEdit={()=>setEditImg({src:d.optionImages[key],key,target:'image'})}/>;};
  const imageList=d.type==='matching'?{title:'Pair images',hint:'Add a picture to either side of a pair.'}:d.type==='ordering'?{title:'Step images',hint:'Each picture appears on its step.'}:d.type==='fill_blank_options'?{title:'Word bank images',hint:'Each picture appears on its word in the word bank.'}:{title:'Choice images',hint:'Each picture appears inside its answer choice.'};
  function pasteImage(e:React.ClipboardEvent){const file=[...e.clipboardData.files].find(f=>f.type.startsWith('image/'));if(file){e.preventDefault();void upload(file);}}
- function addType(type:string){setDraft((x:any)=>({...x,typeMode:x.typeMode||'random',variants:[...(x.variants||[]),seedVariant(type,active===0?x:x.variants[active-1])]}));setVi(variants.length+1);setAddingType(false);setPreview(false);}
+ function addType(type:string){if(usedTypes.includes(type)){setMediaError(`${typeLabel(type)} is already on this question. Pick a different type.`);return;}setMediaError('');setDraft((x:any)=>({...x,typeMode:x.typeMode||'random',variants:[...(x.variants||[]),seedVariant(type,active===0?x:x.variants[active-1])]}));setVi(variants.length+1);setAddingType(false);setPreview(false);}
+ function changeType(id:string){if(usedTypes.some((t,i)=>i!==active&&t===id)){setMediaError(`${typeLabel(id)} is already on this question.`);return;}setMediaError('');field('type',id);setPreview(false);}
  function removeType(){setDraft((x:any)=>{const rest=(x.variants||[]).filter((_:any,i:number)=>i!==active-1);return {...x,variants:rest.length?rest:undefined};});setVi(Math.max(0,active-1));}
  function makeMain(){setDraft((x:any)=>{const list=[x,...(x.variants||[])],main=list[active];const old=Object.fromEntries(draftTypeFields.map(k=>[k,x[k]]));const rest=(x.variants||[]).map((v:any,i:number)=>i===active-1?old:v);return {...x,...main,variants:rest};});setVi(0);}
  const statusId='editor-status';
@@ -196,12 +199,12 @@ export function QuestionEditor({draft,setDraft,onSave,onCancel,busy,status,saved
  <div className="editor-tabs editor-numbered-steps" ref={tabs} role="tablist" aria-label="Question editor sections">{tabLabels.map((label,i)=><button type="button" key={label} role="tab" id={`editor-tab-${i}`} aria-selected={step===i} aria-controls={`editor-panel-${i}`} tabIndex={step===i?0:-1} onClick={()=>goStep(i)} onKeyDown={e=>tabKey(e,i)}><span>{i+1}</span>{label}</button>)}</div>
  <section className="editor-section editor-step-panel" role="tabpanel" id="editor-panel-0" aria-labelledby="editor-tab-0" hidden={step!==0}>
  <div className="editor-variants">
-  <div className="editor-variants-head"><span><Layers size={15}/>Ways to ask this question</span>{variants.length<MAX_VARIANTS&&<button type="button" className="editor-variant-add" aria-expanded={addingType} onClick={()=>setAddingType(v=>!v)}><Plus size={14}/>Add type</button>}</div>
+  <div className="editor-variants-head"><span><Layers size={15}/>Ways to ask this question</span>{canAddType&&<button type="button" className="editor-variant-add" aria-expanded={addingType} onClick={()=>setAddingType(v=>!v)}><Plus size={14}/>Add type</button>}</div>
   {allTypes.length>1&&<div className="editor-variant-tabs" role="tablist" aria-label="Question types">{allTypes.map((v:any,i:number)=><button type="button" role="tab" key={i} aria-selected={active===i} onClick={()=>{setVi(i);setPreview(false);}}><span>{i+1}</span>{typeLabel(v.type)}</button>)}</div>}
-  {addingType&&<TypeSheet title="Add another way to ask" onPick={addType} onClose={()=>setAddingType(false)}/>}
+  {addingType&&<TypeSheet title="Add another way to ask" blocked={usedTypes} onPick={addType} onClose={()=>setAddingType(false)}/>}
   {allTypes.length>1&&<div className="editor-variant-mode" role="radiogroup" aria-label="Type used in quizzes"><button type="button" role="radio" aria-checked={draft.typeMode!=='primary'} onClick={()=>shared('typeMode','random')}><Shuffle size={14}/>Random each quiz</button><button type="button" role="radio" aria-checked={draft.typeMode==='primary'} onClick={()=>shared('typeMode','primary')}><span className="editor-variant-one">1</span>Always type 1</button></div>}
  </div>
-<div className="editor-type-row"><TypeField label={allTypes.length>1?`Type ${active+1}`:'Question type'} value={d.type} help={help[d.type]} onChange={id=>{field('type',id);setPreview(false);}}/>{active>0&&<div className="editor-type-actions"><button type="button" onClick={makeMain}>Make type 1</button><button type="button" className="is-remove" onClick={removeType}><Trash2 size={14}/>Remove</button></div>}</div>
+<div className="editor-type-row"><TypeField label={allTypes.length>1?`Type ${active+1}`:'Question type'} value={d.type} help={help[d.type]} blocked={usedTypes} onChange={changeType}/>{active>0&&<div className="editor-type-actions"><button type="button" onClick={makeMain}>Make type 1</button><button type="button" className="is-remove" onClick={removeType}><Trash2 size={14}/>Remove</button></div>}</div>
  <label>{d.type==='flashcard'?'Front of card':'Question prompt'}{d.image&&!['fill_blank','cloze','fill_blank_options','highlight'].includes(d.type)&&<small className="editor-optional">Optional — the picture can be the question</small>}<textarea value={d.prompt} onChange={e=>field('prompt',e.target.value)} onPaste={pasteImage} placeholder={['fill_blank','cloze','fill_blank_options'].includes(d.type)?'The capital of France is ___.':promptHints[d.type]||'What would you like to remember?'}/></label>{['fill_blank','cloze','fill_blank_options'].includes(d.type)&&<button type="button" className="editor-text-button" onClick={()=>field('prompt',String(d.prompt||'').trimEnd()+' ___')}><Plus size={14}/>Insert a blank</button>}
  {active===0&&<InlineImage label={d.type==='flashcard'?'Front image':'Question image'} hint={d.type==='image_tap'?'Needed · learners tap on this picture':allTypes.length>1?'Optional · shown for every type':'Optional · you can also paste an image'} image={draft.image} onPick={(file:File)=>upload(file)} onLink={(url:string)=>link(url)} onRemove={()=>shared('image',undefined)} onView={setZoom} onEdit={()=>setEditImg({src:draft.image,target:'image'})} onClearError={()=>setMediaError('')}/>}
  {active===0&&<SoundField audio={draft.audio} edit={draft.audioEdit} onEditChange={value=>shared('audioEdit',value)} onChange={value=>shared('audio',value)} onError={msg=>setMediaError(msg)} onClearError={()=>setMediaError('')}/>}

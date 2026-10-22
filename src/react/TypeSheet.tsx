@@ -12,29 +12,30 @@ function grouped(){const known=groups.flatMap(([,ids])=>ids),ids=questionTypes.m
 
 export const TypeIcon=({type,size=17}:{type:string,size?:number})=>{const Icon=icons[type]||Shapes;return <Icon size={size} aria-hidden="true"/>;};
 
-export function TypeSheet({title,value,onPick,onClose}:{title:string,value?:string,onPick:(id:string)=>void,onClose:()=>void}){
+export function TypeSheet({title,value,blocked=[],onPick,onClose}:{title:string,value?:string;blocked?:string[];onPick:(id:string)=>void;onClose:()=>void}){
+ const blockedSet=new Set(blocked.filter(id=>id&&id!==value));
  const panel=useRef<HTMLDivElement>(null);
  useEffect(()=>{
   const back=document.activeElement as HTMLElement|null,overflow=document.body.style.overflow;
   document.body.style.overflow='hidden';
-  (panel.current?.querySelector('[aria-selected="true"]') as HTMLElement||panel.current?.querySelector('.type-sheet-item') as HTMLElement)?.focus({preventScroll:false});
+  (panel.current?.querySelector('[aria-selected="true"]:not(:disabled)') as HTMLElement||panel.current?.querySelector('.type-sheet-item:not(:disabled)') as HTMLElement)?.focus({preventScroll:false});
   const key=(e:KeyboardEvent)=>{if(e.key==='Escape'){e.preventDefault();onClose();}};
   document.addEventListener('keydown',key);
   return()=>{document.removeEventListener('keydown',key);document.body.style.overflow=overflow;back?.focus?.();};
  },[]);
- const move=(e:React.KeyboardEvent)=>{if(!['ArrowDown','ArrowUp'].includes(e.key))return;const items=[...(panel.current?.querySelectorAll('.type-sheet-item')||[])] as HTMLElement[];const i=items.indexOf(document.activeElement as HTMLElement);items[(i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length]?.focus();e.preventDefault();};
+ const move=(e:React.KeyboardEvent)=>{if(!['ArrowDown','ArrowUp'].includes(e.key))return;const items=[...(panel.current?.querySelectorAll('.type-sheet-item:not(:disabled)')||[])] as HTMLElement[];const i=items.indexOf(document.activeElement as HTMLElement);items[(i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length]?.focus();e.preventDefault();};
  return createPortal(<div className="type-sheet-layer" onPointerDown={e=>{if(e.target===e.currentTarget)onClose();}}>
   <div className="type-sheet" ref={panel} role="dialog" aria-modal="true" aria-label={title} onKeyDown={move}>
    <div className="type-sheet-handle" aria-hidden="true"/>
    <div className="type-sheet-head"><h3>{title}</h3><button type="button" className="type-sheet-close" aria-label="Close" onClick={onClose}><X size={18}/></button></div>
    <div className="type-sheet-body" role="listbox" aria-label={title}>
-    {grouped().map(([name,ids])=><div className="type-sheet-group" key={name} role="group" aria-label={name}><p>{name}</p>{ids.map(id=><button type="button" role="option" key={id} className="type-sheet-item" aria-selected={id===value} onClick={()=>onPick(id)}><span className="type-sheet-icon"><TypeIcon type={id}/></span><span className="type-sheet-text"><b>{typeLabel(id)}</b><small>{blurbs[id]||''}</small></span>{id===value&&<Check size={17} className="type-sheet-check"/>}</button>)}</div>)}
+    {grouped().map(([name,ids])=><div className="type-sheet-group" key={name} role="group" aria-label={name}><p>{name}</p>{ids.map(id=>{const taken=blockedSet.has(id);return <button type="button" role="option" key={id} className="type-sheet-item" aria-selected={id===value} aria-disabled={taken||undefined} disabled={taken} title={taken?'Already on this question':undefined} onClick={()=>{if(!taken)onPick(id);}}><span className="type-sheet-icon"><TypeIcon type={id}/></span><span className="type-sheet-text"><b>{typeLabel(id)}</b><small>{taken?'Already on this question':blurbs[id]||''}</small></span>{id===value&&<Check size={17} className="type-sheet-check"/>}</button>;})}</div>)}
    </div>
   </div>
  </div>,document.body);
 }
 
-export function TypeField({label,value,help,onChange}:{label:string,value:string,help?:string,onChange:(id:string)=>void}){
+export function TypeField({label,value,help,blocked=[],onChange}:{label:string;value:string;help?:string;blocked?:string[];onChange:(id:string)=>void}){
  const [open,setOpen]=useState(false);
  return <div className="type-field"><span className="type-field-label">{label}</span>
   <button type="button" className="type-field-button" aria-haspopup="dialog" aria-expanded={open} onClick={()=>setOpen(true)}>
@@ -42,6 +43,6 @@ export function TypeField({label,value,help,onChange}:{label:string,value:string
    <span className="type-sheet-text"><b>{typeLabel(value)}</b><small>{help||blurbs[value]}</small></span>
    <ChevronDown size={18} className="type-field-chevron"/>
   </button>
-  {open&&<TypeSheet title="Choose question type" value={value} onClose={()=>setOpen(false)} onPick={id=>{setOpen(false);if(id!==value)onChange(id);}}/>}
+  {open&&<TypeSheet title="Choose question type" value={value} blocked={blocked} onClose={()=>setOpen(false)} onPick={id=>{setOpen(false);if(id!==value)onChange(id);}}/>}
  </div>;
 }
