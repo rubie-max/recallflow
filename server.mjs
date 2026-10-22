@@ -27,6 +27,19 @@ const server = http.createServer(async(req,res)=>{
    const buf=Buffer.from(await got.blob.arrayBuffer());
    res.writeHead(200,{'Content-Type':got.type,'Cache-Control':'no-cache'});res.end(buf);return;
   }
+  // Stream a Drive audio/video so the browser can play & trim it (direct Drive URLs block cross-origin media).
+  const media=pathname.match(/^\/rf-drive-media\/([^/?#]+)$/);
+  if(media&&req.method==='GET'){
+   const id=decodeURIComponent(media[1]);
+   const upstream=`https://drive.usercontent.google.com/download?id=${encodeURIComponent(id)}&export=download`;
+   const headers={};if(req.headers.range)headers.Range=req.headers.range;
+   const r=await fetch(upstream,{redirect:'follow',headers}).catch(()=>null);
+   if(!r||!r.ok&&r.status!==206){res.writeHead(502);res.end('Drive media unavailable');return;}
+   const out={'Content-Type':r.headers.get('content-type')||'application/octet-stream','Accept-Ranges':'bytes','Cache-Control':'no-cache'};
+   const cr=r.headers.get('content-range');if(cr)out['Content-Range']=cr;
+   const cl=r.headers.get('content-length');if(cl)out['Content-Length']=cl;
+   res.writeHead(r.status,out);res.end(Buffer.from(await r.arrayBuffer()));return;
+  }
   try {
     const base = pathname.startsWith('/vendor/') ? path.join(root,'public') : root;
     const relative = decodeURIComponent(pathname==='/'?'/index.html':pathname.endsWith('/')?pathname+'index.html':pathname);

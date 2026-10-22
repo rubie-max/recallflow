@@ -1,4 +1,4 @@
-const CACHE='recallflow-shell-v64';
+const CACHE='recallflow-shell-v65';
 const IMAGE_CACHE='recallflow-images';
 const ROOT=new URL('./',self.location.href);
 const FILES=['./','./index.html','./assets/app.js','./assets/app.css','./public/recallflow-logo.png','./public/recallflow-logo.svg','./manifest.webmanifest','./public/icon-192.png','./public/icon-512.png',...['af_heart','af_bella','am_michael','am_fenrir','bf_emma'].map(voice=>'./public/voice-previews/'+voice+'.wav')];
@@ -32,4 +32,22 @@ async function driveThumb(request,id){
  const out=new Response(got.blob,{headers:{'Content-Type':got.type,'Cache-Control':'private, max-age=86400'}});
  await cache.put(request.url,out.clone());return out;
 }
-self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==ROOT.origin||!url.pathname.startsWith(ROOT.pathname)||url.pathname.endsWith('/__reload'))return;const rel=url.pathname.slice(ROOT.pathname.length);const drive=rel.match(/^rf-drive-thumb\/([^/?#]+)$/);if(drive){event.respondWith(driveThumb(event.request,decodeURIComponent(drive[1])));return;}const image=rel.match(/^rf-img\/([a-f0-9]{32}\.(?:webp|jpg|png|gif))$/);if(image){event.respondWith(storedImage(event.request,image[1]));return;}if(!FILES.some(x=>new URL(x,ROOT).pathname===url.pathname)&&event.request.mode!=='navigate')return;event.respondWith(fetch(event.request).then(response=>{if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(event.request,copy)));}return response;}).catch(async()=>{return await caches.match(event.request)|| (event.request.mode==='navigate'?await caches.match(new URL('./index.html',ROOT).href):null)||Response.error();}));});
+// Stream a Drive audio/video as a readable same-origin response so <audio>/<video> can play & seek it.
+// Google blocks cross-origin media requests to its download URL, so we fetch it inside the worker
+// (no cookies -> no "confirm" interstitial) and re-serve the bytes from our own origin with range support.
+async function driveMedia(request,id){
+ const upstream=`https://drive.usercontent.google.com/download?id=${encodeURIComponent(id)}&export=download`;
+ const range=request.headers.get('range');
+ const headers={};if(range)headers.Range=range;
+ try{
+  const r=await fetch(upstream,{credentials:'omit',redirect:'follow',headers});
+  if(!r.ok&&r.status!==206)return new Response('',{status:r.status||502});
+  const buf=await r.arrayBuffer();
+  const out={'Content-Type':r.headers.get('content-type')||'application/octet-stream','Accept-Ranges':'bytes','Cache-Control':'private, max-age=3600'};
+  const cr=r.headers.get('content-range');if(cr)out['Content-Range']=cr;
+  return new Response(buf,{status:r.status,headers:out});
+ }catch{
+  try{return await fetch(upstream,{mode:'no-cors',credentials:'omit',redirect:'follow'});}catch{return new Response('',{status:502});}
+ }
+}
+self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==ROOT.origin||!url.pathname.startsWith(ROOT.pathname)||url.pathname.endsWith('/__reload'))return;const rel=url.pathname.slice(ROOT.pathname.length);const drive=rel.match(/^rf-drive-thumb\/([^/?#]+)$/);if(drive){event.respondWith(driveThumb(event.request,decodeURIComponent(drive[1])));return;}const dmedia=rel.match(/^rf-drive-media\/([^/?#]+)$/);if(dmedia){event.respondWith(driveMedia(event.request,decodeURIComponent(dmedia[1])));return;}const image=rel.match(/^rf-img\/([a-f0-9]{32}\.(?:webp|jpg|png|gif))$/);if(image){event.respondWith(storedImage(event.request,image[1]));return;}if(!FILES.some(x=>new URL(x,ROOT).pathname===url.pathname)&&event.request.mode!=='navigate')return;event.respondWith(fetch(event.request).then(response=>{if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(event.request,copy)));}return response;}).catch(async()=>{return await caches.match(event.request)|| (event.request.mode==='navigate'?await caches.match(new URL('./index.html',ROOT).href):null)||Response.error();}));});

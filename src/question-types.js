@@ -5,9 +5,19 @@ export function driveFileId(url){const s=String(url||'');const m=s.match(/\/file
 export function isDriveLink(url){return /^https:\/\/(drive|docs)\.google\.com\//i.test(String(url||''))&&!!driveFileId(url);}
 export function driveDirectUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/uc?export=view&id=${id}`:String(url||'');}
 export function drivePreviewUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/file/d/${id}/preview`:String(url||'');}
-// Direct download stream — needed for <audio>/<video> trim editor and playback (view links often return HTML).
-export function driveDownloadUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`:String(url||'');}
-export function resolveMediaPlaybackSrc(url){const s=String(url||'');return driveFileId(s)?driveDownloadUrl(s):resolveMediaLink(s);}
+// Direct Drive download stream. Google refuses cross-origin <audio>/<video> requests to this URL
+// (cookie-based confirm pages + no CORS), so it is only used server-side (dev server / service worker).
+export function driveDownloadUrl(url){const id=driveFileId(url);return id?`https://drive.usercontent.google.com/download?id=${encodeURIComponent(id)}&export=download`:String(url||'');}
+// Same-origin proxy path streamed by the service worker (production) or dev server (local). The browser
+// will only play/seek Drive audio & video through a same-origin URL, not Google's download endpoint.
+export function driveMediaProxyUrl(url){
+ const id=driveFileId(url);
+ if(!id)return String(url||'');
+ const path=`rf-drive-media/${encodeURIComponent(id)}`;
+ if(typeof location==='undefined')return `/${path}`;
+ return new URL(path,new URL('./',location.href)).href;
+}
+export function resolveMediaPlaybackSrc(url){const s=String(url||'');return driveFileId(s)?driveMediaProxyUrl(s):resolveMediaLink(s);}
 // Thumbnail endpoint loads in <img> tags; uc?export=view often returns HTML and fails the link check.
 export function driveImageUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w1600`:String(url||'');}
 export function resolveMediaLink(url){return isDriveLink(url)?driveDirectUrl(url):String(url||'').trim();}
