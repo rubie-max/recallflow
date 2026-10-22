@@ -58,7 +58,7 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
  if(assetLayout&&!video&&!isDriveLink(video||'')){
   return <article className={`empty-drop${linking?' is-linking':''}`}>
    <div className="empty-left"><span className="empty-symbol" aria-hidden="true"><Film size={17}/></span><span className="empty-text"><strong>{title}</strong><small>{emptyHint||'Short videos work best'}</small></span></div>
-   {uploadBtn}{linkBtn}{fileInput}{linkForm}
+   <div className="empty-drop-actions">{uploadBtn}{linkBtn}</div>{fileInput}{linkForm}
   </article>;
  }
  if(assetLayout){
