@@ -137,10 +137,10 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   <div className="editor-inline-copy"><strong>{title}</strong><small>{recording?`Recording… ${time(seconds)} of ${time(MAX_SECONDS)}`:busy||(audio?.startsWith('https://')?'Plays from a link':audio?'Plays with the question':hint)}</small></div>
   <div className="editor-inline-actions">
    {recording?<button type="button" className="is-recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
-    <button type="button" disabled={!!busy} onClick={start}><Mic size={14}/>{audio?'Re-record':'Record'}</button>
-    <button type="button" disabled={!!busy} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{audio&&!audio.startsWith('https://')?'Change':'Upload'}</button>
-    {!recording&&<button type="button" aria-label="Add question sound from a link" aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>}
-    {audio&&!recording&&!isDriveLink(audio)&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
+    <button type="button" disabled={!!busy} aria-label={audio?'Re-record sound':'Record sound'} onClick={start}><Mic size={14}/><span className="editor-action-text">{audio?'Re-record':'Record'}</span></button>
+    <button type="button" disabled={!!busy} aria-label={audio&&!audio.startsWith('https://')?'Change sound file':'Upload sound file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}<span className="editor-action-text">{audio&&!audio.startsWith('https://')?'Change':'Upload'}</span></button>
+    {!recording&&<button type="button" aria-label="Add question sound from a link" aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/><span className="editor-action-text">Link</span></button>}
+    {audio&&!recording&&!isDriveLink(audio)&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/><span className="editor-action-text">Edit</span></button>}
     {audio&&<button type="button" className="is-remove" aria-label="Remove question sound" disabled={!!busy} onClick={()=>{setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
    </>}
   </div>

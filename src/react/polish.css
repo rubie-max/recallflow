@@ -900,8 +900,14 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .editor-sound .editor-sound-player .sound-bar{height:8px}
 /* Media card layout: header row, then full-width extras */
 .editor-inline-image.editor-sound,.editor-inline-image.editor-video{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px 12px}
-.editor-sound .editor-inline-actions,.editor-video .editor-inline-actions{grid-column:1/-1;flex-wrap:wrap;margin-left:0}
-@media(min-width:480px){.editor-sound .editor-inline-actions,.editor-video .editor-inline-actions{grid-column:3;justify-self:end}}
+.editor-sound .editor-inline-actions,.editor-video .editor-inline-actions{grid-column:1/-1;flex-wrap:nowrap;margin-left:0;gap:5px}
+@media(min-width:480px){.editor-sound .editor-inline-actions,.editor-video .editor-inline-actions{grid-column:3;justify-self:end;flex-wrap:wrap;gap:6px}}
+/* After media is added, keep one compact icon row on phones (avoids Re-record / Upload / Link wrapping). */
+@media(max-width:479px){
+ .editor-inline-image.editor-sound.has-image .editor-inline-actions,.editor-inline-image.editor-video.has-image .editor-inline-actions{justify-content:flex-end}
+ .editor-inline-image.editor-sound.has-image .editor-inline-actions .editor-action-text,.editor-inline-image.editor-video.has-image .editor-inline-actions .editor-action-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+ .editor-inline-image.editor-sound.has-image .editor-inline-actions button:not(.is-recording),.editor-inline-image.editor-video.has-image .editor-inline-actions button:not(.is-remove){min-width:36px;width:36px;padding:0;justify-content:center}
+}
 .editor-sound .editor-sound-player,.editor-sound .editor-media-link,.editor-video .video-player.is-compact,.editor-video .editor-media-link{grid-column:1/-1}
 .editor-inline-warn{grid-column:1/-1;display:flex;align-items:flex-start;gap:8px;margin:0;padding:9px 11px;border-radius:10px;background:color-mix(in srgb,var(--error) 11%,var(--card));color:var(--error);font-size:12.5px;line-height:1.35}
 .editor-inline-warn svg{flex-shrink:0;margin-top:1px}

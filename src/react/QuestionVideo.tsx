@@ -57,9 +57,9 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   {video&&isDriveLink(video)&&<DriveShareLegacyNotice kind="video"/>}
   {video&&!isDriveLink(video)&&<VideoPlayer src={video} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>}
   <div className="editor-inline-actions">
-   <button type="button" disabled={!!busy} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:<Upload size={14}/>}{video?'Change file':'Upload'}</button>
-   <button type="button" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>
-   {video&&!isDriveLink(video)&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
+   <button type="button" disabled={!!busy} aria-label={video?'Change video file':'Upload video file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:<Upload size={14}/>}<span className="editor-action-text">{video?'Change':'Upload'}</span></button>
+   <button type="button" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/><span className="editor-action-text">Link</span></button>
+   {video&&!isDriveLink(video)&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/><span className="editor-action-text">Edit</span></button>}
    {video&&<button type="button" className="is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
   </div>
   <input ref={input} type="file" hidden accept="video/*,.mp4,.webm,.mov" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>
