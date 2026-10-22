@@ -3,7 +3,7 @@
 export const variantFields=['type','prompt','answer','options','correctAnswers','numericTolerance','acceptedAnswers','fuzzy','optionImages','pairs','sequence','blanks','listItems','listCount','groups','passage','hotspot','sliderMin','sliderMax','sliderStep','unit'];
 // Editor draft fields that belong to one type (the rest, like images and tags, are shared).
 export const draftTypeFields=['type','prompt','answer','options','numericTolerance','structured','accepted','fuzzy','optionImages','listCount','groups','passage','hotspot','sliderMin','sliderMax','sliderStep','unit'];
-export const MAX_VARIANTS=5;
+export const MAX_VARIANTS=30;
 
 export function itemTypes(item){return [item.type||'short_answer',...(item.variants||[]).map(v=>v.type||'short_answer')];}
 
