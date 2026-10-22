@@ -1,43 +1,21 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {driveFileId} from '../question-types.js';
 import {X,RotateCcw,RotateCw,FlipHorizontal2,FlipVertical2,Undo2,Check,LoaderCircle,Crop,ZoomIn,ZoomOut,Shrink,Expand} from 'lucide-react';
-import {resolveImageLink,driveFileId,driveDownloadUrl} from '../question-types.js';
 
 // Every stored picture uses this shape so cards, options and thumbnails line up.
 export const IMAGE_W=1200,IMAGE_H=900;
 type View={k:number;x:number;y:number};
 const SOURCE_MAX=2400;
 
-async function loadImage(src:string){
- const candidates=[resolveImageLink(src),src];
- if(driveFileId(src))candidates.push(driveDownloadUrl(src));
- const seen=new Set<string>();
- for(const url of candidates){
-  if(!url||seen.has(url))continue;
-  seen.add(url);
-  try{
-   const res=await fetch(url,{mode:'cors',credentials:'omit'});
-   if(!res.ok)continue;
-   const blob=await res.blob();
-   if(!blob.type.startsWith('image/'))continue;
-   const objectUrl=URL.createObjectURL(blob);
-   try{
-    return await new Promise<HTMLImageElement>((resolve,reject)=>{
-     const img=new Image();
-     img.onload=()=>resolve(img);
-     img.onerror=()=>{URL.revokeObjectURL(objectUrl);reject();};
-     img.src=objectUrl;
-    });
-   }catch{URL.revokeObjectURL(objectUrl);}
-  }catch{}
- }
- const display=resolveImageLink(src);
- const isDrive=!!driveFileId(src)||/drive\.google\.com/i.test(display);
+const driveEditHelp='This picture is linked from Google Drive. RecallFlow can show it, but Google blocks crop/zoom in the browser. Use Change or Upload and pick the file from your device (download from Drive first if needed). This is not a sharing setting — upload is the workaround.';
+function loadImage(src:string){
+ if(driveFileId(src)||/drive\.google\.com/i.test(src))return Promise.reject(new Error(driveEditHelp));
  return new Promise<HTMLImageElement>((resolve,reject)=>{
   const img=new Image();
-  if(/^https?:/i.test(display)&&!display.startsWith(location.origin)&&!isDrive)img.crossOrigin='anonymous';
+  if(/^https?:/i.test(src)&&!src.startsWith(location.origin))img.crossOrigin='anonymous';
   img.onload=()=>resolve(img);
-  img.onerror=()=>reject(new Error(isDrive?'This Google Drive picture could not be opened for editing. Share it as “Anyone with the link”, or upload the file.':'This linked image cannot be edited because its site blocks it. Upload the file instead.'));
-  img.src=display;
+  img.onerror=()=>reject(new Error(/^https?:/i.test(src)?'This linked image cannot be edited because its site blocks it. Upload the file instead.':'This image could not be opened. Try a PNG, JPEG or WebP file.'));
+  img.src=src;
  });
 }
 function canvasFrom(w:number,h:number,draw:(ctx:CanvasRenderingContext2D)=>void){
@@ -101,7 +79,7 @@ export function ImageEditor({src,onSave,onCancel}:{src:string;onSave:(image:stri
   if(!live)return;
   const s=Math.min(1,SOURCE_MAX/Math.max(img.naturalWidth,img.naturalHeight));
   const c=canvasFrom(Math.max(1,Math.round(img.naturalWidth*s)),Math.max(1,Math.round(img.naturalHeight*s)),ctx=>ctx.drawImage(img,0,0,Math.round(img.naturalWidth*s),Math.round(img.naturalHeight*s)));
-  try{c.getContext('2d')!.getImageData(0,0,1,1);}catch{const isDrive=!!driveFileId(src)||/drive\.google\.com/i.test(src);throw new Error(isDrive?'This Google Drive picture could not be copied for editing. Share it as “Anyone with the link”, or upload the file.':'This linked image cannot be edited because its site blocks it. Upload the file instead.');}
+  try{c.getContext('2d')!.getImageData(0,0,1,1);}catch{throw new Error('This linked image cannot be edited because its site blocks it. Upload the file instead.');}
   original.current=c;setWork(c);setPos(centred(fillK(c)));
  }).catch(e=>live&&setError(e.message));return()=>{live=false;};},[src]);
  useEffect(()=>{const el=stage.current;if(!el)return;const measure=()=>{const b=el.getBoundingClientRect(),aw=Math.max(0,b.width-24),ah=Math.max(0,b.height-24),w=Math.min(aw,ah*IMAGE_W/IMAGE_H);setSize({w:Math.floor(w),h:Math.floor(w*IMAGE_H/IMAGE_W)});};measure();const o=new ResizeObserver(measure);o.observe(el);return()=>o.disconnect();},[]);

@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {Film,Link2,Trash2,Upload,LoaderCircle} from 'lucide-react';
 import {MediaLinkForm} from './MediaLinkForm';
-import {MAX_VIDEO_CHARS,isDriveLink,driveDownloadUrl,drivePreviewUrl,resolveVideoLink,videoSafe} from '../question-types.js';
+import {MAX_VIDEO_CHARS,isDriveLink,drivePreviewUrl,resolveMediaLink,videoSafe} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
 import {Scissors} from 'lucide-react';
 
@@ -22,9 +22,8 @@ export function VideoPlayer({src,className='',label='Play video',edit}:{src:stri
   apply();
   return()=>{el.removeEventListener('loadedmetadata',apply);el.removeEventListener('durationchange',apply);el.removeEventListener('timeupdate',tick);};
  },[src,drive,edit]);
- const playSrc=drive?driveDownloadUrl(src):src;
  if(drive||failed&&src.includes('drive.google.com'))return <div className={`video-player is-embed ${className}`}><iframe title={label} src={drivePreviewUrl(src)} allow="autoplay; encrypted-media" allowFullScreen/></div>;
- return <div className={`video-player ${className}`}><video ref={video} controls playsInline preload="metadata" src={playSrc} onError={()=>setFailed(true)} onPlay={e=>{const el=e.currentTarget;const len=el.duration;if(!Number.isFinite(len))return;const clip=normalizeEdit(clipRef.current,len);if(clip&&el.currentTime<clip.trimStart)el.currentTime=clip.trimStart;}}/>{failed&&<p className="video-fallback">This video could not play. Try opening the link in a new tab.</p>}</div>;
+ return <div className={`video-player ${className}`}><video ref={video} controls playsInline preload="metadata" src={src} onError={()=>setFailed(true)} onPlay={e=>{const el=e.currentTarget;const len=el.duration;if(!Number.isFinite(len))return;const clip=normalizeEdit(clipRef.current,len);if(clip&&el.currentTime<clip.trimStart)el.currentTime=clip.trimStart;}}/>{failed&&<p className="video-fallback">This video could not play. Try opening the link in a new tab.</p>}</div>;
 }
 
 export function VideoField({video,edit,onEditChange,onChange,onError,onClearError,title='Question video',hint='Prefer an https or Google Drive link — large files fill browser storage quickly.'}:{video?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string}){
@@ -33,7 +32,7 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
  useEffect(()=>{if(video?.startsWith('https://'))setLinking(true);else if(!video)setLinking(false);},[video]);
  function applyLink(url:string){
   onError('');
-  const resolved=resolveVideoLink(url.trim());
+  const resolved=resolveMediaLink(url.trim());
   if(!resolved){onChange(undefined);return true;}
   if(!videoSafe(resolved)){onError('Use an https or Google Drive video link, or a small video file.');return false;}
   onEditChange?.(undefined);onChange(resolved);

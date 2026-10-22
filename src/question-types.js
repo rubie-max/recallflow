@@ -4,15 +4,14 @@ import {MAX_VARIANTS,pickVariant} from './question-variants.js';
 export function driveFileId(url){const s=String(url||'');const m=s.match(/\/file\/d\/([\w-]{20,})/)||s.match(/[?&]id=([\w-]{20,})/)||s.match(/\/d\/([\w-]{20,})/);return m?m[1]:'';}
 export function isDriveLink(url){return /^https:\/\/(drive|docs)\.google\.com\//i.test(String(url||''))&&!!driveFileId(url);}
 export function driveDirectUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/uc?export=view&id=${id}`:String(url||'');}
-export function driveDownloadUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`:String(url||'');}
-export function driveShareUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/file/d/${id}/view`:String(url||'').trim();}
 export function drivePreviewUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/file/d/${id}/preview`:String(url||'');}
+// Direct download stream — needed for <audio>/<video> trim editor and playback (view links often return HTML).
+export function driveDownloadUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`:String(url||'');}
+export function resolveMediaPlaybackSrc(url){const s=String(url||'');return driveFileId(s)?driveDownloadUrl(s):resolveMediaLink(s);}
 // Thumbnail endpoint loads in <img> tags; uc?export=view often returns HTML and fails the link check.
 export function driveImageUrl(url){const id=driveFileId(url);return id?`https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w1600`:String(url||'');}
 export function resolveMediaLink(url){return isDriveLink(url)?driveDirectUrl(url):String(url||'').trim();}
 export function resolveImageLink(url){const s=String(url||'').trim();return driveFileId(s)?driveImageUrl(s):resolveMediaLink(s);}
-export function resolveAudioLink(url){const s=String(url||'').trim();return driveFileId(s)?driveShareUrl(s):resolveMediaLink(s);}
-export function resolveVideoLink(url){const s=String(url||'').trim();return driveFileId(s)?driveShareUrl(s):resolveMediaLink(s);}
 export const questionTypes=[['short_answer','Type answer'],['fill_blank','Fill in the blank'],['single_choice','Multiple choice'],['flashcard','Flashcard'],['true_false','True / False'],['multi_select','Multi-select'],['numeric','Numeric answer'],['matching','Matching'],['ordering','Ordering / sequence'],['cloze','Multi-blank / cloze'],['fill_blank_options','Fill blanks with options'],['list_recall','List recall'],['categorize','Sort into groups'],['highlight','Highlight words'],['image_tap','Tap the picture'],['slider','Slider / estimate']];
 export const extraTypes=['list_recall','categorize','highlight','image_tap','slider'];
 

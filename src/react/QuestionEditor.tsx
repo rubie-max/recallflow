@@ -3,7 +3,7 @@ import {Plus,Trash2,ArrowUp,ArrowDown,Check,Save,LoaderCircle,ImagePlus,Eye,EyeO
 import {MediaLinkForm,MediaErrorBanner} from './MediaLinkForm';
 import {ImageEditor} from './ImageEditor';
 import {ImageViewer} from './ImageViewer';
-import {typeLabel,gradeQuestion,extraTypes,resolveImageLink,driveFileId,driveDownloadUrl} from '../question-types.js';
+import {typeLabel,gradeQuestion,extraTypes,resolveImageLink,driveFileId} from '../question-types.js';
 import {TypeField,TypeSheet} from './TypeSheet';
 import {MAX_VARIANTS,emptyDraft,seededShuffle,imageTypes,pictureLabel,specFromDraft,draftTypeFields} from '../question-variants.js';
 import {ExtraAnswer} from './ExtraAnswers';
@@ -46,21 +46,6 @@ export async function imageFromLink(link:string):Promise<{image:string;linked:bo
  if(driveFileId(trimmed)||driveFileId(resolved)){
   if(url.protocol!=='https:')throw new Error('This site blocks copying the image. Use an https:// link or upload the file.');
   if(url.href.length>2048)throw new Error('This link is too long. Upload the image instead.');
-  try{
-   const controller=new AbortController(),timer=window.setTimeout(()=>controller.abort(),12000);
-   const response=await fetch(url.href,{mode:'cors',signal:controller.signal}).finally(()=>window.clearTimeout(timer));
-   const blob=await response.blob();
-   if(response.ok&&blob.type.startsWith('image/'))return {image:await compressImage(new File([blob],'linked-image',{type:blob.type})),linked:false};
-  }catch{}
-  try{
-   const download=driveDownloadUrl(trimmed)||driveDownloadUrl(resolved);
-   if(download){
-    const controller=new AbortController(),timer=window.setTimeout(()=>controller.abort(),15000);
-    const response=await fetch(download,{mode:'cors',signal:controller.signal}).finally(()=>window.clearTimeout(timer));
-    const blob=await response.blob();
-    if(response.ok&&blob.type.startsWith('image/'))return {image:await compressImage(new File([blob],'linked-image',{type:blob.type})),linked:false};
-   }
-  }catch{}
   return {image:url.href,linked:true};
  }
  try{
@@ -71,7 +56,7 @@ export async function imageFromLink(link:string):Promise<{image:string;linked:bo
  }catch{}
  if(url.protocol!=='https:')throw new Error('This site blocks copying the image. Use an https:// link or upload the file.');
  if(url.href.length>2048)throw new Error('This link is too long. Upload the image instead.');
- await new Promise<void>((resolve,reject)=>{const img=new Image(),timer=window.setTimeout(()=>reject(new Error('The image took too long to load.')),12000);img.onload=()=>{window.clearTimeout(timer);resolve();};img.onerror=()=>{window.clearTimeout(timer);reject(new Error(/drive\.google\.com/i.test(link)||driveFileId(link)?'No image was found at this Google Drive link. Share the file as “Anyone with the link” (Viewer), then try again.':'No image was found at this link.'));};img.src=url.href;});
+ await new Promise<void>((resolve,reject)=>{const img=new Image(),timer=window.setTimeout(()=>reject(new Error('The image took too long to load.')),12000);img.onload=()=>{window.clearTimeout(timer);resolve();};img.onerror=()=>{window.clearTimeout(timer);reject(new Error(/drive\.google\.com/i.test(link)||driveFileId(link)?'No image was found at this Google Drive link. Sharing must be “Anyone with the link” (Viewer). If it already is, use Upload/Change and pick the file from your device instead of Link.':'No image was found at this link.'));};img.src=url.href;});
  return {image:url.href,linked:true};
 }
 export function ImageLightbox({src,onClose}:{src:string|null;onClose:()=>void}){

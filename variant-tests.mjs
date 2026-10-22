@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {validateQuestion,gradeQuestion,imageSafe,mediaEditSafe,resolveImageLink,resolveAudioLink,resolveVideoLink} from './src/question-types.js';
+import {validateQuestion,gradeQuestion,imageSafe,mediaEditSafe,resolveImageLink} from './src/question-types.js';
 import {resolveVariant,itemTypes,seededShuffle,draftFromSpec,specFromDraft,emptyDraft} from './src/question-variants.js';
 import {filterQuiz} from './src/learning-core.js';
 import {serialize,parseImport,detectFormat,parseCSV,csvTemplate,prepareExport,embeddedAudioCount,aiImportPrompt,parseVariantsCell} from './src/transfer-formats.js';
@@ -88,10 +88,7 @@ assert.equal(JSON.parse(serialize([audioItem],'json',{audio:true})).questions[0]
 assert.equal(prepareExport([{image:'data:image/png;base64,abc',audio:clip}],{images:false,audio:false})[0].audio,undefined);
 assert.match(aiImportPrompt,/list_recall/);
 assert.equal(mediaEditSafe({trimStart:0,trimEnd:3,muted:false}),true);
-const driveView='https://drive.google.com/file/d/196xr6Bm0P1tsP9iwQxiP9LFmbWuOlmE-/view?usp=drivesdk';
-assert.match(resolveImageLink(driveView),/^https:\/\/drive\.google\.com\/thumbnail\?id=196xr6Bm0P1tsP9iwQxiP9LFmbWuOlmE-&sz=w1600$/);
-assert.match(resolveAudioLink(driveView),/^https:\/\/drive\.google\.com\/file\/d\/196xr6Bm0P1tsP9iwQxiP9LFmbWuOlmE-\/view$/);
-assert.match(resolveVideoLink(driveView),/^https:\/\/drive\.google\.com\/file\/d\/196xr6Bm0P1tsP9iwQxiP9LFmbWuOlmE-\/view$/);
+assert.match(resolveImageLink('https://drive.google.com/file/d/196xr6Bm0P1tsP9iwQxiP9LFmbWuOlmE-/view?usp=drivesdk'),/^https:\/\/drive\.google\.com\/thumbnail\?id=196xr6Bm0P1tsP9iwQxiP9LFmbWuOlmE-&sz=w1600$/);
 assert.throws(()=>validateQuestion({type:'short_answer',prompt:'p',answer:'x',audio:'https://example.com/a.mp3',audioEdit:{trimStart:2,trimEnd:1,muted:false}}),/Clip edit/);
 assert.equal(validateQuestion({type:'short_answer',prompt:'p',answer:'x',audio:clip,audioEdit:{trimStart:0.5,trimEnd:2,muted:true}}).audioEdit.trimStart,0.5);
 
