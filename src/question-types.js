@@ -4,8 +4,8 @@ import {MAX_VARIANTS,itemTypes,pickVariant} from './question-variants.js';
 export function driveFileId(url){const s=String(url||'');const m=s.match(/\/file\/d\/([\w-]{20,})/)||s.match(/[?&]id=([\w-]{20,})/)||s.match(/\/d\/([\w-]{20,})/);return m?m[1]:'';}
 export function isDriveLink(url){return /^https:\/\/(drive|docs)\.google\.com\//i.test(String(url||''))&&!!driveFileId(url);}
 // Shown when someone pastes a Drive share URL. Those links cannot play in our player; pick the file instead.
-export const DRIVE_SHARE_REJECT='Google Drive share links do not play here. Use Upload or tap Drive, then pick the file from your Google Drive.';
-export const DRIVE_SHARE_LEGACY_HINT='This was saved as a Google Drive link. Edit the question, remove it, then tap Drive and pick the file so it plays in RecallFlow.';
+export const DRIVE_SHARE_REJECT='Google Drive share links do not play here. Upload the file instead.';
+export const DRIVE_SHARE_LEGACY_HINT='This was saved as a Google Drive link. Edit the question, remove it, then upload the file so it plays in RecallFlow.';
 const IMAGE_EXT={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',avif:'image/avif',bmp:'image/bmp'};
 const AUDIO_EXT={mp3:'audio/mpeg',m4a:'audio/mp4',aac:'audio/aac',wav:'audio/wav',ogg:'audio/ogg',oga:'audio/ogg',opus:'audio/ogg',webm:'audio/webm'};
 const VIDEO_EXT={mp4:'video/mp4',webm:'video/webm',mov:'video/quicktime',m4v:'video/mp4',ogv:'video/ogg'};

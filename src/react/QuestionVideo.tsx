@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import {Film,Link2,Trash2,Upload,LoaderCircle} from 'lucide-react';
-import {MediaLinkForm,DrivePickButton,DriveShareLegacyNotice} from './MediaLinkForm';
+import {MediaLinkForm,DriveShareLegacyNotice} from './MediaLinkForm';
 import {MAX_VIDEO_CHARS,isDriveLink,resolveMediaLink,videoSafe,DRIVE_SHARE_REJECT,typedMediaFile,driveFileId} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
 import {Scissors} from 'lucide-react';
@@ -26,7 +26,7 @@ export function VideoPlayer({src,className='',label='Play video',edit}:{src:stri
  return <div className={`video-player ${className}`}><video ref={video} controls playsInline preload="metadata" src={src} onError={()=>setFailed(true)} onPlay={e=>{const el=e.currentTarget;const len=el.duration;if(!Number.isFinite(len))return;const clip=normalizeEdit(clipRef.current,len);if(clip&&el.currentTime<clip.trimStart)el.currentTime=clip.trimStart;}}/>{failed&&<p className="video-fallback">This video could not play. Try opening the link in a new tab.</p>}</div>;
 }
 
-export function VideoField({video,edit,onEditChange,onChange,onError,onClearError,title='Question video',hint='Prefer a short upload from your files or Drive — large files fill browser storage quickly.'}:{video?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string}){
+export function VideoField({video,edit,onEditChange,onChange,onError,onClearError,title='Question video',hint='Prefer a short upload — large files fill browser storage quickly.'}:{video?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string}){
  const [busy,setBusy]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false);
  const input=React.useRef<HTMLInputElement>(null);
  useEffect(()=>{if(!video)setLinking(false);},[video]);
@@ -35,7 +35,7 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   const resolved=resolveMediaLink(url.trim());
   if(!resolved){onChange(undefined);return true;}
   if(driveFileId(url)||isDriveLink(resolved)){onError(DRIVE_SHARE_REJECT);return false;}
-  if(!videoSafe(resolved)){onError('Use an https video file, or upload a small video from Drive.');return false;}
+  if(!videoSafe(resolved)){onError('Use an https video file, or upload a small video.');return false;}
   onEditChange?.(undefined);onChange(resolved);
   return true;
  }
@@ -58,7 +58,6 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   {video&&!isDriveLink(video)&&<VideoPlayer src={video} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>}
   <div className="editor-inline-actions">
    <button type="button" disabled={!!busy} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:<Upload size={14}/>}{video?'Change file':'Upload'}</button>
-   <DrivePickButton disabled={!!busy} fileInputRef={input}/>
    <button type="button" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>
    {video&&!isDriveLink(video)&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
    {video&&<button type="button" className="is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}

@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2,AlertCircle} from 'lucide-react';
-import {MediaLinkForm,DrivePickButton,DriveShareLegacyNotice} from './MediaLinkForm';
+import {MediaLinkForm,DriveShareLegacyNotice} from './MediaLinkForm';
 import {MAX_AUDIO_CHARS,driveFileId,isDriveLink,resolveMediaLink,resolveMediaPlaybackSrc,DRIVE_SHARE_REJECT,DRIVE_SHARE_LEGACY_HINT,typedMediaFile} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
 import {Scissors} from 'lucide-react';
@@ -78,7 +78,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  </div>;
 }
 
-export function SoundField({audio,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload from your files or Drive, or paste an https audio file'}:{audio?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string}){
+export function SoundField({audio,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https audio file'}:{audio?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string}){
  const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false),[warn,setWarn]=useState('');
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
  useEffect(()=>()=>{const l=live.current;if(l){window.clearInterval(l.timer);l.stream.getTracks().forEach(t=>t.stop());}},[]);
@@ -97,7 +97,7 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   if(!raw){onChange(undefined);return true;}
   const url=resolveMediaLink(raw);
   if(driveFileId(raw)||isDriveLink(url)){onError(DRIVE_SHARE_REJECT);return false;}
-  if(!/^https:\/\//i.test(url)){onError('Use an https link to the sound file, or upload it from Drive.');return false;}
+  if(!/^https:\/\//i.test(url)){onError('Use an https link to the sound file, or upload the file.');return false;}
   if(url.length>2048){onError('That link is too long.');return false;}
   setBusy('Checking sound…');
   const ok=await probeAudioLink(raw);
@@ -139,7 +139,6 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
    {recording?<button type="button" className="is-recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
     <button type="button" disabled={!!busy} onClick={start}><Mic size={14}/>{audio?'Re-record':'Record'}</button>
     <button type="button" disabled={!!busy} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{audio&&!audio.startsWith('https://')?'Change':'Upload'}</button>
-    {!recording&&<DrivePickButton disabled={!!busy} fileInputRef={input}/>}
     {!recording&&<button type="button" aria-label="Add question sound from a link" aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>}
     {audio&&!recording&&!isDriveLink(audio)&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
     {audio&&<button type="button" className="is-remove" aria-label="Remove question sound" disabled={!!busy} onClick={()=>{setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
