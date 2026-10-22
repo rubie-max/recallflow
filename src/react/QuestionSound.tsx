@@ -1,7 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2} from 'lucide-react';
 import {MediaLinkForm} from './MediaLinkForm';
-import {MAX_AUDIO_CHARS,resolveMediaLink,resolveMediaPlaybackSrc} from '../question-types.js';
+import {MAX_AUDIO_CHARS,driveFileId,resolveMediaLink,resolveMediaPlaybackSrc} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
 import {Scissors} from 'lucide-react';
 
@@ -44,6 +44,17 @@ async function soundFromFile(file:File,progress:(pct:number)=>void){
  }finally{ctx.close().catch(()=>{});}
 }
 
+export function probeAudioLink(url:string){
+ const playback=resolveMediaPlaybackSrc(resolveMediaLink(String(url||'').trim()));
+ return new Promise<boolean>(resolve=>{
+  const el=new Audio(),finish=(ok:boolean)=>{el.removeAttribute('src');el.load();resolve(ok);};
+  const timer=window.setTimeout(()=>finish(false),15000);
+  el.onloadedmetadata=()=>{window.clearTimeout(timer);finish(Number.isFinite(el.duration)&&el.duration>0);};
+  el.onerror=()=>{window.clearTimeout(timer);finish(false);};
+  el.src=playback;
+ });
+}
+
 export function SoundPlayer({src,label='Play sound',className='',variant='default',edit}:{src:string;label?:string;className?:string;variant?:'default'|'overlay';edit?:MediaEdit}){
  const audio=useRef<HTMLAudioElement>(null),[playing,setPlaying]=useState(false),[at,setAt]=useState(0),[length,setLength]=useState(0),[failed,setFailed]=useState(false);
  const clip=length>0?normalizeEdit(edit,length):edit;
@@ -69,13 +80,27 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
  const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false);
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
  useEffect(()=>()=>{const l=live.current;if(l){window.clearInterval(l.timer);l.stream.getTracks().forEach(t=>t.stop());}},[]);
- useEffect(()=>{if(audio?.startsWith('https://')){setLink(audio);setLinking(true);}else if(!audio){setLink('');setLinking(false);}},[audio]);
- function applyLink(next?:string){
+ useEffect(()=>{if(audio?.startsWith('https://'))setLink(audio);else if(!audio){setLink('');setLinking(false);}},[audio]);
+ useEffect(()=>{
+  if(!audio?.startsWith('https://'))return;
+  let cancelled=false;
+  void probeAudioLink(audio).then(ok=>{if(!cancelled&&!ok)onError('This linked sound cannot play. Remove it, then use Link with a direct audio URL or upload the file.');});
+  return()=>{cancelled=true;};
+ },[audio,onError]);
+ async function applyLink(next?:string){
   onError('');
-  const url=resolveMediaLink((next??link).trim());
-  if(!url){onChange(undefined);return true;}
+  const raw=(next??link).trim();
+  if(!raw){onChange(undefined);return true;}
+  const url=resolveMediaLink(raw);
   if(!/^https:\/\//i.test(url)){onError('Use an https or Google Drive link to the sound file.');return false;}
   if(url.length>2048){onError('That link is too long.');return false;}
+  setBusy('Checking sound…');
+  const ok=await probeAudioLink(raw);
+  setBusy('');
+  if(!ok){
+   onError(driveFileId(raw)||/drive\.google\.com/i.test(raw)?'No sound was found at this Google Drive link. Use an audio file (MP3, WAV, …) shared as “Anyone with the link” (Viewer), or upload the file instead.':'No sound was found at this link. Paste a direct link to an audio file (MP3, WAV, OGG, …), or upload the file.');
+   return false;
+  }
   onEditChange?.(undefined);onChange(url);
   return true;
  }
@@ -105,18 +130,18 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
  return <div className={`editor-inline-image editor-sound${audio?' has-image':''}${linking?' is-linking':''}`} data-recording={recording||undefined}>
   <span className="editor-inline-icon">{recording?<span className="sound-rec-dot" aria-hidden="true"/>:<AudioLines size={18}/>}</span>
   <div className="editor-inline-copy"><strong>{title}</strong><small>{recording?`Recording… ${time(seconds)} of ${time(MAX_SECONDS)}`:busy||(audio?.startsWith('https://')?'Plays from a link':audio?'Plays with the question':hint)}</small></div>
-  {audio&&!recording&&<SoundPlayer src={audio} label={`Play ${title.toLowerCase()}`} className="is-compact"/>}
   <div className="editor-inline-actions">
    {recording?<button type="button" className="is-recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
     <button type="button" disabled={!!busy} onClick={start}><Mic size={14}/>{audio?'Re-record':'Record'}</button>
     <button type="button" disabled={!!busy} onClick={()=>input.current?.click()}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{audio&&!audio.startsWith('https://')?'Change':'Upload'}</button>
-    {!recording&&<button type="button" aria-label="Add question sound from a link" aria-expanded={linking} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>}
+    {!recording&&<button type="button" aria-label="Add question sound from a link" aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>Link</button>}
     {audio&&!recording&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
     {audio&&<button type="button" className="is-remove" aria-label="Remove question sound" disabled={!!busy} onClick={()=>{setLinking(false);setLink('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
    </>}
   </div>
   <input ref={input} type="file" hidden aria-label="Upload question sound" accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>
-  {!recording&&linking&&<MediaLinkForm autoFocus label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={url=>{setLink(url);if(applyLink(url))setLinking(false);}}/>}
+  {audio&&!recording&&<SoundPlayer src={audio} edit={edit} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/>}
+  {!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3 or Google Drive link" submitLabel="Add" initialUrl={audio?.startsWith('https://')?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={async url=>{setLink(url);if(await applyLink(url))setLinking(false);}}/>}
   {clipOpen&&audio&&<MediaClipEditor kind="audio" title={`Edit ${title.toLowerCase()}`} src={audio} initial={edit} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>}
  </div>;
 }

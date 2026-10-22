@@ -48,7 +48,7 @@ async function downloadOriginal(src:string,name:string){
 export async function exportTrimmedAudio(src:string,edit:MediaEdit):Promise<Blob>{
  const ctx=new AudioContext();
  try{
-  const buf=await ctx.decodeAudioData(await (await fetch(src)).arrayBuffer());
+  const buf=await ctx.decodeAudioData(await (await fetch(resolveMediaPlaybackSrc(src))).arrayBuffer());
   const slice=ctx.createBufferSource();
   slice.buffer=buf;
   const dest=ctx.createMediaStreamDestination();

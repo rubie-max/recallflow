@@ -892,7 +892,10 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .editor-sound{flex-wrap:wrap}
 .editor-sound .editor-inline-icon{color:var(--primary)}
 .editor-sound[data-recording] .editor-inline-icon{background:color-mix(in srgb,var(--error,#dc2626) 14%,var(--card))}
-.editor-sound .editor-media-link{margin-top:4px}
+.editor-sound .editor-media-link{margin-top:4px;flex:1 1 100%}
+.editor-sound .editor-sound-player{flex:1 1 100%;max-width:100%;margin-top:6px}
+.editor-sound .editor-sound-player .sound-body{gap:4px}
+.editor-sound .editor-sound-player .sound-bar{height:8px}
 .editor-video{flex-wrap:wrap}
 .editor-video .video-player.is-compact{flex:1 1 100%;max-width:360px}
 .video-player{display:grid;gap:8px;width:100%;max-width:560px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--card)}
