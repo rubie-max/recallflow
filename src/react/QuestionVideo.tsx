@@ -67,8 +67,7 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   const badgeClass=`asset-state${!video?' is-empty':isDriveLink(video)?'':' is-ok'}`;
   return <article className={`asset${video?' has-image':''}${linking?' is-linking':''}`}>
    <div className="asset-top"><span className="asset-thumb" aria-hidden="true"><Film size={22}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{busy||(video?'Tap to preview in the player below':hint)}</small></div></div>
-   {video&&isDriveLink(video)&&<DriveShareLegacyNotice kind="video"/>}
-   {video&&!isDriveLink(video)&&<VideoPlayer src={video} edit={edit} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>}
+   {(video&&isDriveLink(video))||video&&!isDriveLink(video)?<div className="asset-media-extra">{video&&isDriveLink(video)&&<DriveShareLegacyNotice kind="video"/>}{video&&!isDriveLink(video)&&<VideoPlayer src={video} edit={edit} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>}</div>:null}
    <div className="asset-actions">{uploadBtn}{linkBtn}{video&&!isDriveLink(video)&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}{video&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}</div>
    {fileInput}{linkForm}{clip}
   </article>;

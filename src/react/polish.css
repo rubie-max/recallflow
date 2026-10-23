@@ -899,6 +899,7 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .sound-player.is-compact .sound-play{width:34px;height:34px}
 .editor-question-preview .sound-player{margin:4px 0}
 .editor-sound{flex-wrap:wrap}
+.editor-media-step .editor-inline-image.editor-sound,.editor-media-step .asset.has-image.editor-sound{display:block}
 .editor-sound .editor-inline-icon{color:var(--primary)}
 .editor-sound[data-recording] .editor-inline-icon{background:color-mix(in srgb,var(--error,#dc2626) 14%,var(--card))}
 .editor-sound .editor-media-link{margin-top:4px;flex:1 1 100%}

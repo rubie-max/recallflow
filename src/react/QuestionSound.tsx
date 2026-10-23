@@ -153,9 +153,10 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
  if(assetLayout){
   const actionRow=<div className={`asset-actions${!audio&&!recording?' is-multi':''}`}>{actions}</div>;
   if(!audio&&!recording)return <article className={`asset is-empty-slot${linking?' is-linking':''}`}><div className="asset-empty-body"><span className="asset-empty-icon" aria-hidden="true"><AudioLines size={24}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className="asset-state is-empty">Not added</span></div><small className="asset-caption">{hint}</small></div></div>{actionRow}{fileInput}{linkForm}{clip}</article>;
+  const mediaExtra=(player||legacy||warnEl)?<div className="asset-media-extra">{player}{legacy}{warnEl}</div>:null;
   return <article className={`asset${audio?' has-image':''}${linking?' is-linking':''}`} data-recording={recording||undefined}>
    <div className="asset-top"><span className="asset-thumb" aria-hidden="true">{recording?<span className="sound-rec-dot"/>:(<AudioLines size={22}/>)}</span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></div>
-   {actionRow}{fileInput}{player}{legacy}{warnEl}{linkForm}{clip}
+   {mediaExtra}{actionRow}{fileInput}{linkForm}{clip}
   </article>;
  }
  return <div className={`editor-inline-image editor-sound${audio?' has-image':''}${linking?' is-linking':''}`} data-recording={recording||undefined}>
