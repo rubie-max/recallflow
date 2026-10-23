@@ -50,13 +50,14 @@
 .editor-media-step .media-action.is-remove svg{color:inherit}
 .editor-media-step .media-action:disabled{opacity:.55;cursor:wait}
 .editor-media-step .asset-media-extra{display:block;width:100%;min-width:0}
-.editor-media-step .sound-preview{margin:10px 0 0;display:block;width:100%;border:1px solid #303544;background:#12151d;border-radius:13px;padding:10px}
-.editor-media-step .sound-preview .sound-player{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;margin:0;width:100%;max-width:none;border:0;background:transparent;padding:0;gap:10px;min-width:0}
-.editor-media-step .sound-preview .sound-play{width:34px;height:34px;flex:0 0 34px;background:#353052;color:#c8c0ff}
-.editor-media-step .sound-preview .sound-body{display:flex;flex-direction:column;gap:4px;flex:1 1 auto;min-width:0}
-.editor-media-step .sound-preview .sound-title{font-size:10.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.editor-media-step .sound-preview .sound-bar{height:5px;margin-top:0;flex:0 0 auto;width:100%}
-.editor-media-step .sound-preview .sound-time{font-size:10px;color:#8990a3;flex:0 0 auto;white-space:nowrap}
+.editor-media-step .sound-preview{margin:10px 0 0;display:block;width:100%;border:1px solid #303544;background:#12151d;border-radius:13px;padding:10px 12px}
+.editor-media-step .sound-preview .sound-player.is-media{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;margin:0;width:100%;max-width:none;border:0;border-radius:0;background:transparent;padding:0;gap:10px;min-width:0}
+.editor-media-step .sound-preview .sound-play{width:34px;height:34px;flex:0 0 34px;background:#353052;color:#c8c0ff;border-radius:50%}
+.editor-media-step .sound-preview .sound-wave{flex:1 1 auto;min-width:48px;height:26px;gap:2px}
+.editor-media-step .sound-preview .sound-wave i{width:2px;min-height:18%;border-radius:99px;background:#3d3858}
+.editor-media-step .sound-preview .sound-wave i[data-on]{background:#9485ff}
+.editor-media-step .sound-preview .sound-time{font-size:11px;color:#c8cad4;flex:0 0 auto;white-space:nowrap;font-variant-numeric:tabular-nums}
+.editor-media-step .sound-preview .sound-filename{font-size:11px;color:#a2a8ba;flex:0 1 auto;min-width:0;max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .editor-media-step .media-alert{margin:10px 0 0;border:1px solid #49303a;border-radius:12px;background:linear-gradient(100deg,#2b2028,#211b24);padding:10px 11px;display:flex;gap:9px;align-items:flex-start;color:#f1babc;font-size:10.5px;line-height:1.45}
 .editor-media-step .media-alert svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--ms-red)}
 .editor-media-step .media-alert strong{color:#ffd2d3}

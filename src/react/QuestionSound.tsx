@@ -45,6 +45,17 @@ async function soundFromFile(file:File,progress:(pct:number)=>void){
  }finally{ctx.close().catch(()=>{});}
 }
 
+export function soundDisplayName(src:string){
+ if(!src)return '';
+ if(src.startsWith('data:'))return 'Uploaded sound.webm';
+ try{
+  const path=decodeURIComponent(new URL(resolveMediaLink(src)).pathname);
+  const file=path.split('/').filter(Boolean).pop();
+  if(file&&file.length<=56)return file;
+ }catch{}
+ return 'Linked audio';
+}
+
 export function probeAudioLink(url:string){
  const playback=resolveMediaPlaybackSrc(resolveMediaLink(String(url||'').trim()));
  return new Promise<boolean>(resolve=>{
@@ -56,24 +67,28 @@ export function probeAudioLink(url:string){
  });
 }
 
-export function SoundPlayer({src,label='Play sound',className='',variant='default',edit}:{src:string;label?:string;className?:string;variant?:'default'|'overlay';edit?:MediaEdit}){
+export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media';edit?:MediaEdit;displayName?:string}){
  const audio=useRef<HTMLAudioElement>(null),[playing,setPlaying]=useState(false),[at,setAt]=useState(0),[length,setLength]=useState(0),[failed,setFailed]=useState(false);
  const clip=length>0?normalizeEdit(edit,length):edit;
  useEffect(()=>{setPlaying(false);setAt(0);setLength(0);setFailed(false);return()=>audio.current?.pause();},[src]);
  useEffect(()=>{const a=audio.current;if(a)a.muted=!!clip?.muted;},[clip?.muted,src]);
  const known=Number.isFinite(length)&&length>0;
  const played=known?(clip?Math.max(0,Math.min(1,(at-clip.trimStart)/Math.max(0.05,clip.trimEnd-clip.trimStart))):at/length):(playing?1:0);
- const bars=30;
+ const bars=variant==='media'?44:30;
+ const name=displayName||soundDisplayName(src);
  function toggle(){const a=audio.current;if(!a)return;if(a.paused){setFailed(false);if(clip&&a.currentTime<clip.trimStart)a.currentTime=clip.trimStart;a.play().catch(()=>setFailed(true));}else a.pause();}
  function seek(e:React.MouseEvent<HTMLSpanElement>){const a=audio.current;if(!a||!known)return;const r=e.currentTarget.getBoundingClientRect();const t=(e.clientX-r.left)/r.width*length;const next=clip?Math.min(clip.trimEnd,Math.max(clip.trimStart,t)):Math.min(length,Math.max(0,t));a.currentTime=next;setAt(next);}
  function onTime(){const a=audio.current;if(!a)return;setAt(a.currentTime);if(clip&&a.currentTime>=clip.trimEnd-0.02&&!a.paused){a.pause();a.currentTime=clip.trimStart;setAt(a.currentTime);setPlaying(false);}}
  if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
- return <div className={`sound-player ${variant==='overlay'?'is-overlay':''} ${className}`.trim()} data-playing={playing||undefined}>
+ const durationLabel=known?time(length):playing||at?time(at):'0:00';
+ return <div className={`sound-player ${variant==='overlay'?'is-overlay':variant==='media'?'is-media':''} ${className}`.trim()} data-playing={playing||undefined}>
   <button type="button" className="sound-play" aria-label={playing?'Pause sound':label} onClick={toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
-  {variant==='overlay'
+  {variant==='media'
+   ? <><span className="sound-wave" onClick={seek} role="presentation" aria-hidden="true">{Array.from({length:bars},(_,i)=><i key={i} data-on={i/bars<=played||undefined} style={{height:`${22+((i*19)%78)}%`}}/>)}</span><span className="sound-time" aria-hidden="true">{durationLabel}</span><span className="sound-filename">{failed?'Could not play':name}</span></>
+   :variant==='overlay'
    ? <span className="sound-wave" onClick={seek} role="presentation">{Array.from({length:bars},(_,i)=><i key={i} data-on={i/bars<=played||undefined} style={{height:`${30+((i*37)%70)}%`}}/>)}</span>
    : <span className="sound-body"><span className="sound-title">{failed?'This sound could not play':playing?'Playing':'Listen'}</span><span className="sound-bar" onClick={seek}><i style={{width:`${known?at/length*100:playing?100:0}%`}} data-live={!known&&playing||undefined}/></span></span>}
-  <span className="sound-time">{known?time(playing||at?at:length):at?time(at):''}</span>
+  {variant!=='media'&&<span className="sound-time">{known?time(playing||at?at:length):at?time(at):''}</span>}
   <audio ref={audio} src={src.startsWith('https://')?resolveMediaPlaybackSrc(src):src} preload="metadata" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={e=>{setPlaying(false);const start=clip?.trimStart??0;e.currentTarget.currentTime=start;setAt(start);}} onTimeUpdate={onTime} onLoadedMetadata={e=>setLength(e.currentTarget.duration)} onDurationChange={e=>setLength(e.currentTarget.duration)} onError={()=>setFailed(true)}/>
  </div>;
 }
@@ -132,7 +147,7 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   catch(e:any){onError(e.message||'This sound could not be added.');}
   finally{setBusy('');}
  }
- const caption=recording?`Recording… ${time(seconds)} of ${time(MAX_SECONDS)}`:busy||(audio?.startsWith('https://')&&!isDriveLink(audio)?'Linked audio':audio?'Ready to preview':hint);
+ const caption=recording?`Recording… ${time(seconds)} of ${time(MAX_SECONDS)}`:busy||(assetLayout&&audio&&!recording?'':audio?.startsWith('https://')&&!isDriveLink(audio)?'Linked audio':audio&&!assetLayout?'Ready to preview':hint);
  const badge=recording?'Recording':!audio?'Not added':warn||isDriveLink(audio)?'Needs attention':'Added';
  const badgeClass=`asset-state${!audio&&!recording?' is-empty':warn||isDriveLink(audio)||recording?'':audio?' is-ok':''}`;
  const recordLabel=audio?'Re-record':'Record';
@@ -144,7 +159,7 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   {audio&&!recording&&!isDriveLink(audio)&&<button type="button" className={assetLayout?'media-action':undefined} aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>{assetLayout?'Edit':<span className="editor-action-text">Edit</span>}</button>}
   {audio&&<button type="button" className={assetLayout?'media-action is-remove':'is-remove'} aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
  </>;
- const player=audio&&!recording&&!isDriveLink(audio)&&(assetLayout?<div className="sound-preview"><SoundPlayer src={audio} edit={edit} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/></div>:<SoundPlayer src={audio} edit={edit} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/>);
+ const player=audio&&!recording&&!isDriveLink(audio)&&(assetLayout?<div className="sound-preview"><SoundPlayer src={audio} edit={edit} variant="media" displayName={soundDisplayName(audio)} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/></div>:<SoundPlayer src={audio} edit={edit} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/>);
  const legacy=audio&&!recording&&isDriveLink(audio)&&<DriveShareLegacyNotice kind="sound"/>;
  const warnEl=warn&&!recording&&<p className={assetLayout?'media-alert':'editor-inline-warn'} role="status"><AlertCircle size={14} aria-hidden="true"/><span>{assetLayout&&warn.includes('cannot play')?<><strong>Linked sound can’t play.</strong> Remove it, upload the file, or use a direct audio URL.</>:warn}</span></p>;
  const linkForm=!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')&&!isDriveLink(audio)?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={async url=>{setLink(url);if(await applyLink(url))setLinking(false);}}/>;
@@ -155,7 +170,7 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   if(!audio&&!recording)return <article className={`asset is-empty-slot${linking?' is-linking':''}`}><div className="asset-empty-body"><span className="asset-empty-icon" aria-hidden="true"><AudioLines size={24}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className="asset-state is-empty">Not added</span></div><small className="asset-caption">{hint}</small></div></div>{actionRow}{fileInput}{linkForm}{clip}</article>;
   const mediaExtra=(player||legacy||warnEl)?<div className="asset-media-extra">{player}{legacy}{warnEl}</div>:null;
   return <article className={`asset${audio?' has-image':''}${linking?' is-linking':''}`} data-recording={recording||undefined}>
-   <div className="asset-top"><span className="asset-thumb" aria-hidden="true">{recording?<span className="sound-rec-dot"/>:(<AudioLines size={22}/>)}</span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></div>
+   <div className="asset-top"><span className="asset-thumb" aria-hidden="true">{recording?<span className="sound-rec-dot"/>:(<AudioLines size={22}/>)}</span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{audio&&!recording?hint:caption}</small></div></div>
    {mediaExtra}{actionRow}{fileInput}{linkForm}{clip}
   </article>;
  }
