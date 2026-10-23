@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Media panel icons · RecallFlow</title>
+<style>
+:root{--ms-line:#2b3040;--ms-violet:#a99cff;--ms-muted:#a2a8ba;--bg:#0f1016;--font:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+*{box-sizing:border-box}body{margin:0;padding:20px 16px 48px;background:var(--bg);color:#ececf2;font-family:var(--font)}
+h1{font-size:18px;margin:0 0 6px}p.lead{margin:0 0 22px;color:var(--ms-muted);font-size:13px;line-height:1.45;max-width:720px}
+.grid{display:grid;gap:20px;max-width:980px}
+.option{border:1px solid #343949;border-radius:16px;padding:14px 14px 16px;background:#1a1b24}
+.option h2{margin:0 0 4px;font-size:14px;font-weight:700}.option small{display:block;color:var(--ms-muted);font-size:11.5px;margin-bottom:12px;line-height:1.35}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.panel{border:1px solid var(--ms-line);border-radius:16px;background:linear-gradient(160deg,#181b25,#12151c 62%);padding:14px}
+.head{display:flex;align-items:center;gap:10px;min-width:0}
+.icon{width:40px;height:40px;display:grid;place-items:center;flex:none;border:1px solid #514a70;border-radius:50%;background:linear-gradient(145deg,#2b2743,#211e32);color:#ded9ff}
+.icon.is-letter{font-size:15px;font-weight:750;letter-spacing:-.02em}
+.icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.titles{flex:1;min-width:0}.titles h3{margin:0 0 2px;font-size:13.5px;font-weight:700;letter-spacing:-.015em}
+.titles p{margin:0;color:var(--ms-muted);font-size:10.5px;line-height:1.4}
+.badge{margin-left:auto;color:#798094;background:#20232e;border:1px solid #303544;border-radius:99px;padding:4px 8px;font-size:9px;font-weight:650;white-space:nowrap;align-self:flex-start}
+.tag{display:inline-block;margin-top:10px;font-size:10px;font-weight:650;color:#c8c0ff;background:#211e32;border:1px solid #413c5c;border-radius:99px;padding:3px 8px}
+.recommended{outline:2px solid #8b7cf688;outline-offset:0}
+@media(max-width:640px){.pair{grid-template-columns:1fr}}
+</style></head><body>
+<h1>Question media &amp; answer media — icon options</h1>
+<p class="lead">Same 40px circle badge as the editor. Compare pairs at a glance; recommended pick is highlighted.</p>
+<div class="grid" id="grid"></div>
+<script>
+const options=[
+ {name:'Current',note:'Letter badges (Q / A)',q:{letter:'Q',title:'Question media',help:'Shown while the question is on screen.'},a:{letter:'A',title:'Answer media',help:'Shown after the answer is checked.'}},
+ {name:'Recommended',note:'During quiz → explanation reveal',rec:true,q:{icon:'scan-eye',title:'Question media',help:'Shown while the question is on screen.'},a:{icon:'lightbulb',title:'Answer media',help:'Shown after the answer is checked.'}},
+ {name:'Softer',note:'Calm “look” vs “spark”',q:{icon:'eye',title:'Question media',help:'Shown while the question is on screen.'},a:{icon:'sparkles',title:'Answer media',help:'Shown after the answer is checked.'}},
+ {name:'Quiz phases',note:'Active step vs feedback',q:{icon:'circle-play',title:'Question media',help:'Shown while the question is on screen.'},a:{icon:'badge-check',title:'Answer media',help:'Shown after the answer is checked.'}},
+ {name:'Two columns',note:'Mirrors left / right panels',q:{icon:'panel-left',title:'Question media',help:'Shown while the question is on screen.'},a:{icon:'panel-right',title:'Answer media',help:'Shown after the answer is checked.'}},
+ {name:'Flashcard',note:'Use when type is flashcard',q:{icon:'credit-card',title:'Front of card',help:'Shown while the question is on screen.'},a:{icon:'flip-vertical-2',title:'Back of card',help:'Shown on the back of the card.'}},
+ {name:'Conversation',note:'Text-first questions',q:{icon:'message-square-text',title:'Question media',help:'Shown while the question is on screen.'},a:{icon:'message-square-reply',title:'Answer media',help:'Shown after the answer is checked.'}},
+];
+function panel(side){
+ const h=`<div class="head">
+  <span class="icon${side.letter?' is-letter':''}">${side.letter||`<i data-lucide="${side.icon}"></i>`}</span>
+  <div class="titles"><h3>${side.title}</h3><p>${side.help}</p></div>
+  <span class="badge">0 added</span></div>`;
+ return `<div class="panel">${h}</div>`;
+}
+document.getElementById('grid').innerHTML=options.map(o=>`
+ <section class="option${o.rec?' recommended':''}">
+  <h2>${o.name}${o.rec?' ★':''}</h2><small>${o.note}</small>
+  <div class="pair">${panel(o.q)}${panel(o.a)}</div>
+  ${o.rec?'<span class="tag">Suggested default</span>':''}
+ </section>`).join('');
+</script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body></html>

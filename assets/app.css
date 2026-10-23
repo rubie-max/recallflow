@@ -1749,7 +1749,7 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .editor-media-step .media-panel{border:1px solid var(--ms-line);border-radius:20px;background:linear-gradient(160deg,#181b25,#12151c 62%);padding:18px;box-shadow:0 16px 48px #00000018}
 .editor-media-step .media-panel-heading{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .editor-media-step .media-panel-icon{width:40px;height:40px;display:grid;place-items:center;flex:none;border:1px solid #514a70;border-radius:50%;background:linear-gradient(145deg,#2b2743,#211e32);color:#ded9ff;font-size:15px;font-weight:750;line-height:1}
-.editor-media-step .media-panel-icon.is-letter{letter-spacing:-.02em}
+.editor-media-step .media-panel-icon svg{width:20px;height:20px;flex:none}
 .editor-media-step .media-panel-title{font-size:15px;font-weight:700;letter-spacing:-.015em;margin:0 0 2px}
 .editor-media-step .media-panel-help{margin:0;color:var(--ms-muted);font-size:11.5px;line-height:1.45}
 .editor-media-step .media-count{margin-left:auto;color:#798094;background:#20232e;border:1px solid #303544;border-radius:99px;padding:5px 10px;font-size:10px;font-weight:650;white-space:nowrap}
