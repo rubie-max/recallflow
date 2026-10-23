@@ -30694,10 +30694,6 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
     }
     function stop() { const r = live.current?.recorder; if (r && r.state === 'recording')
         r.stop(); }
-    /* ui bits */
-    const busyAny = !!busy || recording || countIn !== null;
-    const badge = recording || countIn !== null ? { text: 'Recording', cls: 'is-rec' } : !audio ? { text: 'Not added', cls: 'is-empty' } : warn || drive ? { text: 'Needs attention', cls: 'is-warn' } : { text: 'Added', cls: 'is-ok' };
-    const caption = countIn !== null ? `Starting in ${countIn}…` : recording ? `Up to ${fmtTime(MAX_AUDIO_SECONDS)} · tap Stop when you're done` : busy ? busy.label : audio ? (drive ? 'This link needs attention' : linked ? 'Linked audio · plays in the quiz' : edit ? 'Edited · tap play to preview' : 'Tap play to preview') : hint;
     const shownName = audio ? soundDisplayName(audio, audioName) : '', fullName = audio ? soundFileTitle(audio, audioName) : '';
     const openLink = () => { onClearError?.(); setLinking(v => !v); };
     const pickFile = () => { setLinking(false); input.current?.click(); };
@@ -30709,66 +30705,43 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         onDragLeave: () => setDragOver(false),
         onDrop: (e) => { e.preventDefault(); setDragOver(false); void upload(e.dataTransfer.files?.[0]); },
     };
-    const body = countIn !== null
-        ? React.createElement("div", { className: "mf-rec is-count" },
-            React.createElement("b", { className: "mf-count", "aria-live": "assertive" }, countIn),
-            React.createElement("span", null, "Recording starts\u2026"),
-            React.createElement("button", { type: "button", className: "mf-rec-stop", onClick: () => { cancelCount.current = true; } },
-                React.createElement(X, { size: 14 }),
-                "Cancel"))
-        : recording
-            ? React.createElement("div", { className: "mf-rec", role: "status" },
-                React.createElement("span", { className: "mf-rec-dot", "aria-hidden": "true" }),
-                React.createElement("span", { className: "mf-rec-time" },
-                    fmtTime(seconds),
-                    React.createElement("small", null,
-                        " / ",
-                        fmtTime(MAX_AUDIO_SECONDS))),
-                React.createElement("span", { className: "mf-rec-meter", "aria-hidden": "true" },
-                    React.createElement("i", { style: { width: `${Math.round(clamp$1(level * 1.6, 0.04, 1) * 100)}%` } })),
-                React.createElement("button", { type: "button", className: "mf-rec-stop", "aria-label": "Stop recording", onClick: stop },
-                    React.createElement(Square, { size: 13, fill: "currentColor" }),
-                    "Stop"))
-            : busy
-                ? React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
-                    React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
-                        React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
-                    React.createElement("div", { className: "mf-progress-row" },
-                        React.createElement("span", null,
-                            busy.label,
-                            busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : ''),
-                        busy.cancel && React.createElement("button", { type: "button", onClick: busy.cancel }, "Cancel")))
-                : audio
-                    ? (drive ? React.createElement(DriveShareLegacyNotice, { kind: "sound" }) : React.createElement(SoundPlayer, { src: audio, edit: edit, durationHint: durationHint, variant: "media", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" }))
-                    : React.createElement("div", { className: "mf-empty" },
-                        React.createElement("button", { type: "button", className: "mf-tile", onClick: start },
-                            React.createElement(Mic, { size: 20 }),
-                            "Record"),
-                        React.createElement("button", { type: "button", className: "mf-tile", onClick: pickFile },
-                            React.createElement(Upload, { size: 20 }),
-                            uploadEmptyLabel),
-                        React.createElement("button", { type: "button", className: "mf-tile", "aria-expanded": linking, onClick: openLink },
-                            React.createElement(Link2, { size: 20 }),
-                            linkLabel));
-    const actions = audio && !busyAny && React.createElement("div", { className: "mf-actions" },
-        !drive && React.createElement("button", { type: "button", className: "mf-action is-primary", "aria-label": `Edit ${title.toLowerCase()}`, onClick: () => setClipOpen(true) },
-            React.createElement(Scissors, { size: 14 }),
-            "Edit"),
-        React.createElement("button", { type: "button", className: "mf-action", "aria-label": "Re-record sound", onClick: start },
+    const recordLabel = audio ? 'Re-record' : 'Record';
+    const uploadLabel = busy ? busy.label : audio && audio.startsWith('data:') ? 'Upload' : (uploadEmptyLabel || 'Upload');
+    const countBtn = (cls) => countIn !== null && React.createElement("button", { type: "button", className: cls, "aria-label": "Cancel recording", onClick: () => { cancelCount.current = true; } },
+        React.createElement("span", { className: "sound-count-num", "aria-live": "assertive" }, countIn),
+        "Starting\u2026 Cancel");
+    const assetActions = countIn !== null ? countBtn('media-action is-recording') : recording ? React.createElement("button", { type: "button", className: "media-action is-recording", "aria-label": "Stop recording", title: "Stop recording", onClick: stop },
+        React.createElement(Square, { size: 13, fill: "currentColor" }),
+        "Stop recording") : React.createElement(React.Fragment, null,
+        React.createElement("button", { type: "button", className: "media-action", disabled: !!busy, "aria-label": audio ? 'Re-record sound' : 'Record sound', onClick: start },
             React.createElement(Mic, { size: 14 }),
-            "Re-record"),
-        React.createElement("button", { type: "button", className: "mf-action", "aria-label": "Replace sound file", onClick: pickFile },
-            React.createElement(RefreshCw, { size: 14 }),
-            "Replace"),
-        React.createElement("button", { type: "button", className: "mf-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, "aria-controls": linking ? 'question-sound-link' : undefined, onClick: openLink },
+            recordLabel),
+        React.createElement("button", { type: "button", className: "media-action", disabled: !!busy, "aria-label": audio && audio.startsWith('data:') ? 'Change sound file' : 'Upload sound file', onClick: pickFile },
+            busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : audio && audio.startsWith('data:') ? React.createElement(RefreshCw, { size: 14 }) : React.createElement(Upload, { size: 14 }),
+            uploadLabel),
+        !recording && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, "aria-controls": linking ? 'question-sound-link' : undefined, disabled: !!busy, onClick: openLink },
             React.createElement(Link2, { size: 14 }),
             linkLabel),
-        React.createElement("button", { type: "button", className: "mf-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: clearAudio },
+        audio && !recording && !drive && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
+            React.createElement(Scissors, { size: 14 }),
+            "Edit"),
+        audio && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: clearAudio },
             React.createElement(Trash2, { size: 14 })));
-    const warnEl = warn && !recording && React.createElement("p", { className: "mf-alert", role: "status" },
+    const player = audio && !recording && !drive && React.createElement("div", { className: "asset-media-extra" },
+        React.createElement(SoundPlayer, { src: audio, edit: edit, durationHint: durationHint, variant: "media", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" }));
+    const legacy = audio && !recording && drive && React.createElement("div", { className: "asset-media-extra" },
+        React.createElement(DriveShareLegacyNotice, { kind: "sound" }));
+    const progress = busy && !recording && React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
+        React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
+            React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
+        React.createElement("div", { className: "mf-progress-row" },
+            React.createElement("span", null,
+                busy.label,
+                busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : '')));
+    const warnEl = warn && !recording && React.createElement("p", { className: "media-alert", role: "status" },
         React.createElement(CircleAlert, { size: 14, "aria-hidden": "true" }),
         React.createElement("span", null, warn.includes('cannot play') ? React.createElement(React.Fragment, null,
-            React.createElement("strong", null, "Linked sound can't play."),
+            React.createElement("strong", null, "Linked sound can\u2019t play."),
             " Remove it, upload the file, or use a direct audio URL.") : warn));
     const linkForm = !recording && linking && React.createElement(MediaLinkForm, { autoFocus: true, id: "question-sound-link", label: "Sound link", placeholder: "https://example.com/sound.mp3", submitLabel: "Add", initialUrl: linked && !drive ? audio : '', onClearError: onClearError, onCancel: () => { setLinking(false); onClearError?.(); }, onSubmit: async (url) => { if (await applyLink(url))
             setLinking(false); } });
@@ -30776,17 +30749,38 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         ? React.createElement(MediaClipEditor, { kind: "audio", title: "Trim before adding", fileName: pending.name, src: pending.url, saveMode: "bake", maxSeconds: MAX_AUDIO_SECONDS, onReplace: (data, len) => acceptBaked(data, len, pending.name), onSave: () => closePending(), onCancel: closePending })
         : audio ? React.createElement(MediaClipEditor, { kind: "audio", title: `Edit ${title.toLowerCase()}`, fileName: fullName, src: audio, initial: edit, onReplace: audio.startsWith('data:') ? (data, len) => acceptBaked(data, len) : undefined, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } }) : null);
     const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, "aria-label": `Upload ${title.toLowerCase()}`, accept: "audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus", onChange: e => { const f = e.currentTarget.files?.[0]; e.currentTarget.value = ''; void upload(f); } });
-    return React.createElement("article", { className: `mf mf-sound${audio ? ' has-media' : ''}${assetLayout ? ' is-asset' : ''}${dragOver ? ' is-dragover' : ''}`, "data-recording": recording || undefined, ...drop },
+    if (assetLayout) {
+        const badge = recording || countIn !== null ? 'Recording' : !audio ? 'Not added' : warn || drive ? 'Needs attention' : 'Added';
+        const badgeClass = `asset-state${recording || countIn !== null ? ' is-warn' : !audio ? ' is-empty' : warn || drive ? ' is-warn' : ' is-ok'}`;
+        const desc = recording || countIn !== null ? (countIn !== null ? `Recording starts in ${countIn}…` : `Recording… ${fmtTime(seconds)}`) : busy ? busy.label : (audio && !drive ? 'Tap play to preview' : hint);
+        return React.createElement("article", { className: `asset${audio ? ' has-image' : ''}${linking ? ' is-linking' : ''}${dragOver ? ' is-dragover' : ''}`, "data-recording": recording || undefined, ...drop },
+            React.createElement("header", { className: "media-head" },
+                React.createElement("span", { className: "media-ico", "aria-hidden": "true" }, recording || countIn !== null ? React.createElement("span", { className: "sound-rec-dot" }) : React.createElement(AudioLines, { size: 17 })),
+                React.createElement("div", { className: "media-headmain" },
+                    React.createElement("div", { className: "media-titlerow" },
+                        React.createElement("span", { className: "asset-name" }, title),
+                        React.createElement("span", { className: badgeClass }, badge)),
+                    React.createElement("small", { className: "asset-caption" }, desc))),
+            !recording && progress,
+            !recording ? player : null,
+            !recording ? legacy : null,
+            !recording ? warnEl : null,
+            React.createElement("div", { className: "asset-actions" }, assetActions),
+            fileInput,
+            linkForm,
+            clip);
+    }
+    return React.createElement("article", { className: `mf mf-sound${audio ? ' has-media' : ''}${dragOver ? ' is-dragover' : ''}`, "data-recording": recording || undefined, ...drop },
         React.createElement("header", { className: "mf-head" },
-            React.createElement("span", { className: "mf-ico", "aria-hidden": "true" }, recording ? React.createElement("span", { className: "mf-rec-dot" }) : React.createElement(AudioLines, { size: 18 })),
+            React.createElement("span", { className: "mf-ico", "aria-hidden": "true" },
+                React.createElement(AudioLines, { size: 18 })),
             React.createElement("div", { className: "mf-headmain" },
-                React.createElement("div", { className: "mf-titlerow" },
-                    React.createElement("strong", null, title),
-                    React.createElement("span", { className: `mf-badge ${badge.cls}` }, badge.text)),
-                React.createElement("small", { className: "mf-caption" }, caption))),
-        body,
-        !recording && warnEl,
-        actions,
+                React.createElement("strong", null, title),
+                React.createElement("small", { className: "mf-caption" }, hint))),
+        !recording && player,
+        progress,
+        warnEl,
+        React.createElement("div", { className: "asset-actions" }, assetActions),
         fileInput,
         linkForm,
         clip);
@@ -30874,8 +30868,6 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
             setBusy(null);
         }
     }
-    const badge = !video ? { text: 'Not added', cls: 'is-empty' } : drive ? { text: 'Needs attention', cls: 'is-warn' } : { text: 'Added', cls: 'is-ok' };
-    const caption = busy ? busy.label : video ? (drive ? 'This link needs attention' : linked ? 'Linked video · plays in the quiz' : [meta && fmtTime(meta.duration), meta && formatBytes(meta.size), edit ? 'edited' : null].filter(Boolean).join(' · ') || 'Tap play to preview') : (emptyHint || hint);
     const openLink = () => { onClearError?.(); setLinking(v => !v); };
     const pickFile = () => { setLinking(false); input.current?.click(); };
     const drop = {
@@ -30886,50 +30878,69 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
         onDragLeave: () => setDragOver(false),
         onDrop: (e) => { e.preventDefault(); setDragOver(false); void upload(e.dataTransfer.files?.[0]); },
     };
-    const body = busy
-        ? React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
-            React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
-                React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
-            React.createElement("div", { className: "mf-progress-row" },
-                React.createElement("span", null,
-                    busy.label,
-                    busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : '')))
-        : video
-            ? (drive ? React.createElement(DriveShareLegacyNotice, { kind: "video" }) : React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` }))
-            : React.createElement("div", { className: "mf-empty" },
-                React.createElement("button", { type: "button", className: "mf-tile", onClick: pickFile },
-                    React.createElement(Upload, { size: 20 }),
-                    uploadEmptyLabel),
-                React.createElement("button", { type: "button", className: "mf-tile", "aria-expanded": linking, onClick: openLink },
-                    React.createElement(Link2, { size: 20 }),
-                    linkLabel));
-    const actions = video && !busy && React.createElement("div", { className: "mf-actions" },
-        !drive && React.createElement("button", { type: "button", className: "mf-action is-primary", "aria-label": `Edit ${title.toLowerCase()}`, onClick: () => setClipOpen(true) },
-            React.createElement(Scissors, { size: 14 }),
-            "Edit"),
-        React.createElement("button", { type: "button", className: "mf-action", "aria-label": "Replace video file", onClick: pickFile },
-            React.createElement(RefreshCw, { size: 14 }),
-            "Replace"),
-        React.createElement("button", { type: "button", className: "mf-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, onClick: openLink },
-            React.createElement(Link2, { size: 14 }),
-            linkLabel),
-        React.createElement("button", { type: "button", className: "mf-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
-            React.createElement(Trash2, { size: 14 })));
+    const uploadLabel = busy ? busy.label : video ? 'Change video' : uploadEmptyLabel;
+    const uploadBtn = React.createElement("button", { type: "button", className: assetLayout ? 'media-action' : undefined, disabled: !!busy, "aria-label": video ? 'Change video file' : 'Upload video file', onClick: pickFile },
+        busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : video ? React.createElement(RefreshCw, { size: 14 }) : React.createElement(Upload, { size: 14 }),
+        assetLayout ? uploadLabel : React.createElement("span", { className: "editor-action-text" }, video ? 'Change' : 'Upload'));
+    const linkBtn = React.createElement("button", { type: "button", className: assetLayout ? 'media-action' : undefined, "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, disabled: !!busy, onClick: openLink },
+        React.createElement(Link2, { size: 14 }),
+        assetLayout ? linkLabel : React.createElement("span", { className: "editor-action-text" }, "Link"));
+    const progress = busy && React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
+        React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
+            React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
+        React.createElement("div", { className: "mf-progress-row" },
+            React.createElement("span", null,
+                busy.label,
+                busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : '')));
     const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, accept: "video/*,.mp4,.webm,.mov,.m4v", onChange: e => { const f = e.currentTarget.files?.[0]; e.currentTarget.value = ''; void upload(f); } });
     const linkForm = linking && React.createElement(MediaLinkForm, { autoFocus: true, label: `${title} link`, placeholder: "https://\u2026/clip.mp4", submitLabel: "Add", initialUrl: linked && !drive ? video : '', onClearError: onClearError, onCancel: () => setLinking(false), onSubmit: url => { if (applyLink(url))
             setLinking(false); } });
     const clip = clipOpen && video && React.createElement(MediaClipEditor, { kind: "video", title: `Edit ${title.toLowerCase()}`, src: video, initial: edit, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
-    return React.createElement("article", { className: `mf mf-video${video ? ' has-media' : ''}${assetLayout ? ' is-asset' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
-        React.createElement("header", { className: "mf-head" },
-            React.createElement("span", { className: "mf-ico", "aria-hidden": "true" },
-                React.createElement(Film, { size: 18 })),
-            React.createElement("div", { className: "mf-headmain" },
-                React.createElement("div", { className: "mf-titlerow" },
-                    React.createElement("strong", null, title),
-                    React.createElement("span", { className: `mf-badge ${badge.cls}` }, badge.text)),
-                React.createElement("small", { className: "mf-caption" }, caption))),
-        body,
-        actions,
+    if (assetLayout) {
+        const badge = video ? (drive ? 'Needs attention' : 'Added') : 'Not added';
+        const badgeClass = `asset-state${!video ? ' is-empty' : drive ? ' is-warn' : ' is-ok'}`;
+        const caption = busy ? busy.label : (video ? (drive ? 'This link needs attention' : 'Tap play to preview') : (emptyHint || hint));
+        const preview = video ? React.createElement("div", { className: "asset-media-extra" }, drive ? React.createElement(DriveShareLegacyNotice, { kind: "video" }) : React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` })) : null;
+        return React.createElement("article", { className: `asset${video ? ' has-image' : ''}${linking ? ' is-linking' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
+            React.createElement("header", { className: "media-head" },
+                React.createElement("span", { className: "media-ico", "aria-hidden": "true" },
+                    React.createElement(Film, { size: 17 })),
+                React.createElement("div", { className: "media-headmain" },
+                    React.createElement("div", { className: "media-titlerow" },
+                        React.createElement("span", { className: "asset-name" }, title),
+                        React.createElement("span", { className: badgeClass }, badge)),
+                    React.createElement("small", { className: "asset-caption" }, caption))),
+            progress,
+            preview,
+            React.createElement("div", { className: "asset-actions" },
+                uploadBtn,
+                linkBtn,
+                video && !drive && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
+                    React.createElement(Scissors, { size: 14 }),
+                    "Edit"),
+                video && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
+                    React.createElement(Trash2, { size: 14 }))),
+            fileInput,
+            linkForm,
+            clip);
+    }
+    return React.createElement("div", { className: `editor-inline-image editor-video${video ? ' has-image' : ''}${linking ? ' is-linking' : ''}`, ...drop },
+        React.createElement("span", { className: "editor-inline-icon" },
+            React.createElement(Film, { size: 18 })),
+        React.createElement("div", { className: "editor-inline-copy" },
+            React.createElement("strong", null, title),
+            React.createElement("small", null, busy ? busy.label : (video ? 'Plays with the question' : hint))),
+        video && drive && React.createElement(DriveShareLegacyNotice, { kind: "video" }),
+        video && !drive && React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` }),
+        progress,
+        React.createElement("div", { className: "editor-inline-actions" },
+            uploadBtn,
+            linkBtn,
+            video && !drive && React.createElement("button", { type: "button", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
+                React.createElement(Scissors, { size: 14 }),
+                React.createElement("span", { className: "editor-action-text" }, "Edit")),
+            video && React.createElement("button", { type: "button", className: "is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
+                React.createElement(Trash2, { size: 14 }))),
         fileInput,
         linkForm,
         clip);

@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Film,Link2,Trash2,Upload,RefreshCw,Scissors} from 'lucide-react';
+import {Film,Link2,Trash2,Upload,RefreshCw,Scissors,LoaderCircle} from 'lucide-react';
 import {MediaLinkForm,DriveShareLegacyNotice,pushMediaLinkError} from './MediaLinkForm';
 import {MAX_VIDEO_CHARS,isDriveLink,resolveMediaLink,videoSafe,DRIVE_SHARE_REJECT,typedMediaFile,driveFileId,blobToDataUrl,dataUrlLength,maxBytesForChars,formatBytes} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,editIsDefault,useClipPlayback,probeMediaSrc,playbackSrc,isEmbeddedMedia,fmtTime,type MediaEdit} from './MediaClipEditor';
@@ -50,8 +50,6 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   finally{setBusy(null);}
  }
 
- const badge=!video?{text:'Not added',cls:'is-empty'}:drive?{text:'Needs attention',cls:'is-warn'}:{text:'Added',cls:'is-ok'};
- const caption=busy?busy.label:video?(drive?'This link needs attention':linked?'Linked video · plays in the quiz':[meta&&fmtTime(meta.duration),meta&&formatBytes(meta.size),edit?'edited':null].filter(Boolean).join(' · ')||'Tap play to preview'):(emptyHint||hint);
  const openLink=()=>{onClearError?.();setLinking(v=>!v);};
  const pickFile=()=>{setLinking(false);input.current?.click();};
  const drop={
@@ -59,31 +57,35 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   onDragLeave:()=>setDragOver(false),
   onDrop:(e:React.DragEvent)=>{e.preventDefault();setDragOver(false);void upload(e.dataTransfer.files?.[0]);},
  };
- const body=busy
-  ?<div className="mf-progress" role="status" aria-live="polite"><div className={`mf-progress-bar${busy.progress===undefined?' is-indeterminate':''}`}><i style={busy.progress!==undefined?{width:`${Math.round(busy.progress*100)}%`}:undefined}/></div><div className="mf-progress-row"><span>{busy.label}{busy.progress!==undefined?` ${Math.round(busy.progress*100)}%`:''}</span></div></div>
-  :video
-  ?(drive?<DriveShareLegacyNotice kind="video"/>:<VideoPlayer src={video} edit={edit} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>)
-  :<div className="mf-empty">
-    <button type="button" className="mf-tile" onClick={pickFile}><Upload size={20}/>{uploadEmptyLabel}</button>
-    <button type="button" className="mf-tile" aria-expanded={linking} onClick={openLink}><Link2 size={20}/>{linkLabel}</button>
-   </div>;
- const actions=video&&!busy&&<div className="mf-actions">
-  {!drive&&<button type="button" className="mf-action is-primary" aria-label={`Edit ${title.toLowerCase()}`} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
-  <button type="button" className="mf-action" aria-label="Replace video file" onClick={pickFile}><RefreshCw size={14}/>Replace</button>
-  <button type="button" className="mf-action" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} onClick={openLink}><Link2 size={14}/>{linkLabel}</button>
-  <button type="button" className="mf-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} onClick={()=>{setLinking(false);onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>
- </div>;
+ const uploadLabel=busy?busy.label:video?'Change video':uploadEmptyLabel;
+ const uploadBtn=<button type="button" className={assetLayout?'media-action':undefined} disabled={!!busy} aria-label={video?'Change video file':'Upload video file'} onClick={pickFile}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:video?<RefreshCw size={14}/>:<Upload size={14}/>}{assetLayout?uploadLabel:<span className="editor-action-text">{video?'Change':'Upload'}</span>}</button>;
+ const linkBtn=<button type="button" className={assetLayout?'media-action':undefined} aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} disabled={!!busy} onClick={openLink}><Link2 size={14}/>{assetLayout?linkLabel:<span className="editor-action-text">Link</span>}</button>;
+ const progress=busy&&<div className="mf-progress" role="status" aria-live="polite"><div className={`mf-progress-bar${busy.progress===undefined?' is-indeterminate':''}`}><i style={busy.progress!==undefined?{width:`${Math.round(busy.progress*100)}%`}:undefined}/></div><div className="mf-progress-row"><span>{busy.label}{busy.progress!==undefined?` ${Math.round(busy.progress*100)}%`:''}</span></div></div>;
  const fileInput=<input ref={input} type="file" hidden accept="video/*,.mp4,.webm,.mov,.m4v" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>;
  const linkForm=linking&&<MediaLinkForm autoFocus label={`${title} link`} placeholder="https://…/clip.mp4" submitLabel="Add" initialUrl={linked&&!drive?video!:''} onClearError={onClearError} onCancel={()=>setLinking(false)} onSubmit={url=>{if(applyLink(url))setLinking(false);}}/>;
  const clip=clipOpen&&video&&<MediaClipEditor kind="video" title={`Edit ${title.toLowerCase()}`} src={video} initial={edit} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>;
 
- return <article className={`mf mf-video${video?' has-media':''}${assetLayout?' is-asset':''}${dragOver?' is-dragover':''}`} {...drop}>
-  <header className="mf-head">
-   <span className="mf-ico" aria-hidden="true"><Film size={18}/></span>
-   <div className="mf-headmain"><div className="mf-titlerow"><strong>{title}</strong><span className={`mf-badge ${badge.cls}`}>{badge.text}</span></div><small className="mf-caption">{caption}</small></div>
-  </header>
-  {body}
-  {actions}
+ if(assetLayout){
+  const badge=video?(drive?'Needs attention':'Added'):'Not added';
+  const badgeClass=`asset-state${!video?' is-empty':drive?' is-warn':' is-ok'}`;
+  const caption=busy?busy.label:(video?(drive?'This link needs attention':'Tap play to preview'):(emptyHint||hint));
+  const preview=video?<div className="asset-media-extra">{drive?<DriveShareLegacyNotice kind="video"/>:<VideoPlayer src={video} edit={edit} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>}</div>:null;
+  return <article className={`asset${video?' has-image':''}${linking?' is-linking':''}${dragOver?' is-dragover':''}`} {...drop}>
+   <header className="media-head"><span className="media-ico" aria-hidden="true"><Film size={17}/></span><div className="media-headmain"><div className="media-titlerow"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></header>
+   {progress}
+   {preview}
+   <div className="asset-actions">{uploadBtn}{linkBtn}{video&&!drive&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}{video&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}</div>
+   {fileInput}{linkForm}{clip}
+  </article>;
+ }
+
+ return <div className={`editor-inline-image editor-video${video?' has-image':''}${linking?' is-linking':''}`} {...drop}>
+  <span className="editor-inline-icon"><Film size={18}/></span>
+  <div className="editor-inline-copy"><strong>{title}</strong><small>{busy?busy.label:(video?'Plays with the question':hint)}</small></div>
+  {video&&drive&&<DriveShareLegacyNotice kind="video"/>}
+  {video&&!drive&&<VideoPlayer src={video} edit={edit} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>}
+  {progress}
+  <div className="editor-inline-actions">{uploadBtn}{linkBtn}{video&&!drive&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/><span className="editor-action-text">Edit</span></button>}{video&&<button type="button" className="is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}</div>
   {fileInput}{linkForm}{clip}
- </article>;
+ </div>;
 }

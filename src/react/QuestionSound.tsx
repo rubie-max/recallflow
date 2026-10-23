@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2,AlertCircle,Scissors,X} from 'lucide-react';
+import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2,AlertCircle,Scissors} from 'lucide-react';
 import {MediaLinkForm,DriveShareLegacyNotice,pushMediaLinkError} from './MediaLinkForm';
 import {MAX_AUDIO_CHARS,MAX_AUDIO_SECONDS,driveFileId,isDriveLink,resolveMediaLink,DRIVE_SHARE_REJECT,DRIVE_SHARE_LEGACY_HINT,typedMediaFile,blobToDataUrl,dataUrlLength,formatBytes,audioSafe} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,useClipPlayback,decodePeaks,probeMediaSrc,playbackSrc,fmtTime,type MediaEdit,type Peaks} from './MediaClipEditor';
@@ -190,10 +190,6 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
  }
  function stop(){const r=live.current?.recorder;if(r&&r.state==='recording')r.stop();}
 
- /* ui bits */
- const busyAny=!!busy||recording||countIn!==null;
- const badge=recording||countIn!==null?{text:'Recording',cls:'is-rec'}:!audio?{text:'Not added',cls:'is-empty'}:warn||drive?{text:'Needs attention',cls:'is-warn'}:{text:'Added',cls:'is-ok'};
- const caption=countIn!==null?`Starting in ${countIn}…`:recording?`Up to ${fmtTime(MAX_AUDIO_SECONDS)} · tap Stop when you're done`:busy?busy.label:audio?(drive?'This link needs attention':linked?'Linked audio · plays in the quiz':edit?'Edited · tap play to preview':'Tap play to preview'):hint;
  const shownName=audio?soundDisplayName(audio,audioName):'',fullName=audio?soundFileTitle(audio,audioName):'';
  const openLink=()=>{onClearError?.();setLinking(v=>!v);};
  const pickFile=()=>{setLinking(false);input.current?.click();};
@@ -202,42 +198,45 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
   onDragLeave:()=>setDragOver(false),
   onDrop:(e:React.DragEvent)=>{e.preventDefault();setDragOver(false);void upload(e.dataTransfer.files?.[0]);},
  };
-
- const body=countIn!==null
-  ?<div className="mf-rec is-count"><b className="mf-count" aria-live="assertive">{countIn}</b><span>Recording starts…</span><button type="button" className="mf-rec-stop" onClick={()=>{cancelCount.current=true;}}><X size={14}/>Cancel</button></div>
-  :recording
-  ?<div className="mf-rec" role="status"><span className="mf-rec-dot" aria-hidden="true"/><span className="mf-rec-time">{fmtTime(seconds)}<small> / {fmtTime(MAX_AUDIO_SECONDS)}</small></span><span className="mf-rec-meter" aria-hidden="true"><i style={{width:`${Math.round(clamp(level*1.6,0.04,1)*100)}%`}}/></span><button type="button" className="mf-rec-stop" aria-label="Stop recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button></div>
-  :busy
-  ?<div className="mf-progress" role="status" aria-live="polite"><div className={`mf-progress-bar${busy.progress===undefined?' is-indeterminate':''}`}><i style={busy.progress!==undefined?{width:`${Math.round(busy.progress*100)}%`}:undefined}/></div><div className="mf-progress-row"><span>{busy.label}{busy.progress!==undefined?` ${Math.round(busy.progress*100)}%`:''}</span>{busy.cancel&&<button type="button" onClick={busy.cancel}>Cancel</button>}</div></div>
-  :audio
-  ?(drive?<DriveShareLegacyNotice kind="sound"/>:<SoundPlayer src={audio} edit={edit} durationHint={durationHint} variant="media" displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/>)
-  :<div className="mf-empty">
-    <button type="button" className="mf-tile" onClick={start}><Mic size={20}/>Record</button>
-    <button type="button" className="mf-tile" onClick={pickFile}><Upload size={20}/>{uploadEmptyLabel}</button>
-    <button type="button" className="mf-tile" aria-expanded={linking} onClick={openLink}><Link2 size={20}/>{linkLabel}</button>
-   </div>;
- const actions=audio&&!busyAny&&<div className="mf-actions">
-  {!drive&&<button type="button" className="mf-action is-primary" aria-label={`Edit ${title.toLowerCase()}`} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
-  <button type="button" className="mf-action" aria-label="Re-record sound" onClick={start}><Mic size={14}/>Re-record</button>
-  <button type="button" className="mf-action" aria-label="Replace sound file" onClick={pickFile}><RefreshCw size={14}/>Replace</button>
-  <button type="button" className="mf-action" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} onClick={openLink}><Link2 size={14}/>{linkLabel}</button>
-  <button type="button" className="mf-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} onClick={clearAudio}><Trash2 size={14}/></button>
- </div>;
- const warnEl=warn&&!recording&&<p className="mf-alert" role="status"><AlertCircle size={14} aria-hidden="true"/><span>{warn.includes('cannot play')?<><strong>Linked sound can't play.</strong> Remove it, upload the file, or use a direct audio URL.</>:warn}</span></p>;
+ const recordLabel=audio?'Re-record':'Record';
+ const uploadLabel=busy?busy.label:audio&&audio.startsWith('data:')?'Upload':(uploadEmptyLabel||'Upload');
+ const countBtn=(cls:string)=>countIn!==null&&<button type="button" className={cls} aria-label="Cancel recording" onClick={()=>{cancelCount.current=true;}}><span className="sound-count-num" aria-live="assertive">{countIn}</span>Starting… Cancel</button>;
+ const assetActions=countIn!==null?countBtn('media-action is-recording'):recording?<button type="button" className="media-action is-recording" aria-label="Stop recording" title="Stop recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop recording</button>:<>
+  <button type="button" className="media-action" disabled={!!busy} aria-label={audio?'Re-record sound':'Record sound'} onClick={start}><Mic size={14}/>{recordLabel}</button>
+  <button type="button" className="media-action" disabled={!!busy} aria-label={audio&&audio.startsWith('data:')?'Change sound file':'Upload sound file'} onClick={pickFile}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&audio.startsWith('data:')?<RefreshCw size={14}/>:<Upload size={14}/>}{uploadLabel}</button>
+  {!recording&&<button type="button" className="media-action" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={openLink}><Link2 size={14}/>{linkLabel}</button>}
+  {audio&&!recording&&!drive&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
+  {audio&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={clearAudio}><Trash2 size={14}/></button>}
+ </>;
+ const player=audio&&!recording&&!drive&&<div className="asset-media-extra"><SoundPlayer src={audio} edit={edit} durationHint={durationHint} variant="media" displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/></div>;
+ const legacy=audio&&!recording&&drive&&<div className="asset-media-extra"><DriveShareLegacyNotice kind="sound"/></div>;
+ const progress=busy&&!recording&&<div className="mf-progress" role="status" aria-live="polite"><div className={`mf-progress-bar${busy.progress===undefined?' is-indeterminate':''}`}><i style={busy.progress!==undefined?{width:`${Math.round(busy.progress*100)}%`}:undefined}/></div><div className="mf-progress-row"><span>{busy.label}{busy.progress!==undefined?` ${Math.round(busy.progress*100)}%`:''}</span></div></div>;
+ const warnEl=warn&&!recording&&<p className="media-alert" role="status"><AlertCircle size={14} aria-hidden="true"/><span>{warn.includes('cannot play')?<><strong>Linked sound can’t play.</strong> Remove it, upload the file, or use a direct audio URL.</>:warn}</span></p>;
  const linkForm=!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={linked&&!drive?audio!:''} onClearError={onClearError} onCancel={()=>{setLinking(false);onClearError?.();}} onSubmit={async url=>{if(await applyLink(url))setLinking(false);}}/>;
  const clip=clipOpen&&(pending
   ?<MediaClipEditor kind="audio" title="Trim before adding" fileName={pending.name} src={pending.url} saveMode="bake" maxSeconds={MAX_AUDIO_SECONDS} onReplace={(data,len)=>acceptBaked(data,len,pending.name)} onSave={()=>closePending()} onCancel={closePending}/>
   :audio?<MediaClipEditor kind="audio" title={`Edit ${title.toLowerCase()}`} fileName={fullName} src={audio} initial={edit} onReplace={audio.startsWith('data:')?(data,len)=>acceptBaked(data,len):undefined} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>:null);
  const fileInput=<input ref={input} type="file" hidden aria-label={`Upload ${title.toLowerCase()}`} accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>;
 
- return <article className={`mf mf-sound${audio?' has-media':''}${assetLayout?' is-asset':''}${dragOver?' is-dragover':''}`} data-recording={recording||undefined} {...drop}>
-  <header className="mf-head">
-   <span className="mf-ico" aria-hidden="true">{recording?<span className="mf-rec-dot"/>:<AudioLines size={18}/>}</span>
-   <div className="mf-headmain"><div className="mf-titlerow"><strong>{title}</strong><span className={`mf-badge ${badge.cls}`}>{badge.text}</span></div><small className="mf-caption">{caption}</small></div>
-  </header>
-  {body}
-  {!recording&&warnEl}
-  {actions}
+ if(assetLayout){
+  const badge=recording||countIn!==null?'Recording':!audio?'Not added':warn||drive?'Needs attention':'Added';
+  const badgeClass=`asset-state${recording||countIn!==null?' is-warn':!audio?' is-empty':warn||drive?' is-warn':' is-ok'}`;
+  const desc=recording||countIn!==null?(countIn!==null?`Recording starts in ${countIn}…`:`Recording… ${fmtTime(seconds)}`):busy?busy.label:(audio&&!drive?'Tap play to preview':hint);
+  return <article className={`asset${audio?' has-image':''}${linking?' is-linking':''}${dragOver?' is-dragover':''}`} data-recording={recording||undefined} {...drop}>
+   <header className="media-head"><span className="media-ico" aria-hidden="true">{recording||countIn!==null?<span className="sound-rec-dot"/>:<AudioLines size={17}/>}</span><div className="media-headmain"><div className="media-titlerow"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{desc}</small></div></header>
+   {!recording&&progress}
+   {!recording?player:null}
+   {!recording?legacy:null}
+   {!recording?warnEl:null}
+   <div className="asset-actions">{assetActions}</div>
+   {fileInput}{linkForm}{clip}
+  </article>;
+ }
+
+ return <article className={`mf mf-sound${audio?' has-media':''}${dragOver?' is-dragover':''}`} data-recording={recording||undefined} {...drop}>
+  <header className="mf-head"><span className="mf-ico" aria-hidden="true"><AudioLines size={18}/></span><div className="mf-headmain"><strong>{title}</strong><small className="mf-caption">{hint}</small></div></header>
+  {!recording&&player}{progress}{warnEl}
+  <div className="asset-actions">{assetActions}</div>
   {fileInput}{linkForm}{clip}
  </article>;
 }
