@@ -33,7 +33,8 @@
 .editor-media-step .asset-state.is-empty::before{background:#7c8496}
 .editor-media-step .asset-state.is-ok{border-color:#2d4a3f;background:#1c2a24;color:#91d8bb}
 .editor-media-step .asset-state.is-ok::before{background:var(--ms-green)}
-.editor-media-step .asset-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:12px;padding-left:70px}
+.editor-media-step .asset-actions{display:flex;align-items:center;gap:7px;flex-wrap:nowrap;margin-top:12px;padding-left:70px;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.editor-media-step .asset-actions::-webkit-scrollbar{display:none}
 .editor-media-step .media-action{min-height:33px;display:inline-flex;justify-content:center;align-items:center;gap:7px;border:1px solid #343949;background:#20232e;color:#e6e8f0;border-radius:10px;padding:0 10px;font-family:inherit;font-size:10.5px;font-weight:600;cursor:pointer}
 .editor-media-step .media-action:hover{background:#2a2d3a;border-color:#5b5578}
 .editor-media-step .media-action svg{width:14px;height:14px;color:#b5aaff;flex-shrink:0}
@@ -50,8 +51,10 @@
 .editor-media-step .media-alert{margin:10px 0 0 70px;border:1px solid #49303a;border-radius:12px;background:linear-gradient(100deg,#2b2028,#211b24);padding:10px 11px;display:flex;gap:9px;align-items:flex-start;color:#f1babc;font-size:10.5px;line-height:1.45}
 .editor-media-step .media-alert svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--ms-red)}
 .editor-media-step .media-alert strong{color:#ffd2d3}
-.editor-media-step .empty-drop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px dashed #3b4050;border-radius:13px;background:#151821}
-.editor-media-step .empty-left{display:flex;gap:10px;align-items:center;min-width:0}
+.editor-media-step .empty-drop{display:flex;align-items:center;justify-content:flex-start;flex-wrap:nowrap;gap:12px;padding:11px 12px;border:1px dashed #3b4050;border-radius:13px;background:#151821}
+.editor-media-step .empty-left{display:flex;gap:10px;align-items:center;min-width:0;flex:1}
+.editor-media-step .empty-drop-actions{display:flex;align-items:center;gap:7px;flex:none}
+.editor-media-step .empty-drop .media-action{flex:none}
 .editor-media-step .empty-symbol{width:34px;height:34px;border-radius:10px;background:#232139;color:var(--ms-violet);display:grid;place-items:center;flex:none}
 .editor-media-step .empty-symbol svg{width:17px;height:17px}
 .editor-media-step .empty-text strong{font-size:11px;display:block}
@@ -71,12 +74,13 @@
  .editor-media-step .media-panel{padding:14px;border-radius:17px}
  .editor-media-step .asset{padding:11px}
  .editor-media-step .asset-thumb{width:48px;height:48px}
+ .editor-media-step .answer-panel .asset-thumb{width:44px;height:44px}
  .editor-media-step .asset-actions,.editor-media-step .answer-panel .asset-actions,.editor-media-step .sound-preview,.editor-media-step .media-alert,.editor-media-step .editor-media-link,.editor-media-step .video-player.is-compact,.editor-media-step .media-drive-legacy{margin-left:0!important;padding-left:0!important}
- .editor-media-step .asset-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px;width:100%}
- .editor-media-step .asset-actions .media-action{min-height:35px;width:100%;justify-content:center;padding:0 8px;font-size:10px}
- .editor-media-step .asset-actions .media-action.is-remove{width:100%;max-width:none;justify-self:stretch}
- .editor-media-step .empty-drop{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:8px 6px}
- .editor-media-step .empty-drop .empty-left{grid-column:1/-1}
- .editor-media-step .empty-drop-actions{display:contents}
- .editor-media-step .empty-drop .media-action,.editor-media-step .empty-drop-actions .media-action{min-height:35px;width:100%;justify-content:center}
+ .editor-media-step .asset-actions{gap:6px;margin-top:10px}
+ .editor-media-step .asset-actions .media-action,.editor-media-step .empty-drop .media-action,.editor-media-step .empty-drop-actions .media-action{width:36px;min-width:36px;max-width:36px;height:36px;min-height:36px;flex:0 0 36px;padding:0;font-size:0;gap:0;white-space:nowrap}
+ .editor-media-step .asset-actions .media-action svg,.editor-media-step .empty-drop .media-action svg{width:16px;height:16px}
+ .editor-media-step .asset-actions .media-action.is-remove{width:36px;max-width:36px}
+ .editor-media-step .empty-drop{gap:7px}
+ .editor-media-step .sound-preview{margin-top:11px}
+ .editor-media-step .media-alert{font-size:10px}
 }
