@@ -149,6 +149,9 @@ if(type==='ordering'){if(!Array.isArray(input.sequence)||input.sequence.length<2
 if(['cloze','fill_blank_options'].includes(type)){if(!Array.isArray(input.blanks)||!input.blanks.length||input.blanks.some(x=>typeof x!=='string'||!x.trim())||(input.prompt.match(/_{2,}/g)||[]).length!==input.blanks.length)throw new Error('Use one ___ marker for each blank answer.');answer=input.blanks.join('; ');}
 if(type==='fill_blank_options'){if(!Array.isArray(input.options)||input.options.length<2||input.options.some(x=>typeof x!=='string'||!x.trim()))throw new Error('Add at least two word-bank options.');options=input.options.map(x=>x.trim());if(new Set(options).size!==options.length||input.blanks.some(x=>!options.includes(x)))throw new Error('Use unique options and include every blank answer in the word bank.');}
 const extra=extraTypes.includes(type)?validateExtra(type,input,prompt,answer):null;if(extra)answer=extra.answer;
+const mediaNameSafe=x=>x===undefined||x===null||(typeof x==='string'&&x.trim().length>0&&x.trim().length<=120);
+if(input.audioName!==undefined&&!mediaNameSafe(input.audioName))throw new Error('Sound file name is invalid.');
+if(input.answerAudioName!==undefined&&!mediaNameSafe(input.answerAudioName))throw new Error('Answer sound file name is invalid.');
 if(input.audio&&!audioSafe(input.audio))throw new Error('Use a sound clip of about 1 minute or less, or an https sound file.');
 if(input.answerAudio&&!audioSafe(input.answerAudio))throw new Error('Use an answer sound of about 1 minute or less, or an https sound file.');
 if(input.video&&!videoSafe(input.video))throw new Error('Use an https video file (or a small uploaded video).');
@@ -165,6 +168,7 @@ if(input.variants!==undefined){if(!Array.isArray(input.variants)||input.variants
 const types=itemTypes(result);if(new Set(types).size!==types.length)throw new Error('Each question type can only be used once on the same question.');
 if(result.typeMode!==undefined&&!['random','primary'].includes(result.typeMode))delete result.typeMode;
 for(const [editKey,mediaKey] of [['audioEdit','audio'],['videoEdit','video'],['answerAudioEdit','answerAudio'],['answerVideoEdit','answerVideo']])if(!result[mediaKey])delete result[editKey];
+for(const [nameKey,mediaKey] of [['audioName','audio'],['answerAudioName','answerAudio']])if(!result[mediaKey])delete result[nameKey];else if(typeof result[nameKey]==='string')result[nameKey]=result[nameKey].trim().slice(0,120);
 return result;}
 export function imageSafe(x){return typeof x==='string'&&((/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(x)&&x.length<2800000)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048)||/^rf-img\/[a-f0-9]{32}\.(webp|jpg|png|gif)$/.test(x));}
 export function gradeQuestion(item,given){

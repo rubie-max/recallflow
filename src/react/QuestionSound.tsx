@@ -46,16 +46,42 @@ async function soundFromFile(file:File,progress:(pct:number)=>void){
  }finally{ctx.close().catch(()=>{});}
 }
 
-export function soundDisplayName(src:string){
- if(!src)return '';
- if(src.startsWith('data:'))return 'Uploaded sound.webm';
+const MIME_EXT:Record<string,string>={mpeg:'mp3',mp3:'mp3',mp4:'m4a',x-m4a:'m4a',wav:'wav',wave:'wav',ogg:'ogg',webm:'webm',aac:'aac',opus:'opus'};
+function extFromDataUrl(src:string){
+ const mime=src.match(/^data:audio\/([^;,]+)/i)?.[1]?.toLowerCase()||'';
+ return MIME_EXT[mime.split('+')[0]]||mime.replace(/^x-/,'')||'webm';
+}
+function basenameFromUrl(src:string){
  try{
   const path=decodeURIComponent(new URL(resolveMediaLink(src)).pathname);
-  const file=path.split('/').filter(Boolean).pop();
-  if(file&&file.length<=56)return file;
- }catch{}
- return 'Linked audio';
+  return path.split('/').filter(Boolean).pop()||'';
+ }catch{return '';}
 }
+export function formatSoundFileName(name:string,max=36){
+ let base=(name||'').replace(/\\/g,'/').split('/').pop()?.trim()||String(name||'').trim();
+ base=base.replace(/[\x00-\x1f<>:"|?*]/g,'').replace(/\s+/g,' ');
+ if(!base)return 'audio';
+ if(base.length<=max)return base;
+ const dot=base.lastIndexOf('.');
+ if(dot>0&&dot<base.length-1){
+  const ext=base.slice(dot),stem=base.slice(0,dot),keep=Math.max(6,max-ext.length-1);
+  return `${stem.slice(0,keep)}…${ext}`;
+ }
+ return `${base.slice(0,max-1)}…`;
+}
+export function soundFileTitle(src:string,stored?:string){
+ const label=typeof stored==='string'?stored.trim():'';
+ if(label)return label;
+ if(!src)return '';
+ if(src.startsWith('data:'))return `audio.${extFromDataUrl(src)}`;
+ const file=basenameFromUrl(src);
+ return file||'Linked audio';
+}
+export function soundDisplayName(src:string,stored?:string){
+ const title=soundFileTitle(src,stored);
+ return title?formatSoundFileName(title):'';
+}
+export function normalizeSoundFileName(name:string){const base=(name||'').replace(/\\/g,'/').split('/').pop()?.trim().replace(/[\x00-\x1f<>:"|?*]/g,'').replace(/\s+/g,' ')||'';return base.slice(0,120);}
 export function probeAudioLink(url:string){
  const playback=resolveMediaPlaybackSrc(resolveMediaLink(String(url||'').trim()));
  return new Promise<boolean>(resolve=>{
@@ -67,7 +93,7 @@ export function probeAudioLink(url:string){
  });
 }
 
-export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media';edit?:MediaEdit;displayName?:string}){
+export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media';edit?:MediaEdit;displayName?:string;fileTitle?:string}){
  const audio=useRef<HTMLAudioElement>(null),[playing,setPlaying]=useState(false),[at,setAt]=useState(0),[length,setLength]=useState(0),[failed,setFailed]=useState(false);
  const clip=length>0?normalizeEdit(edit,length):edit;
  useEffect(()=>{setPlaying(false);setAt(0);setLength(0);setFailed(false);return()=>audio.current?.pause();},[src]);
@@ -76,6 +102,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  const played=known?(clip?Math.max(0,Math.min(1,(at-clip.trimStart)/Math.max(0.05,clip.trimEnd-clip.trimStart))):at/length):(playing?1:0);
  const bars=variant==='media'?40:30;
  const name=displayName||soundDisplayName(src);
+ const tip=fileTitle||name;
  function toggle(){const a=audio.current;if(!a)return;if(a.paused){setFailed(false);if(clip&&a.currentTime<clip.trimStart)a.currentTime=clip.trimStart;a.play().catch(()=>setFailed(true));}else a.pause();}
  function seek(e:React.MouseEvent<HTMLSpanElement>){const a=audio.current;if(!a||!known)return;const r=e.currentTarget.getBoundingClientRect();const f=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),t=clip?clip.trimStart+f*(clip.trimEnd-clip.trimStart):f*length;const next=clip?Math.min(clip.trimEnd,Math.max(clip.trimStart,t)):Math.min(length,Math.max(0,t));a.currentTime=next;setAt(next);}
  function onTime(){const a=audio.current;if(!a)return;setAt(a.currentTime);if(clip&&a.currentTime>=clip.trimEnd-0.02&&!a.paused){a.pause();a.currentTime=clip.trimStart;setAt(a.currentTime);setPlaying(false);}}
@@ -84,7 +111,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  return <div className={`sound-player ${variant==='overlay'?'is-overlay':variant==='media'?'is-media':''} ${className}`.trim()} data-playing={playing||undefined}>
   <button type="button" className="sound-play" aria-label={playing?'Pause sound':label} onClick={toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
   {variant==='media'
-   ? <span className="sound-media-body"><span className="sound-filename">{failed?'Could not play':name}</span><span className="sound-progress" onClick={seek} role="presentation" aria-hidden="true"><i style={{width:`${played*100}%`}}/></span><span className="sound-times" aria-hidden="true"><span>{known?time(clip?Math.max(0,at-clip.trimStart):at):'0:00'}</span><span>{durationLabel}</span></span></span>
+   ? <span className="sound-media-body"><span className="sound-filename" title={failed||tip===name?undefined:tip}>{failed?'Could not play':name}</span><span className="sound-progress" onClick={seek} role="presentation" aria-hidden="true"><i style={{width:`${played*100}%`}}/></span><span className="sound-times" aria-hidden="true"><span>{known?time(clip?Math.max(0,at-clip.trimStart):at):'0:00'}</span><span>{durationLabel}</span></span></span>
    :variant==='overlay'
    ? <span className="sound-wave" onClick={seek} role="presentation">{Array.from({length:bars},(_,i)=><i key={i} data-on={i/bars<=played||undefined} style={{height:`${30+((i*37)%70)}%`}}/>)}</span>
    : <span className="sound-body"><span className="sound-title">{failed?'This sound could not play':playing?'Playing':'Listen'}</span><span className="sound-bar" onClick={seek}><i style={{width:`${known?at/length*100:playing?100:0}%`}} data-live={!known&&playing||undefined}/></span></span>}
@@ -93,7 +120,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  </div>;
 }
 
-export function SoundField({audio,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https audio file',assetLayout,linkLabel='Paste link',uploadEmptyLabel='Upload'}:{audio?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string;assetLayout?:boolean;linkLabel?:string;uploadEmptyLabel?:string}){
+export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https audio file',assetLayout,linkLabel='Paste link',uploadEmptyLabel='Upload'}:{audio?:string;audioName?:string;onAudioNameChange?:(value?:string)=>void;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string;assetLayout?:boolean;linkLabel?:string;uploadEmptyLabel?:string}){
  const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false),[warn,setWarn]=useState('');
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
  const [countIn,setCountIn]=useState<number|null>(null),cancelCount=useRef(false);
@@ -110,7 +137,7 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
  async function applyLink(next?:string){
   onError('');
   const raw=(next??link).trim();
-  if(!raw){onChange(undefined);return true;}
+  if(!raw){onAudioNameChange?.(undefined);onChange(undefined);return true;}
   const url=resolveMediaLink(raw);
   if(driveFileId(raw)||isDriveLink(url)){onError(DRIVE_SHARE_REJECT);return false;}
   if(!/^https:\/\//i.test(url)){onError('Use an https link to the sound file, or upload the file.');return false;}
@@ -123,7 +150,14 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
    return false;
   }
   onEditChange?.(undefined);onChange(url);
+  const linked=basenameFromUrl(url);
+  onAudioNameChange?.(linked?normalizeSoundFileName(linked):undefined);
   return true;
+ }
+ function recordingFileName(mime:string){
+  const sub=mime.split('/')[1]?.split(';')[0]?.toLowerCase()||'webm';
+  const ext=MIME_EXT[sub]||sub.replace(/^x-/,'')||'webm';
+  return normalizeSoundFileName(`Recording.${ext}`);
  }
  async function start(){
   onError('');
@@ -145,11 +179,13 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   const data=await dataUrl(blob);
   if(data.length>MAX_AUDIO_CHARS){onError('This recording is too large. '+tooLong);return;}
   onEditChange?.(undefined);onChange(data);
+  onAudioNameChange?.(recordingFileName(blob.type||recorderType()||'audio/webm'));
  }
  function stop(){const r=live.current?.recorder;if(r&&r.state==='recording')r.stop();}
+ function clearAudio(){setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onAudioNameChange?.(undefined);onChange(undefined);}
  async function upload(file?:File){
   if(!file)return;onError('');setBusy('Adding…');
-  try{onEditChange?.(undefined);onChange(await soundFromFile(file,pct=>setBusy(`Shrinking… ${pct}%`)));}
+  try{onEditChange?.(undefined);onChange(await soundFromFile(file,pct=>setBusy(`Shrinking… ${pct}%`)));onAudioNameChange?.(normalizeSoundFileName(file.name));}
   catch(e:any){onError(e.message||'This sound could not be added.');}
   finally{setBusy('');}
  }
@@ -162,16 +198,18 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   <button type="button" className="media-action" disabled={!!busy} aria-label={audio&&!audio.startsWith('https://')?'Change sound file':'Upload sound file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{uploadLabel}</button>
   {!recording&&<button type="button" className="media-action" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>{linkLabel}</button>}
   {audio&&!recording&&!isDriveLink(audio)&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
-  {audio&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
+  {audio&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={clearAudio}><Trash2 size={14}/></button>}
  </>;
  const inlineActions=countIn!==null?countBtn('is-recording'):recording?<button type="button" className="is-recording" aria-label="Stop recording" title="Stop recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
   <button type="button" disabled={!!busy} aria-label={audio?'Re-record sound':'Record sound'} onClick={start}><Mic size={14}/><span className="editor-action-text">{recordLabel}</span></button>
   <button type="button" disabled={!!busy} aria-label={audio&&!audio.startsWith('https://')?'Change sound file':'Upload sound file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}<span className="editor-action-text">{audio&&!audio.startsWith('https://')?'Change':'Upload'}</span></button>
   {!recording&&<button type="button" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/><span className="editor-action-text">Link</span></button>}
   {audio&&!recording&&!isDriveLink(audio)&&<button type="button" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/><span className="editor-action-text">Edit</span></button>}
-  {audio&&<button type="button" className="is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
+  {audio&&<button type="button" className="is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={clearAudio}><Trash2 size={14}/></button>}
  </>;
- const player=audio&&!recording&&!isDriveLink(audio)&&(assetLayout?<div className="asset-media-extra"><SoundPlayer src={audio} edit={edit} variant="media" displayName={soundDisplayName(audio)} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/></div>:<SoundPlayer src={audio} edit={edit} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/>);
+ const shownName=audio?soundDisplayName(audio,audioName):'';
+ const fullName=audio?soundFileTitle(audio,audioName):'';
+ const player=audio&&!recording&&!isDriveLink(audio)&&(assetLayout?<div className="asset-media-extra"><SoundPlayer src={audio} edit={edit} variant="media" displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/></div>:<SoundPlayer src={audio} edit={edit} displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/>);
  const legacy=audio&&!recording&&isDriveLink(audio)&&<DriveShareLegacyNotice kind="sound"/>;
  const warnEl=warn&&!recording&&<p className={assetLayout?'media-alert':'editor-inline-warn'} role="status"><AlertCircle size={14} aria-hidden="true"/><span>{assetLayout&&warn.includes('cannot play')?<><strong>Linked sound can’t play.</strong> Remove it, upload the file, or use a direct audio URL.</>:warn}</span></p>;
  const linkForm=!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')&&!isDriveLink(audio)?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={async url=>{setLink(url);if(await applyLink(url))setLinking(false);}}/>;
