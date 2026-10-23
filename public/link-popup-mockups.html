@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Link popup layouts · RecallFlow</title>
+<style>
+:root{--bg:#0f1016;--card:#1a1b24;--surface:#22232e;--border:#343949;--text:#ececf2;--muted:#9a93b5;--primary:#8b7cf6;--primary-fg:#fff;--font:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+*{box-sizing:border-box}body{margin:0;padding:20px 16px 40px;background:var(--bg);color:var(--text);font-family:var(--font)}
+h1{font-size:18px;margin:0 0 6px}p.lead{margin:0 0 20px;color:var(--muted);font-size:13px;line-height:1.45;max-width:640px}
+.grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));max-width:1100px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px}
+.card h2{margin:0 0 4px;font-size:14px}.card small{display:block;color:var(--muted);font-size:11.5px;margin-bottom:12px;line-height:1.35}
+.phone{position:relative;height:420px;border-radius:22px;background:linear-gradient(180deg,#12131a,#0c0d12);border:1px solid #2a2b36;overflow:hidden}
+.scrim{position:absolute;inset:0;background:#0009;backdrop-filter:blur(4px)}
+.mock-bg{position:absolute;inset:0;opacity:.35;background:repeating-linear-gradient(180deg,#1e1f28,#1e1f28 48px,#181922 48px,#181922 96px)}
+.popup{position:absolute;z-index:2;font-family:var(--font)}
+.ico-link{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+/* A current */
+.a{width:min(92%,320px);left:50%;top:50%;transform:translate(-50%,-50%);padding:16px;border:1px solid var(--border);border-radius:20px;background:var(--card);display:grid;gap:12px;box-shadow:0 16px 40px #0006}
+.a .head{display:flex;gap:10px;align-items:flex-start}
+.a .badge{width:36px;height:36px;border-radius:11px;background:#8b7cf629;color:var(--primary);display:grid;place-items:center;flex:none}
+.a .head div{flex:1;min-width:0}.a h3{margin:0;font-size:14px}.a .sub{margin:2px 0 0;font-size:11px;color:var(--muted)}
+.a .x{width:32px;height:32px;border:0;border-radius:9px;background:var(--surface);color:var(--text);display:grid;place-items:center;flex:none}
+.a input{width:100%;height:44px;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:var(--text);padding:0 12px;font-size:13px}
+.a .foot{display:flex;justify-content:flex-end;gap:8px}
+.a .btn{min-height:40px;padding:0 14px;border-radius:11px;font-weight:650;font-size:13px;border:0;cursor:default}
+.a .btn.ghost{border:1px solid var(--border);background:var(--surface);color:var(--text)}
+.a .btn.primary{background:var(--primary);color:var(--primary-fg)}
+/* B bottom sheet */
+.b{left:0;right:0;bottom:0;padding:10px 14px 18px;border-radius:20px 20px 0 0;background:var(--card);border-top:1px solid var(--border);box-shadow:0 -12px 32px #0008}
+.b .grab{width:36px;height:4px;border-radius:4px;background:#4a4a5a;margin:0 auto 12px}
+.b h3{margin:0 0 4px;font-size:15px;text-align:center}.b .sub{text-align:center;font-size:11.5px;color:var(--muted);margin:0 0 14px}
+.b input{width:100%;height:48px;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);padding:0 14px;font-size:14px;margin-bottom:10px}
+.b .stack{display:grid;gap:8px}.b .btn{min-height:46px;border-radius:13px;font-weight:650;font-size:14px;border:0}
+.b .primary{background:var(--primary);color:var(--primary-fg)}.b .ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+/* C compact */
+.c{width:min(90%,300px);left:50%;top:54%;transform:translate(-50%,-50%);padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--border);box-shadow:0 12px 32px #0007}
+.c .row{display:flex;align-items:center;gap:8px;margin-bottom:10px}.c h3{flex:1;margin:0;font-size:13.5px}
+.c input{width:100%;height:42px;border-radius:10px;border:1px solid var(--border);background:#151821;color:var(--text);padding:0 11px;font-size:13px;margin-bottom:10px}
+.c .add{width:100%;min-height:44px;border:0;border-radius:11px;background:var(--primary);color:#fff;font-weight:650;font-size:13px;margin-bottom:6px}
+.c .cancel{width:100%;min-height:38px;border:0;background:transparent;color:var(--muted);font-size:12.5px}
+/* D inline add */
+.d{width:min(94%,330px);left:50%;top:50%;transform:translate(-50%,-50%);padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--border)}
+.d .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.d .top span{font-size:12px;color:var(--muted)}.d h3{margin:0 0 12px;font-size:15px}
+.d .row{display:flex;gap:8px}.d input{flex:1;min-width:0;height:46px;border-radius:12px 0 0 12px;border:1px solid var(--border);border-right:0;background:var(--surface);color:var(--text);padding:0 12px;font-size:13px}
+.d .add{height:46px;padding:0 16px;border:0;border-radius:0 12px 12px 0;background:var(--primary);color:#fff;font-weight:650;font-size:13px;white-space:nowrap}
+.d .hint{margin:10px 0 0;font-size:11px;color:var(--muted);line-height:1.4}
+/* E focus */
+.e{width:min(88%,310px);left:50%;top:50%;transform:translate(-50%,-50%);padding:20px 18px;border-radius:22px;background:linear-gradient(165deg,#1f2030,#171822);border:1px solid #3d3a55;text-align:center;box-shadow:0 20px 50px #0009}
+.e .badge{width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:#8b7cf633;color:var(--primary);display:grid;place-items:center}
+.e h3{margin:0 0 6px;font-size:16px}.e .sub{margin:0 0 16px;font-size:12px;color:var(--muted)}
+.e input{width:100%;height:50px;border-radius:14px;border:2px solid #8b7cf655;background:#12131a;color:var(--text);padding:0 14px;font-size:14px;text-align:left;margin-bottom:12px}
+.e .primary{width:100%;min-height:48px;border:0;border-radius:14px;background:var(--primary);color:#fff;font-weight:700;font-size:14px}
+.e .cancel{margin-top:10px;border:0;background:transparent;color:var(--muted);font-size:13px}
+/* F header band */
+.f{width:min(92%,320px);left:50%;top:48%;transform:translate(-50%,-50%);border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--card);box-shadow:0 16px 36px #0007}
+.f .band{padding:14px 16px;background:linear-gradient(90deg,#6d5ce7,#8b7cf6);display:flex;align-items:center;gap:10px;color:#fff}
+.f .band h3{margin:0;flex:1;font-size:14.5px}.f .band .x{width:30px;height:30px;border:0;border-radius:8px;background:#ffffff22;color:#fff}
+.f .body{padding:14px 16px 16px}.f input{width:100%;height:44px;border-radius:11px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:0 12px;font-size:13px}
+.f .foot{margin-top:12px;display:flex;gap:8px}.f .btn{flex:1;min-height:42px;border-radius:11px;font-weight:650;font-size:13px;border:0}
+.f .ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}.f .primary{background:var(--primary);color:#fff}
+svg{display:block}
+</style></head><body>
+<h1>Add link popup — layout options</h1>
+<p class="lead">Six mobile-style dialogs on a dimmed media screen. Pick a letter (A is what you have now).</p>
+<div class="grid">
+<div class="card"><h2>A · Current</h2><small>Icon + title header, URL field, Cancel / Add on the right.</small>
+<div class="phone"><div class="mock-bg"></div><div class="scrim"></div>
+<div class="popup a"><div class="head"><span class="badge"><svg class="ico-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span><div><h3>Add sound from a link</h3><p class="sub">Paste a direct https link to the file.</p></div><button class="x" type="button">✕</button></div>
+<input value="https://example.com/the_mountain.mp3" readonly><div class="foot"><button class="btn ghost">Cancel</button><button class="btn primary">Add</button></div></div></div></div>
+
+<div class="card"><h2>B · Bottom sheet</h2><small>Thumb-friendly on phones; actions stacked full width.</small>
+<div class="phone"><div class="mock-bg"></div><div class="scrim"></div>
+<div class="popup b"><div class="grab"></div><h3>Paste sound link</h3><p class="sub">Direct https URL (MP3, WAV, …)</p>
+<input placeholder="https://…" value="https://example.com/audio.mp3" readonly><div class="stack"><button class="btn primary">Add sound</button><button class="btn ghost">Cancel</button></div></div></div></div>
+
+<div class="card"><h2>C · Compact</h2><small>Short title row, full-width Add, text Cancel below.</small>
+<div class="phone"><div class="mock-bg"></div><div class="scrim"></div>
+<div class="popup c"><div class="row"><h3>Sound link</h3><button class="x" type="button" style="width:28px;height:28px;border:0;border-radius:8px;background:var(--surface);color:var(--text)">✕</button></div>
+<input value="https://example.com/clips/intro.mp3" readonly><button class="add">Add link</button><button class="cancel">Cancel</button></div></div></div>
+
+<div class="card"><h2>D · Inline Add</h2><small>URL + Add in one row; good when the URL is long.</small>
+<div class="phone"><div class="mock-bg"></div><div class="scrim"></div>
+<div class="popup d"><div class="top"><span>Question sound</span><button type="button" style="border:0;background:transparent;color:var(--muted);font-size:12px">Cancel</button></div>
+<h3>Paste file link</h3><div class="row"><input value="https://cdn.example.com/a.mp3" readonly><button class="add">Add</button></div><p class="hint">Use a direct file link, not a web page.</p></div></div></div>
+
+<div class="card"><h2>E · Focus</h2><small>Centered, calm; one strong Add button.</small>
+<div class="phone"><div class="mock-bg"></div><div class="scrim"></div>
+<div class="popup e"><div class="badge"><svg class="ico-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+<h3>Link to sound</h3><p class="sub">Paste https link to your audio file</p>
+<input value="https://example.com/track.mp3" readonly><button class="primary">Add sound</button><button class="cancel">Cancel</button></div></div></div>
+
+<div class="card"><h2>F · Header band</h2><small>Purple top bar; clear separation from the form.</small>
+<div class="phone"><div class="mock-bg"></div><div class="scrim"></div>
+<div class="popup f"><div class="band"><svg class="ico-link" width="18" height="18" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><h3>Add sound link</h3><button class="x" type="button">✕</button></div>
+<div class="body"><input value="https://files.example.com/voice.webm" readonly><div class="foot"><button class="btn ghost">Cancel</button><button class="btn primary">Add</button></div></div></div></div></div>
+</div></body></html>
