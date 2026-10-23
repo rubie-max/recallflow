@@ -71,13 +71,12 @@ function InlineImage({label,hint,image,onPick,onLink,onRemove,onView,onEdit,onCl
  const fileInput=<input ref={input} type="file" hidden aria-label={`Upload ${label.toLowerCase()}`} accept={imageAccept} onChange={e=>{const file=e.currentTarget.files?.[0];e.currentTarget.value='';void pick(file);}}/>;
  if(assetLayout){
   const badge=!image?(required?'Needed':'Not added'):'Added';
-  const badgeClass=!image?`asset-state${required?'':' is-empty'}`:'asset-state is-ok';
-  const caption=image?'Tap the thumbnail to preview':hint;
-  const actions=<div className={`asset-actions${!image?' is-dual':''}`}>{image&&onEdit&&<button type="button" className="media-action" aria-label={`Edit ${label.toLowerCase()}`} disabled={loading} onClick={onEdit}><Crop size={14}/>Edit</button>}{uploadBtn}{linkBtn}{image&&<button type="button" className="media-action is-remove" aria-label={`Remove ${label.toLowerCase()}`} disabled={loading} onClick={onRemove}><Trash2 size={14}/></button>}</div>;
-  if(!image)return <article className={`asset is-empty-slot${linking?' is-linking':''}`}><div className="asset-empty-body"><span className="asset-empty-icon" aria-hidden="true"><ImagePlus size={24}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{label}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></div>{actions}{linkForm}{fileInput}</article>;
-  return <article className={`asset${linking?' is-linking':''}`}>
-   <div className="asset-top"><button type="button" className="asset-thumb" aria-label={`Preview ${label.toLowerCase()}`} onClick={()=>onView(image)}><img src={image} alt=""/></button>
-    <div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{label}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></div>
+  const badgeClass=!image?`asset-state${required?' is-warn':' is-empty'}`:'asset-state is-ok';
+  const caption=image?'Tap the preview to view it full size':hint;
+  const actions=<div className="asset-actions">{image&&onEdit&&<button type="button" className="media-action" aria-label={`Edit ${label.toLowerCase()}`} disabled={loading} onClick={onEdit}><Crop size={14}/>Edit</button>}{uploadBtn}{linkBtn}{image&&<button type="button" className="media-action is-remove" aria-label={`Remove ${label.toLowerCase()}`} disabled={loading} onClick={onRemove}><Trash2 size={14}/></button>}</div>;
+  return <article className={`asset${image?' has-image':''}${linking?' is-linking':''}`}>
+   <header className="media-head"><span className="media-ico" aria-hidden="true"><ImagePlus size={17}/></span><div className="media-headmain"><div className="media-titlerow"><span className="asset-name">{label}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></header>
+   {image&&<div className="asset-media-extra"><button type="button" className="media-banner" aria-label={`Preview ${label.toLowerCase()}`} onClick={()=>onView(image)}><img src={image} alt=""/></button></div>}
    {actions}{linkForm}{fileInput}
   </article>;
  }

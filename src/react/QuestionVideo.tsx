@@ -56,18 +56,14 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
  const fileInput=<input ref={input} type="file" hidden accept="video/*,.mp4,.webm,.mov" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>;
  const linkForm=linking&&<MediaLinkForm autoFocus label={`${title} link`} placeholder="https://…/clip.mp4" submitLabel="Add" initialUrl={video?.startsWith('https://')&&!isDriveLink(video)?video:''} onClearError={onClearError} onCancel={()=>setLinking(false)} onSubmit={url=>{if(applyLink(url))setLinking(false);}}/>;
  const clip=clipOpen&&video&&<MediaClipEditor kind="video" title={`Edit ${title.toLowerCase()}`} src={video} initial={edit} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>;
- if(assetLayout&&!video&&!isDriveLink(video||'')){
-  return <article className={`asset is-empty-slot${linking?' is-linking':''}`}>
-   <div className="asset-empty-body"><span className="asset-empty-icon" aria-hidden="true"><Film size={24}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className="asset-state is-empty">Not added</span></div><small className="asset-caption">{emptyHint||hint}</small></div></div>
-   <div className="asset-actions is-dual">{uploadBtn}{linkBtn}</div>{fileInput}{linkForm}
-  </article>;
- }
  if(assetLayout){
   const badge=video?(isDriveLink(video)?'Needs attention':'Added'):'Not added';
-  const badgeClass=`asset-state${!video?' is-empty':isDriveLink(video)?'':' is-ok'}`;
+  const badgeClass=`asset-state${!video?' is-empty':isDriveLink(video)?' is-warn':' is-ok'}`;
+  const caption=busy||(video?(isDriveLink(video)?'This link needs attention':'Tap play to preview'):(emptyHint||hint));
+  const preview=video?<div className="asset-media-extra">{isDriveLink(video)?<DriveShareLegacyNotice kind="video"/>:<VideoPlayer src={video} edit={edit} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>}</div>:null;
   return <article className={`asset${video?' has-image':''}${linking?' is-linking':''}`}>
-   <div className="asset-top"><span className="asset-thumb" aria-hidden="true"><Film size={22}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{busy||(video?'Tap to preview in the player below':hint)}</small></div></div>
-   {(video&&isDriveLink(video))||video&&!isDriveLink(video)?<div className="asset-media-extra">{video&&isDriveLink(video)&&<DriveShareLegacyNotice kind="video"/>}{video&&!isDriveLink(video)&&<VideoPlayer src={video} edit={edit} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>}</div>:null}
+   <header className="media-head"><span className="media-ico" aria-hidden="true"><Film size={17}/></span><div className="media-headmain"><div className="media-titlerow"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></header>
+   {preview}
    <div className="asset-actions">{uploadBtn}{linkBtn}{video&&!isDriveLink(video)&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}{video&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}</div>
    {fileInput}{linkForm}{clip}
   </article>;
