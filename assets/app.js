@@ -30449,7 +30449,7 @@ function useLiveLevels(levels, bars, on) {
 }
 /* ───────── player ───────── */
 function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'default', edit, displayName, fileTitle, durationHint }) {
-    const audio = reactExports.useRef(null), wave = reactExports.useRef(null);
+    const audio = reactExports.useRef(null), wave = reactExports.useRef(null), bar = reactExports.useRef(null);
     const pb = useClipPlayback(audio, src, edit, { durationHint, analyser: variant === 'overlay' });
     const { duration, at, playing, failed } = pb;
     const known = duration > 0, clip = normalizeEdit(edit, duration), selLen = known ? clip.trimEnd - clip.trimStart : 0;
@@ -30459,21 +30459,43 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
     const live = useLiveLevels(pb.levels, bars, playing && variant === 'overlay');
     const heights = live ?? peaks;
     const name = displayName || soundDisplayName(src), tip = fileTitle || name;
-    const seekAt = (x) => { const r = wave.current?.getBoundingClientRect(); if (!r || !known)
-        return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
     if (isDriveLink(src))
         return React.createElement(DriveShareLegacyNotice, { kind: "sound" });
     const f = selLen > 0 && selLen < 10 ? fmtFine : fmtTime;
     const cur = known ? f(Math.max(0, at - clip.trimStart)) : '0:00', total = known ? f(selLen) : '–:––';
+    if (variant === 'media') {
+        const seekAt = (x) => { const r = bar.current?.getBoundingClientRect(); if (!r || !known)
+            return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
+        return React.createElement("div", { className: `sp sp-pill ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
+            React.createElement("button", { type: "button", className: "sp-pill-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 16, fill: "currentColor" }) : React.createElement(Play, { size: 16, fill: "currentColor" })),
+            React.createElement("div", { className: "sp-pill-body" },
+                React.createElement("span", { className: "sp-pill-name", title: tip !== name ? tip : undefined }, failed ? 'This sound could not play' : name),
+                React.createElement("div", { ref: bar, className: "sp-pill-bar", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(played * 100), tabIndex: known ? 0 : -1, onPointerDown: e => { if (!known)
+                        return; e.preventDefault(); try {
+                        e.currentTarget.setPointerCapture(e.pointerId);
+                    }
+                    catch { } seekAt(e.clientX); }, onPointerMove: e => { if (e.buttons & 1)
+                        seekAt(e.clientX); }, onKeyDown: e => { if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        pb.seek(at - 1);
+                    }
+                    else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        pb.seek(at + 1);
+                    }
+                    else if (e.key === ' ') {
+                        e.preventDefault();
+                        pb.toggle();
+                    } } },
+                    React.createElement("i", { style: { width: `${played * 100}%` } }))),
+            React.createElement("span", { className: "sp-pill-time" }, playing || at > clip.trimStart + 0.05 ? cur : total),
+            React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
+    }
+    const seekAt = (x) => { const r = wave.current?.getBoundingClientRect(); if (!r || !known)
+        return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
     return React.createElement("div", { className: `sp sp-${variant} ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
         React.createElement("button", { type: "button", className: "sp-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
         React.createElement("div", { className: "sp-body" },
-            variant === 'media' && React.createElement("div", { className: "sp-top" },
-                React.createElement("span", { className: "sp-name", title: tip !== name ? tip : undefined }, failed ? 'This sound could not play' : name),
-                React.createElement("span", { className: "sp-time" },
-                    cur,
-                    " / ",
-                    total)),
             React.createElement("div", { ref: wave, className: "sp-wave", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(played * 100), tabIndex: known ? 0 : -1, onPointerDown: e => { if (!known)
                     return; e.preventDefault(); try {
                     e.currentTarget.setPointerCapture(e.pointerId);
@@ -30491,7 +30513,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
                     e.preventDefault();
                     pb.toggle();
                 } } }, heights.map((h, i) => React.createElement("i", { key: i, "data-on": i / bars <= played || undefined, style: { height: `${Math.round(14 + h * 86)}%` } })))),
-        variant !== 'media' && React.createElement("span", { className: "sp-time" }, failed ? '!' : known ? (playing || at > clip.trimStart + 0.1 ? cur : total) : ''),
+        React.createElement("span", { className: "sp-time" }, failed ? '!' : known ? (playing || at > clip.trimStart + 0.1 ? cur : total) : ''),
         React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
 }
 function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, onChange, onError, onClearError, title = 'Question sound', hint = 'Record, upload, or paste a link to an audio file', assetLayout, linkLabel = 'Link', uploadEmptyLabel = 'Upload' }) {

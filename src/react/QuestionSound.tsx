@@ -59,7 +59,7 @@ function useLiveLevels(levels:(bars:number)=>number[]|null,bars:number,on:boolea
 
 /* ───────── player ───────── */
 export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number}){
- const audio=useRef<HTMLAudioElement>(null),wave=useRef<HTMLDivElement>(null);
+ const audio=useRef<HTMLAudioElement>(null),wave=useRef<HTMLDivElement>(null),bar=useRef<HTMLDivElement>(null);
  const pb=useClipPlayback(audio,src,edit,{durationHint,analyser:variant==='overlay'});
  const {duration,at,playing,failed}=pb;
  const known=duration>0,clip=normalizeEdit(edit,duration),selLen=known?clip.trimEnd-clip.trimStart:0;
@@ -69,21 +69,36 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  const live=useLiveLevels(pb.levels,bars,playing&&variant==='overlay');
  const heights=live??peaks;
  const name=displayName||soundDisplayName(src),tip=fileTitle||name;
- const seekAt=(x:number)=>{const r=wave.current?.getBoundingClientRect();if(!r||!known)return;pb.seek(clip.trimStart+clamp((x-r.left)/r.width,0,1)*selLen);};
  if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
  const f=selLen>0&&selLen<10?fmtFine:fmtTime;
  const cur=known?f(Math.max(0,at-clip.trimStart)):'0:00',total=known?f(selLen):'–:––';
+ if(variant==='media'){
+  const seekAt=(x:number)=>{const r=bar.current?.getBoundingClientRect();if(!r||!known)return;pb.seek(clip.trimStart+clamp((x-r.left)/r.width,0,1)*selLen);};
+  return <div className={`sp sp-pill ${className}`.trim()} data-playing={playing||undefined} data-failed={failed||undefined}>
+   <button type="button" className="sp-pill-play" aria-label={playing?'Pause sound':label} onClick={pb.toggle}>{playing?<Pause size={16} fill="currentColor"/>:<Play size={16} fill="currentColor"/>}</button>
+   <div className="sp-pill-body">
+    <span className="sp-pill-name" title={tip!==name?tip:undefined}>{failed?'This sound could not play':name}</span>
+    <div ref={bar} className="sp-pill-bar" role="slider" aria-label="Seek" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(played*100)} tabIndex={known?0:-1}
+     onPointerDown={e=>{if(!known)return;e.preventDefault();try{e.currentTarget.setPointerCapture(e.pointerId);}catch{}seekAt(e.clientX);}} onPointerMove={e=>{if(e.buttons&1)seekAt(e.clientX);}}
+     onKeyDown={e=>{if(e.key==='ArrowLeft'){e.preventDefault();pb.seek(at-1);}else if(e.key==='ArrowRight'){e.preventDefault();pb.seek(at+1);}else if(e.key===' '){e.preventDefault();pb.toggle();}}}>
+     <i style={{width:`${played*100}%`}}/>
+    </div>
+   </div>
+   <span className="sp-pill-time">{playing||at>clip.trimStart+0.05?cur:total}</span>
+   <audio key={src} ref={audio} src={playbackSrc(src)} preload="metadata" onError={()=>{}}/>
+  </div>;
+ }
+ const seekAt=(x:number)=>{const r=wave.current?.getBoundingClientRect();if(!r||!known)return;pb.seek(clip.trimStart+clamp((x-r.left)/r.width,0,1)*selLen);};
  return <div className={`sp sp-${variant} ${className}`.trim()} data-playing={playing||undefined} data-failed={failed||undefined}>
   <button type="button" className="sp-play" aria-label={playing?'Pause sound':label} onClick={pb.toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
   <div className="sp-body">
-   {variant==='media'&&<div className="sp-top"><span className="sp-name" title={tip!==name?tip:undefined}>{failed?'This sound could not play':name}</span><span className="sp-time">{cur} / {total}</span></div>}
    <div ref={wave} className="sp-wave" role="slider" aria-label="Seek" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(played*100)} tabIndex={known?0:-1}
     onPointerDown={e=>{if(!known)return;e.preventDefault();try{e.currentTarget.setPointerCapture(e.pointerId);}catch{}seekAt(e.clientX);}} onPointerMove={e=>{if(e.buttons&1)seekAt(e.clientX);}}
     onKeyDown={e=>{if(e.key==='ArrowLeft'){e.preventDefault();pb.seek(at-1);}else if(e.key==='ArrowRight'){e.preventDefault();pb.seek(at+1);}else if(e.key===' '){e.preventDefault();pb.toggle();}}}>
     {heights.map((h,i)=><i key={i} data-on={i/bars<=played||undefined} style={{height:`${Math.round(14+h*86)}%`}}/>)}
    </div>
   </div>
-  {variant!=='media'&&<span className="sp-time">{failed?'!':known?(playing||at>clip.trimStart+0.1?cur:total):''}</span>}
+  <span className="sp-time">{failed?'!':known?(playing||at>clip.trimStart+0.1?cur:total):''}</span>
   <audio key={src} ref={audio} src={playbackSrc(src)} preload="metadata" onError={()=>{}}/>
  </div>;
 }

@@ -1974,6 +1974,18 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .sp-wave i{flex:1 1 0;min-width:1px;min-height:3px;border-radius:99px;background:var(--mc-wave-dim);transition:height .08s}
 .sp-wave i[data-on]{background:var(--primary)}
 .sp[data-failed] .sp-name,.sp[data-failed] .sp-time{color:var(--error)}
+.sp-pill{display:flex;align-items:center;gap:10px;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:6px 14px 6px 6px;border:1px solid var(--border);border-radius:99px;background:var(--surface);font-family:var(--font-family-base);color:var(--foreground)}
+.sp-pill-play{display:grid;place-items:center;flex:none;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:var(--primary);color:var(--primary-foreground);cursor:pointer}
+.sp-pill-play:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.sp-pill-body{flex:1;min-width:0;display:grid;gap:5px}
+.sp-pill-name{font-size:12px;font-weight:550;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-pill-bar{position:relative;height:4px;border-radius:99px;background:var(--muted);cursor:pointer;touch-action:none}
+.sp-pill-bar::before{content:"";position:absolute;inset:-8px 0}
+.sp-pill-bar i{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--primary);transition:width .1s linear}
+.sp-pill-bar:focus-visible{outline:2px solid var(--primary);outline-offset:6px}
+.sp-pill-time{flex:none;font-size:11.5px;color:var(--muted-foreground);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sp-pill[data-playing] .sp-pill-time{color:var(--foreground)}
+.sp-pill[data-failed] .sp-pill-name{color:var(--error)}
 .sp-default{border-radius:99px;max-width:440px}.sp-default .sp-play{border-radius:50%}
 .sp-overlay{border:0;background:rgba(12,12,16,.72);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);box-shadow:0 8px 24px #0003}
 .sp-overlay .sp-play{width:34px;height:34px}.sp-overlay .sp-wave i{background:rgba(255,255,255,.35)}.sp-overlay .sp-wave i[data-on]{background:var(--primary)}.sp-overlay .sp-time{color:#cfcfe0}
