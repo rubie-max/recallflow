@@ -239,7 +239,7 @@ html,body{overscroll-behavior-y:none}html{scroll-padding-bottom:calc(82px + env(
 .sound-player.is-overlay .sound-play{width:34px;height:34px;flex:none}
 .sound-player.is-overlay .sound-time{flex:none;font-size:11px;color:#cfcfe0}
 .sound-wave{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:0;height:22px;cursor:pointer}
-.sound-wave i{width:3px;flex:none;border-radius:2px;background:rgba(255,255,255,.42);align-self:center}
+.sound-wave i{width:3px;flex:none;border-radius:2px;background:rgba(255,255,255,.42);align-self:center;transition:height .08s ease-out}
 .sound-wave i[data-on]{background:var(--primary)}
 .sound-player:not(.is-overlay) .sound-wave i{background:var(--muted)}
 .sound-player:not(.is-overlay) .sound-wave i[data-on]{background:var(--primary)}

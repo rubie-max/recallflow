@@ -29617,6 +29617,81 @@ function soundDisplayName(src, stored) {
     return title ? formatSoundFileName(title) : '';
 }
 function normalizeSoundFileName(name) { const base = (name || '').replace(/\\/g, '/').split('/').pop()?.trim().replace(/[\x00-\x1f<>:"|?*]/g, '').replace(/\s+/g, ' ') || ''; return base.slice(0, 120); }
+async function waveformPeaks(src, bars) {
+    const playback = src.startsWith('https://') ? resolveMediaPlaybackSrc(src) : src;
+    const flat = () => Array.from({ length: bars }, () => 28);
+    if (!playback)
+        return flat();
+    try {
+        const res = await fetch(playback);
+        if (!res.ok)
+            return flat();
+        const ctx = new AudioContext();
+        try {
+            const buf = await ctx.decodeAudioData(await res.arrayBuffer());
+            const ch = buf.getChannelData(0), block = Math.max(1, Math.floor(ch.length / bars));
+            return Array.from({ length: bars }, (_, i) => { let sum = 0; for (let j = 0; j < block; j++)
+                sum += Math.abs(ch[i * block + j] ?? 0); return Math.round(18 + Math.min(78, sum / block * 520)); });
+        }
+        finally {
+            await ctx.close().catch(() => { });
+        }
+    }
+    catch {
+        return flat();
+    }
+}
+function useSoundWaveHeights(audio, src, bars, playing) {
+    const [peaks, setPeaks] = reactExports.useState(() => Array.from({ length: bars }, () => 28));
+    const [live, setLive] = reactExports.useState(null);
+    const graph = reactExports.useRef(null);
+    reactExports.useEffect(() => { let cancelled = false; setPeaks(Array.from({ length: bars }, () => 28)); void waveformPeaks(src, bars).then(p => { if (!cancelled)
+        setPeaks(p); }); return () => { cancelled = true; }; }, [src, bars]);
+    reactExports.useEffect(() => {
+        const el = audio.current;
+        if (!playing || !el) {
+            if (graph.current)
+                cancelAnimationFrame(graph.current.raf);
+            setLive(null);
+            return;
+        }
+        let cancelled = false;
+        const tick = () => {
+            if (cancelled || !graph.current)
+                return;
+            const data = new Uint8Array(graph.current.analyser.frequencyBinCount);
+            graph.current.analyser.getByteFrequencyData(data);
+            const step = Math.max(1, Math.floor(data.length / bars));
+            setLive(Array.from({ length: bars }, (_, i) => { let s = 0; for (let j = 0; j < step; j++)
+                s += data[i * step + j] ?? 0; return Math.round(18 + (s / step / 255) * 78); }));
+            graph.current.raf = requestAnimationFrame(tick);
+        };
+        void (async () => {
+            try {
+                if (!graph.current || graph.current.el !== el) {
+                    const ctx = new AudioContext();
+                    await ctx.resume();
+                    const analyser = ctx.createAnalyser();
+                    analyser.fftSize = 128;
+                    analyser.smoothingTimeConstant = .68;
+                    const node = ctx.createMediaElementSource(el);
+                    node.connect(analyser);
+                    analyser.connect(ctx.destination);
+                    graph.current = { el, ctx, analyser, raf: 0 };
+                }
+                else
+                    await graph.current.ctx.resume();
+                graph.current.raf = requestAnimationFrame(tick);
+            }
+            catch {
+                setLive(null);
+            }
+        })();
+        return () => { cancelled = true; if (graph.current)
+            cancelAnimationFrame(graph.current.raf); setLive(null); };
+    }, [playing, bars, audio, src]);
+    return live ?? peaks;
+}
 function probeAudioLink(url) {
     const playback = resolveMediaPlaybackSrc(resolveMediaLink(String(url || '').trim()));
     return new Promise(resolve => {
@@ -29638,6 +29713,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
     const known = Number.isFinite(length) && length > 0;
     const played = known ? (clip ? Math.max(0, Math.min(1, (at - clip.trimStart) / Math.max(0.05, clip.trimEnd - clip.trimStart))) : at / length) : (playing ? 1 : 0);
     const bars = variant === 'media' ? 40 : 30;
+    const waveHeights = useSoundWaveHeights(audio, src, bars, playing && variant === 'overlay');
     const name = displayName || soundDisplayName(src);
     const tip = fileTitle || name;
     function toggle() { const a = audio.current; if (!a)
@@ -29672,7 +29748,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
                     React.createElement("span", null, known ? time(clip ? Math.max(0, at - clip.trimStart) : at) : '0:00'),
                     React.createElement("span", null, durationLabel)))
             : variant === 'overlay'
-                ? React.createElement("span", { className: "sound-wave", onClick: seek, role: "presentation" }, Array.from({ length: bars }, (_, i) => React.createElement("i", { key: i, "data-on": i / bars <= played || undefined, style: { height: `${30 + ((i * 37) % 70)}%` } })))
+                ? React.createElement("span", { className: "sound-wave", onClick: seek, role: "presentation" }, Array.from({ length: bars }, (_, i) => React.createElement("i", { key: i, "data-on": i / bars <= played || undefined, style: { height: `${waveHeights[i] ?? 28}%` } })))
                 : React.createElement("span", { className: "sound-body" },
                     React.createElement("span", { className: "sound-title" }, failed ? 'This sound could not play' : playing ? 'Playing' : 'Listen'),
                     React.createElement("span", { className: "sound-bar", onClick: seek },
@@ -30889,6 +30965,18 @@ function ChoiceImageButton({ choice, image, onPick, onLink, onRemove, onView, on
                 }
             } } }));
 }
+function PreviewQuestionMedia({ draft }) {
+    const hasImg = !!draft.image && draft.type !== 'image_tap', audio = draft.audio;
+    const soundProps = { edit: draft.audioEdit, displayName: audio ? soundDisplayName(audio, draft.audioName) : undefined, fileTitle: audio ? soundFileTitle(audio, draft.audioName) : undefined, label: 'Play question sound' };
+    if (hasImg && audio)
+        return React.createElement("div", { className: "quiz-media-stack" },
+            React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: draft.image, alt: "Question illustration", label: "Enlarge question image" }),
+            React.createElement(SoundPlayer, { src: audio, ...soundProps, variant: "overlay", className: "quiz-sound-overlay" }));
+    return React.createElement(React.Fragment, null,
+        hasImg && React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: draft.image, alt: "Question illustration", label: "Enlarge question image" }),
+        audio && React.createElement(SoundPlayer, { src: audio, ...soundProps, className: "quiz-sound" }),
+        draft.video && React.createElement(VideoPlayer, { src: draft.video, className: "is-compact quiz-video", label: "Preview question video" }));
+}
 function FlashcardEditorPreview({ draft }) {
     const [showBack, setShowBack] = reactExports.useState(false);
     return React.createElement("div", { className: "editor-question-preview" },
@@ -30933,11 +31021,9 @@ function QuestionTypePreview({ draft, choices, pairs, steps }) {
     if (extraTypes.includes(type))
         return React.createElement(ExtraPreview, { draft: draft });
     const matchOptions = seededShuffle(pairs.map((p) => p[1]), draft.prompt + '|m');
-    return React.createElement("div", { className: "editor-question-preview" },
+    return React.createElement("div", { className: "editor-question-preview editor-quiz-preview" },
         React.createElement("small", null, typeLabel(type)),
-        draft.image && React.createElement("img", { src: draft.image, alt: "Question preview" }),
-        draft.video && React.createElement(VideoPlayer, { src: draft.video, className: "is-compact", label: "Preview question video" }),
-        draft.audio && React.createElement(SoundPlayer, { src: draft.audio }),
+        React.createElement(PreviewQuestionMedia, { draft: draft }),
         React.createElement("h3", null, draft.prompt || 'Your question appears here'),
         ['single_choice', 'true_false', 'multi_select'].includes(type) && React.createElement("div", { className: "editor-preview-options" },
             options.map((x, i) => { const picked = type === 'multi_select' ? value.includes(x) : value === x, isCorrect = type === 'multi_select' ? answerList.includes(x) : draft.answer === x; return React.createElement("button", { type: "button", key: i, className: `editor-preview-option${picked ? ' is-selected' : ''}${revealed && isCorrect ? ' is-correct' : ''}${revealed && picked && !isCorrect ? ' is-wrong' : ''}`, "aria-pressed": picked, onClick: () => !revealed && setValue((old) => type === 'multi_select' ? (old.includes(x) ? old.filter((v) => v !== x) : [...old, x]) : x) },
@@ -31025,11 +31111,9 @@ function ExtraPreview({ draft }) {
     catch {
         setResult(false);
     } };
-    return React.createElement("div", { className: "editor-question-preview" },
+    return React.createElement("div", { className: "editor-question-preview editor-quiz-preview" },
         React.createElement("small", null, typeLabel(item.type)),
-        draft.image && item.type !== 'image_tap' && React.createElement("img", { src: draft.image, alt: "Question preview" }),
-        draft.video && React.createElement(VideoPlayer, { src: draft.video, className: "is-compact", label: "Preview question video" }),
-        draft.audio && React.createElement(SoundPlayer, { src: draft.audio }),
+        React.createElement(PreviewQuestionMedia, { draft: draft }),
         React.createElement("h3", null, draft.prompt || 'Your question appears here'),
         React.createElement(ExtraAnswer, { key: round, item: item, disabled: result !== null, onGrade: grade }),
         result !== null && React.createElement("div", { className: "editor-preview-actions" },
@@ -31411,7 +31495,7 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
                 allTypes.length > 1 && React.createElement("div", { className: "editor-variant-tabs", role: "tablist", "aria-label": "Preview type" }, allTypes.map((v, i) => React.createElement("button", { type: "button", role: "tab", key: i, "aria-selected": active === i, onClick: () => setVi(i) },
                     React.createElement("span", null, i + 1),
                     typeLabel(v.type)))),
-                React.createElement(QuestionTypePreview, { key: active, draft: { ...draft, ...d, image: draft.image, answerImage: draft.answerImage, audio: draft.audio, video: draft.video, answerAudio: draft.answerAudio, answerVideo: draft.answerVideo }, choices: choices, pairs: pairs, steps: steps }))),
+                React.createElement(QuestionTypePreview, { key: active, draft: { ...draft, ...d, image: draft.image, answerImage: draft.answerImage, audio: draft.audio, audioEdit: draft.audioEdit, audioName: draft.audioName, video: draft.video, answerAudio: draft.answerAudio, answerVideo: draft.answerVideo }, choices: choices, pairs: pairs, steps: steps }))),
         React.createElement(ImageLightbox, { src: zoom, onClose: () => setZoom(null) }),
         editImg && React.createElement(ImageEditor, { src: editImg.src, onCancel: closeEditor, onSave: (image) => { place(image, editImg.key, editImg.target); closeEditor(); } }),
         status && !busy && /^Saved successfully|Question saved|preparing/i.test(status) && React.createElement("p", { className: "editor-save-message", id: statusId, role: "status", "aria-live": "polite" },

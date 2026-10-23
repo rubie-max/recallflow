@@ -82,6 +82,55 @@ export function soundDisplayName(src:string,stored?:string){
  return title?formatSoundFileName(title):'';
 }
 export function normalizeSoundFileName(name:string){const base=(name||'').replace(/\\/g,'/').split('/').pop()?.trim().replace(/[\x00-\x1f<>:"|?*]/g,'').replace(/\s+/g,' ')||'';return base.slice(0,120);}
+async function waveformPeaks(src:string,bars:number){
+ const playback=src.startsWith('https://')?resolveMediaPlaybackSrc(src):src;
+ const flat=()=>Array.from({length:bars},()=>28);
+ if(!playback)return flat();
+ try{
+  const res=await fetch(playback);
+  if(!res.ok)return flat();
+  const ctx=new AudioContext();
+  try{
+   const buf=await ctx.decodeAudioData(await res.arrayBuffer());
+   const ch=buf.getChannelData(0),block=Math.max(1,Math.floor(ch.length/bars));
+   return Array.from({length:bars},(_,i)=>{let sum=0;for(let j=0;j<block;j++)sum+=Math.abs(ch[i*block+j]??0);return Math.round(18+Math.min(78,sum/block*520));});
+  }finally{await ctx.close().catch(()=>{});}
+ }catch{return flat();}
+}
+
+function useSoundWaveHeights(audio:React.RefObject<HTMLAudioElement|null>,src:string,bars:number,playing:boolean){
+ const [peaks,setPeaks]=useState<number[]>(()=>Array.from({length:bars},()=>28));
+ const [live,setLive]=useState<number[]|null>(null);
+ const graph=useRef<{el:HTMLAudioElement;ctx:AudioContext;analyser:AnalyserNode;raf:number}|null>(null);
+ useEffect(()=>{let cancelled=false;setPeaks(Array.from({length:bars},()=>28));void waveformPeaks(src,bars).then(p=>{if(!cancelled)setPeaks(p);});return()=>{cancelled=true;};},[src,bars]);
+ useEffect(()=>{
+  const el=audio.current;
+  if(!playing||!el){if(graph.current)cancelAnimationFrame(graph.current.raf);setLive(null);return;}
+  let cancelled=false;
+  const tick=()=>{
+   if(cancelled||!graph.current)return;
+   const data=new Uint8Array(graph.current.analyser.frequencyBinCount);
+   graph.current.analyser.getByteFrequencyData(data);
+   const step=Math.max(1,Math.floor(data.length/bars));
+   setLive(Array.from({length:bars},(_,i)=>{let s=0;for(let j=0;j<step;j++)s+=data[i*step+j]??0;return Math.round(18+(s/step/255)*78);}));
+   graph.current.raf=requestAnimationFrame(tick);
+  };
+  void (async()=>{
+   try{
+    if(!graph.current||graph.current.el!==el){
+     const ctx=new AudioContext();await ctx.resume();
+     const analyser=ctx.createAnalyser();analyser.fftSize=128;analyser.smoothingTimeConstant=.68;
+     const node=ctx.createMediaElementSource(el);node.connect(analyser);analyser.connect(ctx.destination);
+     graph.current={el,ctx,analyser,raf:0};
+    }else await graph.current.ctx.resume();
+    graph.current!.raf=requestAnimationFrame(tick);
+   }catch{setLive(null);}
+  })();
+  return()=>{cancelled=true;if(graph.current)cancelAnimationFrame(graph.current.raf);setLive(null);};
+ },[playing,bars,audio,src]);
+ return live??peaks;
+}
+
 export function probeAudioLink(url:string){
  const playback=resolveMediaPlaybackSrc(resolveMediaLink(String(url||'').trim()));
  return new Promise<boolean>(resolve=>{
@@ -101,6 +150,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  const known=Number.isFinite(length)&&length>0;
  const played=known?(clip?Math.max(0,Math.min(1,(at-clip.trimStart)/Math.max(0.05,clip.trimEnd-clip.trimStart))):at/length):(playing?1:0);
  const bars=variant==='media'?40:30;
+ const waveHeights=useSoundWaveHeights(audio,src,bars,playing&&variant==='overlay');
  const name=displayName||soundDisplayName(src);
  const tip=fileTitle||name;
  function toggle(){const a=audio.current;if(!a)return;if(a.paused){setFailed(false);if(clip&&a.currentTime<clip.trimStart)a.currentTime=clip.trimStart;a.play().catch(()=>setFailed(true));}else a.pause();}
@@ -113,7 +163,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
   {variant==='media'
    ? <span className="sound-media-body"><span className="sound-filename" title={failed||tip===name?undefined:tip}>{failed?'Could not play':name}</span><span className="sound-progress" onClick={seek} role="presentation" aria-hidden="true"><i style={{width:`${played*100}%`}}/></span><span className="sound-times" aria-hidden="true"><span>{known?time(clip?Math.max(0,at-clip.trimStart):at):'0:00'}</span><span>{durationLabel}</span></span></span>
    :variant==='overlay'
-   ? <span className="sound-wave" onClick={seek} role="presentation">{Array.from({length:bars},(_,i)=><i key={i} data-on={i/bars<=played||undefined} style={{height:`${30+((i*37)%70)}%`}}/>)}</span>
+   ? <span className="sound-wave" onClick={seek} role="presentation">{Array.from({length:bars},(_,i)=><i key={i} data-on={i/bars<=played||undefined} style={{height:`${waveHeights[i]??28}%`}}/>)}</span>
    : <span className="sound-body"><span className="sound-title">{failed?'This sound could not play':playing?'Playing':'Listen'}</span><span className="sound-bar" onClick={seek}><i style={{width:`${known?at/length*100:playing?100:0}%`}} data-live={!known&&playing||undefined}/></span></span>}
   {variant!=='media'&&<span className="sound-time">{known?time(playing||at?at:length):at?time(at):''}</span>}
   <audio ref={audio} src={src.startsWith('https://')?resolveMediaPlaybackSrc(src):src} preload="metadata" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={e=>{setPlaying(false);const start=clip?.trimStart??0;e.currentTarget.currentTime=start;setAt(start);}} onTimeUpdate={onTime} onLoadedMetadata={e=>setLength(e.currentTarget.duration)} onDurationChange={e=>setLength(e.currentTarget.duration)} onError={()=>setFailed(true)}/>
