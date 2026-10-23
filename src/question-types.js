@@ -86,9 +86,29 @@ export function hotspotHit(spot,given){return !!spot&&!!given&&Number.isFinite(g
 // Sounds are stored inside the question, so they sync and back up with it; keep each clip small.
 export const MAX_AUDIO_CHARS=700000;
 export const MAX_VIDEO_CHARS=3500000;
+export const MAX_AUDIO_SECONDS=60;
+export function dataUrlLength(bytes,mime='audio/webm'){return Math.ceil(bytes/3)*4+String(mime).length+13;}
+export function maxBytesForChars(chars){return Math.floor((chars-64)/4)*3;}
+export function formatBytes(n){if(!Number.isFinite(n)||n<0)return '';if(n<1024)return `${n} B`;if(n<1048576)return `${(n/1024).toFixed(n<10240?1:0)} KB`;return `${(n/1048576).toFixed(1)} MB`;}
+export function saneDuration(d){return Number.isFinite(d)&&d>0&&d<86400?d:0;}
+export function blobToDataUrl(blob,onProgress){
+ return new Promise((resolve,reject)=>{
+  const r=new FileReader();
+  r.onprogress=e=>{if(onProgress&&e.lengthComputable)onProgress(e.loaded/e.total);};
+  r.onload=()=>resolve(String(r.result).replace(/^data:([^,]*),/,(_,head)=>`data:${head.replace(/\s+/g,'')},`));
+  r.onerror=()=>reject(new Error('Could not read this file.'));
+  r.readAsDataURL(blob);
+ });
+}
 export function audioSafe(x){return typeof x==='string'&&((/^data:audio\/[a-z0-9.+-]+(?:;codecs=[a-z0-9.,"=-]+)?;base64,[A-Za-z0-9+/=]+$/i.test(x)&&x.length<=MAX_AUDIO_CHARS)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048));}
-export function videoSafe(x){return typeof x==='string'&&((/^data:video\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]+$/i.test(x)&&x.length<=MAX_VIDEO_CHARS)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048));}
-export function mediaEditSafe(x){if(x===undefined||x===null)return true;if(typeof x!=='object')return false;const {trimStart,trimEnd,muted}=x;return typeof trimStart==='number'&&typeof trimEnd==='number'&&typeof muted==='boolean'&&trimStart>=0&&trimEnd>trimStart&&Number.isFinite(trimStart+trimEnd);}
+export function videoSafe(x){return typeof x==='string'&&((/^data:video\/[a-z0-9.+-]+(?:;codecs=[a-z0-9.,"=-]+)?;base64,[A-Za-z0-9+/=]+$/i.test(x)&&x.length<=MAX_VIDEO_CHARS)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048));}
+export function mediaEditSafe(x){
+ if(x===undefined||x===null)return true;
+ if(typeof x!=='object')return false;
+ const {trimStart,trimEnd,muted,volume,fadeIn,fadeOut,gain}=x;
+ const opt=(v,min,max)=>v===undefined||(typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max);
+ return typeof trimStart==='number'&&typeof trimEnd==='number'&&typeof muted==='boolean'&&Number.isFinite(trimStart)&&Number.isFinite(trimEnd)&&trimStart>=0&&trimEnd>trimStart&&opt(volume,0,1)&&opt(fadeIn,0,600)&&opt(fadeOut,0,600)&&opt(gain,0.1,8);
+}
 
 const trimmed=x=>typeof x==='string'?x.trim():'';
 function validateExtra(type,input,prompt,answer){

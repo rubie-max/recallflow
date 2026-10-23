@@ -17476,7 +17476,7 @@ const createLucideIcon = (iconName, iconNode) => {
  */
 
 
-const __iconNode$20 = [
+const __iconNode$23 = [
   [
     "path",
     {
@@ -17485,7 +17485,52 @@ const __iconNode$20 = [
     }
   ]
 ];
-const Activity = createLucideIcon("Activity", __iconNode$20);
+const Activity = createLucideIcon("Activity", __iconNode$23);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$22 = [
+  ["path", { d: "M12 5v14", key: "s699le" }],
+  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+];
+const ArrowDown = createLucideIcon("ArrowDown", __iconNode$22);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$21 = [
+  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
+  ["path", { d: "M4 7h16", key: "6tx8e3" }],
+  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
+  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+];
+const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$21);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$20 = [
+  ["path", { d: "M3 19V5", key: "rwsyhb" }],
+  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
+  ["path", { d: "M7 12h14", key: "uoisry" }]
+];
+const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$20);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17496,10 +17541,10 @@ const Activity = createLucideIcon("Activity", __iconNode$20);
 
 
 const __iconNode$1$ = [
-  ["path", { d: "M12 5v14", key: "s699le" }],
-  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
+  ["path", { d: "M19 12H5", key: "x3x0zl" }]
 ];
-const ArrowDown = createLucideIcon("ArrowDown", __iconNode$1$);
+const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$1$);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17510,12 +17555,11 @@ const ArrowDown = createLucideIcon("ArrowDown", __iconNode$1$);
 
 
 const __iconNode$1_ = [
-  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
-  ["path", { d: "M4 7h16", key: "6tx8e3" }],
-  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
-  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+  ["path", { d: "M17 12H3", key: "8awo09" }],
+  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
+  ["path", { d: "M21 5v14", key: "nzette" }]
 ];
-const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$1_);
+const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$1_);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17526,11 +17570,10 @@ const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$1_);
 
 
 const __iconNode$1Z = [
-  ["path", { d: "M3 19V5", key: "rwsyhb" }],
-  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
-  ["path", { d: "M7 12h14", key: "uoisry" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$1Z);
+const ArrowRight = createLucideIcon("ArrowRight", __iconNode$1Z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17541,10 +17584,12 @@ const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$1Z);
 
 
 const __iconNode$1Y = [
-  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
-  ["path", { d: "M19 12H5", key: "x3x0zl" }]
+  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
+  ["path", { d: "M17 20V4", key: "1ejh1v" }],
+  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
+  ["path", { d: "M7 4v16", key: "1glfcx" }]
 ];
-const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$1Y);
+const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$1Y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17555,11 +17600,10 @@ const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$1Y);
 
 
 const __iconNode$1X = [
-  ["path", { d: "M17 12H3", key: "8awo09" }],
-  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
-  ["path", { d: "M21 5v14", key: "nzette" }]
+  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
+  ["path", { d: "M12 19V5", key: "x0mq9r" }]
 ];
-const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$1X);
+const ArrowUp = createLucideIcon("ArrowUp", __iconNode$1X);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17570,10 +17614,14 @@ const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$1X);
 
 
 const __iconNode$1W = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
+  ["path", { d: "M2 10v3", key: "1fnikh" }],
+  ["path", { d: "M6 6v11", key: "11sgs0" }],
+  ["path", { d: "M10 3v18", key: "yhl04a" }],
+  ["path", { d: "M14 8v7", key: "3a1oy3" }],
+  ["path", { d: "M18 5v13", key: "123xd1" }],
+  ["path", { d: "M22 10v3", key: "154ddg" }]
 ];
-const ArrowRight = createLucideIcon("ArrowRight", __iconNode$1W);
+const AudioLines = createLucideIcon("AudioLines", __iconNode$1W);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17584,12 +17632,16 @@ const ArrowRight = createLucideIcon("ArrowRight", __iconNode$1W);
 
 
 const __iconNode$1V = [
-  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
-  ["path", { d: "M17 20V4", key: "1ejh1v" }],
-  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
-  ["path", { d: "M7 4v16", key: "1glfcx" }]
+  ["path", { d: "M12 7v14", key: "1akyts" }],
+  [
+    "path",
+    {
+      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+      key: "ruj8y"
+    }
+  ]
 ];
-const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$1V);
+const BookOpen = createLucideIcon("BookOpen", __iconNode$1V);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17600,10 +17652,9 @@ const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$1V);
 
 
 const __iconNode$1U = [
-  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
-  ["path", { d: "M12 19V5", key: "x0mq9r" }]
+  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
 ];
-const ArrowUp = createLucideIcon("ArrowUp", __iconNode$1U);
+const Bookmark = createLucideIcon("Bookmark", __iconNode$1U);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17614,14 +17665,10 @@ const ArrowUp = createLucideIcon("ArrowUp", __iconNode$1U);
 
 
 const __iconNode$1T = [
-  ["path", { d: "M2 10v3", key: "1fnikh" }],
-  ["path", { d: "M6 6v11", key: "11sgs0" }],
-  ["path", { d: "M10 3v18", key: "yhl04a" }],
-  ["path", { d: "M14 8v7", key: "3a1oy3" }],
-  ["path", { d: "M18 5v13", key: "123xd1" }],
-  ["path", { d: "M22 10v3", key: "154ddg" }]
+  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
+  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
 ];
-const AudioLines = createLucideIcon("AudioLines", __iconNode$1T);
+const Brackets = createLucideIcon("Brackets", __iconNode$1T);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17632,53 +17679,6 @@ const AudioLines = createLucideIcon("AudioLines", __iconNode$1T);
 
 
 const __iconNode$1S = [
-  ["path", { d: "M12 7v14", key: "1akyts" }],
-  [
-    "path",
-    {
-      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
-      key: "ruj8y"
-    }
-  ]
-];
-const BookOpen = createLucideIcon("BookOpen", __iconNode$1S);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1R = [
-  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
-];
-const Bookmark = createLucideIcon("Bookmark", __iconNode$1R);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1Q = [
-  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
-  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
-];
-const Brackets = createLucideIcon("Brackets", __iconNode$1Q);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1P = [
   [
     "path",
     {
@@ -17701,7 +17701,7 @@ const __iconNode$1P = [
   ["path", { d: "M6 18a4 4 0 0 1-1.967-.516", key: "2e4loj" }],
   ["path", { d: "M19.967 17.484A4 4 0 0 1 18 18", key: "159ez6" }]
 ];
-const Brain = createLucideIcon("Brain", __iconNode$1P);
+const Brain = createLucideIcon("Brain", __iconNode$1S);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17711,7 +17711,7 @@ const Brain = createLucideIcon("Brain", __iconNode$1P);
  */
 
 
-const __iconNode$1O = [
+const __iconNode$1R = [
   ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["path", { d: "M8 2v4", key: "1cmpym" }],
@@ -17719,7 +17719,7 @@ const __iconNode$1O = [
   ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
   ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
 ];
-const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1O);
+const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1R);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17729,7 +17729,7 @@ const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1O);
  */
 
 
-const __iconNode$1N = [
+const __iconNode$1Q = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -17741,7 +17741,7 @@ const __iconNode$1N = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1N);
+const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1Q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17751,7 +17751,7 @@ const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1N);
  */
 
 
-const __iconNode$1M = [
+const __iconNode$1P = [
   [
     "path",
     {
@@ -17761,7 +17761,7 @@ const __iconNode$1M = [
   ],
   ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
 ];
-const Camera = createLucideIcon("Camera", __iconNode$1M);
+const Camera = createLucideIcon("Camera", __iconNode$1P);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17771,12 +17771,12 @@ const Camera = createLucideIcon("Camera", __iconNode$1M);
  */
 
 
-const __iconNode$1L = [
+const __iconNode$1O = [
   ["line", { x1: "12", x2: "12", y1: "20", y2: "10", key: "1vz5eb" }],
   ["line", { x1: "18", x2: "18", y1: "20", y2: "4", key: "cun8e5" }],
   ["line", { x1: "6", x2: "6", y1: "20", y2: "16", key: "hq0ia6" }]
 ];
-const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1L);
+const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1O);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17786,8 +17786,8 @@ const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasin
  */
 
 
-const __iconNode$1K = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("Check", __iconNode$1K);
+const __iconNode$1N = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("Check", __iconNode$1N);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17797,8 +17797,8 @@ const Check = createLucideIcon("Check", __iconNode$1K);
  */
 
 
-const __iconNode$1J = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1J);
+const __iconNode$1M = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1M);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17808,8 +17808,8 @@ const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1J);
  */
 
 
-const __iconNode$1I = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1I);
+const __iconNode$1L = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1L);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17819,8 +17819,51 @@ const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1I);
  */
 
 
-const __iconNode$1H = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1H);
+const __iconNode$1K = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1K);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1J = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1J);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1I = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+];
+const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1I);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1H = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
+];
+const CircleDot = createLucideIcon("CircleDot", __iconNode$1H);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17832,10 +17875,10 @@ const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1H);
 
 const __iconNode$1G = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1G);
+const CircleX = createLucideIcon("CircleX", __iconNode$1G);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17846,49 +17889,6 @@ const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1G);
 
 
 const __iconNode$1F = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
-];
-const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1F);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1E = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
-];
-const CircleDot = createLucideIcon("CircleDot", __iconNode$1E);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1D = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
-];
-const CircleX = createLucideIcon("CircleX", __iconNode$1D);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1C = [
   [
     "path",
     { d: "M15 2H9a1 1 0 0 0-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z", key: "1pp7kr" }
@@ -17902,7 +17902,53 @@ const __iconNode$1C = [
   ],
   ["path", { d: "m17 10 4 4-4 4", key: "vp2hj1" }]
 ];
-const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1C);
+const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1F);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1E = [
+  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
+  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
+  [
+    "path",
+    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
+  ]
+];
+const CloudOff = createLucideIcon("CloudOff", __iconNode$1E);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1D = [
+  ["path", { d: "M12 13v8", key: "1l5pq0" }],
+  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
+  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
+];
+const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1D);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1C = [
+  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
+];
+const Cloud = createLucideIcon("Cloud", __iconNode$1C);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17913,14 +17959,10 @@ const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1C);
 
 
 const __iconNode$1B = [
-  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
-  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
-  [
-    "path",
-    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
-  ]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
 ];
-const CloudOff = createLucideIcon("CloudOff", __iconNode$1B);
+const Contrast = createLucideIcon("Contrast", __iconNode$1B);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17931,11 +17973,11 @@ const CloudOff = createLucideIcon("CloudOff", __iconNode$1B);
 
 
 const __iconNode$1A = [
-  ["path", { d: "M12 13v8", key: "1l5pq0" }],
-  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
-  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
+  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1A);
+const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1A);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17946,9 +17988,10 @@ const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1A);
 
 
 const __iconNode$1z = [
-  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Cloud = createLucideIcon("Cloud", __iconNode$1z);
+const Copy = createLucideIcon("Copy", __iconNode$1z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17959,10 +18002,10 @@ const Cloud = createLucideIcon("Cloud", __iconNode$1z);
 
 
 const __iconNode$1y = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
+  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
+  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
 ];
-const Contrast = createLucideIcon("Contrast", __iconNode$1y);
+const Crop = createLucideIcon("Crop", __iconNode$1y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17973,11 +18016,13 @@ const Contrast = createLucideIcon("Contrast", __iconNode$1y);
 
 
 const __iconNode$1x = [
-  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
+  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
+  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
+  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
 ];
-const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1x);
+const Crosshair = createLucideIcon("Crosshair", __iconNode$1x);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17988,10 +18033,11 @@ const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1x);
 
 
 const __iconNode$1w = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
 ];
-const Copy = createLucideIcon("Copy", __iconNode$1w);
+const Database = createLucideIcon("Database", __iconNode$1w);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18002,52 +18048,6 @@ const Copy = createLucideIcon("Copy", __iconNode$1w);
 
 
 const __iconNode$1v = [
-  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
-  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
-];
-const Crop = createLucideIcon("Crop", __iconNode$1v);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1u = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
-  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
-  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
-  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
-];
-const Crosshair = createLucideIcon("Crosshair", __iconNode$1u);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1t = [
-  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
-  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
-  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
-];
-const Database = createLucideIcon("Database", __iconNode$1t);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1s = [
   ["path", { d: "M13 4h3a2 2 0 0 1 2 2v14", key: "hrm0s9" }],
   ["path", { d: "M2 20h3", key: "1gaodv" }],
   ["path", { d: "M13 20h9", key: "s90cdi" }],
@@ -18060,7 +18060,56 @@ const __iconNode$1s = [
     }
   ]
 ];
-const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1s);
+const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1v);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1u = [
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
+  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+];
+const Download = createLucideIcon("Download", __iconNode$1u);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1t = [
+  [
+    "path",
+    {
+      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
+      key: "c7niix"
+    }
+  ]
+];
+const Droplet = createLucideIcon("Droplet", __iconNode$1t);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1s = [
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
+  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
+];
+const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1s);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18071,11 +18120,16 @@ const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1s);
 
 
 const __iconNode$1r = [
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
-  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+  ["path", { d: "m15 15 6 6", key: "1s409w" }],
+  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
+  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
+  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
+  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
+  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
+  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
+  ["path", { d: "M9 9 3 3", key: "v551iv" }]
 ];
-const Download = createLucideIcon("Download", __iconNode$1r);
+const Expand = createLucideIcon("Expand", __iconNode$1r);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18086,15 +18140,11 @@ const Download = createLucideIcon("Download", __iconNode$1r);
 
 
 const __iconNode$1q = [
-  [
-    "path",
-    {
-      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
-      key: "c7niix"
-    }
-  ]
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
 ];
-const Droplet = createLucideIcon("Droplet", __iconNode$1q);
+const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18105,41 +18155,6 @@ const Droplet = createLucideIcon("Droplet", __iconNode$1q);
 
 
 const __iconNode$1p = [
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
-  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
-  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
-];
-const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1p);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1o = [
-  ["path", { d: "m15 15 6 6", key: "1s409w" }],
-  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
-  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
-  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
-  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
-  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
-  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
-  ["path", { d: "M9 9 3 3", key: "v551iv" }]
-];
-const Expand = createLucideIcon("Expand", __iconNode$1o);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1n = [
   [
     "path",
     {
@@ -18157,7 +18172,41 @@ const __iconNode$1n = [
   ],
   ["path", { d: "m2 2 20 20", key: "1ooewy" }]
 ];
-const EyeOff = createLucideIcon("EyeOff", __iconNode$1n);
+const EyeOff = createLucideIcon("EyeOff", __iconNode$1p);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1o = [
+  [
+    "path",
+    {
+      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
+      key: "1nclc0"
+    }
+  ],
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+];
+const Eye = createLucideIcon("Eye", __iconNode$1o);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1n = [
+  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
+  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
+];
+const FastForward = createLucideIcon("FastForward", __iconNode$1n);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18168,40 +18217,6 @@ const EyeOff = createLucideIcon("EyeOff", __iconNode$1n);
 
 
 const __iconNode$1m = [
-  [
-    "path",
-    {
-      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
-      key: "1nclc0"
-    }
-  ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
-];
-const Eye = createLucideIcon("Eye", __iconNode$1m);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1l = [
-  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
-  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
-];
-const FastForward = createLucideIcon("FastForward", __iconNode$1l);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1k = [
   ["path", { d: "M10 12v-1", key: "v7bkov" }],
   ["path", { d: "M10 18v-2", key: "1cjy8d" }],
   ["path", { d: "M10 7V6", key: "dljcrl" }],
@@ -18212,7 +18227,45 @@ const __iconNode$1k = [
   ],
   ["circle", { cx: "10", cy: "20", r: "2", key: "1xzdoj" }]
 ];
-const FileArchive = createLucideIcon("FileArchive", __iconNode$1k);
+const FileArchive = createLucideIcon("FileArchive", __iconNode$1m);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1l = [
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  ["path", { d: "M12 18v-6", key: "17g6i2" }],
+  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+];
+const FileDown = createLucideIcon("FileDown", __iconNode$1l);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1k = [
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  [
+    "path",
+    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
+  ],
+  [
+    "path",
+    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
+  ]
+];
+const FileJson = createLucideIcon("FileJson", __iconNode$1k);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18225,10 +18278,12 @@ const FileArchive = createLucideIcon("FileArchive", __iconNode$1k);
 const __iconNode$1j = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 18v-6", key: "17g6i2" }],
-  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+  ["path", { d: "M8 13h2", key: "yr2amv" }],
+  ["path", { d: "M14 13h2", key: "un5t4a" }],
+  ["path", { d: "M8 17h2", key: "2yhykz" }],
+  ["path", { d: "M14 17h2", key: "10kma7" }]
 ];
-const FileDown = createLucideIcon("FileDown", __iconNode$1j);
+const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1j);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18241,16 +18296,11 @@ const FileDown = createLucideIcon("FileDown", __iconNode$1j);
 const __iconNode$1i = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  [
-    "path",
-    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
-  ],
-  [
-    "path",
-    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
-  ]
+  ["path", { d: "M10 9H8", key: "b1mrlr" }],
+  ["path", { d: "M16 13H8", key: "t4e002" }],
+  ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileJson = createLucideIcon("FileJson", __iconNode$1i);
+const FileText = createLucideIcon("FileText", __iconNode$1i);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18263,12 +18313,10 @@ const FileJson = createLucideIcon("FileJson", __iconNode$1i);
 const __iconNode$1h = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M8 13h2", key: "yr2amv" }],
-  ["path", { d: "M14 13h2", key: "un5t4a" }],
-  ["path", { d: "M8 17h2", key: "2yhykz" }],
-  ["path", { d: "M14 17h2", key: "10kma7" }]
+  ["path", { d: "M12 12v6", key: "3ahymv" }],
+  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
 ];
-const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1h);
+const FileUp = createLucideIcon("FileUp", __iconNode$1h);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18279,13 +18327,16 @@ const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1h);
 
 
 const __iconNode$1g = [
-  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
-  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M10 9H8", key: "b1mrlr" }],
-  ["path", { d: "M16 13H8", key: "t4e002" }],
-  ["path", { d: "M16 17H8", key: "z1uh3a" }]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M7 3v18", key: "bbkbws" }],
+  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
+  ["path", { d: "M3 12h18", key: "1i2n21" }],
+  ["path", { d: "M3 16.5h4", key: "1230mu" }],
+  ["path", { d: "M17 3v18", key: "in4fa5" }],
+  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
+  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
 ];
-const FileText = createLucideIcon("FileText", __iconNode$1g);
+const Film = createLucideIcon("Film", __iconNode$1g);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18296,12 +18347,15 @@ const FileText = createLucideIcon("FileText", __iconNode$1g);
 
 
 const __iconNode$1f = [
-  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
-  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 12v6", key: "3ahymv" }],
-  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
+  [
+    "path",
+    {
+      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+      key: "96xj49"
+    }
+  ]
 ];
-const FileUp = createLucideIcon("FileUp", __iconNode$1f);
+const Flame = createLucideIcon("Flame", __iconNode$1f);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18312,16 +18366,14 @@ const FileUp = createLucideIcon("FileUp", __iconNode$1f);
 
 
 const __iconNode$1e = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
-  ["path", { d: "M7 3v18", key: "bbkbws" }],
-  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
-  ["path", { d: "M3 12h18", key: "1i2n21" }],
-  ["path", { d: "M3 16.5h4", key: "1230mu" }],
-  ["path", { d: "M17 3v18", key: "in4fa5" }],
-  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
-  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
+  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
+  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "M12 14v2", key: "8jcxud" }],
+  ["path", { d: "M12 8v2", key: "1woqiv" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }]
 ];
-const Film = createLucideIcon("Film", __iconNode$1e);
+const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1e);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18332,15 +18384,14 @@ const Film = createLucideIcon("Film", __iconNode$1e);
 
 
 const __iconNode$1d = [
-  [
-    "path",
-    {
-      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
-      key: "96xj49"
-    }
-  ]
+  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
+  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
+  ["path", { d: "M4 12H2", key: "rhcxmi" }],
+  ["path", { d: "M10 12H8", key: "s88cx1" }],
+  ["path", { d: "M16 12h-2", key: "10asgb" }],
+  ["path", { d: "M22 12h-2", key: "14jgyd" }]
 ];
-const Flame = createLucideIcon("Flame", __iconNode$1d);
+const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1d);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18351,14 +18402,11 @@ const Flame = createLucideIcon("Flame", __iconNode$1d);
 
 
 const __iconNode$1c = [
-  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
-  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
-  ["path", { d: "M12 20v2", key: "1lh1kg" }],
-  ["path", { d: "M12 14v2", key: "8jcxud" }],
-  ["path", { d: "M12 8v2", key: "1woqiv" }],
-  ["path", { d: "M12 2v2", key: "tus03m" }]
+  ["path", { d: "M7 2h10", key: "nczekb" }],
+  ["path", { d: "M5 6h14", key: "u2x4p" }],
+  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
 ];
-const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1c);
+const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1c);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18369,14 +18417,14 @@ const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1c);
 
 
 const __iconNode$1b = [
-  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
-  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
-  ["path", { d: "M4 12H2", key: "rhcxmi" }],
-  ["path", { d: "M10 12H8", key: "s88cx1" }],
-  ["path", { d: "M16 12h-2", key: "10asgb" }],
-  ["path", { d: "M22 12h-2", key: "14jgyd" }]
+  ["circle", { cx: "9", cy: "12", r: "1", key: "1vctgf" }],
+  ["circle", { cx: "9", cy: "5", r: "1", key: "hp0tcf" }],
+  ["circle", { cx: "9", cy: "19", r: "1", key: "fkjjf6" }],
+  ["circle", { cx: "15", cy: "12", r: "1", key: "1tmaij" }],
+  ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
+  ["circle", { cx: "15", cy: "19", r: "1", key: "f4zoj3" }]
 ];
-const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1b);
+const GripVertical = createLucideIcon("GripVertical", __iconNode$1b);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18387,11 +18435,12 @@ const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1b);
 
 
 const __iconNode$1a = [
-  ["path", { d: "M7 2h10", key: "nczekb" }],
-  ["path", { d: "M5 6h14", key: "u2x4p" }],
-  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
+  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
+  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
+  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
+  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
 ];
-const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1a);
+const Hash = createLucideIcon("Hash", __iconNode$1a);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18402,14 +18451,11 @@ const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1a)
 
 
 const __iconNode$19 = [
-  ["circle", { cx: "9", cy: "12", r: "1", key: "1vctgf" }],
-  ["circle", { cx: "9", cy: "5", r: "1", key: "hp0tcf" }],
-  ["circle", { cx: "9", cy: "19", r: "1", key: "fkjjf6" }],
-  ["circle", { cx: "15", cy: "12", r: "1", key: "1tmaij" }],
-  ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
-  ["circle", { cx: "15", cy: "19", r: "1", key: "f4zoj3" }]
+  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
+  ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
+  ["path", { d: "M12 7v5l4 2", key: "1fdv2h" }]
 ];
-const GripVertical = createLucideIcon("GripVertical", __iconNode$19);
+const History = createLucideIcon("History", __iconNode$19);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18420,12 +18466,10 @@ const GripVertical = createLucideIcon("GripVertical", __iconNode$19);
 
 
 const __iconNode$18 = [
-  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
-  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
-  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
-  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
+  ["path", { d: "m9 11-6 6v3h9l3-3", key: "1a3l36" }],
+  ["path", { d: "m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4", key: "14a9rk" }]
 ];
-const Hash = createLucideIcon("Hash", __iconNode$18);
+const Highlighter = createLucideIcon("Highlighter", __iconNode$18);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18436,11 +18480,16 @@ const Hash = createLucideIcon("Hash", __iconNode$18);
 
 
 const __iconNode$17 = [
-  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
-  ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
-  ["path", { d: "M12 7v5l4 2", key: "1fdv2h" }]
+  ["path", { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" }],
+  [
+    "path",
+    {
+      d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+      key: "1d0kgt"
+    }
+  ]
 ];
-const History = createLucideIcon("History", __iconNode$17);
+const House = createLucideIcon("House", __iconNode$17);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18451,10 +18500,13 @@ const History = createLucideIcon("History", __iconNode$17);
 
 
 const __iconNode$16 = [
-  ["path", { d: "m9 11-6 6v3h9l3-3", key: "1a3l36" }],
-  ["path", { d: "m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4", key: "14a9rk" }]
+  ["path", { d: "M16 5h6", key: "1vod17" }],
+  ["path", { d: "M19 2v6", key: "4bpg5p" }],
+  ["path", { d: "M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5", key: "1ue2ih" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }]
 ];
-const Highlighter = createLucideIcon("Highlighter", __iconNode$16);
+const ImagePlus = createLucideIcon("ImagePlus", __iconNode$16);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18465,16 +18517,11 @@ const Highlighter = createLucideIcon("Highlighter", __iconNode$16);
 
 
 const __iconNode$15 = [
-  ["path", { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" }],
-  [
-    "path",
-    {
-      d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-      key: "1d0kgt"
-    }
-  ]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
 ];
-const House = createLucideIcon("House", __iconNode$15);
+const Image$1 = createLucideIcon("Image", __iconNode$15);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18485,13 +18532,11 @@ const House = createLucideIcon("House", __iconNode$15);
 
 
 const __iconNode$14 = [
-  ["path", { d: "M16 5h6", key: "1vod17" }],
-  ["path", { d: "M19 2v6", key: "4bpg5p" }],
-  ["path", { d: "M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5", key: "1ue2ih" }],
-  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
-  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 16v-4", key: "1dtifu" }],
+  ["path", { d: "M12 8h.01", key: "e9boi3" }]
 ];
-const ImagePlus = createLucideIcon("ImagePlus", __iconNode$14);
+const Info = createLucideIcon("Info", __iconNode$14);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18502,11 +18547,16 @@ const ImagePlus = createLucideIcon("ImagePlus", __iconNode$14);
 
 
 const __iconNode$13 = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
-  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
-  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
+  [
+    "path",
+    {
+      d: "M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z",
+      key: "1s6t7t"
+    }
+  ],
+  ["circle", { cx: "16.5", cy: "7.5", r: ".5", fill: "currentColor", key: "w0ekpg" }]
 ];
-const Image$1 = createLucideIcon("Image", __iconNode$13);
+const KeyRound = createLucideIcon("KeyRound", __iconNode$13);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18517,41 +18567,6 @@ const Image$1 = createLucideIcon("Image", __iconNode$13);
 
 
 const __iconNode$12 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 16v-4", key: "1dtifu" }],
-  ["path", { d: "M12 8h.01", key: "e9boi3" }]
-];
-const Info = createLucideIcon("Info", __iconNode$12);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$11 = [
-  [
-    "path",
-    {
-      d: "M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z",
-      key: "1s6t7t"
-    }
-  ],
-  ["circle", { cx: "16.5", cy: "7.5", r: ".5", fill: "currentColor", key: "w0ekpg" }]
-];
-const KeyRound = createLucideIcon("KeyRound", __iconNode$11);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$10 = [
   [
     "path",
     {
@@ -18574,7 +18589,39 @@ const __iconNode$10 = [
     }
   ]
 ];
-const Layers = createLucideIcon("Layers", __iconNode$10);
+const Layers = createLucideIcon("Layers", __iconNode$12);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$11 = [
+  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
+  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
+  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
+  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
+];
+const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$11);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$10 = [
+  ["rect", { width: "7", height: "7", x: "3", y: "3", rx: "1", key: "1g98yp" }],
+  ["rect", { width: "7", height: "7", x: "14", y: "3", rx: "1", key: "6d4xhi" }],
+  ["rect", { width: "7", height: "7", x: "14", y: "14", rx: "1", key: "nxv5o0" }],
+  ["rect", { width: "7", height: "7", x: "3", y: "14", rx: "1", key: "1bb6yr" }]
+];
+const LayoutGrid = createLucideIcon("LayoutGrid", __iconNode$10);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18585,12 +18632,12 @@ const Layers = createLucideIcon("Layers", __iconNode$10);
 
 
 const __iconNode$$ = [
-  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
-  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
-  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
-  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
+  ["path", { d: "m16 6 4 14", key: "ji33uf" }],
+  ["path", { d: "M12 6v14", key: "1n7gus" }],
+  ["path", { d: "M8 8v12", key: "1gg7y9" }],
+  ["path", { d: "M4 4v16", key: "6qkkli" }]
 ];
-const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$$);
+const Library = createLucideIcon("Library", __iconNode$$);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18601,38 +18648,6 @@ const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$$);
 
 
 const __iconNode$_ = [
-  ["rect", { width: "7", height: "7", x: "3", y: "3", rx: "1", key: "1g98yp" }],
-  ["rect", { width: "7", height: "7", x: "14", y: "3", rx: "1", key: "6d4xhi" }],
-  ["rect", { width: "7", height: "7", x: "14", y: "14", rx: "1", key: "nxv5o0" }],
-  ["rect", { width: "7", height: "7", x: "3", y: "14", rx: "1", key: "1bb6yr" }]
-];
-const LayoutGrid = createLucideIcon("LayoutGrid", __iconNode$_);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$Z = [
-  ["path", { d: "m16 6 4 14", key: "ji33uf" }],
-  ["path", { d: "M12 6v14", key: "1n7gus" }],
-  ["path", { d: "M8 8v12", key: "1gg7y9" }],
-  ["path", { d: "M4 4v16", key: "6qkkli" }]
-];
-const Library = createLucideIcon("Library", __iconNode$Z);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$Y = [
   [
     "path",
     {
@@ -18643,7 +18658,39 @@ const __iconNode$Y = [
   ["path", { d: "M9 18h6", key: "x1upvd" }],
   ["path", { d: "M10 22h4", key: "ceow96" }]
 ];
-const Lightbulb = createLucideIcon("Lightbulb", __iconNode$Y);
+const Lightbulb = createLucideIcon("Lightbulb", __iconNode$_);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$Z = [
+  ["path", { d: "M9 17H7A5 5 0 0 1 7 7h2", key: "8i5ue5" }],
+  ["path", { d: "M15 7h2a5 5 0 1 1 0 10h-2", key: "1b9ql8" }],
+  ["line", { x1: "8", x2: "16", y1: "12", y2: "12", key: "1jonct" }]
+];
+const Link2 = createLucideIcon("Link2", __iconNode$Z);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$Y = [
+  ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
+  ["path", { d: "m3 7 2 2 4-4", key: "1obspn" }],
+  ["path", { d: "M13 6h8", key: "15sg57" }],
+  ["path", { d: "M13 12h8", key: "h98zly" }],
+  ["path", { d: "M13 18h8", key: "oe0vm4" }]
+];
+const ListChecks = createLucideIcon("ListChecks", __iconNode$Y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18654,11 +18701,14 @@ const Lightbulb = createLucideIcon("Lightbulb", __iconNode$Y);
 
 
 const __iconNode$X = [
-  ["path", { d: "M9 17H7A5 5 0 0 1 7 7h2", key: "8i5ue5" }],
-  ["path", { d: "M15 7h2a5 5 0 1 1 0 10h-2", key: "1b9ql8" }],
-  ["line", { x1: "8", x2: "16", y1: "12", y2: "12", key: "1jonct" }]
+  ["path", { d: "M10 12h11", key: "6m4ad9" }],
+  ["path", { d: "M10 18h11", key: "11hvi2" }],
+  ["path", { d: "M10 6h11", key: "c7qv1k" }],
+  ["path", { d: "M4 10h2", key: "16xx2s" }],
+  ["path", { d: "M4 6h1v4", key: "cnovpq" }],
+  ["path", { d: "M6 18H4c0-1 2-2 2-3s-1-1.5-2-1", key: "m9a95d" }]
 ];
-const Link2 = createLucideIcon("Link2", __iconNode$X);
+const ListOrdered = createLucideIcon("ListOrdered", __iconNode$X);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18669,13 +18719,13 @@ const Link2 = createLucideIcon("Link2", __iconNode$X);
 
 
 const __iconNode$W = [
+  ["rect", { x: "3", y: "5", width: "6", height: "6", rx: "1", key: "1defrl" }],
   ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
-  ["path", { d: "m3 7 2 2 4-4", key: "1obspn" }],
   ["path", { d: "M13 6h8", key: "15sg57" }],
   ["path", { d: "M13 12h8", key: "h98zly" }],
   ["path", { d: "M13 18h8", key: "oe0vm4" }]
 ];
-const ListChecks = createLucideIcon("ListChecks", __iconNode$W);
+const ListTodo = createLucideIcon("ListTodo", __iconNode$W);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18685,15 +18735,8 @@ const ListChecks = createLucideIcon("ListChecks", __iconNode$W);
  */
 
 
-const __iconNode$V = [
-  ["path", { d: "M10 12h11", key: "6m4ad9" }],
-  ["path", { d: "M10 18h11", key: "11hvi2" }],
-  ["path", { d: "M10 6h11", key: "c7qv1k" }],
-  ["path", { d: "M4 10h2", key: "16xx2s" }],
-  ["path", { d: "M4 6h1v4", key: "cnovpq" }],
-  ["path", { d: "M6 18H4c0-1 2-2 2-3s-1-1.5-2-1", key: "m9a95d" }]
-];
-const ListOrdered = createLucideIcon("ListOrdered", __iconNode$V);
+const __iconNode$V = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("LoaderCircle", __iconNode$V);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18704,13 +18747,11 @@ const ListOrdered = createLucideIcon("ListOrdered", __iconNode$V);
 
 
 const __iconNode$U = [
-  ["rect", { x: "3", y: "5", width: "6", height: "6", rx: "1", key: "1defrl" }],
-  ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
-  ["path", { d: "M13 6h8", key: "15sg57" }],
-  ["path", { d: "M13 12h8", key: "h98zly" }],
-  ["path", { d: "M13 18h8", key: "oe0vm4" }]
+  ["circle", { cx: "12", cy: "16", r: "1", key: "1au0dj" }],
+  ["rect", { x: "3", y: "10", width: "18", height: "12", rx: "2", key: "6s8ecr" }],
+  ["path", { d: "M7 10V7a5 5 0 0 1 10 0v3", key: "1pqi11" }]
 ];
-const ListTodo = createLucideIcon("ListTodo", __iconNode$U);
+const LockKeyhole = createLucideIcon("LockKeyhole", __iconNode$U);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18720,8 +18761,11 @@ const ListTodo = createLucideIcon("ListTodo", __iconNode$U);
  */
 
 
-const __iconNode$T = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("LoaderCircle", __iconNode$T);
+const __iconNode$T = [
+  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
+  ["path", { d: "M7 11V7a5 5 0 0 1 9.9-1", key: "1mm8w8" }]
+];
+const LockOpen = createLucideIcon("LockOpen", __iconNode$T);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18732,11 +18776,10 @@ const LoaderCircle = createLucideIcon("LoaderCircle", __iconNode$T);
 
 
 const __iconNode$S = [
-  ["circle", { cx: "12", cy: "16", r: "1", key: "1au0dj" }],
-  ["rect", { x: "3", y: "10", width: "18", height: "12", rx: "2", key: "6s8ecr" }],
-  ["path", { d: "M7 10V7a5 5 0 0 1 10 0v3", key: "1pqi11" }]
+  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
+  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
 ];
-const LockKeyhole = createLucideIcon("LockKeyhole", __iconNode$S);
+const Lock = createLucideIcon("Lock", __iconNode$S);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18747,10 +18790,11 @@ const LockKeyhole = createLucideIcon("LockKeyhole", __iconNode$S);
 
 
 const __iconNode$R = [
-  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 9.9-1", key: "1mm8w8" }]
+  ["path", { d: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4", key: "u53s6r" }],
+  ["polyline", { points: "10 17 15 12 10 7", key: "1ail0h" }],
+  ["line", { x1: "15", x2: "3", y1: "12", y2: "12", key: "v6grx8" }]
 ];
-const LockOpen = createLucideIcon("LockOpen", __iconNode$R);
+const LogIn = createLucideIcon("LogIn", __iconNode$R);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18761,10 +18805,11 @@ const LockOpen = createLucideIcon("LockOpen", __iconNode$R);
 
 
 const __iconNode$Q = [
-  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
+  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }],
+  ["polyline", { points: "16 17 21 12 16 7", key: "1gabdz" }],
+  ["line", { x1: "21", x2: "9", y1: "12", y2: "12", key: "1uyos4" }]
 ];
-const Lock = createLucideIcon("Lock", __iconNode$Q);
+const LogOut = createLucideIcon("LogOut", __iconNode$Q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18775,11 +18820,12 @@ const Lock = createLucideIcon("Lock", __iconNode$Q);
 
 
 const __iconNode$P = [
-  ["path", { d: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4", key: "u53s6r" }],
-  ["polyline", { points: "10 17 15 12 10 7", key: "1ail0h" }],
-  ["line", { x1: "15", x2: "3", y1: "12", y2: "12", key: "v6grx8" }]
+  ["polyline", { points: "15 3 21 3 21 9", key: "mznyad" }],
+  ["polyline", { points: "9 21 3 21 3 15", key: "1avn1i" }],
+  ["line", { x1: "21", x2: "14", y1: "3", y2: "10", key: "ota7mn" }],
+  ["line", { x1: "3", x2: "10", y1: "21", y2: "14", key: "1atl0r" }]
 ];
-const LogIn = createLucideIcon("LogIn", __iconNode$P);
+const Maximize2 = createLucideIcon("Maximize2", __iconNode$P);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18790,11 +18836,11 @@ const LogIn = createLucideIcon("LogIn", __iconNode$P);
 
 
 const __iconNode$O = [
-  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }],
-  ["polyline", { points: "16 17 21 12 16 7", key: "1gabdz" }],
-  ["line", { x1: "21", x2: "9", y1: "12", y2: "12", key: "1uyos4" }]
+  ["path", { d: "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z", key: "131961" }],
+  ["path", { d: "M19 10v2a7 7 0 0 1-14 0v-2", key: "1vc78b" }],
+  ["line", { x1: "12", x2: "12", y1: "19", y2: "22", key: "x3vr5v" }]
 ];
-const LogOut = createLucideIcon("LogOut", __iconNode$O);
+const Mic = createLucideIcon("Mic", __iconNode$O);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18804,13 +18850,8 @@ const LogOut = createLucideIcon("LogOut", __iconNode$O);
  */
 
 
-const __iconNode$N = [
-  ["polyline", { points: "15 3 21 3 21 9", key: "mznyad" }],
-  ["polyline", { points: "9 21 3 21 3 15", key: "1avn1i" }],
-  ["line", { x1: "21", x2: "14", y1: "3", y2: "10", key: "ota7mn" }],
-  ["line", { x1: "3", x2: "10", y1: "21", y2: "14", key: "1atl0r" }]
-];
-const Maximize2 = createLucideIcon("Maximize2", __iconNode$N);
+const __iconNode$N = [["path", { d: "M5 12h14", key: "1ays0h" }]];
+const Minus = createLucideIcon("Minus", __iconNode$N);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18821,11 +18862,12 @@ const Maximize2 = createLucideIcon("Maximize2", __iconNode$N);
 
 
 const __iconNode$M = [
-  ["path", { d: "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z", key: "131961" }],
-  ["path", { d: "M19 10v2a7 7 0 0 1-14 0v-2", key: "1vc78b" }],
-  ["line", { x1: "12", x2: "12", y1: "19", y2: "22", key: "x3vr5v" }]
+  ["path", { d: "M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8", key: "10dyio" }],
+  ["path", { d: "M10 19v-3.96 3.15", key: "1irgej" }],
+  ["path", { d: "M7 19h5", key: "qswx4l" }],
+  ["rect", { width: "6", height: "10", x: "16", y: "12", rx: "2", key: "1egngj" }]
 ];
-const Mic = createLucideIcon("Mic", __iconNode$M);
+const MonitorSmartphone = createLucideIcon("MonitorSmartphone", __iconNode$M);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18835,8 +18877,10 @@ const Mic = createLucideIcon("Mic", __iconNode$M);
  */
 
 
-const __iconNode$L = [["path", { d: "M5 12h14", key: "1ays0h" }]];
-const Minus = createLucideIcon("Minus", __iconNode$L);
+const __iconNode$L = [
+  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
+];
+const Moon = createLucideIcon("Moon", __iconNode$L);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18847,12 +18891,11 @@ const Minus = createLucideIcon("Minus", __iconNode$L);
 
 
 const __iconNode$K = [
-  ["path", { d: "M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8", key: "10dyio" }],
-  ["path", { d: "M10 19v-3.96 3.15", key: "1irgej" }],
-  ["path", { d: "M7 19h5", key: "qswx4l" }],
-  ["rect", { width: "6", height: "10", x: "16", y: "12", rx: "2", key: "1egngj" }]
+  ["path", { d: "M9 18V5l12-2v13", key: "1jmyc2" }],
+  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
+  ["circle", { cx: "18", cy: "16", r: "3", key: "1hluhg" }]
 ];
-const MonitorSmartphone = createLucideIcon("MonitorSmartphone", __iconNode$K);
+const Music = createLucideIcon("Music", __iconNode$K);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18863,34 +18906,6 @@ const MonitorSmartphone = createLucideIcon("MonitorSmartphone", __iconNode$K);
 
 
 const __iconNode$J = [
-  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
-];
-const Moon = createLucideIcon("Moon", __iconNode$J);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$I = [
-  ["path", { d: "M9 18V5l12-2v13", key: "1jmyc2" }],
-  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
-  ["circle", { cx: "18", cy: "16", r: "3", key: "1hluhg" }]
-];
-const Music = createLucideIcon("Music", __iconNode$I);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$H = [
   ["circle", { cx: "13.5", cy: "6.5", r: ".5", fill: "currentColor", key: "1okk4w" }],
   ["circle", { cx: "17.5", cy: "10.5", r: ".5", fill: "currentColor", key: "f64h9f" }],
   ["circle", { cx: "8.5", cy: "7.5", r: ".5", fill: "currentColor", key: "fotxhn" }],
@@ -18903,7 +18918,41 @@ const __iconNode$H = [
     }
   ]
 ];
-const Palette = createLucideIcon("Palette", __iconNode$H);
+const Palette = createLucideIcon("Palette", __iconNode$J);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$I = [
+  ["rect", { x: "14", y: "4", width: "4", height: "16", rx: "1", key: "zuxfzm" }],
+  ["rect", { x: "6", y: "4", width: "4", height: "16", rx: "1", key: "1okwgv" }]
+];
+const Pause = createLucideIcon("Pause", __iconNode$I);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$H = [
+  ["path", { d: "M12 20h9", key: "t2du7b" }],
+  [
+    "path",
+    {
+      d: "M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z",
+      key: "1ykcvy"
+    }
+  ]
+];
+const PenLine = createLucideIcon("PenLine", __iconNode$H);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18914,10 +18963,16 @@ const Palette = createLucideIcon("Palette", __iconNode$H);
 
 
 const __iconNode$G = [
-  ["rect", { x: "14", y: "4", width: "4", height: "16", rx: "1", key: "zuxfzm" }],
-  ["rect", { x: "6", y: "4", width: "4", height: "16", rx: "1", key: "1okwgv" }]
+  [
+    "path",
+    {
+      d: "M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z",
+      key: "1a8usu"
+    }
+  ],
+  ["path", { d: "m15 5 4 4", key: "1mk7zo" }]
 ];
-const Pause = createLucideIcon("Pause", __iconNode$G);
+const Pencil = createLucideIcon("Pencil", __iconNode$G);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18927,17 +18982,8 @@ const Pause = createLucideIcon("Pause", __iconNode$G);
  */
 
 
-const __iconNode$F = [
-  ["path", { d: "M12 20h9", key: "t2du7b" }],
-  [
-    "path",
-    {
-      d: "M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z",
-      key: "1ykcvy"
-    }
-  ]
-];
-const PenLine = createLucideIcon("PenLine", __iconNode$F);
+const __iconNode$F = [["polygon", { points: "6 3 20 12 6 21 6 3", key: "1oa8hb" }]];
+const Play = createLucideIcon("Play", __iconNode$F);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18948,16 +18994,10 @@ const PenLine = createLucideIcon("PenLine", __iconNode$F);
 
 
 const __iconNode$E = [
-  [
-    "path",
-    {
-      d: "M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z",
-      key: "1a8usu"
-    }
-  ],
-  ["path", { d: "m15 5 4 4", key: "1mk7zo" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "M12 5v14", key: "s699le" }]
 ];
-const Pencil = createLucideIcon("Pencil", __iconNode$E);
+const Plus = createLucideIcon("Plus", __iconNode$E);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18967,8 +19007,16 @@ const Pencil = createLucideIcon("Pencil", __iconNode$E);
  */
 
 
-const __iconNode$D = [["polygon", { points: "6 3 20 12 6 21 6 3", key: "1oa8hb" }]];
-const Play = createLucideIcon("Play", __iconNode$D);
+const __iconNode$D = [
+  [
+    "path",
+    {
+      d: "M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z",
+      key: "w46dr5"
+    }
+  ]
+];
+const Puzzle = createLucideIcon("Puzzle", __iconNode$D);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18979,10 +19027,10 @@ const Play = createLucideIcon("Play", __iconNode$D);
 
 
 const __iconNode$C = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "M12 5v14", key: "s699le" }]
+  ["path", { d: "m15 14 5-5-5-5", key: "12vg1m" }],
+  ["path", { d: "M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13", key: "6uklza" }]
 ];
-const Plus = createLucideIcon("Plus", __iconNode$C);
+const Redo2 = createLucideIcon("Redo2", __iconNode$C);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18993,15 +19041,12 @@ const Plus = createLucideIcon("Plus", __iconNode$C);
 
 
 const __iconNode$B = [
-  [
-    "path",
-    {
-      d: "M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z",
-      key: "w46dr5"
-    }
-  ]
+  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
+  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
+  ["path", { d: "M8 16H3v5", key: "1cv678" }]
 ];
-const Puzzle = createLucideIcon("Puzzle", __iconNode$B);
+const RefreshCw = createLucideIcon("RefreshCw", __iconNode$B);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19012,10 +19057,12 @@ const Puzzle = createLucideIcon("Puzzle", __iconNode$B);
 
 
 const __iconNode$A = [
-  ["path", { d: "m15 14 5-5-5-5", key: "12vg1m" }],
-  ["path", { d: "M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13", key: "6uklza" }]
+  ["path", { d: "m17 2 4 4-4 4", key: "nntrym" }],
+  ["path", { d: "M3 11v-1a4 4 0 0 1 4-4h14", key: "84bu3i" }],
+  ["path", { d: "m7 22-4-4 4-4", key: "1wqhfi" }],
+  ["path", { d: "M21 13v1a4 4 0 0 1-4 4H3", key: "1rx37r" }]
 ];
-const Redo2 = createLucideIcon("Redo2", __iconNode$A);
+const Repeat = createLucideIcon("Repeat", __iconNode$A);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19026,12 +19073,10 @@ const Redo2 = createLucideIcon("Redo2", __iconNode$A);
 
 
 const __iconNode$z = [
-  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
-  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
-  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
-  ["path", { d: "M8 16H3v5", key: "1cv678" }]
+  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
+  ["path", { d: "M3 3v5h5", key: "1xhq8a" }]
 ];
-const RefreshCw = createLucideIcon("RefreshCw", __iconNode$z);
+const RotateCcw = createLucideIcon("RotateCcw", __iconNode$z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19042,10 +19087,10 @@ const RefreshCw = createLucideIcon("RefreshCw", __iconNode$z);
 
 
 const __iconNode$y = [
-  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
-  ["path", { d: "M3 3v5h5", key: "1xhq8a" }]
+  ["path", { d: "M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8", key: "1p45f6" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }]
 ];
-const RotateCcw = createLucideIcon("RotateCcw", __iconNode$y);
+const RotateCw = createLucideIcon("RotateCw", __iconNode$y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19056,20 +19101,6 @@ const RotateCcw = createLucideIcon("RotateCcw", __iconNode$y);
 
 
 const __iconNode$x = [
-  ["path", { d: "M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8", key: "1p45f6" }],
-  ["path", { d: "M21 3v5h-5", key: "1q7to0" }]
-];
-const RotateCw = createLucideIcon("RotateCw", __iconNode$x);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$w = [
   [
     "path",
     {
@@ -19080,7 +19111,7 @@ const __iconNode$w = [
   ["path", { d: "M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7", key: "1ydtos" }],
   ["path", { d: "M7 3v4a1 1 0 0 0 1 1h7", key: "t51u73" }]
 ];
-const Save = createLucideIcon("Save", __iconNode$w);
+const Save = createLucideIcon("Save", __iconNode$x);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19090,7 +19121,7 @@ const Save = createLucideIcon("Save", __iconNode$w);
  */
 
 
-const __iconNode$v = [
+const __iconNode$w = [
   ["path", { d: "M3 7V5a2 2 0 0 1 2-2h2", key: "aa7l1z" }],
   ["path", { d: "M17 3h2a2 2 0 0 1 2 2v2", key: "4qcy5o" }],
   ["path", { d: "M21 17v2a2 2 0 0 1-2 2h-2", key: "6vwrx8" }],
@@ -19104,7 +19135,24 @@ const __iconNode$v = [
     }
   ]
 ];
-const ScanEye = createLucideIcon("ScanEye", __iconNode$v);
+const ScanEye = createLucideIcon("ScanEye", __iconNode$w);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$v = [
+  ["circle", { cx: "6", cy: "6", r: "3", key: "1lh9wr" }],
+  ["path", { d: "M8.12 8.12 12 12", key: "1alkpv" }],
+  ["path", { d: "M20 4 8.12 15.88", key: "xgtan2" }],
+  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
+  ["path", { d: "M14.8 14.8 20 20", key: "ptml3r" }]
+];
+const Scissors = createLucideIcon("Scissors", __iconNode$v);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19115,13 +19163,10 @@ const ScanEye = createLucideIcon("ScanEye", __iconNode$v);
 
 
 const __iconNode$u = [
-  ["circle", { cx: "6", cy: "6", r: "3", key: "1lh9wr" }],
-  ["path", { d: "M8.12 8.12 12 12", key: "1alkpv" }],
-  ["path", { d: "M20 4 8.12 15.88", key: "xgtan2" }],
-  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
-  ["path", { d: "M14.8 14.8 20 20", key: "ptml3r" }]
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
+  ["path", { d: "m21 21-4.3-4.3", key: "1qie3q" }]
 ];
-const Scissors = createLucideIcon("Scissors", __iconNode$u);
+const Search = createLucideIcon("Search", __iconNode$u);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19132,10 +19177,16 @@ const Scissors = createLucideIcon("Scissors", __iconNode$u);
 
 
 const __iconNode$t = [
-  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
-  ["path", { d: "m21 21-4.3-4.3", key: "1qie3q" }]
+  [
+    "path",
+    {
+      d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z",
+      key: "1ffxy3"
+    }
+  ],
+  ["path", { d: "m21.854 2.147-10.94 10.939", key: "12cjpa" }]
 ];
-const Search = createLucideIcon("Search", __iconNode$t);
+const Send = createLucideIcon("Send", __iconNode$t);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19149,13 +19200,13 @@ const __iconNode$s = [
   [
     "path",
     {
-      d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z",
-      key: "1ffxy3"
+      d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
+      key: "1qme2f"
     }
   ],
-  ["path", { d: "m21.854 2.147-10.94 10.939", key: "12cjpa" }]
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
 ];
-const Send = createLucideIcon("Send", __iconNode$s);
+const Settings = createLucideIcon("Settings", __iconNode$s);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19169,13 +19220,14 @@ const __iconNode$r = [
   [
     "path",
     {
-      d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
-      key: "1qme2f"
+      d: "M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z",
+      key: "1bo67w"
     }
   ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ["rect", { x: "3", y: "14", width: "7", height: "7", rx: "1", key: "1bkyp8" }],
+  ["circle", { cx: "17.5", cy: "17.5", r: "3.5", key: "w3z12y" }]
 ];
-const Settings = createLucideIcon("Settings", __iconNode$r);
+const Shapes = createLucideIcon("Shapes", __iconNode$r);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19186,17 +19238,13 @@ const Settings = createLucideIcon("Settings", __iconNode$r);
 
 
 const __iconNode$q = [
-  [
-    "path",
-    {
-      d: "M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z",
-      key: "1bo67w"
-    }
-  ],
-  ["rect", { x: "3", y: "14", width: "7", height: "7", rx: "1", key: "1bkyp8" }],
-  ["circle", { cx: "17.5", cy: "17.5", r: "3.5", key: "w3z12y" }]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
+  ["line", { x1: "3", x2: "21", y1: "9", y2: "9", key: "1vqk6q" }],
+  ["line", { x1: "3", x2: "21", y1: "15", y2: "15", key: "o2sbyz" }],
+  ["line", { x1: "9", x2: "9", y1: "9", y2: "21", key: "1ib60c" }],
+  ["line", { x1: "15", x2: "15", y1: "9", y2: "21", key: "1n26ft" }]
 ];
-const Shapes = createLucideIcon("Shapes", __iconNode$q);
+const Sheet = createLucideIcon("Sheet", __iconNode$q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19207,13 +19255,12 @@ const Shapes = createLucideIcon("Shapes", __iconNode$q);
 
 
 const __iconNode$p = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
-  ["line", { x1: "3", x2: "21", y1: "9", y2: "9", key: "1vqk6q" }],
-  ["line", { x1: "3", x2: "21", y1: "15", y2: "15", key: "o2sbyz" }],
-  ["line", { x1: "9", x2: "9", y1: "9", y2: "21", key: "1ib60c" }],
-  ["line", { x1: "15", x2: "15", y1: "9", y2: "21", key: "1n26ft" }]
+  ["path", { d: "m15 15 6 6m-6-6v4.8m0-4.8h4.8", key: "17vawe" }],
+  ["path", { d: "M9 19.8V15m0 0H4.2M9 15l-6 6", key: "chjx8e" }],
+  ["path", { d: "M15 4.2V9m0 0h4.8M15 9l6-6", key: "lav6yq" }],
+  ["path", { d: "M9 4.2V9m0 0H4.2M9 9 3 3", key: "1pxi2q" }]
 ];
-const Sheet = createLucideIcon("Sheet", __iconNode$p);
+const Shrink = createLucideIcon("Shrink", __iconNode$p);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19224,12 +19271,13 @@ const Sheet = createLucideIcon("Sheet", __iconNode$p);
 
 
 const __iconNode$o = [
-  ["path", { d: "m15 15 6 6m-6-6v4.8m0-4.8h4.8", key: "17vawe" }],
-  ["path", { d: "M9 19.8V15m0 0H4.2M9 15l-6 6", key: "chjx8e" }],
-  ["path", { d: "M15 4.2V9m0 0h4.8M15 9l6-6", key: "lav6yq" }],
-  ["path", { d: "M9 4.2V9m0 0H4.2M9 9 3 3", key: "1pxi2q" }]
+  ["path", { d: "m18 14 4 4-4 4", key: "10pe0f" }],
+  ["path", { d: "m18 2 4 4-4 4", key: "pucp1d" }],
+  ["path", { d: "M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22", key: "1ailkh" }],
+  ["path", { d: "M2 6h1.972a4 4 0 0 1 3.6 2.2", key: "km57vx" }],
+  ["path", { d: "M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45", key: "os18l9" }]
 ];
-const Shrink = createLucideIcon("Shrink", __iconNode$o);
+const Shuffle = createLucideIcon("Shuffle", __iconNode$o);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19240,23 +19288,6 @@ const Shrink = createLucideIcon("Shrink", __iconNode$o);
 
 
 const __iconNode$n = [
-  ["path", { d: "m18 14 4 4-4 4", key: "10pe0f" }],
-  ["path", { d: "m18 2 4 4-4 4", key: "pucp1d" }],
-  ["path", { d: "M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22", key: "1ailkh" }],
-  ["path", { d: "M2 6h1.972a4 4 0 0 1 3.6 2.2", key: "km57vx" }],
-  ["path", { d: "M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45", key: "os18l9" }]
-];
-const Shuffle = createLucideIcon("Shuffle", __iconNode$n);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$m = [
   ["line", { x1: "21", x2: "14", y1: "4", y2: "4", key: "obuewd" }],
   ["line", { x1: "10", x2: "3", y1: "4", y2: "4", key: "1q6298" }],
   ["line", { x1: "21", x2: "12", y1: "12", y2: "12", key: "1iu8h1" }],
@@ -19267,7 +19298,21 @@ const __iconNode$m = [
   ["line", { x1: "8", x2: "8", y1: "10", y2: "14", key: "1i6ji0" }],
   ["line", { x1: "16", x2: "16", y1: "18", y2: "22", key: "1lctlv" }]
 ];
-const SlidersHorizontal = createLucideIcon("SlidersHorizontal", __iconNode$m);
+const SlidersHorizontal = createLucideIcon("SlidersHorizontal", __iconNode$n);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$m = [
+  ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
+  ["path", { d: "M12 18h.01", key: "mhygvu" }]
+];
+const Smartphone = createLucideIcon("Smartphone", __iconNode$m);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19278,20 +19323,6 @@ const SlidersHorizontal = createLucideIcon("SlidersHorizontal", __iconNode$m);
 
 
 const __iconNode$l = [
-  ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
-  ["path", { d: "M12 18h.01", key: "mhygvu" }]
-];
-const Smartphone = createLucideIcon("Smartphone", __iconNode$l);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$k = [
   [
     "path",
     {
@@ -19304,7 +19335,20 @@ const __iconNode$k = [
   ["path", { d: "M4 17v2", key: "vumght" }],
   ["path", { d: "M5 18H3", key: "zchphs" }]
 ];
-const Sparkles = createLucideIcon("Sparkles", __iconNode$k);
+const Sparkles = createLucideIcon("Sparkles", __iconNode$l);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$k = [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }]
+];
+const Square = createLucideIcon("Square", __iconNode$k);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19315,9 +19359,15 @@ const Sparkles = createLucideIcon("Sparkles", __iconNode$k);
 
 
 const __iconNode$j = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }]
+  [
+    "path",
+    {
+      d: "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z",
+      key: "r04s7s"
+    }
+  ]
 ];
-const Square = createLucideIcon("Square", __iconNode$j);
+const Star = createLucideIcon("Star", __iconNode$j);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19328,25 +19378,6 @@ const Square = createLucideIcon("Square", __iconNode$j);
 
 
 const __iconNode$i = [
-  [
-    "path",
-    {
-      d: "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z",
-      key: "r04s7s"
-    }
-  ]
-];
-const Star = createLucideIcon("Star", __iconNode$i);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$h = [
   ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
   ["path", { d: "M12 2v2", key: "tus03m" }],
   ["path", { d: "M12 20v2", key: "1lh1kg" }],
@@ -19357,7 +19388,24 @@ const __iconNode$h = [
   ["path", { d: "m6.34 17.66-1.41 1.41", key: "1m8zz5" }],
   ["path", { d: "m19.07 4.93-1.41 1.41", key: "1shlcs" }]
 ];
-const Sun = createLucideIcon("Sun", __iconNode$h);
+const Sun = createLucideIcon("Sun", __iconNode$i);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$h = [
+  ["path", { d: "M5 4h1a3 3 0 0 1 3 3 3 3 0 0 1 3-3h1", key: "18xjzo" }],
+  ["path", { d: "M13 20h-1a3 3 0 0 1-3-3 3 3 0 0 1-3 3H5", key: "fj48gi" }],
+  ["path", { d: "M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1", key: "1n9rhb" }],
+  ["path", { d: "M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7", key: "13ksps" }],
+  ["path", { d: "M9 7v10", key: "1vc8ob" }]
+];
+const TextCursorInput = createLucideIcon("TextCursorInput", __iconNode$h);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19368,13 +19416,11 @@ const Sun = createLucideIcon("Sun", __iconNode$h);
 
 
 const __iconNode$g = [
-  ["path", { d: "M5 4h1a3 3 0 0 1 3 3 3 3 0 0 1 3-3h1", key: "18xjzo" }],
-  ["path", { d: "M13 20h-1a3 3 0 0 1-3-3 3 3 0 0 1-3 3H5", key: "fj48gi" }],
-  ["path", { d: "M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1", key: "1n9rhb" }],
-  ["path", { d: "M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7", key: "13ksps" }],
-  ["path", { d: "M9 7v10", key: "1vc8ob" }]
+  ["line", { x1: "10", x2: "14", y1: "2", y2: "2", key: "14vaq8" }],
+  ["line", { x1: "12", x2: "15", y1: "14", y2: "11", key: "17fdiu" }],
+  ["circle", { cx: "12", cy: "14", r: "8", key: "1e1u0o" }]
 ];
-const TextCursorInput = createLucideIcon("TextCursorInput", __iconNode$g);
+const Timer = createLucideIcon("Timer", __iconNode$g);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19385,11 +19431,10 @@ const TextCursorInput = createLucideIcon("TextCursorInput", __iconNode$g);
 
 
 const __iconNode$f = [
-  ["line", { x1: "10", x2: "14", y1: "2", y2: "2", key: "14vaq8" }],
-  ["line", { x1: "12", x2: "15", y1: "14", y2: "11", key: "17fdiu" }],
-  ["circle", { cx: "12", cy: "14", r: "8", key: "1e1u0o" }]
+  ["rect", { width: "20", height: "12", x: "2", y: "6", rx: "6", ry: "6", key: "f2vt7d" }],
+  ["circle", { cx: "8", cy: "12", r: "2", key: "1nvbw3" }]
 ];
-const Timer = createLucideIcon("Timer", __iconNode$f);
+const ToggleLeft = createLucideIcon("ToggleLeft", __iconNode$f);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19400,10 +19445,13 @@ const Timer = createLucideIcon("Timer", __iconNode$f);
 
 
 const __iconNode$e = [
-  ["rect", { width: "20", height: "12", x: "2", y: "6", rx: "6", ry: "6", key: "f2vt7d" }],
-  ["circle", { cx: "8", cy: "12", r: "2", key: "1nvbw3" }]
+  ["path", { d: "M3 6h18", key: "d0wm0j" }],
+  ["path", { d: "M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6", key: "4alrt4" }],
+  ["path", { d: "M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2", key: "v07s0e" }],
+  ["line", { x1: "10", x2: "10", y1: "11", y2: "17", key: "1uufr5" }],
+  ["line", { x1: "14", x2: "14", y1: "11", y2: "17", key: "xtxkd" }]
 ];
-const ToggleLeft = createLucideIcon("ToggleLeft", __iconNode$e);
+const Trash2 = createLucideIcon("Trash2", __iconNode$e);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19414,13 +19462,10 @@ const ToggleLeft = createLucideIcon("ToggleLeft", __iconNode$e);
 
 
 const __iconNode$d = [
-  ["path", { d: "M3 6h18", key: "d0wm0j" }],
-  ["path", { d: "M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6", key: "4alrt4" }],
-  ["path", { d: "M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2", key: "v07s0e" }],
-  ["line", { x1: "10", x2: "10", y1: "11", y2: "17", key: "1uufr5" }],
-  ["line", { x1: "14", x2: "14", y1: "11", y2: "17", key: "xtxkd" }]
+  ["polyline", { points: "22 17 13.5 8.5 8.5 13.5 2 7", key: "1r2t7k" }],
+  ["polyline", { points: "16 17 22 17 22 11", key: "11uiuu" }]
 ];
-const Trash2 = createLucideIcon("Trash2", __iconNode$d);
+const TrendingDown = createLucideIcon("TrendingDown", __iconNode$d);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19431,10 +19476,10 @@ const Trash2 = createLucideIcon("Trash2", __iconNode$d);
 
 
 const __iconNode$c = [
-  ["polyline", { points: "22 17 13.5 8.5 8.5 13.5 2 7", key: "1r2t7k" }],
-  ["polyline", { points: "16 17 22 17 22 11", key: "11uiuu" }]
+  ["polyline", { points: "22 7 13.5 15.5 8.5 10.5 2 17", key: "126l90" }],
+  ["polyline", { points: "16 7 22 7 22 13", key: "kwv8wd" }]
 ];
-const TrendingDown = createLucideIcon("TrendingDown", __iconNode$c);
+const TrendingUp = createLucideIcon("TrendingUp", __iconNode$c);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19445,20 +19490,6 @@ const TrendingDown = createLucideIcon("TrendingDown", __iconNode$c);
 
 
 const __iconNode$b = [
-  ["polyline", { points: "22 7 13.5 15.5 8.5 10.5 2 17", key: "126l90" }],
-  ["polyline", { points: "16 7 22 7 22 13", key: "kwv8wd" }]
-];
-const TrendingUp = createLucideIcon("TrendingUp", __iconNode$b);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$a = [
   [
     "path",
     {
@@ -19469,7 +19500,25 @@ const __iconNode$a = [
   ["path", { d: "M12 9v4", key: "juzpu7" }],
   ["path", { d: "M12 17h.01", key: "p32p05" }]
 ];
-const TriangleAlert = createLucideIcon("TriangleAlert", __iconNode$a);
+const TriangleAlert = createLucideIcon("TriangleAlert", __iconNode$b);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$a = [
+  ["path", { d: "M6 9H4.5a2.5 2.5 0 0 1 0-5H6", key: "17hqa7" }],
+  ["path", { d: "M18 9h1.5a2.5 2.5 0 0 0 0-5H18", key: "lmptdp" }],
+  ["path", { d: "M4 22h16", key: "57wxv0" }],
+  ["path", { d: "M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22", key: "1nw9bq" }],
+  ["path", { d: "M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22", key: "1np0yb" }],
+  ["path", { d: "M18 2H6v7a6 6 0 0 0 12 0V2Z", key: "u46fv3" }]
+];
+const Trophy = createLucideIcon("Trophy", __iconNode$a);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19480,14 +19529,10 @@ const TriangleAlert = createLucideIcon("TriangleAlert", __iconNode$a);
 
 
 const __iconNode$9 = [
-  ["path", { d: "M6 9H4.5a2.5 2.5 0 0 1 0-5H6", key: "17hqa7" }],
-  ["path", { d: "M18 9h1.5a2.5 2.5 0 0 0 0-5H18", key: "lmptdp" }],
-  ["path", { d: "M4 22h16", key: "57wxv0" }],
-  ["path", { d: "M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22", key: "1nw9bq" }],
-  ["path", { d: "M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22", key: "1np0yb" }],
-  ["path", { d: "M18 2H6v7a6 6 0 0 0 12 0V2Z", key: "u46fv3" }]
+  ["path", { d: "M9 14 4 9l5-5", key: "102s5s" }],
+  ["path", { d: "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11", key: "f3b9sd" }]
 ];
-const Trophy = createLucideIcon("Trophy", __iconNode$9);
+const Undo2 = createLucideIcon("Undo2", __iconNode$9);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19498,10 +19543,11 @@ const Trophy = createLucideIcon("Trophy", __iconNode$9);
 
 
 const __iconNode$8 = [
-  ["path", { d: "M9 14 4 9l5-5", key: "102s5s" }],
-  ["path", { d: "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11", key: "f3b9sd" }]
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["polyline", { points: "17 8 12 3 7 8", key: "t8dd8p" }],
+  ["line", { x1: "12", x2: "12", y1: "3", y2: "15", key: "widbto" }]
 ];
-const Undo2 = createLucideIcon("Undo2", __iconNode$8);
+const Upload = createLucideIcon("Upload", __iconNode$8);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19512,11 +19558,10 @@ const Undo2 = createLucideIcon("Undo2", __iconNode$8);
 
 
 const __iconNode$7 = [
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["polyline", { points: "17 8 12 3 7 8", key: "t8dd8p" }],
-  ["line", { x1: "12", x2: "12", y1: "3", y2: "15", key: "widbto" }]
+  ["circle", { cx: "12", cy: "8", r: "5", key: "1hypcn" }],
+  ["path", { d: "M20 21a8 8 0 0 0-16 0", key: "rfgkzh" }]
 ];
-const Upload = createLucideIcon("Upload", __iconNode$7);
+const UserRound = createLucideIcon("UserRound", __iconNode$7);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19527,10 +19572,17 @@ const Upload = createLucideIcon("Upload", __iconNode$7);
 
 
 const __iconNode$6 = [
-  ["circle", { cx: "12", cy: "8", r: "5", key: "1hypcn" }],
-  ["path", { d: "M20 21a8 8 0 0 0-16 0", key: "rfgkzh" }]
+  [
+    "path",
+    {
+      d: "M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z",
+      key: "uqj9uw"
+    }
+  ],
+  ["path", { d: "M16 9a5 5 0 0 1 0 6", key: "1q6k2b" }],
+  ["path", { d: "M19.364 18.364a9 9 0 0 0 0-12.728", key: "ijwkga" }]
 ];
-const UserRound = createLucideIcon("UserRound", __iconNode$6);
+const Volume2 = createLucideIcon("Volume2", __iconNode$6);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19548,10 +19600,10 @@ const __iconNode$5 = [
       key: "uqj9uw"
     }
   ],
-  ["path", { d: "M16 9a5 5 0 0 1 0 6", key: "1q6k2b" }],
-  ["path", { d: "M19.364 18.364a9 9 0 0 0 0-12.728", key: "ijwkga" }]
+  ["line", { x1: "22", x2: "16", y1: "9", y2: "15", key: "1ewh16" }],
+  ["line", { x1: "16", x2: "22", y1: "9", y2: "15", key: "5ykzw1" }]
 ];
-const Volume2 = createLucideIcon("Volume2", __iconNode$5);
+const VolumeX = createLucideIcon("VolumeX", __iconNode$5);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19565,14 +19617,19 @@ const __iconNode$4 = [
   [
     "path",
     {
-      d: "M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z",
-      key: "uqj9uw"
+      d: "m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72",
+      key: "ul74o6"
     }
   ],
-  ["line", { x1: "22", x2: "16", y1: "9", y2: "15", key: "1ewh16" }],
-  ["line", { x1: "16", x2: "22", y1: "9", y2: "15", key: "5ykzw1" }]
+  ["path", { d: "m14 7 3 3", key: "1r5n42" }],
+  ["path", { d: "M5 6v4", key: "ilb8ba" }],
+  ["path", { d: "M19 14v4", key: "blhpug" }],
+  ["path", { d: "M10 2v2", key: "7u0qdc" }],
+  ["path", { d: "M7 8H3", key: "zfb6yr" }],
+  ["path", { d: "M21 16h-4", key: "1cnmox" }],
+  ["path", { d: "M11 3H9", key: "1obp7u" }]
 ];
-const VolumeX = createLucideIcon("VolumeX", __iconNode$4);
+const WandSparkles = createLucideIcon("WandSparkles", __iconNode$4);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -20794,7 +20851,7 @@ function restoreBackup(data){const entries={recallflow_bank_v2:data.questions,re
 
 const EVENT$1 = 'recallflow-zoom';
 const MIN = 1, MAX = 5;
-const clamp$3 = (v, a, b) => Math.min(b, Math.max(a, v));
+const clamp$5 = (v, a, b) => Math.min(b, Math.max(a, v));
 function openZoom(src, alt = '') { if (src)
     window.dispatchEvent(new CustomEvent(EVENT$1, { detail: { src, alt } })); }
 function ImageViewer({ src, alt = '', onClose }) {
@@ -20810,10 +20867,10 @@ function ImageViewer({ src, alt = '', onClose }) {
         zoomBy(1 / 1.4);
     else if (e.key === '0')
         setView({ s: 1, x: 0, y: 0 }); }; window.addEventListener('keydown', key, true); const overflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; closeBtn.current?.focus(); return () => { window.removeEventListener('keydown', key, true); document.body.style.overflow = overflow; }; }, []);
-    function limit(v) { const r = stage.current?.getBoundingClientRect(), s = clamp$3(v.s, MIN, MAX); if (!r || s === 1)
-        return { s, x: 0, y: 0 }; const mx = r.width * (s - 1) / 2, my = r.height * (s - 1) / 2; return { s, x: clamp$3(v.x, -mx, mx), y: clamp$3(v.y, -my, my) }; }
+    function limit(v) { const r = stage.current?.getBoundingClientRect(), s = clamp$5(v.s, MIN, MAX); if (!r || s === 1)
+        return { s, x: 0, y: 0 }; const mx = r.width * (s - 1) / 2, my = r.height * (s - 1) / 2; return { s, x: clamp$5(v.x, -mx, mx), y: clamp$5(v.y, -my, my) }; }
     // Zoom keeping the point under (cx,cy) fixed; coordinates are relative to the stage centre.
-    function zoomAt(factor, cx = 0, cy = 0) { setView(v => { const s = clamp$3(v.s * factor, MIN, MAX), k = s / v.s; return limit({ s, x: cx - (cx - v.x) * k, y: cy - (cy - v.y) * k }); }); }
+    function zoomAt(factor, cx = 0, cy = 0) { setView(v => { const s = clamp$5(v.s * factor, MIN, MAX), k = s / v.s; return limit({ s, x: cx - (cx - v.x) * k, y: cy - (cy - v.y) * k }); }); }
     function zoomBy(factor) { zoomAt(factor); }
     function local(e) { const r = stage.current.getBoundingClientRect(); return { x: e.clientX - r.left - r.width / 2, y: e.clientY - r.top - r.height / 2 }; }
     function down(e) { try {
@@ -20828,7 +20885,7 @@ function ImageViewer({ src, alt = '', onClose }) {
     function move(e) { if (!pointers.current.has(e.pointerId))
         return; pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY }); const g = gesture.current; if (!g)
         return; const pts = [...pointers.current.values()]; if (g.type === 'pinch' && pts.length === 2) {
-        const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), mid = local({ clientX: (pts[0].x + pts[1].x) / 2, clientY: (pts[0].y + pts[1].y) / 2 }), s = clamp$3(g.view.s * d / g.d, MIN, MAX), k = s / g.view.s;
+        const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), mid = local({ clientX: (pts[0].x + pts[1].x) / 2, clientY: (pts[0].y + pts[1].y) / 2 }), s = clamp$5(g.view.s * d / g.d, MIN, MAX), k = s / g.view.s;
         setView(limit({ s, x: mid.x - (mid.x - g.view.x) * k, y: mid.y - (mid.y - g.view.y) * k }));
     }
     else if (g.type === 'pan') {
@@ -21102,9 +21159,29 @@ function hotspotHit(spot,given){return !!spot&&!!given&&Number.isFinite(given.x)
 // Sounds are stored inside the question, so they sync and back up with it; keep each clip small.
 const MAX_AUDIO_CHARS=700000;
 const MAX_VIDEO_CHARS=3500000;
+const MAX_AUDIO_SECONDS=60;
+function dataUrlLength(bytes,mime='audio/webm'){return Math.ceil(bytes/3)*4+String(mime).length+13;}
+function maxBytesForChars(chars){return Math.floor((chars-64)/4)*3;}
+function formatBytes(n){if(!Number.isFinite(n)||n<0)return '';if(n<1024)return `${n} B`;if(n<1048576)return `${(n/1024).toFixed(n<10240?1:0)} KB`;return `${(n/1048576).toFixed(1)} MB`;}
+function saneDuration(d){return Number.isFinite(d)&&d>0&&d<86400?d:0;}
+function blobToDataUrl(blob,onProgress){
+ return new Promise((resolve,reject)=>{
+  const r=new FileReader();
+  r.onprogress=e=>{if(onProgress&&e.lengthComputable)onProgress(e.loaded/e.total);};
+  r.onload=()=>resolve(String(r.result).replace(/^data:([^,]*),/,(_,head)=>`data:${head.replace(/\s+/g,'')},`));
+  r.onerror=()=>reject(new Error('Could not read this file.'));
+  r.readAsDataURL(blob);
+ });
+}
 function audioSafe(x){return typeof x==='string'&&((/^data:audio\/[a-z0-9.+-]+(?:;codecs=[a-z0-9.,"=-]+)?;base64,[A-Za-z0-9+/=]+$/i.test(x)&&x.length<=MAX_AUDIO_CHARS)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048));}
-function videoSafe(x){return typeof x==='string'&&((/^data:video\/[a-z0-9.+-]+;base64,[A-Za-z0-9+/=]+$/i.test(x)&&x.length<=MAX_VIDEO_CHARS)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048));}
-function mediaEditSafe(x){if(x===undefined||x===null)return true;if(typeof x!=='object')return false;const {trimStart,trimEnd,muted}=x;return typeof trimStart==='number'&&typeof trimEnd==='number'&&typeof muted==='boolean'&&trimStart>=0&&trimEnd>trimStart&&Number.isFinite(trimStart+trimEnd);}
+function videoSafe(x){return typeof x==='string'&&((/^data:video\/[a-z0-9.+-]+(?:;codecs=[a-z0-9.,"=-]+)?;base64,[A-Za-z0-9+/=]+$/i.test(x)&&x.length<=MAX_VIDEO_CHARS)||(/^https:\/\/[^\s"'<>]+$/i.test(x)&&x.length<=2048));}
+function mediaEditSafe(x){
+ if(x===undefined||x===null)return true;
+ if(typeof x!=='object')return false;
+ const {trimStart,trimEnd,muted,volume,fadeIn,fadeOut,gain}=x;
+ const opt=(v,min,max)=>v===undefined||(typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max);
+ return typeof trimStart==='number'&&typeof trimEnd==='number'&&typeof muted==='boolean'&&Number.isFinite(trimStart)&&Number.isFinite(trimEnd)&&trimStart>=0&&trimEnd>trimStart&&opt(volume,0,1)&&opt(fadeIn,0,600)&&opt(fadeOut,0,600)&&opt(gain,0.1,8);
+}
 
 const trimmed=x=>typeof x==='string'?x.trim():'';
 function validateExtra(type,input,prompt,answer){
@@ -27673,17 +27750,17 @@ function photoLayout(w,h,edit){
   const turned=edit.rotate%180!==0,rw=turned?h:w,rh=turned?w:h,scale=edit.zoom/Math.min(rw,rh);
   return {scale,maxX:Math.max(0,(rw*scale-1)/2),maxY:Math.max(0,(rh*scale-1)/2)};
 }
-const clamp$2=(v,lo,hi)=>Math.min(hi,Math.max(lo,v))+0;
+const clamp$4=(v,lo,hi)=>Math.min(hi,Math.max(lo,v))+0;
 function clampEdit(w,h,edit){
-  const zoom=clamp$2(edit.zoom,MIN_ZOOM,MAX_ZOOM),{maxX,maxY}=photoLayout(w,h,{...edit,zoom});
-  return {...edit,zoom,x:clamp$2(edit.x,-maxX,maxX),y:clamp$2(edit.y,-maxY,maxY)};
+  const zoom=clamp$4(edit.zoom,MIN_ZOOM,MAX_ZOOM),{maxX,maxY}=photoLayout(w,h,{...edit,zoom});
+  return {...edit,zoom,x:clamp$4(edit.x,-maxX,maxX),y:clamp$4(edit.y,-maxY,maxY)};
 }
 
 // Same maths as CSS brightness() contrast() saturate(), applied in that order.
 function adjustPixels(data,{brightness:b=1,contrast:c=1,saturation:s=1}){
   if(b===1&&c===1&&s===1)return;
   const m=[.213+.787*s,.715-.715*s,.072-.072*s,.213-.213*s,.715+.285*s,.072-.072*s,.213-.213*s,.715-.715*s,.072+.928*s];
-  const step=v=>clamp$2((clamp$2(v*b,0,255)-127.5)*c+127.5,0,255);
+  const step=v=>clamp$4((clamp$4(v*b,0,255)-127.5)*c+127.5,0,255);
   for(let i=0;i<data.length;i+=4){
     const r=step(data[i]),g=step(data[i+1]),bl=step(data[i+2]);
     data[i]=m[0]*r+m[1]*g+m[2]*bl;data[i+1]=m[3]*r+m[4]*g+m[5]*bl;data[i+2]=m[6]*r+m[7]*g+m[8]*bl;
@@ -28968,7 +29045,7 @@ function TransferPage({ items, selectedIds, initial = 'import', onImport, onBack
 }
 
 // Answer areas for the newer question types. Each keeps its own answer and reports it through onGrade.
-const clamp$1 = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
+const clamp$3 = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
 function ListRecallAnswer({ item, disabled, onGrade }) {
     const total = item.listItems?.length || 0, need = Math.max(1, listNeed(item));
     const [values, setValues] = reactExports.useState(() => Array(need).fill('')), fields = reactExports.useRef([]);
@@ -29069,14 +29146,14 @@ function ImageTapAnswer({ item, disabled, onGrade }) {
     const [spot, setSpot] = reactExports.useState(null), board = reactExports.useRef(null);
     const hit = disabled && hotspotHit(item.hotspot, spot);
     function place(e) { if (disabled)
-        return; const r = board.current.getBoundingClientRect(); setSpot({ x: clamp$1((e.clientX - r.left) / r.width), y: clamp$1((e.clientY - r.top) / r.height) }); }
+        return; const r = board.current.getBoundingClientRect(); setSpot({ x: clamp$3((e.clientX - r.left) / r.width), y: clamp$3((e.clientY - r.top) / r.height) }); }
     function key(e) {
         if (disabled)
             return;
         const moves = { ArrowLeft: [-0.02, 0], ArrowRight: [.02, 0], ArrowUp: [0, -0.02], ArrowDown: [0, .02] };
         if (moves[e.key]) {
             e.preventDefault();
-            setSpot(s => ({ x: clamp$1((s?.x ?? .5) + moves[e.key][0]), y: clamp$1((s?.y ?? .5) + moves[e.key][1]) }));
+            setSpot(s => ({ x: clamp$3((s?.x ?? .5) + moves[e.key][0]), y: clamp$3((s?.y ?? .5) + moves[e.key][1]) }));
         }
         else if ((e.key === 'Enter' || e.key === ' ') && !spot) {
             e.preventDefault();
@@ -29098,10 +29175,10 @@ function ImageTapAnswer({ item, disabled, onGrade }) {
 }
 function SliderAnswer({ item, disabled, onGrade }) {
     const min = Number(item.sliderMin ?? 0), max = Number(item.sliderMax ?? 100), step = Number(item.sliderStep) || 1;
-    const decimals = Math.min(6, (String(step).split('.')[1] || '').length), snap = (v) => Number(clamp$1(min + Math.round((v - min) / step) * step, min, max).toFixed(decimals));
+    const decimals = Math.min(6, (String(step).split('.')[1] || '').length), snap = (v) => Number(clamp$3(min + Math.round((v - min) / step) * step, min, max).toFixed(decimals));
     const [value, setValue] = reactExports.useState(null), shown = value ?? snap((min + max) / 2);
     const answer = Number(item.answer), tolerance = Number(item.numericTolerance) || 0, span = max - min || 1;
-    const pct = (v) => clamp$1((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    const pct = (v) => clamp$3((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
     const right = disabled && value !== null && Math.abs(value - answer) <= tolerance + 1e-9;
     const unit = item.unit ? React.createElement("small", null, item.unit) : null;
     return React.createElement("div", { className: "extra-answer slider-answer" },
@@ -29144,10 +29221,8 @@ function ExtraAnswer(props) {
 var reactDomExports = requireReactDom();
 
 const ERROR_EVENT = 'recallflow:media-error';
-function pushMediaLinkError(message) {
-    if (message)
-        window.dispatchEvent(new CustomEvent(ERROR_EVENT, { detail: message }));
-}
+function pushMediaLinkError(message) { if (message)
+    window.dispatchEvent(new CustomEvent(ERROR_EVENT, { detail: message })); }
 function DriveShareLegacyNotice({ kind = 'media' }) {
     const what = kind === 'sound' ? 'Sound' : kind === 'video' ? 'Video' : 'Media';
     return React.createElement("p", { className: "media-drive-legacy", role: "status" },
@@ -29157,34 +29232,37 @@ function DriveShareLegacyNotice({ kind = 'media' }) {
         " ",
         DRIVE_SHARE_LEGACY_HINT);
 }
-function bandTitle(label) {
-    const t = label.replace(/\s*link$/i, '').trim() || 'Media';
-    return /^add\s/i.test(t) ? t : `Add ${t.toLowerCase()} link`;
-}
+function bandTitle(label) { const t = label.replace(/\s*link$/i, '').trim() || 'Media'; return /^add\s/i.test(t) ? t : `Add ${t.toLowerCase()} link`; }
 function linkHint(label) {
     const l = label.toLowerCase();
     if (l.includes('image') || l.includes('picture'))
         return 'Paste a direct https link to an image file (PNG, JPEG, WebP, GIF).';
     if (l.includes('video'))
-        return 'Paste a direct https link to a video file (MP4, WebM).';
-    return 'Paste a direct https link to an audio file (MP3, WAV, OGG, …).';
+        return 'Paste a direct https link to a video file (MP4, WebM). Google Drive and YouTube pages will not play.';
+    return 'Paste a direct https link to an audio file (MP3, WAV, OGG, …). Google Drive share pages will not play.';
 }
-function bandIcon(label) {
-    const l = label.toLowerCase();
-    if (l.includes('image') || l.includes('picture'))
-        return Image$1;
-    if (l.includes('video'))
-        return Film;
-    return Link2;
+function bandIcon(label) { const l = label.toLowerCase(); return l.includes('image') || l.includes('picture') ? Image$1 : l.includes('video') ? Film : Link2; }
+function liveHint(url) {
+    const u = url.trim();
+    if (!u)
+        return '';
+    if (driveFileId(u) || isDriveLink(u))
+        return 'Google Drive links do not play here. Download the file from Drive and upload it instead.';
+    if (/^http:\/\//i.test(u))
+        return 'Links must start with https://';
+    if (!/^https:\/\//i.test(u))
+        return 'That does not look like a link yet.';
+    return '';
 }
 function MediaLinkForm({ id, label, placeholder = 'https://…', submitLabel = 'Add', initialUrl = '', autoFocus = false, resolve = resolveMediaLink, onSubmit, onCancel, onClearError }) {
     const [url, setUrl] = reactExports.useState(initialUrl), [busy, setBusy] = reactExports.useState(false), [error, setError] = reactExports.useState('');
-    const Icon = bandIcon(label);
+    const Icon = bandIcon(label), hint = liveHint(url), canPaste = typeof navigator !== 'undefined' && !!navigator.clipboard?.readText;
     reactExports.useEffect(() => { setUrl(initialUrl); }, [initialUrl]);
     reactExports.useEffect(() => { const on = (e) => setError(String(e.detail || '')); window.addEventListener(ERROR_EVENT, on); return () => window.removeEventListener(ERROR_EVENT, on); }, []);
+    reactExports.useEffect(() => { const ov = document.body.style.overflow; document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ov; }; }, []);
     const clearInput = () => { if (busy)
         return; setUrl(''); setError(''); onClearError?.(); };
-    const submit = async () => { if (!url.trim() || busy)
+    const submit = async () => { if (!url.trim() || busy || hint)
         return; setBusy(true); setError(''); onClearError?.(); try {
         await onSubmit(resolve(url.trim()));
     }
@@ -29198,18 +29276,29 @@ function MediaLinkForm({ id, label, placeholder = 'https://…', submitLabel = '
     } };
     const cancel = () => { if (busy)
         return; setUrl(''); setError(''); onClearError?.(); onCancel(); };
+    const paste = async () => { try {
+        const t = (await navigator.clipboard.readText()).trim();
+        if (t) {
+            setUrl(t);
+            setError('');
+        }
+    }
+    catch {
+        setError('Clipboard access was blocked — paste with Ctrl/Cmd+V instead.');
+    } };
+    const titleId = `${id || 'media-link'}-title`;
     return reactDomExports.createPortal(React.createElement("div", { className: "media-link-layer", onMouseDown: e => { if (e.target === e.currentTarget)
             cancel(); } },
-        React.createElement("section", { className: "media-link-dialog is-band", role: "dialog", "aria-modal": "true", "aria-labelledby": `${id || 'media-link'}-title`, id: id },
+        React.createElement("section", { className: "media-link-dialog", role: "dialog", "aria-modal": "true", "aria-labelledby": titleId, id: id },
             React.createElement("div", { className: "media-link-band" },
                 React.createElement(Icon, { size: 18, "aria-hidden": "true" }),
-                React.createElement("h3", { id: `${id || 'media-link'}-title` }, bandTitle(label)),
+                React.createElement("h3", { id: titleId }, bandTitle(label)),
                 React.createElement("button", { type: "button", className: "media-link-close", "aria-label": "Close", disabled: busy, onClick: cancel },
                     React.createElement(X, { size: 18 }))),
             React.createElement("div", { className: "media-link-body" },
                 React.createElement("p", { className: "media-link-hint" }, linkHint(label)),
                 React.createElement("div", { className: "media-link-input-wrap" },
-                    React.createElement("input", { type: "url", inputMode: "url", autoFocus: autoFocus, "aria-label": label, "aria-invalid": !!error, placeholder: placeholder, value: url, disabled: busy, onChange: e => { setUrl(e.target.value); setError(''); onClearError?.(); }, onKeyDown: e => { if (e.key === 'Enter') {
+                    React.createElement("input", { type: "url", inputMode: "url", autoFocus: autoFocus, "aria-label": label, "aria-invalid": !!error || !!hint, placeholder: placeholder, value: url, disabled: busy, onChange: e => { setUrl(e.target.value); setError(''); onClearError?.(); }, onKeyDown: e => { if (e.key === 'Enter') {
                             e.preventDefault();
                             void submit();
                         } if (e.key === 'Escape') {
@@ -29217,191 +29306,796 @@ function MediaLinkForm({ id, label, placeholder = 'https://…', submitLabel = '
                             e.stopPropagation();
                             cancel();
                         } } }),
-                    !!url.trim() && React.createElement("button", { type: "button", className: "media-link-input-clear", "aria-label": "Clear link", disabled: busy, onClick: clearInput },
-                        React.createElement(X, { size: 16 }))),
+                    url.trim() ? React.createElement("button", { type: "button", className: "media-link-input-clear", "aria-label": "Clear link", disabled: busy, onClick: clearInput },
+                        React.createElement(X, { size: 16 }))
+                        : canPaste && React.createElement("button", { type: "button", className: "media-link-input-paste", "aria-label": "Paste from clipboard", disabled: busy, onClick: () => void paste() },
+                            React.createElement(ClipboardPaste, { size: 16 }))),
+                hint && !error && React.createElement("p", { className: "media-link-live", role: "status" },
+                    React.createElement(CircleAlert, { size: 14, "aria-hidden": "true" }),
+                    React.createElement("span", null, hint)),
                 error && React.createElement("p", { className: "media-link-error", role: "alert" },
                     React.createElement(CircleAlert, { size: 15, "aria-hidden": "true" }),
                     React.createElement("span", null, error)),
                 React.createElement("footer", null,
                     React.createElement("button", { type: "button", className: "media-link-cancel", disabled: busy, onClick: cancel }, "Cancel"),
-                    React.createElement("button", { type: "button", className: "media-link-add", disabled: !url.trim() || busy, onClick: () => void submit() }, busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : submitLabel))))), document.body);
+                    React.createElement("button", { type: "button", className: "media-link-add", disabled: !url.trim() || busy || !!hint, onClick: () => void submit() }, busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : submitLabel))))), document.body);
 }
 
-const time$1 = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-const fine = (s) => `${time$1(s)}.${Math.floor((s % 1) * 10)}`;
-const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
-const isEmbeddedMedia = (src) => src.startsWith('data:');
-function defaultEdit(duration) {
-    const d = Math.max(0, duration || 0);
-    return { trimStart: 0, trimEnd: d || 0, muted: false, volume: 1 };
-}
+const MIN_LEN = 0.1, SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
+const clamp$2 = (v, a, b) => Math.min(b, Math.max(a, v));
+const num = (v, fb) => typeof v === 'number' && Number.isFinite(v) ? v : fb;
+const fmtTime = (s) => { s = Math.max(0, num(s, 0)); return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`; };
+const fmtFine = (s) => `${fmtTime(s)}.${Math.floor((Math.max(0, num(s, 0)) % 1) * 10)}`;
+const isEmbeddedMedia = (src) => /^(data|blob):/i.test(src || '');
+const playbackSrc = (src) => isEmbeddedMedia(src) ? src : resolveMediaPlaybackSrc(src);
+const AC = () => (window.AudioContext || window.webkitAudioContext);
+function defaultEdit(duration) { const d = Math.max(0, num(duration, 0)); return { trimStart: 0, trimEnd: d, muted: false, volume: 1, fadeIn: 0, fadeOut: 0, gain: 1 }; }
 function normalizeEdit(edit, duration) {
-    const d = Math.max(0, duration || 0);
-    if (!d)
-        return defaultEdit(0);
-    if (!edit)
+    const d = Math.max(0, num(duration, 0));
+    if (!d || !edit)
         return defaultEdit(d);
-    let { trimStart, trimEnd, muted } = edit;
-    trimStart = Math.max(0, Math.min(trimStart, d - 0.05));
-    trimEnd = Math.max(trimStart + 0.05, Math.min(trimEnd, d));
-    const volume = Number.isFinite(edit.volume) ? Math.max(0, Math.min(1, Number(edit.volume))) : 1;
-    return { trimStart, trimEnd, muted: !!muted, volume };
+    const trimStart = clamp$2(num(edit.trimStart, 0), 0, Math.max(0, d - MIN_LEN));
+    const trimEnd = clamp$2(num(edit.trimEnd, d), Math.min(d, trimStart + MIN_LEN), d);
+    const len = Math.max(MIN_LEN, trimEnd - trimStart);
+    return { trimStart, trimEnd, muted: !!edit.muted, volume: clamp$2(num(edit.volume, 1), 0, 1), fadeIn: clamp$2(num(edit.fadeIn, 0), 0, len / 2), fadeOut: clamp$2(num(edit.fadeOut, 0), 0, len / 2), gain: clamp$2(num(edit.gain, 1), 0.25, 4) };
 }
 function editIsDefault(edit, duration) {
     const n = normalizeEdit(edit, duration);
-    return !n.muted && n.volume === 1 && n.trimStart <= 0.01 && Math.abs(n.trimEnd - duration) <= 0.05;
+    return !n.muted && n.volume === 1 && n.gain === 1 && n.fadeIn === 0 && n.fadeOut === 0 && n.trimStart <= 0.01 && Math.abs(n.trimEnd - duration) <= 0.05;
 }
-function useHistory(initial) {
-    const [past, setPast] = reactExports.useState([]);
-    const [present, setPresent] = reactExports.useState(initial);
-    const [future, setFuture] = reactExports.useState([]);
-    const set = (next) => { setPast(p => [...p, present]); setPresent(next); setFuture([]); };
-    const undo = () => { setPast(p => { if (!p.length)
-        return p; const prev = p[p.length - 1]; setFuture(f => [present, ...f]); setPresent(prev); return p.slice(0, -1); }); };
-    const redo = () => { setFuture(f => { if (!f.length)
-        return f; const nxt = f[0]; setPast(p => [...p, present]); setPresent(nxt); return f.slice(1); }); };
-    const reset = (v) => { setPast([]); setFuture([]); setPresent(v); };
-    return { state: present, set, undo, redo, reset, canUndo: past.length > 0, canRedo: future.length > 0 };
+/** Linear gain the clip should play at time t (0 = silent). Includes mute, volume, boost and fades. */
+function levelAt(e, t) {
+    if (e.muted)
+        return 0;
+    let a = 1;
+    if (e.fadeIn && e.fadeIn > 0)
+        a = Math.min(a, (t - e.trimStart) / e.fadeIn);
+    if (e.fadeOut && e.fadeOut > 0)
+        a = Math.min(a, (e.trimEnd - t) / e.fadeOut);
+    return clamp$2(a, 0, 1) * num(e.volume, 1) * num(e.gain, 1);
+}
+/* ───────────────────────── duration & probing ───────────────────────── */
+function readDuration(el) {
+    const d = saneDuration(el.duration);
+    if (d)
+        return d;
+    try {
+        const s = el.seekable;
+        if (s.length)
+            return saneDuration(s.end(s.length - 1));
+    }
+    catch { }
+    return 0;
+}
+/** Real duration of a media element. Fixes MediaRecorder WebM (Infinity/NaN) by seeking to the end once. */
+function resolveMediaDuration(el, timeoutMs = 15000) {
+    return new Promise(resolve => {
+        let done = false, fixing = false;
+        const evs = ['loadedmetadata', 'durationchange', 'loadeddata', 'canplay'];
+        const finish = (d) => { if (done)
+            return; done = true; window.clearTimeout(timer); evs.forEach(ev => el.removeEventListener(ev, check)); el.removeEventListener('error', onErr); resolve(d); };
+        const check = () => {
+            const d = readDuration(el);
+            if (d) {
+                finish(d);
+                return;
+            }
+            if (el.readyState >= 1 && !fixing && !Number.isFinite(el.duration)) {
+                fixing = true;
+                const back = () => { el.removeEventListener('seeked', back); const d2 = readDuration(el); try {
+                    el.currentTime = 0;
+                }
+                catch { } if (d2)
+                    finish(d2); };
+                el.addEventListener('seeked', back);
+                try {
+                    el.currentTime = 1e101;
+                }
+                catch {
+                    el.removeEventListener('seeked', back);
+                    fixing = false;
+                }
+            }
+        };
+        const onErr = () => finish(0);
+        const timer = window.setTimeout(() => finish(readDuration(el)), timeoutMs);
+        evs.forEach(ev => el.addEventListener(ev, check));
+        el.addEventListener('error', onErr);
+        check();
+    });
+}
+function seekElement(el, t) {
+    return new Promise(resolve => { let timer = 0; const done = () => { el.removeEventListener('seeked', done); window.clearTimeout(timer); resolve(); }; el.addEventListener('seeked', done); timer = window.setTimeout(done, 3000); try {
+        el.currentTime = t;
+    }
+    catch {
+        done();
+    } });
+}
+/** Can this browser play the URL, and how long is it? Works for data:, blob: and https. */
+function probeMediaSrc(src, kind, timeoutMs = 15000) {
+    return new Promise(resolve => {
+        const el = document.createElement(kind);
+        el.preload = 'auto';
+        el.muted = true;
+        el.playsInline = true;
+        let settled = false;
+        const finish = (ok, duration) => { if (settled)
+            return; settled = true; el.removeAttribute('src'); el.load(); resolve({ ok, duration }); };
+        el.addEventListener('error', () => finish(false, 0), { once: true });
+        el.src = playbackSrc(src);
+        void resolveMediaDuration(el, timeoutMs).then(d => finish(!el.error && (d > 0 || el.readyState >= 1), d));
+    });
+}
+/* ───────────────────────── decoding, peaks, rendering ───────────────────────── */
+async function decodeAudioFromSrc(src) {
+    const res = await fetch(playbackSrc(src), isEmbeddedMedia(src) ? undefined : { mode: 'cors' });
+    if (!res.ok)
+        throw new Error('Could not fetch this clip.');
+    const ab = await res.arrayBuffer();
+    const Ctx = AC();
+    if (!Ctx)
+        throw new Error('Web Audio is not available in this browser.');
+    const ctx = new Ctx();
+    try {
+        return await ctx.decodeAudioData(ab);
+    }
+    finally {
+        ctx.close().catch(() => { });
+    }
+}
+function computePeaks(buf, bars) {
+    const n = buf.length, block = Math.max(1, Math.floor(n / bars)), chs = buf.numberOfChannels, peaks = new Array(bars).fill(0);
+    let peak = 0;
+    for (let c = 0; c < chs; c++) {
+        const d = buf.getChannelData(c);
+        for (let i = 0; i < bars; i++) {
+            const s = i * block, e = Math.min(n, s + block);
+            let m = 0;
+            for (let j = s; j < e; j++) {
+                const v = d[j] < 0 ? -d[j] : d[j];
+                if (v > m)
+                    m = v;
+            }
+            if (m > peaks[i])
+                peaks[i] = m;
+            if (m > peak)
+                peak = m;
+        }
+    }
+    return { peaks: peaks.map(v => peak ? v / peak : 0), duration: buf.duration, peak, channels: chs, sampleRate: buf.sampleRate };
+}
+const peakCache = new Map();
+const cacheKey = (src, bars) => `${bars}:${src.length}:${src.slice(0, 96)}:${src.slice(-96)}`;
+/** Normalised peaks for a waveform. Cached. Resolves null when the file can't be decoded (e.g. CORS-blocked link). */
+function decodePeaks(src, bars = 240) {
+    const key = cacheKey(src, bars);
+    const hit = peakCache.get(key);
+    if (hit)
+        return hit;
+    const p = decodeAudioFromSrc(src).then(b => computePeaks(b, bars)).catch(() => null);
+    peakCache.set(key, p);
+    if (peakCache.size > 16)
+        peakCache.delete(peakCache.keys().next().value);
+    return p;
+}
+/** Absolute peak (0–1) between two fractions of the file. */
+function peakWithin(p, from, to) {
+    const n = p.peaks.length, a = clamp$2(Math.floor(from * n), 0, n - 1), b = clamp$2(Math.ceil(to * n), a + 1, n);
+    let m = 0;
+    for (let i = a; i < b; i++)
+        if (p.peaks[i] > m)
+            m = p.peaks[i];
+    return m * p.peak;
+}
+/** Offline render of the selection with volume, boost and fades applied. Instant (no realtime playback). */
+async function renderEditedAudio(src, edit, opts = {}) {
+    const buf = await decodeAudioFromSrc(src);
+    const e = normalizeEdit(edit, buf.duration), len = Math.max(MIN_LEN, e.trimEnd - e.trimStart);
+    const sr = opts.sampleRate || buf.sampleRate, chs = opts.mono ? 1 : buf.numberOfChannels;
+    const Off = (window.OfflineAudioContext || window.webkitOfflineAudioContext);
+    const off = new Off(chs, Math.ceil(len * sr), sr);
+    const s = off.createBufferSource();
+    s.buffer = buf;
+    const g = off.createGain();
+    const base = e.muted ? 0 : e.volume * e.gain;
+    g.gain.setValueAtTime(e.fadeIn > 0 ? 0 : base, 0);
+    if (e.fadeIn > 0)
+        g.gain.linearRampToValueAtTime(base, e.fadeIn);
+    if (e.fadeOut > 0) {
+        g.gain.setValueAtTime(base, Math.max(e.fadeIn, len - e.fadeOut));
+        g.gain.linearRampToValueAtTime(0, len);
+    }
+    s.connect(g).connect(off.destination);
+    s.start(0, e.trimStart, len);
+    return off.startRendering();
+}
+function audioBufferToWav(buf) {
+    const chs = buf.numberOfChannels, sr = buf.sampleRate, n = buf.length, bytes = 44 + n * chs * 2;
+    const ab = new ArrayBuffer(bytes), dv = new DataView(ab);
+    const str = (o, s) => { for (let i = 0; i < s.length; i++)
+        dv.setUint8(o + i, s.charCodeAt(i)); };
+    str(0, 'RIFF');
+    dv.setUint32(4, bytes - 8, true);
+    str(8, 'WAVE');
+    str(12, 'fmt ');
+    dv.setUint32(16, 16, true);
+    dv.setUint16(20, 1, true);
+    dv.setUint16(22, chs, true);
+    dv.setUint32(24, sr, true);
+    dv.setUint32(28, sr * chs * 2, true);
+    dv.setUint16(32, chs * 2, true);
+    dv.setUint16(34, 16, true);
+    str(36, 'data');
+    dv.setUint32(40, n * chs * 2, true);
+    const data = Array.from({ length: chs }, (_, c) => buf.getChannelData(c));
+    let o = 44;
+    for (let i = 0; i < n; i++)
+        for (let c = 0; c < chs; c++) {
+            const v = clamp$2(data[c][i], -1, 1);
+            dv.setInt16(o, v < 0 ? v * 0x8000 : v * 0x7fff, true);
+            o += 2;
+        }
+    return new Blob([ab], { type: 'audio/wav' });
+}
+/** Compress an AudioBuffer with MediaRecorder. Runs in real time (browsers have no offline Opus encoder) — pass onProgress/signal. */
+async function encodeAudioBuffer(buf, { bitrate = 48000, onProgress, signal } = {}) {
+    if (typeof MediaRecorder === 'undefined')
+        throw new Error('This browser cannot compress audio.');
+    const Ctx = AC();
+    if (!Ctx)
+        throw new Error('Web Audio is not available in this browser.');
+    const ctx = new Ctx();
+    try {
+        await ctx.resume().catch(() => { });
+        if (ctx.state !== 'running')
+            throw new Error('Audio is blocked until you interact with the page. Tap anywhere, then try again.');
+        const dest = ctx.createMediaStreamDestination(), s = ctx.createBufferSource();
+        s.buffer = buf;
+        s.connect(dest);
+        const mime = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
+        const rec = new MediaRecorder(dest.stream, { ...(mime ? { mimeType: mime } : {}), audioBitsPerSecond: bitrate });
+        const chunks = [];
+        rec.ondataavailable = e => { if (e.data.size)
+            chunks.push(e.data); };
+        const done = new Promise(res => { rec.onstop = () => res(new Blob(chunks, { type: rec.mimeType || mime || 'audio/webm' })); });
+        const t0 = ctx.currentTime;
+        let aborted = false;
+        const tick = window.setInterval(() => onProgress?.(clamp$2((ctx.currentTime - t0) / buf.duration, 0, 0.99)), 200);
+        const stop = () => { window.clearInterval(tick); if (rec.state !== 'inactive')
+            rec.stop(); };
+        s.onended = stop;
+        signal?.addEventListener('abort', () => { aborted = true; try {
+            s.stop();
+        }
+        catch { } stop(); }, { once: true });
+        rec.start(250);
+        s.start();
+        const blob = await done;
+        if (aborted)
+            throw new Error('Cancelled.');
+        onProgress?.(1);
+        return blob;
+    }
+    finally {
+        ctx.close().catch(() => { });
+    }
+}
+/** Compressed (WebM/Opus) export of the edited selection. Kept for API compatibility. */
+async function exportTrimmedAudio(src, edit, opts = {}) {
+    return encodeAudioBuffer(await renderEditedAudio(src, edit), { bitrate: 64000, ...opts });
+}
+async function exportTrimmedWav(src, edit) { return audioBufferToWav(await renderEditedAudio(src, edit)); }
+/** Real video export: plays the selection through a canvas + Web Audio graph into MediaRecorder. Real time; uploaded clips only. */
+async function exportTrimmedVideo(src, edit, opts = {}) {
+    if (typeof MediaRecorder === 'undefined')
+        throw new Error('This browser cannot export video.');
+    if (!isEmbeddedMedia(src))
+        throw new Error('Exporting an edited video needs an uploaded clip.');
+    const v = document.createElement('video');
+    v.src = playbackSrc(src);
+    v.playsInline = true;
+    v.preload = 'auto';
+    v.muted = false;
+    v.style.cssText = 'position:fixed;left:-9999px;width:2px;height:2px;opacity:0;pointer-events:none';
+    document.body.appendChild(v);
+    let ctx = null;
+    try {
+        const d = await resolveMediaDuration(v);
+        if (!d)
+            throw new Error('Could not read this video.');
+        const e = normalizeEdit(edit, d), len = Math.max(MIN_LEN, e.trimEnd - e.trimStart);
+        await new Promise((res, rej) => { if (v.readyState >= 2)
+            return res(); v.addEventListener('loadeddata', () => res(), { once: true }); v.addEventListener('error', () => rej(new Error('Could not read this video.')), { once: true }); });
+        const w = v.videoWidth || 640, h = v.videoHeight || 360, scale = Math.min(1, 1280 / Math.max(w, h));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(2, Math.round(w * scale) & ~1);
+        canvas.height = Math.max(2, Math.round(h * scale) & ~1);
+        const c2 = canvas.getContext('2d');
+        if (!c2)
+            throw new Error('Canvas is not available.');
+        const stream = canvas.captureStream(30);
+        let gain = null;
+        const Ctx = AC();
+        if (!e.muted && Ctx) {
+            ctx = new Ctx();
+            await ctx.resume().catch(() => { });
+            const node = ctx.createMediaElementSource(v);
+            gain = ctx.createGain();
+            const dest = ctx.createMediaStreamDestination();
+            node.connect(gain).connect(dest);
+            dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+        }
+        else
+            v.muted = true;
+        const mime = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
+        const rec = new MediaRecorder(stream, { ...(mime ? { mimeType: mime } : {}), videoBitsPerSecond: 2500000 });
+        const chunks = [];
+        rec.ondataavailable = ev => { if (ev.data.size)
+            chunks.push(ev.data); };
+        const stopped = new Promise(res => { rec.onstop = () => res(new Blob(chunks, { type: rec.mimeType || mime || 'video/webm' })); });
+        await seekElement(v, e.trimStart);
+        c2.drawImage(v, 0, 0, canvas.width, canvas.height);
+        rec.start(500);
+        let raf = 0, aborted = false;
+        const finish = () => { cancelAnimationFrame(raf); v.pause(); if (rec.state !== 'inactive')
+            rec.stop(); };
+        const draw = () => {
+            const t = v.currentTime;
+            c2.drawImage(v, 0, 0, canvas.width, canvas.height);
+            if (gain && ctx)
+                gain.gain.setTargetAtTime(levelAt(e, t), ctx.currentTime, 0.01);
+            opts.onProgress?.(clamp$2((t - e.trimStart) / len, 0, 1));
+            if (t >= e.trimEnd - 0.02 || v.ended) {
+                finish();
+                return;
+            }
+            raf = requestAnimationFrame(draw);
+        };
+        opts.signal?.addEventListener('abort', () => { aborted = true; finish(); }, { once: true });
+        await v.play();
+        raf = requestAnimationFrame(draw);
+        const blob = await stopped;
+        if (aborted)
+            throw new Error('Cancelled.');
+        return blob;
+    }
+    finally {
+        v.pause();
+        v.removeAttribute('src');
+        v.load();
+        v.remove();
+        ctx?.close().catch(() => { });
+    }
+}
+function saveBlob(blob, name) {
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 async function downloadOriginal(src, name) {
     try {
-        const blob = src.startsWith('data:') ? await (await fetch(src)).blob() : await (await fetch(src, { mode: 'cors' })).blob();
-        const url = URL.createObjectURL(blob), a = document.createElement('a');
-        a.href = url;
-        a.download = name;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        const blob = await (await fetch(playbackSrc(src), isEmbeddedMedia(src) ? undefined : { mode: 'cors' })).blob();
+        saveBlob(blob, name);
     }
     catch {
-        window.open(src, '_blank');
+        window.open(src, '_blank', 'noopener');
     }
 }
-async function exportTrimmedAudio(src, edit) {
-    const ctx = new AudioContext();
-    try {
-        const buf = await ctx.decodeAudioData(await (await fetch(resolveMediaPlaybackSrc(src))).arrayBuffer());
-        const slice = ctx.createBufferSource();
-        slice.buffer = buf;
-        const dest = ctx.createMediaStreamDestination(), gain = ctx.createGain();
-        gain.gain.value = edit.muted ? 0 : (edit.volume ?? 1);
-        slice.connect(gain).connect(dest);
-        const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
-        const rec = new MediaRecorder(dest.stream, mime ? { mimeType: mime } : undefined), chunks = [];
-        rec.ondataavailable = e => { if (e.data.size)
-            chunks.push(e.data); };
-        const done = new Promise(resolve => { rec.onstop = () => resolve(new Blob(chunks, { type: rec.mimeType || mime || 'audio/webm' })); });
-        const len = Math.max(0.05, edit.trimEnd - edit.trimStart);
-        rec.start();
-        slice.start(0, edit.trimStart, len);
-        slice.onended = () => { if (rec.state !== 'inactive')
-            rec.stop(); };
-        const out = await done;
-        return out;
-    }
-    finally {
-        await ctx.close().catch(() => { });
-    }
-}
-function MediaClipEditor({ src, kind, title, initial, onSave, onCancel }) {
-    const media = reactExports.useRef(null);
-    const scrub = reactExports.useRef(null);
-    const [duration, setDuration] = reactExports.useState(0);
-    const [at, setAt] = reactExports.useState(0);
-    const [drag, setDrag] = reactExports.useState(null);
-    const [draft, setDraft] = reactExports.useState(null);
-    const [menu, setMenu] = reactExports.useState(false);
-    const [exporting, setExporting] = reactExports.useState('');
-    const [playing, setPlaying] = reactExports.useState(false);
-    const [speed, setSpeed] = reactExports.useState(1);
-    const base = defaultEdit(duration);
-    const hist = useHistory(normalizeEdit(initial, duration || 0));
-    const edit = normalizeEdit(draft ?? hist.state, duration || 0);
+const extFor = (mime, kind) => /mp4/.test(mime) ? (kind === 'audio' ? 'm4a' : 'mp4') : /ogg/.test(mime) ? 'ogg' : /wav/.test(mime) ? 'wav' : 'webm';
+/**
+ * Applies a MediaEdit to a media element: trim loop, mute, volume, boost and fades.
+ * Uses a Web Audio graph for data:/blob: sources (allows gain > 1 and live levels); plain element volume for links.
+ * Render the element with key={src} so a fresh element is created when the source changes.
+ */
+function useClipPlayback(ref, src, edit, opts = {}) {
+    const [duration, setDuration] = reactExports.useState(0), [at, setAt] = reactExports.useState(0), [playing, setPlaying] = reactExports.useState(false), [failed, setFailed] = reactExports.useState(false), [ready, setReady] = reactExports.useState(false);
+    const graph = reactExports.useRef(null);
+    const clip = normalizeEdit(edit, duration);
+    const clipRef = reactExports.useRef(clip);
+    clipRef.current = clip;
+    const durRef = reactExports.useRef(duration);
+    durRef.current = duration;
+    const loopRef = reactExports.useRef(!!opts.loop);
+    loopRef.current = !!opts.loop;
     const embedded = isEmbeddedMedia(src);
-    const playback = resolveMediaPlaybackSrc(src);
-    const drive = !!driveFileId(src) || isDriveLink(src);
+    const embeddedRef = reactExports.useRef(embedded);
+    embeddedRef.current = embedded;
+    const wantAnalyser = reactExports.useRef(!!opts.analyser);
     reactExports.useEffect(() => {
-        const el = media.current;
+        const el = ref.current;
+        setAt(0);
+        setPlaying(false);
+        setFailed(false);
+        setReady(false);
+        setDuration(opts.durationHint || 0);
         if (!el)
             return;
-        const meta = () => { const d = el.duration; if (Number.isFinite(d) && d > 0) {
-            setDuration(d);
-            hist.reset(normalizeEdit(initial, d));
-        } };
-        el.addEventListener('loadedmetadata', meta);
-        el.addEventListener('durationchange', meta);
-        meta();
-        return () => { el.removeEventListener('loadedmetadata', meta); el.removeEventListener('durationchange', meta); };
-    }, [playback]);
-    reactExports.useEffect(() => { const el = media.current; if (!el)
-        return; el.muted = edit.muted; el.volume = edit.volume ?? 1; }, [edit.muted, edit.volume, src]);
+        let cancelled = false;
+        const onErr = () => { if (!cancelled)
+            setFailed(true); };
+        const onReady = () => { if (!cancelled)
+            setReady(true); };
+        el.addEventListener('error', onErr);
+        el.addEventListener('loadeddata', onReady);
+        if (el.readyState >= 2)
+            setReady(true);
+        void resolveMediaDuration(el).then(d => { if (!cancelled && d)
+            setDuration(d); });
+        if (embedded)
+            void decodePeaks(src).then(m => { if (!cancelled && m?.duration)
+                setDuration(prev => prev || m.duration); });
+        return () => { cancelled = true; el.removeEventListener('error', onErr); el.removeEventListener('loadeddata', onReady); el.pause(); };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [src]);
+    reactExports.useEffect(() => { if (opts.durationHint)
+        setDuration(p => p || opts.durationHint); }, [opts.durationHint]);
+    reactExports.useEffect(() => () => { graph.current?.ctx.close().catch(() => { }); graph.current = null; }, []);
+    const ensureGraph = reactExports.useCallback(() => {
+        const el = ref.current;
+        if (!el || !embeddedRef.current)
+            return null;
+        if (graph.current && graph.current.el !== el) {
+            graph.current.ctx.close().catch(() => { });
+            graph.current = null;
+        }
+        if (graph.current)
+            return graph.current;
+        try {
+            const Ctx = AC();
+            if (!Ctx)
+                return null;
+            const ctx = new Ctx(), node = ctx.createMediaElementSource(el), gain = ctx.createGain();
+            let analyser;
+            if (wantAnalyser.current) {
+                analyser = ctx.createAnalyser();
+                analyser.fftSize = 128;
+                analyser.smoothingTimeConstant = 0.7;
+            }
+            node.connect(gain);
+            if (analyser) {
+                gain.connect(analyser);
+                analyser.connect(ctx.destination);
+            }
+            else
+                gain.connect(ctx.destination);
+            el.volume = 1;
+            el.muted = false;
+            graph.current = { el, ctx, gain, analyser };
+        }
+        catch {
+            graph.current = null;
+        }
+        return graph.current;
+    }, [ref]);
+    const applyLevel = reactExports.useCallback((t) => {
+        const el = ref.current;
+        if (!el)
+            return;
+        const c = clipRef.current, lvl = levelAt(c, t), g = graph.current;
+        if (g && g.el === el) {
+            g.gain.gain.setTargetAtTime(lvl, g.ctx.currentTime, 0.015);
+            el.muted = false;
+            el.volume = 1;
+        }
+        else {
+            el.muted = c.muted;
+            try {
+                el.volume = clamp$2(lvl, 0, 1);
+            }
+            catch { }
+        }
+    }, [ref]);
+    reactExports.useEffect(() => { const el = ref.current; if (el)
+        applyLevel(el.currentTime); }, [clip.muted, clip.volume, clip.gain, clip.fadeIn, clip.fadeOut, clip.trimStart, clip.trimEnd, applyLevel, ref]);
+    reactExports.useEffect(() => {
+        const el = ref.current;
+        if (!el)
+            return;
+        let raf = 0, last = -1;
+        const step = () => {
+            const c = clipRef.current, t = el.currentTime;
+            if (Math.abs(t - last) > 0.03) {
+                last = t;
+                setAt(t);
+            }
+            applyLevel(t);
+            if (durRef.current && t >= c.trimEnd - 0.03) {
+                if (loopRef.current) {
+                    el.currentTime = c.trimStart;
+                }
+                else {
+                    el.pause();
+                    el.currentTime = c.trimStart;
+                    setAt(c.trimStart);
+                    return;
+                }
+            }
+            if (!el.paused)
+                raf = requestAnimationFrame(step);
+        };
+        const onPlay = () => { const c = clipRef.current; if (durRef.current && el.currentTime < c.trimStart - 0.01)
+            el.currentTime = c.trimStart; setPlaying(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(step); };
+        const onPause = () => { setPlaying(false); cancelAnimationFrame(raf); setAt(el.currentTime); };
+        const onEnded = () => { setPlaying(false); cancelAnimationFrame(raf); const c = clipRef.current; el.currentTime = c.trimStart; setAt(c.trimStart); };
+        const onTime = () => { if (el.paused)
+            setAt(el.currentTime); };
+        el.addEventListener('play', onPlay);
+        el.addEventListener('pause', onPause);
+        el.addEventListener('ended', onEnded);
+        el.addEventListener('timeupdate', onTime);
+        if (!el.paused)
+            onPlay();
+        return () => { cancelAnimationFrame(raf); el.removeEventListener('play', onPlay); el.removeEventListener('pause', onPause); el.removeEventListener('ended', onEnded); el.removeEventListener('timeupdate', onTime); };
+    }, [src, applyLevel, ref]);
+    const seek = reactExports.useCallback((t, free = false) => {
+        const el = ref.current;
+        if (!el)
+            return;
+        const c = clipRef.current, d = durRef.current;
+        const next = d ? (free ? clamp$2(t, 0, d) : clamp$2(t, c.trimStart, c.trimEnd)) : Math.max(0, t);
+        try {
+            el.currentTime = next;
+        }
+        catch { }
+        setAt(next);
+        applyLevel(next);
+    }, [applyLevel, ref]);
+    const play = reactExports.useCallback(() => {
+        const el = ref.current;
+        if (!el)
+            return;
+        const c = clipRef.current, d = durRef.current;
+        if (d && (el.currentTime < c.trimStart - 0.01 || el.currentTime >= c.trimEnd - 0.05)) {
+            try {
+                el.currentTime = c.trimStart;
+            }
+            catch { }
+        }
+        const g = ensureGraph();
+        applyLevel(el.currentTime);
+        const p = el.play();
+        if (g && g.ctx.state !== 'running')
+            void g.ctx.resume().catch(() => { });
+        if (p && typeof p.catch === 'function')
+            p.catch(() => setFailed(true));
+    }, [applyLevel, ensureGraph, ref]);
+    const pause = reactExports.useCallback(() => { ref.current?.pause(); }, [ref]);
+    const toggle = reactExports.useCallback(() => { const el = ref.current; if (!el)
+        return; if (el.paused)
+        play();
+    else
+        el.pause(); }, [play, ref]);
+    const levels = reactExports.useCallback((bars) => {
+        const g = graph.current;
+        if (!g?.analyser)
+            return null;
+        const data = g.data || (g.data = new Uint8Array(g.analyser.frequencyBinCount));
+        g.analyser.getByteFrequencyData(data);
+        const step = Math.max(1, Math.floor(data.length / bars));
+        return Array.from({ length: bars }, (_, i) => { let s = 0; for (let j = 0; j < step; j++)
+            s += data[i * step + j] || 0; return s / step / 255; });
+    }, []);
+    return { duration, at, playing, failed, ready, clip, seek, play, pause, toggle, levels };
+}
+/* ───────────────────────── timeline strip (waveform / filmstrip) ───────────────────────── */
+async function extractFrames(src, duration, count, height, signal, onFrame) {
+    const v = document.createElement('video');
+    v.src = playbackSrc(src);
+    v.muted = true;
+    v.playsInline = true;
+    v.preload = 'auto';
+    try {
+        await new Promise((res, rej) => { const t = window.setTimeout(() => rej(new Error('timeout')), 15000); v.addEventListener('loadeddata', () => { window.clearTimeout(t); res(); }, { once: true }); v.addEventListener('error', () => { window.clearTimeout(t); rej(new Error('error')); }, { once: true }); });
+        const ratio = v.videoWidth && v.videoHeight ? v.videoWidth / v.videoHeight : 16 / 9, w = Math.max(8, Math.round(height * ratio));
+        for (let i = 0; i < count && !signal.aborted; i++) {
+            await seekElement(v, Math.min(Math.max(0, duration - 0.05), (i + 0.5) / count * duration));
+            if (signal.aborted)
+                break;
+            const c = document.createElement('canvas');
+            c.width = w;
+            c.height = height;
+            c.getContext('2d')?.drawImage(v, 0, 0, w, height);
+            onFrame(c);
+        }
+    }
+    catch { }
+    finally {
+        v.removeAttribute('src');
+        v.load();
+    }
+}
+function useStrip(canvas, src, kind, duration, peaks) {
+    const frames = reactExports.useRef([]);
+    const drawRef = reactExports.useRef(() => { });
+    drawRef.current = () => {
+        const c = canvas.current;
+        if (!c)
+            return;
+        const dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
+        if (!w || !h)
+            return;
+        const W = Math.round(w * dpr), H = Math.round(h * dpr);
+        if (c.width !== W || c.height !== H) {
+            c.width = W;
+            c.height = H;
+        }
+        const g = c.getContext('2d');
+        if (!g)
+            return;
+        g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        g.clearRect(0, 0, w, h);
+        const fr = frames.current;
+        if (fr.length) {
+            const fw = w / fr.length;
+            fr.forEach((f, i) => g.drawImage(f, i * fw, 0, fw + 0.5, h));
+        }
+        if (peaks && peaks.length) {
+            const n = peaks.length, bw = w / n, video = kind === 'video', mid = video ? h * 0.78 : h / 2, amp = video ? h * 0.2 : h * 0.46;
+            g.fillStyle = getComputedStyle(c).getPropertyValue('--mc-wave').trim() || '#a99cff';
+            g.globalAlpha = video ? 0.85 : 1;
+            for (let i = 0; i < n; i++) {
+                const bh = Math.max(1, peaks[i] * amp);
+                g.fillRect(i * bw + bw * 0.2, mid - bh, Math.max(1, bw * 0.6), bh * 2);
+            }
+            g.globalAlpha = 1;
+        }
+    };
+    reactExports.useEffect(() => {
+        frames.current = [];
+        drawRef.current();
+        if (kind !== 'video' || !duration)
+            return;
+        const ac = new AbortController();
+        void extractFrames(src, duration, 10, 56, ac.signal, f => { frames.current = [...frames.current, f]; drawRef.current(); });
+        return () => ac.abort();
+    }, [src, kind, duration]);
+    reactExports.useEffect(() => {
+        drawRef.current();
+        const c = canvas.current;
+        if (!c || typeof ResizeObserver === 'undefined')
+            return;
+        const ro = new ResizeObserver(() => drawRef.current());
+        ro.observe(c);
+        return () => ro.disconnect();
+    }, [peaks, kind, canvas]);
+}
+/* ───────────────────────── history ───────────────────────── */
+function useHistory(initial) {
+    const [h, setH] = reactExports.useState({ past: [], present: initial, future: [] });
+    const set = reactExports.useCallback((next) => setH(s => ({ past: [...s.past.slice(-60), s.present], present: next, future: [] })), []);
+    const undo = reactExports.useCallback(() => setH(s => s.past.length ? { past: s.past.slice(0, -1), present: s.past[s.past.length - 1], future: [s.present, ...s.future] } : s), []);
+    const redo = reactExports.useCallback(() => setH(s => s.future.length ? { past: [...s.past, s.present], present: s.future[0], future: s.future.slice(1) } : s), []);
+    return { state: h.present, set, undo, redo, canUndo: h.past.length > 0, canRedo: h.future.length > 0 };
+}
+function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplace, saveMode = 'edits', maxSeconds, fileName }) {
+    const media = reactExports.useRef(null);
+    const scrub = reactExports.useRef(null), strip = reactExports.useRef(null), dialog = reactExports.useRef(null), menuRef = reactExports.useRef(null);
+    const hist = useHistory(initial ?? null);
+    const [draft, setDraft] = reactExports.useState(null);
+    const draftRef = reactExports.useRef(null);
+    draftRef.current = draft;
+    const [loop, setLoop] = reactExports.useState(false), [speed, setSpeed] = reactExports.useState(1), [dragging, setDragging] = reactExports.useState(null), [menu, setMenu] = reactExports.useState(false), [slow, setSlow] = reactExports.useState(false);
+    const [job, setJob] = reactExports.useState(null);
+    const jobAbort = reactExports.useRef(null);
+    const [note, setNote] = reactExports.useState(null);
+    const [peaksInfo, setPeaksInfo] = reactExports.useState(undefined);
+    const raw = draft ?? hist.state ?? undefined;
+    const pb = useClipPlayback(media, src, raw, { loop });
+    const { duration, at, playing, failed } = pb;
+    const edit = normalizeEdit(raw, duration);
+    const embedded = isEmbeddedMedia(src), drive = !embedded && (!!driveFileId(src) || isDriveLink(src)), playback = playbackSrc(src);
+    const len = Math.max(0, edit.trimEnd - edit.trimStart);
+    const tooLong = !!maxSeconds && len > maxSeconds + 0.5;
+    const canBake = kind === 'audio' && embedded && !!onReplace, bakeMode = saveMode === 'bake' && canBake;
+    const canRender = !!peaksInfo, canExportVideo = embedded && typeof MediaRecorder !== 'undefined';
+    const stem = (fileName || (kind === 'audio' ? 'audio' : 'video')).replace(/\.[a-z0-9]+$/i, '') || 'clip';
+    useStrip(strip, src, kind, duration, peaksInfo?.peaks ?? null);
+    reactExports.useEffect(() => { let c = false; setPeaksInfo(undefined); void decodePeaks(src).then(p => { if (!c)
+        setPeaksInfo(p); }); return () => { c = true; }; }, [src]);
+    reactExports.useEffect(() => { setSlow(false); if (duration || failed)
+        return; const t = window.setTimeout(() => setSlow(true), 8000); return () => window.clearTimeout(t); }, [duration, failed, src]);
     reactExports.useEffect(() => { const el = media.current; if (el)
         el.playbackRate = speed; }, [speed, src]);
-    reactExports.useEffect(() => { const el = media.current; if (!el)
-        return; const p = () => setPlaying(true), q = () => setPlaying(false); el.addEventListener('play', p); el.addEventListener('pause', q); el.addEventListener('ended', q); return () => { el.removeEventListener('play', p); el.removeEventListener('pause', q); el.removeEventListener('ended', q); }; }, [src]);
-    function toggleSelection() {
-        const el = media.current;
-        if (!el)
-            return;
-        if (el.paused) {
-            if (el.currentTime < edit.trimStart || el.currentTime >= edit.trimEnd - 0.02)
-                el.currentTime = edit.trimStart;
-            el.play().catch(() => { });
-        }
-        else
-            el.pause();
-    }
     reactExports.useEffect(() => {
-        const el = media.current;
-        if (!el)
+        const prev = document.activeElement, ov = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        dialog.current?.focus({ preventScroll: true });
+        return () => { document.body.style.overflow = ov; prev?.focus?.(); };
+    }, []);
+    reactExports.useEffect(() => { if (!menu)
+        return; const on = (e) => { if (!menuRef.current?.contains(e.target))
+        setMenu(false); }; document.addEventListener('pointerdown', on); return () => document.removeEventListener('pointerdown', on); }, [menu]);
+    reactExports.useEffect(() => { if (!note)
+        return; const t = window.setTimeout(() => setNote(null), 5000); return () => window.clearTimeout(t); }, [note]);
+    const flash = (text, k = 'info') => setNote({ text, kind: k });
+    /* edits */
+    const commit = (next, sound = true) => { hist.set(normalizeEdit(next, duration)); if (sound)
+        playPreset('tick'); };
+    const commitDraft = () => { const d = draftRef.current; if (d) {
+        commit(d, false);
+        setDraft(null);
+    } };
+    const setStart = (t) => commit({ ...edit, trimStart: clamp$2(t, 0, edit.trimEnd - MIN_LEN) });
+    const setEnd = (t) => commit({ ...edit, trimEnd: clamp$2(t, edit.trimStart + MIN_LEN, duration) });
+    const slider = (field) => ({
+        onChange: (e) => { const v = Number(e.target.value); setDraft({ ...edit, ...(field === 'volume' ? { volume: v / 100, muted: false } : { [field]: v }) }); },
+        onPointerUp: commitDraft, onKeyUp: commitDraft, onBlur: commitDraft,
+    });
+    function normalize() {
+        if (!peaksInfo || !duration)
             return;
-        const tick = () => setAt(el.currentTime);
-        const end = () => { if (el.currentTime >= edit.trimEnd - 0.02) {
-            el.pause();
-            el.currentTime = edit.trimStart;
-        } };
-        el.addEventListener('timeupdate', tick);
-        el.addEventListener('timeupdate', end);
-        return () => { el.removeEventListener('timeupdate', tick); el.removeEventListener('timeupdate', end); };
-    }, [edit.trimStart, edit.trimEnd, src]);
-    function frac(clientX) {
-        const r = scrub.current?.getBoundingClientRect();
-        if (!r || !duration)
-            return 0;
-        return Math.min(1, Math.max(0, (clientX - r.left) / r.width));
-    }
-    function seekTo(t) {
-        const el = media.current;
-        if (!el || !duration)
+        const pk = peakWithin(peaksInfo, edit.trimStart / duration, edit.trimEnd / duration);
+        if (!pk) {
+            flash('This selection is silent.');
             return;
-        el.currentTime = Math.min(edit.trimEnd, Math.max(edit.trimStart, t));
-        setAt(el.currentTime);
+        }
+        const g = Math.round(clamp$2(0.9 / pk, 0.25, 4) * 100) / 100;
+        commit({ ...edit, gain: g, volume: 1, muted: false }, false);
+        flash(g > 1.02 ? `Boosted ${g.toFixed(1)}× — applies to uploaded clips in the quiz, and to exports.` : g < 0.98 ? `Lowered to ${g.toFixed(1)}×.` : 'Already at a good level.');
     }
-    function commit(next, sound = true) { hist.set(normalizeEdit(next, duration)); if (sound)
-        playPreset('tick'); }
-    function setStart(t) { commit({ ...edit, trimStart: Math.min(t, edit.trimEnd - 0.05) }); }
-    function setEnd(t) { commit({ ...edit, trimEnd: Math.max(t, edit.trimStart + 0.05) }); }
-    function pointerDown(which, e) {
+    /* timeline interaction */
+    const drag = reactExports.useRef(null);
+    const tAt = (x) => { const r = scrub.current?.getBoundingClientRect(); if (!r || !duration)
+        return 0; return clamp$2((x - r.left) / r.width, 0, 1) * duration; };
+    function onPointerDown(kind, e) {
+        if (!duration || (e.button && e.button !== 0))
+            return;
         e.preventDefault();
-        setDrag(which);
-        setDraft(edit);
-        e.target.setPointerCapture(e.pointerId);
+        e.stopPropagation();
+        try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+        }
+        catch { }
+        drag.current = { kind, x0: e.clientX, base: edit };
+        setDragging(kind);
+        if (kind === 'seek')
+            pb.seek(tAt(e.clientX), true);
+        else {
+            pb.pause();
+            if (kind !== 'move')
+                pb.seek(kind === 'start' ? edit.trimStart : edit.trimEnd, true);
+        }
     }
-    function pointerMove(e) {
-        if (!drag || !duration)
+    function onPointerMove(e) {
+        const d = drag.current;
+        if (!d)
             return;
-        const t = frac(e.clientX) * duration;
-        setDraft(normalizeEdit(drag === 'start' ? { ...edit, trimStart: Math.min(t, edit.trimEnd - 0.05) } : { ...edit, trimEnd: Math.max(t, edit.trimStart + 0.05) }, duration));
+        const t = tAt(e.clientX);
+        if (d.kind === 'seek') {
+            pb.seek(t, true);
+            return;
+        }
+        let next;
+        if (d.kind === 'start')
+            next = { ...d.base, trimStart: Math.min(t, d.base.trimEnd - MIN_LEN) };
+        else if (d.kind === 'end')
+            next = { ...d.base, trimEnd: Math.max(t, d.base.trimStart + MIN_LEN) };
+        else {
+            const w = scrub.current?.getBoundingClientRect().width || 1, dt = (e.clientX - d.x0) / w * duration, l = d.base.trimEnd - d.base.trimStart, s = clamp$2(d.base.trimStart + dt, 0, duration - l);
+            next = { ...d.base, trimStart: s, trimEnd: s + l };
+        }
+        const n = normalizeEdit(next, duration);
+        setDraft(n);
+        pb.seek(d.kind === 'end' ? n.trimEnd : n.trimStart, true);
     }
-    function pointerUp(e) {
-        if (!drag)
+    function onPointerUp(e) {
+        const d = drag.current;
+        if (!d)
             return;
-        setDrag(null);
+        drag.current = null;
+        setDragging(null);
         try {
             e.target.releasePointerCapture(e.pointerId);
         }
         catch { }
-        if (draft)
-            commit(draft);
+        const cur = draftRef.current;
+        if (d.kind !== 'seek' && cur)
+            commit(cur);
         setDraft(null);
     }
     function handleKey(which, e) {
@@ -29417,233 +30111,290 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel }) {
     }
     function onKey(e) {
         const tag = e.target.tagName;
-        if (tag === 'INPUT' || tag === 'SELECT')
-            return;
         if (e.key === 'Escape') {
             e.preventDefault();
-            onCancel();
+            cancel();
+            return;
         }
-        else if (e.key === ' ' && tag !== 'BUTTON') {
+        if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA')
+            return;
+        if (e.key === ' ' && tag !== 'BUTTON') {
             e.preventDefault();
-            toggleSelection();
+            pb.toggle();
         }
         else if (e.key === 'ArrowLeft') {
             e.preventDefault();
-            seekTo(at - (e.shiftKey ? 5 : 1));
+            pb.seek(at - (e.shiftKey ? 5 : 1), true);
         }
         else if (e.key === 'ArrowRight') {
             e.preventDefault();
-            seekTo(at + (e.shiftKey ? 5 : 1));
+            pb.seek(at + (e.shiftKey ? 5 : 1), true);
         }
-        else if (e.key.toLowerCase() === 'i')
+        else if (e.key === 'Home') {
+            e.preventDefault();
+            pb.seek(edit.trimStart);
+        }
+        else if (e.key === 'End') {
+            e.preventDefault();
+            pb.seek(edit.trimEnd - 0.1);
+        }
+        else if (e.key.toLowerCase() === 'i' && duration)
             setStart(at);
-        else if (e.key.toLowerCase() === 'o')
+        else if (e.key.toLowerCase() === 'o' && duration)
             setEnd(at);
+        else if (e.key.toLowerCase() === 'l')
+            setLoop(v => !v);
     }
-    async function downloadEdited() {
-        if (!embedded) {
-            window.open(src, '_blank');
+    /* jobs: export / bake */
+    async function run(label, fn) {
+        if (job)
             return;
-        }
-        setExporting('Preparing…');
+        const ac = new AbortController();
+        jobAbort.current = ac;
+        setJob({ label, progress: 0 });
+        pb.pause();
         try {
-            if (kind === 'audio') {
-                const blob = await exportTrimmedAudio(src, edit);
-                const url = URL.createObjectURL(blob), a = document.createElement('a');
-                a.href = url;
-                a.download = 'edited-clip.webm';
-                a.click();
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
-            }
-            else {
-                setExporting('Trimmed video export needs a re-encoded copy — use Download original, or trim in a desktop editor for now.');
-                window.setTimeout(() => setExporting(''), 4000);
-                return;
-            }
+            await fn(ac.signal, p => setJob(j => j && { ...j, progress: p }));
         }
-        catch {
-            setExporting('Export failed — try Download original.');
-            window.setTimeout(() => setExporting(''), 3500);
+        catch (e) {
+            if (!ac.signal.aborted)
+                flash(e?.message || 'That did not work.', 'error');
+        }
+        finally {
+            setJob(null);
+            jobAbort.current = null;
+        }
+    }
+    const exportWav = () => run('Rendering…', async () => { saveBlob(await exportTrimmedWav(src, edit), `${stem}-edited.wav`); flash('WAV saved.'); });
+    const exportWebm = () => run('Compressing…', async (signal, progress) => { const blob = await exportTrimmedAudio(src, edit, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'audio')}`); flash('Edited clip saved.'); });
+    const exportVideo = () => run('Exporting video… keep this tab visible', async (signal, progress) => { const blob = await exportTrimmedVideo(src, edit, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'video')}`); flash('Edited video saved.'); });
+    const bake = () => {
+        if (!onReplace)
+            return;
+        if (tooLong) {
+            flash(`Keep the selection under ${fmtTime(maxSeconds)}.`, 'error');
             return;
         }
-        setExporting('');
-    }
-    function done() {
-        playPreset('go');
-        onSave(editIsDefault(edit, duration) ? undefined : edit);
-    }
-    const left = duration ? edit.trimStart / duration * 100 : 0;
-    const width = duration ? (edit.trimEnd - edit.trimStart) / duration * 100 : 100;
-    const vol = Math.round((edit.muted ? 0 : edit.volume ?? 1) * 100);
-    const nudge = (label, value, set) => React.createElement("span", { className: "media-clip-time" },
+        void run('Compressing…', async (signal, progress) => {
+            const buf = await renderEditedAudio(src, edit, { mono: true, sampleRate: 24000 });
+            const blob = await encodeAudioBuffer(buf, { bitrate: 40000, onProgress: progress, signal });
+            await onReplace(await blobToDataUrl(blob), buf.duration);
+            playPreset('go');
+        });
+    };
+    function done() { if (job)
+        return; if (bakeMode) {
+        bake();
+        return;
+    } playPreset('go'); onSave(editIsDefault(edit, duration) ? undefined : edit); }
+    function cancel() { jobAbort.current?.abort(); onCancel(); }
+    /* render */
+    const left = duration ? edit.trimStart / duration * 100 : 0, right = duration ? edit.trimEnd / duration * 100 : 100;
+    const vol = Math.round((edit.muted ? 0 : edit.volume) * 100), maxFade = Math.max(0.1, Math.min(10, len / 2));
+    const ruler = duration ? [0, .25, .5, .75, 1].map(f => fmtTime(f * duration)) : [];
+    const chip = (label, value, set) => React.createElement("span", { className: "mc-chip" },
         React.createElement("i", null, label),
-        React.createElement("span", { className: "media-clip-nudge" },
-            React.createElement("button", { type: "button", "aria-label": `${label} earlier`, disabled: !duration, onClick: () => set(value - 0.1) },
+        React.createElement("span", { className: "mc-nudge" },
+            React.createElement("button", { type: "button", "aria-label": `${label} 0.1 s earlier`, disabled: !duration, onClick: () => set(value - 0.1) },
                 React.createElement(Minus, { size: 13 })),
-            React.createElement("b", null, fine(value)),
-            React.createElement("button", { type: "button", "aria-label": `${label} later`, disabled: !duration, onClick: () => set(value + 0.1) },
+            React.createElement("b", null, fmtFine(value)),
+            React.createElement("button", { type: "button", "aria-label": `${label} 0.1 s later`, disabled: !duration, onClick: () => set(value + 0.1) },
                 React.createElement(Plus, { size: 13 }))));
-    return React.createElement("div", { className: "media-clip-layer", role: "presentation", onKeyDown: onKey },
-        React.createElement("button", { type: "button", className: "question-tools-scrim", "aria-label": "Close editor", onClick: onCancel }),
-        React.createElement("section", { className: "media-clip-editor", role: "dialog", "aria-modal": "true", "aria-labelledby": "media-clip-title", tabIndex: -1 },
-            React.createElement("header", { className: "media-clip-head" },
-                React.createElement("button", { type: "button", "aria-label": "Cancel", onClick: onCancel },
+    return reactDomExports.createPortal(React.createElement("div", { className: "mc-layer", role: "presentation", onKeyDown: onKey },
+        React.createElement("button", { type: "button", className: "mc-scrim", "aria-label": "Close editor", onClick: cancel }),
+        React.createElement("section", { ref: dialog, className: "mc", role: "dialog", "aria-modal": "true", "aria-labelledby": "mc-title", tabIndex: -1, "data-kind": kind },
+            React.createElement("header", { className: "mc-head" },
+                React.createElement("button", { type: "button", className: "mc-iconbtn", "aria-label": "Cancel", onClick: cancel },
                     React.createElement(X, { size: 18 })),
-                React.createElement("h2", { id: "media-clip-title" }, title),
-                React.createElement(Button, { size: "sm", onClick: done },
+                React.createElement("div", { className: "mc-headtext" },
+                    React.createElement("h2", { id: "mc-title" }, title),
+                    fileName && React.createElement("small", null, fileName)),
+                React.createElement(Button, { size: "sm", onClick: done, disabled: !!job || (bakeMode && (!duration || tooLong)) }, bakeMode ? React.createElement(React.Fragment, null,
+                    React.createElement(Save, { size: 15 }),
+                    "Use clip") : React.createElement(React.Fragment, null,
                     React.createElement(Check, { size: 15 }),
-                    "Done")),
-            React.createElement("div", { className: "media-clip-stage", "data-kind": kind },
-                kind === 'video' ? React.createElement("video", { ref: media, src: playback, playsInline: true, preload: "metadata", onClick: toggleSelection }) : React.createElement("audio", { ref: media, src: playback, preload: "metadata", hidden: true }),
-                kind === 'audio' && React.createElement("div", { className: "media-clip-audio-face", "aria-hidden": "true", "data-playing": playing || undefined },
-                    React.createElement(AudioLines, { size: 30 }),
-                    React.createElement("strong", null, fine(Math.max(0, at - edit.trimStart))),
+                    "Done"))),
+            React.createElement("div", { className: "mc-stage", "data-kind": kind },
+                kind === 'video'
+                    ? React.createElement("video", { key: playback, ref: media, src: playback, playsInline: true, preload: embedded ? 'auto' : 'metadata', onClick: pb.toggle })
+                    : React.createElement("audio", { key: playback, ref: media, src: playback, preload: embedded ? 'auto' : 'metadata', hidden: true }),
+                kind === 'audio' && !failed && React.createElement("div", { className: "mc-face", "aria-hidden": "true", "data-playing": playing || undefined },
+                    React.createElement(AudioLines, { size: 28 }),
+                    React.createElement("strong", null, fmtFine(clamp$2(at - edit.trimStart, 0, len))),
+                    React.createElement("span", null, duration ? `of ${fmtFine(len)} selected` : slow ? 'Still loading — large file or slow link…' : 'Loading clip…')),
+                kind === 'video' && !duration && !failed && React.createElement("div", { className: "mc-state" },
+                    React.createElement(LoaderCircle, { size: 20, className: "mc-spin" }),
+                    React.createElement("span", null, slow ? 'Still loading — large file or slow link…' : 'Loading clip…')),
+                failed && React.createElement("div", { className: "mc-state is-error" },
+                    React.createElement(CircleAlert, { size: 20 }),
                     React.createElement("span", null,
-                        "of ",
-                        fine(edit.trimEnd - edit.trimStart),
-                        " selected"))),
-            React.createElement("div", { className: "media-clip-scrubber", ref: scrub, onPointerMove: pointerMove, onPointerUp: pointerUp, onPointerCancel: pointerUp, onClick: e => { if (e.target.closest('.media-clip-handle'))
-                    return; seekTo(frac(e.clientX) * duration); } },
-                duration > 0 && React.createElement(React.Fragment, null,
-                    React.createElement("span", { className: "media-clip-cut", style: { left: 0, width: `${left}%` } }),
-                    React.createElement("span", { className: "media-clip-cut", style: { left: `${left + width}%`, right: 0 } })),
-                duration > 0 && React.createElement("span", { className: "media-clip-range", style: { left: `${left}%`, width: `${width}%` } }),
-                duration > 0 && React.createElement("span", { className: "media-clip-playhead", style: { left: `${Math.min(100, Math.max(0, at / duration * 100))}%` } }),
-                duration > 0 && React.createElement("button", { type: "button", className: "media-clip-handle is-start", style: { left: `calc(${left}% - 9px)` }, "aria-label": `Trim start ${fine(edit.trimStart)}. Use arrow keys to adjust`, onKeyDown: e => handleKey('start', e), onPointerDown: e => pointerDown('start', e) },
-                    React.createElement("b", null, time$1(edit.trimStart))),
-                duration > 0 && React.createElement("button", { type: "button", className: "media-clip-handle is-end", style: { left: `calc(${left + width}% - 9px)` }, "aria-label": `Trim end ${fine(edit.trimEnd)}. Use arrow keys to adjust`, onKeyDown: e => handleKey('end', e), onPointerDown: e => pointerDown('end', e) },
-                    React.createElement("b", null, time$1(edit.trimEnd)))),
-            React.createElement("div", { className: "media-clip-transport" },
-                React.createElement("button", { type: "button", className: "media-clip-skip", disabled: !duration, "aria-label": "Back 5 seconds", onClick: () => seekTo(at - 5) },
+                        "This clip could not be loaded.",
+                        drive ? ' Google Drive links need "Anyone with the link" sharing — or upload the file instead.' : ''),
+                    !embedded && React.createElement("a", { href: src, target: "_blank", rel: "noreferrer" },
+                        React.createElement(ExternalLink, { size: 14 }),
+                        "Open link"))),
+            React.createElement("div", { className: "mc-timeline" },
+                React.createElement("div", { className: "mc-chips" },
+                    chip('Start', edit.trimStart, setStart),
+                    React.createElement("span", { className: `mc-chip is-len${tooLong ? ' is-bad' : ''}` },
+                        React.createElement("i", null, "Length"),
+                        React.createElement("b", null, fmtFine(len)),
+                        tooLong && React.createElement("small", null,
+                            "max ",
+                            fmtTime(maxSeconds))),
+                    chip('End', edit.trimEnd, setEnd)),
+                React.createElement("div", { ref: scrub, className: `mc-scrub${dragging ? ' is-dragging' : ''}${!duration && !failed ? ' is-loading' : ''}`, onPointerMove: onPointerMove, onPointerUp: onPointerUp, onPointerCancel: onPointerUp },
+                    React.createElement("canvas", { ref: strip, className: "mc-strip", "aria-hidden": "true" }),
+                    duration > 0 && React.createElement(React.Fragment, null,
+                        React.createElement("div", { className: "mc-track", onPointerDown: e => onPointerDown('seek', e) }),
+                        React.createElement("span", { className: "mc-cut", style: { left: 0, width: `${left}%` } }),
+                        React.createElement("span", { className: "mc-cut", style: { left: `${right}%`, right: 0 } }),
+                        React.createElement("div", { className: "mc-range", style: { left: `${left}%`, width: `${right - left}%` }, onPointerDown: e => onPointerDown('move', e), title: "Drag to move the selection" },
+                            edit.fadeIn > 0 && React.createElement("span", { className: "mc-fade is-in", style: { width: `${edit.fadeIn / len * 100}%` } }),
+                            edit.fadeOut > 0 && React.createElement("span", { className: "mc-fade is-out", style: { width: `${edit.fadeOut / len * 100}%` } })),
+                        React.createElement("span", { className: "mc-playhead", style: { left: `${clamp$2(at / duration * 100, 0, 100)}%` } }),
+                        React.createElement("button", { type: "button", className: "mc-handle is-start", style: { left: `${left}%` }, "aria-label": `Trim start ${fmtFine(edit.trimStart)}. Arrow keys adjust, Shift for 1 s`, onKeyDown: e => handleKey('start', e), onPointerDown: e => onPointerDown('start', e) },
+                            React.createElement("b", null, fmtFine(edit.trimStart))),
+                        React.createElement("button", { type: "button", className: "mc-handle is-end", style: { left: `${right}%` }, "aria-label": `Trim end ${fmtFine(edit.trimEnd)}. Arrow keys adjust, Shift for 1 s`, onKeyDown: e => handleKey('end', e), onPointerDown: e => onPointerDown('end', e) },
+                            React.createElement("b", null, fmtFine(edit.trimEnd))))),
+                React.createElement("div", { className: "mc-ruler", "aria-hidden": "true" }, ruler.map((r, i) => React.createElement("span", { key: i }, r)))),
+            React.createElement("div", { className: "mc-transport" },
+                React.createElement("button", { type: "button", className: "mc-skip", disabled: !duration, "aria-label": "Back 5 seconds", onClick: () => pb.seek(at - 5, true) },
                     React.createElement(RotateCcw, { size: 16 }),
                     React.createElement("small", null, "5")),
-                React.createElement("button", { type: "button", className: "media-clip-play", onClick: toggleSelection, disabled: !duration, "aria-label": playing ? 'Pause' : 'Play selection' }, playing ? React.createElement(Pause, { size: 20, fill: "currentColor" }) : React.createElement(Play, { size: 20, fill: "currentColor" })),
-                React.createElement("button", { type: "button", className: "media-clip-skip", disabled: !duration, "aria-label": "Forward 5 seconds", onClick: () => seekTo(at + 5) },
+                React.createElement("button", { type: "button", className: "mc-play", disabled: !duration, "aria-label": playing ? 'Pause' : 'Play selection', onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 22, fill: "currentColor" }) : React.createElement(Play, { size: 22, fill: "currentColor" })),
+                React.createElement("button", { type: "button", className: "mc-skip", disabled: !duration, "aria-label": "Forward 5 seconds", onClick: () => pb.seek(at + 5, true) },
                     React.createElement(RotateCw, { size: 16 }),
                     React.createElement("small", null, "5")),
-                React.createElement("span", { className: "media-clip-clock" },
-                    React.createElement("b", null, fine(at)),
-                    " / ",
-                    fine(duration)),
-                React.createElement("select", { className: "media-clip-speed", "aria-label": "Preview speed", value: speed, onChange: e => setSpeed(Number(e.target.value)) }, SPEEDS.map(s => React.createElement("option", { key: s, value: s },
+                React.createElement("span", { className: "mc-clock" },
+                    React.createElement("b", null, fmtFine(at)),
+                    React.createElement("span", null,
+                        "/ ",
+                        fmtFine(duration))),
+                React.createElement("button", { type: "button", className: `mc-iconbtn is-toggle${loop ? ' is-on' : ''}`, "aria-pressed": loop, "aria-label": "Loop selection", title: "Loop selection (L)", onClick: () => setLoop(v => !v) },
+                    React.createElement(Repeat, { size: 16 })),
+                React.createElement("select", { className: "mc-speed", "aria-label": "Preview speed", value: speed, onChange: e => setSpeed(Number(e.target.value)) }, SPEEDS.map(s => React.createElement("option", { key: s, value: s },
                     s,
                     "\u00D7")))),
-            React.createElement("div", { className: "media-clip-marks" },
+            React.createElement("div", { className: "mc-marks" },
                 React.createElement("button", { type: "button", disabled: !duration, onClick: () => setStart(at) },
                     React.createElement(ArrowLeftToLine, { size: 15 }),
                     "Set start here"),
                 React.createElement("button", { type: "button", disabled: !duration, onClick: () => setEnd(at) },
                     React.createElement(ArrowRightToLine, { size: 15 }),
                     "Set end here")),
-            React.createElement("div", { className: "media-clip-times" },
-                nudge('Start', edit.trimStart, setStart),
-                React.createElement("span", { className: "media-clip-time is-len" },
-                    React.createElement("i", null, "Length"),
-                    React.createElement("b", null, fine(Math.max(0, edit.trimEnd - edit.trimStart)))),
-                nudge('End', edit.trimEnd, setEnd)),
-            React.createElement("label", { className: "media-clip-volume" },
-                React.createElement("button", { type: "button", "aria-pressed": edit.muted, "aria-label": edit.muted ? 'Unmute' : 'Mute', onClick: () => commit({ ...edit, muted: !edit.muted }, false) }, edit.muted || vol === 0 ? React.createElement(VolumeX, { size: 17 }) : React.createElement(Volume2, { size: 17 })),
-                React.createElement("input", { type: "range", min: 0, max: 100, step: 5, value: vol, "aria-label": "Volume", onChange: e => setDraft({ ...edit, muted: false, volume: Number(e.target.value) / 100 }), onPointerUp: () => { if (draft) {
-                        commit(draft, false);
-                        setDraft(null);
-                    } }, onKeyUp: () => { if (draft) {
-                        commit(draft, false);
-                        setDraft(null);
-                    } } }),
+            React.createElement("section", { className: "mc-panel", "aria-label": "Sound" },
+                React.createElement("header", null,
+                    React.createElement(Volume2, { size: 14 }),
+                    React.createElement("span", null, "Sound"),
+                    edit.gain !== 1 && React.createElement("em", null,
+                        edit.gain > 1 ? 'Boosted' : 'Lowered',
+                        " ",
+                        edit.gain.toFixed(1),
+                        "\u00D7")),
+                React.createElement("div", { className: "mc-row" },
+                    React.createElement("button", { type: "button", className: "mc-mute", "aria-pressed": edit.muted, "aria-label": edit.muted ? 'Unmute' : 'Mute', onClick: () => commit({ ...edit, muted: !edit.muted }, false) }, edit.muted || vol === 0 ? React.createElement(VolumeX, { size: 17 }) : React.createElement(Volume2, { size: 17 })),
+                    React.createElement("input", { type: "range", min: 0, max: 100, step: 5, value: vol, "aria-label": "Volume", ...slider('volume') }),
+                    React.createElement("span", { className: "mc-val" },
+                        vol,
+                        "%")),
+                React.createElement("div", { className: "mc-row is-wrap" },
+                    React.createElement("button", { type: "button", className: "mc-chipbtn", disabled: !canRender || !duration || !!job, onClick: normalize, title: "Sets the loudest point of the selection to 90%" },
+                        React.createElement(WandSparkles, { size: 14 }),
+                        edit.gain !== 1 ? 'Re-normalize' : 'Normalize loudness'),
+                    edit.gain !== 1 && React.createElement("button", { type: "button", className: "mc-chipbtn is-quiet", onClick: () => commit({ ...edit, gain: 1 }, false) }, "Remove boost"),
+                    peaksInfo === null && React.createElement("small", { className: "mc-hint" }, embedded ? 'This file could not be analysed, so normalize and export are off.' : 'Normalize needs an uploaded clip (this link blocks cross-origin access).'))),
+            React.createElement("section", { className: "mc-panel", "aria-label": "Fades" },
+                React.createElement("header", null,
+                    React.createElement(AudioLines, { size: 14 }),
+                    React.createElement("span", null, "Fades")),
+                React.createElement("label", { className: "mc-row" },
+                    React.createElement("span", { className: "mc-lab" }, "In"),
+                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: edit.fadeIn, disabled: !duration, "aria-label": "Fade in", ...slider('fadeIn') }),
+                    React.createElement("span", { className: "mc-val" },
+                        edit.fadeIn.toFixed(1),
+                        " s")),
+                React.createElement("label", { className: "mc-row" },
+                    React.createElement("span", { className: "mc-lab" }, "Out"),
+                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: edit.fadeOut, disabled: !duration, "aria-label": "Fade out", ...slider('fadeOut') }),
+                    React.createElement("span", { className: "mc-val" },
+                        edit.fadeOut.toFixed(1),
+                        " s"))),
+            bakeMode && React.createElement("p", { className: "mc-note is-info" },
+                React.createElement("strong", null, "This file is too big to store as-is."),
+                " Pick up to ",
+                fmtTime(maxSeconds || 60),
+                ". When you tap ",
+                React.createElement("b", null, "Use clip"),
+                " only the selection is compressed into a small clip."),
+            !embedded && !failed && React.createElement("p", { className: "mc-note" }, drive ? 'Google Drive clip: edits apply when the question plays. If nothing plays, set sharing to "Anyone with the link" or upload the file instead.' : 'Linked clip: trim, fades and volume apply when the question plays. Exporting an edited file needs an uploaded clip.'),
+            note && React.createElement("p", { className: `mc-note is-${note.kind}`, role: "status" }, note.text),
+            job && React.createElement("div", { className: "mc-job", role: "status", "aria-live": "polite" },
+                React.createElement("div", { className: "mc-jobbar" },
+                    React.createElement("i", { style: { width: `${Math.round(job.progress * 100)}%` } })),
                 React.createElement("span", null,
-                    vol,
-                    "%")),
-            !embedded && React.createElement("p", { className: "media-clip-note" }, drive ? 'Google Drive clip: trim and mute apply in the quiz. If nothing plays, confirm sharing is “Anyone with the link” (Viewer), or upload the file instead.' : 'Linked clips: trim, volume and mute apply in the quiz; exporting a trimmed file works only for uploaded clips.'),
-            exporting && React.createElement("p", { className: "media-clip-note", role: "status" }, exporting),
-            React.createElement("div", { className: "media-clip-toolbar" },
-                React.createElement("button", { type: "button", disabled: !hist.canUndo, onClick: hist.undo, "aria-label": "Undo" },
+                    job.label,
+                    " ",
+                    Math.round(job.progress * 100),
+                    "%"),
+                React.createElement("button", { type: "button", onClick: () => jobAbort.current?.abort() }, "Cancel")),
+            React.createElement("div", { className: "mc-toolbar" },
+                React.createElement("button", { type: "button", className: "mc-tool", disabled: !hist.canUndo, onClick: hist.undo, "aria-label": "Undo" },
                     React.createElement(Undo2, { size: 16 }),
                     "Undo"),
-                React.createElement("button", { type: "button", disabled: !hist.canRedo, onClick: hist.redo, "aria-label": "Redo" },
+                React.createElement("button", { type: "button", className: "mc-tool", disabled: !hist.canRedo, onClick: hist.redo, "aria-label": "Redo" },
                     React.createElement(Redo2, { size: 16 }),
                     "Redo"),
-                React.createElement("button", { type: "button", disabled: !duration || editIsDefault(edit, duration), onClick: () => commit(base, false), "aria-label": "Reset all edits" },
+                React.createElement("button", { type: "button", className: "mc-tool", disabled: !duration || editIsDefault(edit, duration), onClick: () => commit(defaultEdit(duration), false), "aria-label": "Reset all edits" },
                     React.createElement(RotateCcw, { size: 16 }),
                     "Reset"),
-                React.createElement("span", { className: "media-clip-download" },
-                    React.createElement("button", { type: "button", "aria-expanded": menu, onClick: () => setMenu(v => !v) },
+                canBake && !bakeMode && React.createElement("button", { type: "button", className: "mc-tool", disabled: !!job || !duration || !canRender || editIsDefault(edit, duration), onClick: bake, title: "Re-encodes the selection into the question (smaller file, edits become permanent)" },
+                    React.createElement(Save, { size: 16 }),
+                    "Save as new clip"),
+                React.createElement("span", { className: "mc-download", ref: menuRef },
+                    React.createElement("button", { type: "button", className: "mc-tool", "aria-expanded": menu, "aria-haspopup": "menu", disabled: !!job, onClick: () => setMenu(v => !v) },
                         React.createElement(Download, { size: 16 }),
-                        "Download",
+                        "Export",
                         React.createElement(ChevronDown, { size: 14 })),
-                    menu && React.createElement("span", { className: "media-clip-download-menu", role: "menu" },
-                        React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(false); void downloadOriginal(src, kind === 'video' ? 'video.mp4' : 'audio.webm'); } }, "Original file"),
-                        React.createElement("button", { type: "button", role: "menuitem", disabled: !embedded || kind !== 'audio' || editIsDefault(edit, duration), onClick: () => { setMenu(false); void downloadEdited(); }, title: embedded && kind === 'audio' ? '' : 'Uploaded audio only' }, "Edited clip")))),
-            React.createElement("p", { className: "media-clip-keys" }, "Space play \u00B7 \u2190/\u2192 seek \u00B7 I / O set start / end")));
+                    menu && React.createElement("span", { className: "mc-menu", role: "menu" },
+                        React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(false); void downloadOriginal(src, `${stem}.${kind === 'audio' ? 'webm' : 'mp4'}`); } }, "Original file"),
+                        kind === 'audio' ? React.createElement(React.Fragment, null,
+                            React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: () => { setMenu(false); void exportWav(); } },
+                                "Edited clip \u00B7 WAV",
+                                React.createElement("small", null, "Instant, lossless, larger file")),
+                            React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: () => { setMenu(false); void exportWebm(); } },
+                                "Edited clip \u00B7 compressed",
+                                React.createElement("small", null,
+                                    "Takes about ",
+                                    fmtTime(len),
+                                    " to encode"))) : React.createElement("button", { type: "button", role: "menuitem", disabled: !canExportVideo || !duration, onClick: () => { setMenu(false); void exportVideo(); } },
+                            "Edited clip \u00B7 WebM",
+                            React.createElement("small", null, canExportVideo ? `Re-encodes in real time (~${fmtTime(len)})` : 'Uploaded videos only'))))),
+            React.createElement("p", { className: "mc-keys" }, "Space play \u00B7 \u2190 \u2192 seek \u00B7 I / O set start / end \u00B7 L loop \u00B7 Shift = bigger steps"))), document.body);
 }
 
-const MAX_SECONDS = 60, BITRATE = 32000;
-const time = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const clamp$1 = (v, a, b) => Math.min(b, Math.max(a, v));
 const recorderType = () => typeof MediaRecorder === 'undefined' ? '' : ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
 const guessType = (name) => ({ mp3: 'audio/mpeg', m4a: 'audio/mp4', aac: 'audio/aac', wav: 'audio/wav', ogg: 'audio/ogg', oga: 'audio/ogg', opus: 'audio/ogg', webm: 'audio/webm' }[name.split('.').pop()?.toLowerCase() || ''] || '');
-function dataUrl$1(blob) { return new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(String(r.result).replace(/^data:([^,]*),/, (_, head) => `data:${head.replace(/\s+/g, '')},`)); r.onerror = () => reject(new Error('Could not read this sound.')); r.readAsDataURL(blob); }); }
-const tooLong = 'Keep the sound to about 1 minute or less.';
+const tooLong = `Keep the sound to about ${fmtTime(MAX_AUDIO_SECONDS)} or less.`;
 function record(stream, type) {
-    const recorder = new MediaRecorder(stream, { ...(type ? { mimeType: type } : {}), audioBitsPerSecond: BITRATE }), chunks = [];
+    const recorder = new MediaRecorder(stream, { ...(type ? { mimeType: type } : {}), audioBitsPerSecond: 32000 }), chunks = [];
     recorder.ondataavailable = e => { if (e.data.size)
         chunks.push(e.data); };
     const done = new Promise(resolve => { recorder.onstop = () => resolve(new Blob(chunks, { type: recorder.mimeType || type || 'audio/webm' })); });
     recorder.start(250);
     return { recorder, done };
 }
-// Large files are played through a recorder once, which shrinks them to a small voice-quality clip.
-async function soundFromFile(file, progress) {
-    const typed = typedMediaFile(file, 'audio');
-    if (!typed)
-        throw new Error('Choose a sound file (MP3, M4A, WAV, OGG or WebM).');
-    const type = typed.type || guessType(file.name);
-    const ctx = new AudioContext();
-    try {
-        await ctx.resume().catch(() => { });
-        const buffer = await ctx.decodeAudioData(await typed.arrayBuffer()).catch(() => { throw new Error('This sound file could not be opened.'); });
-        const duration = saneDuration(buffer.duration);
-        if (duration > MAX_SECONDS + 5)
-            throw new Error(`This clip is ${time(duration)} long. ${tooLong}`);
-        if (typed.size * 1.37 + 64 <= MAX_AUDIO_CHARS) {
-            const data = await dataUrl$1(typed instanceof File && typed.type ? typed : new Blob([typed], { type }));
-            return { data, duration };
-        }
-        if (typed.size > 40 * 1024 * 1024)
-            throw new Error('This file is too large. ' + tooLong);
-        const mime = recorderType();
-        if (!mime)
-            throw new Error('This sound is too large to store. ' + tooLong);
-        if (ctx.state !== 'running')
-            throw new Error('This sound is too large to store. ' + tooLong);
-        const out = ctx.createMediaStreamDestination(), source = ctx.createBufferSource();
-        source.buffer = buffer;
-        source.connect(out);
-        const { recorder, done } = record(out.stream, mime), started = ctx.currentTime;
-        const tick = window.setInterval(() => progress(Math.min(99, Math.round((ctx.currentTime - started) / buffer.duration * 100))), 250);
-        source.onended = () => { window.clearInterval(tick); recorder.state !== 'inactive' && recorder.stop(); };
-        source.start();
-        const data = await dataUrl$1(await done);
-        if (data.length > MAX_AUDIO_CHARS)
-            throw new Error('This sound is still too large. ' + tooLong);
-        return { data, duration };
-    }
-    finally {
-        ctx.close().catch(() => { });
-    }
-}
+/* ───────── names ───────── */
 const MIME_EXT = { mpeg: 'mp3', mp3: 'mp3', mp4: 'm4a', 'x-m4a': 'm4a', wav: 'wav', wave: 'wav', ogg: 'ogg', webm: 'webm', aac: 'aac', opus: 'opus' };
-function extFromDataUrl(src) {
-    const mime = src.match(/^data:audio\/([^;,]+)/i)?.[1]?.toLowerCase() || '';
-    return MIME_EXT[mime.split('+')[0]] || mime.replace(/^x-/, '') || 'webm';
+function extFromDataUrl(src) { const mime = src.match(/^data:audio\/([^;,]+)/i)?.[1]?.toLowerCase() || ''; return MIME_EXT[mime.split('+')[0]] || mime.replace(/^x-/, '') || 'webm'; }
+function basenameFromUrl(src) { try {
+    const path = decodeURIComponent(new URL(resolveMediaLink(src)).pathname);
+    return path.split('/').filter(Boolean).pop() || '';
 }
-function basenameFromUrl(src) {
-    try {
-        const path = decodeURIComponent(new URL(resolveMediaLink(src)).pathname);
-        return path.split('/').filter(Boolean).pop() || '';
-    }
-    catch {
-        return '';
-    }
-}
+catch {
+    return '';
+} }
 function formatSoundFileName(name, max = 36) {
     let base = (name || '').replace(/\\/g, '/').split('/').pop()?.trim() || String(name || '').trim();
     base = base.replace(/[\x00-\x1f<>:"|?*]/g, '').replace(/\s+/g, ' ');
@@ -29666,198 +30417,101 @@ function soundFileTitle(src, stored) {
         return '';
     if (src.startsWith('data:'))
         return `audio.${extFromDataUrl(src)}`;
-    const file = basenameFromUrl(src);
-    return file || 'Linked audio';
+    return basenameFromUrl(src) || 'Linked audio';
 }
-function soundDisplayName(src, stored) {
-    const title = soundFileTitle(src, stored);
-    return title ? formatSoundFileName(title) : '';
-}
+function soundDisplayName(src, stored) { const t = soundFileTitle(src, stored); return t ? formatSoundFileName(t) : ''; }
 function normalizeSoundFileName(name) { const base = (name || '').replace(/\\/g, '/').split('/').pop()?.trim().replace(/[\x00-\x1f<>:"|?*]/g, '').replace(/\s+/g, ' ') || ''; return base.slice(0, 120); }
-function saneDuration(d) {
-    return Number.isFinite(d) && d > 0 && d < 86400 ? d : 0;
+function probeAudioLink(url) { return probeMediaSrc(resolveMediaLink(String(url || '').trim()), 'audio').then(m => m.ok); }
+/* ───────── waveform data ───────── */
+function useWaveform(src, bars, start, end) {
+    const [raw, setRaw] = reactExports.useState(null);
+    reactExports.useEffect(() => { let c = false; setRaw(null); void decodePeaks(src).then(p => { if (!c)
+        setRaw(p); }); return () => { c = true; }; }, [src]);
+    return reactExports.useMemo(() => {
+        if (!raw)
+            return Array.from({ length: bars }, (_, i) => 0.22 + 0.12 * Math.abs(Math.sin(i * 0.9)));
+        const d = raw.duration || 1, n = raw.peaks.length, a = clamp$1((end > start ? start : 0) / d, 0, 1) * n, b = Math.max(a + 1, clamp$1((end > start ? end : d) / d, 0, 1) * n);
+        return Array.from({ length: bars }, (_, i) => { const s = Math.floor(a + (i / bars) * (b - a)), e = Math.max(s + 1, Math.floor(a + ((i + 1) / bars) * (b - a))); let m = 0; for (let j = s; j < e && j < n; j++)
+            if (raw.peaks[j] > m)
+                m = raw.peaks[j]; return m; });
+    }, [raw, bars, start, end]);
 }
-function readElementDuration(el) {
-    const d = saneDuration(el.duration);
-    if (d)
-        return d;
-    try {
-        if (el.seekable.length > 0)
-            return saneDuration(el.seekable.end(el.seekable.length - 1));
-    }
-    catch { }
-    return 0;
+function useLiveLevels(levels, bars, on) {
+    const [lv, setLv] = reactExports.useState(null);
+    const fn = reactExports.useRef(levels);
+    fn.current = levels;
+    reactExports.useEffect(() => { if (!on) {
+        setLv(null);
+        return;
+    } let raf = 0; const tick = () => { setLv(fn.current(bars)); raf = requestAnimationFrame(tick); }; raf = requestAnimationFrame(tick); return () => cancelAnimationFrame(raf); }, [on, bars]);
+    return lv;
 }
-async function decodeAudioMeta(src, bars) {
-    const playback = src.startsWith('https://') ? resolveMediaPlaybackSrc(src) : src;
-    const empty = { duration: 0, peaks: Array.from({ length: bars }, () => 28) };
-    if (!playback)
-        return empty;
-    try {
-        const res = await fetch(playback);
-        if (!res.ok)
-            return empty;
-        const ctx = new AudioContext();
-        try {
-            const buf = await ctx.decodeAudioData(await res.arrayBuffer());
-            const ch = buf.getChannelData(0), block = Math.max(1, Math.floor(ch.length / bars));
-            const peaks = Array.from({ length: bars }, (_, i) => { let sum = 0; for (let j = 0; j < block; j++)
-                sum += Math.abs(ch[i * block + j] ?? 0); return Math.round(18 + Math.min(78, sum / block * 520)); });
-            return { duration: saneDuration(buf.duration), peaks };
-        }
-        finally {
-            await ctx.close().catch(() => { });
-        }
-    }
-    catch {
-        return empty;
-    }
-}
-function useSoundWaveHeights(audio, src, bars, playing) {
-    const [peaks, setPeaks] = reactExports.useState(() => Array.from({ length: bars }, () => 28));
-    const [live, setLive] = reactExports.useState(null);
-    const graph = reactExports.useRef(null);
-    reactExports.useEffect(() => { let cancelled = false; setPeaks(Array.from({ length: bars }, () => 28)); void decodeAudioMeta(src, bars).then(m => { if (!cancelled)
-        setPeaks(m.peaks); }); return () => { cancelled = true; }; }, [src, bars]);
-    reactExports.useEffect(() => {
-        const el = audio.current;
-        if (!playing || !el) {
-            if (graph.current)
-                cancelAnimationFrame(graph.current.raf);
-            setLive(null);
-            return;
-        }
-        let cancelled = false;
-        const tick = () => {
-            if (cancelled || !graph.current)
-                return;
-            const data = new Uint8Array(graph.current.analyser.frequencyBinCount);
-            graph.current.analyser.getByteFrequencyData(data);
-            const step = Math.max(1, Math.floor(data.length / bars));
-            setLive(Array.from({ length: bars }, (_, i) => { let s = 0; for (let j = 0; j < step; j++)
-                s += data[i * step + j] ?? 0; return Math.round(18 + (s / step / 255) * 78); }));
-            graph.current.raf = requestAnimationFrame(tick);
-        };
-        void (async () => {
-            try {
-                if (!graph.current || graph.current.el !== el) {
-                    const ctx = new AudioContext();
-                    await ctx.resume();
-                    const analyser = ctx.createAnalyser();
-                    analyser.fftSize = 128;
-                    analyser.smoothingTimeConstant = .68;
-                    const node = ctx.createMediaElementSource(el);
-                    node.connect(analyser);
-                    analyser.connect(ctx.destination);
-                    graph.current = { el, ctx, analyser, raf: 0 };
-                }
-                else
-                    await graph.current.ctx.resume();
-                graph.current.raf = requestAnimationFrame(tick);
-            }
-            catch {
-                setLive(null);
-            }
-        })();
-        return () => { cancelled = true; if (graph.current)
-            cancelAnimationFrame(graph.current.raf); setLive(null); };
-    }, [playing, bars, audio, src]);
-    return live ?? peaks;
-}
-function probeAudioLink(url) {
-    const playback = resolveMediaPlaybackSrc(resolveMediaLink(String(url || '').trim()));
-    return new Promise(resolve => {
-        const el = new Audio(), finish = (ok) => { el.removeAttribute('src'); el.load(); resolve(ok); };
-        const timer = window.setTimeout(() => finish(false), 15000);
-        el.onloadedmetadata = () => { window.clearTimeout(timer); finish(Number.isFinite(el.duration) && el.duration > 0); };
-        el.onerror = () => { window.clearTimeout(timer); finish(false); };
-        el.src = playback;
-    });
-}
+/* ───────── player ───────── */
 function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'default', edit, displayName, fileTitle, durationHint }) {
-    const audio = reactExports.useRef(null), [playing, setPlaying] = reactExports.useState(false), [at, setAt] = reactExports.useState(0), [length, setLength] = reactExports.useState(0), [failed, setFailed] = reactExports.useState(false);
-    const clip = length > 0 ? normalizeEdit(edit, length) : edit;
-    const setDuration = (d) => { const n = saneDuration(d); if (n)
-        setLength(n); };
-    reactExports.useEffect(() => { setPlaying(false); setAt(0); setLength(0); setFailed(false); return () => audio.current?.pause(); }, [src]);
-    reactExports.useEffect(() => { if (durationHint)
-        setDuration(durationHint); }, [durationHint]);
-    reactExports.useEffect(() => { let cancelled = false; void decodeAudioMeta(src, 32).then(m => { if (!cancelled && m.duration)
-        setLength(m.duration); }); return () => { cancelled = true; }; }, [src]);
-    reactExports.useEffect(() => { const a = audio.current; if (a) {
-        a.muted = !!clip?.muted;
-        a.volume = clip?.volume ?? 1;
-    } }, [clip?.muted, clip?.volume, src]);
-    const known = length > 0;
-    const played = known ? (clip ? Math.max(0, Math.min(1, (at - clip.trimStart) / Math.max(0.05, clip.trimEnd - clip.trimStart))) : at / length) : 0;
-    const bars = variant === 'media' ? 40 : 30;
-    const waveHeights = useSoundWaveHeights(audio, src, bars, playing && variant === 'overlay');
-    const name = displayName || soundDisplayName(src);
-    const tip = fileTitle || name;
-    function toggle() { const a = audio.current; if (!a)
-        return; if (a.paused) {
-        setFailed(false);
-        if (clip && a.currentTime < clip.trimStart)
-            a.currentTime = clip.trimStart;
-        a.play().catch(() => setFailed(true));
-    }
-    else
-        a.pause(); }
-    function seek(e) { const a = audio.current; if (!a || !known)
-        return; const r = e.currentTarget.getBoundingClientRect(); const f = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)), t = clip ? clip.trimStart + f * (clip.trimEnd - clip.trimStart) : f * length; const next = clip ? Math.min(clip.trimEnd, Math.max(clip.trimStart, t)) : Math.min(length, Math.max(0, t)); a.currentTime = next; setAt(next); }
-    function onMeta(e) { setDuration(readElementDuration(e.currentTarget)); }
-    function onTime() { const a = audio.current; if (!a)
-        return; setAt(a.currentTime); if (!length)
-        setDuration(readElementDuration(a)); if (clip && a.currentTime >= clip.trimEnd - 0.02 && !a.paused) {
-        a.pause();
-        a.currentTime = clip.trimStart;
-        setAt(a.currentTime);
-        setPlaying(false);
-    } }
-    function onDone(e) { setPlaying(false); const el = e.currentTarget, t = el.currentTime; if (t > 0 && !length)
-        setDuration(t); const start = clip?.trimStart ?? 0; el.currentTime = start; setAt(start); }
+    const audio = reactExports.useRef(null), wave = reactExports.useRef(null);
+    const pb = useClipPlayback(audio, src, edit, { durationHint, analyser: variant === 'overlay' });
+    const { duration, at, playing, failed } = pb;
+    const known = duration > 0, clip = normalizeEdit(edit, duration), selLen = known ? clip.trimEnd - clip.trimStart : 0;
+    const played = known ? clamp$1((at - clip.trimStart) / Math.max(0.1, selLen), 0, 1) : 0;
+    const bars = variant === 'media' ? 48 : variant === 'overlay' ? 30 : 36;
+    const peaks = useWaveform(src, bars, known ? clip.trimStart : 0, known ? clip.trimEnd : 0);
+    const live = useLiveLevels(pb.levels, bars, playing && variant === 'overlay');
+    const heights = live ?? peaks;
+    const name = displayName || soundDisplayName(src), tip = fileTitle || name;
+    const seekAt = (x) => { const r = wave.current?.getBoundingClientRect(); if (!r || !known)
+        return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
     if (isDriveLink(src))
         return React.createElement(DriveShareLegacyNotice, { kind: "sound" });
-    const durationLabel = known ? time(clip ? clip.trimEnd - clip.trimStart : length) : '0:00';
-    return React.createElement("div", { className: `sound-player ${variant === 'overlay' ? 'is-overlay' : variant === 'media' ? 'is-media' : ''} ${className}`.trim(), "data-playing": playing || undefined },
-        React.createElement("button", { type: "button", className: "sound-play", "aria-label": playing ? 'Pause sound' : label, onClick: toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
-        variant === 'media'
-            ? React.createElement("span", { className: "sound-media-body" },
-                React.createElement("span", { className: "sound-filename", title: failed || tip === name ? undefined : tip }, failed ? 'Could not play' : name),
-                React.createElement("span", { className: "sound-progress", onClick: seek, role: "presentation", "aria-hidden": "true" },
-                    React.createElement("i", { style: { width: `${played * 100}%` } })),
-                React.createElement("span", { className: "sound-times", "aria-hidden": "true" },
-                    React.createElement("span", null, known ? time(clip ? Math.max(0, at - clip.trimStart) : at) : '0:00'),
-                    React.createElement("span", null, durationLabel)))
-            : variant === 'overlay'
-                ? React.createElement("span", { className: "sound-wave", onClick: seek, role: "presentation" }, Array.from({ length: bars }, (_, i) => React.createElement("i", { key: i, "data-on": i / bars <= played || undefined, style: { height: `${waveHeights[i] ?? 28}%` } })))
-                : React.createElement("span", { className: "sound-body" },
-                    React.createElement("span", { className: "sound-title" }, failed ? 'This sound could not play' : playing ? 'Playing' : 'Listen'),
-                    React.createElement("span", { className: "sound-bar", onClick: seek },
-                        React.createElement("i", { style: { width: `${known ? at / length * 100 : 0}%` }, "data-live": !known && playing || undefined }))),
-        variant !== 'media' && React.createElement("span", { className: "sound-time" }, known ? time(playing || at ? at : length) : at ? time(at) : ''),
-        React.createElement("audio", { ref: audio, src: src.startsWith('https://') ? resolveMediaPlaybackSrc(src) : src, preload: "auto", onPlay: () => setPlaying(true), onPause: () => setPlaying(false), onEnded: onDone, onTimeUpdate: onTime, onLoadedMetadata: onMeta, onDurationChange: onMeta, onError: () => setFailed(true) }));
+    const cur = known ? fmtTime(Math.max(0, at - clip.trimStart)) : '0:00', total = known ? fmtTime(selLen) : '–:––';
+    return React.createElement("div", { className: `sp sp-${variant} ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
+        React.createElement("button", { type: "button", className: "sp-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
+        React.createElement("div", { className: "sp-body" },
+            variant === 'media' && React.createElement("div", { className: "sp-top" },
+                React.createElement("span", { className: "sp-name", title: tip !== name ? tip : undefined }, failed ? 'This sound could not play' : name),
+                React.createElement("span", { className: "sp-time" },
+                    cur,
+                    " / ",
+                    total)),
+            React.createElement("div", { ref: wave, className: "sp-wave", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(played * 100), tabIndex: known ? 0 : -1, onPointerDown: e => { if (!known)
+                    return; e.preventDefault(); try {
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                }
+                catch { } seekAt(e.clientX); }, onPointerMove: e => { if (e.buttons & 1)
+                    seekAt(e.clientX); }, onKeyDown: e => { if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    pb.seek(at - 1);
+                }
+                else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    pb.seek(at + 1);
+                }
+                else if (e.key === ' ') {
+                    e.preventDefault();
+                    pb.toggle();
+                } } }, heights.map((h, i) => React.createElement("i", { key: i, "data-on": i / bars <= played || undefined, style: { height: `${Math.round(14 + h * 86)}%` } })))),
+        variant !== 'media' && React.createElement("span", { className: "sp-time" }, failed ? '!' : known ? (playing || at > clip.trimStart + 0.1 ? cur : total) : ''),
+        React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
 }
-function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, onChange, onError, onClearError, title = 'Question sound', hint = 'Optional · record, upload, or paste an https audio file', assetLayout, linkLabel = 'Paste link', uploadEmptyLabel = 'Upload' }) {
-    const [recording, setRecording] = reactExports.useState(false), [seconds, setSeconds] = reactExports.useState(0), [busy, setBusy] = reactExports.useState(''), [link, setLink] = reactExports.useState(''), [linking, setLinking] = reactExports.useState(false), [clipOpen, setClipOpen] = reactExports.useState(false), [warn, setWarn] = reactExports.useState(''), [durationHint, setDurationHint] = reactExports.useState();
-    const live = reactExports.useRef(null), input = reactExports.useRef(null);
-    const [countIn, setCountIn] = reactExports.useState(null), cancelCount = reactExports.useRef(false);
+function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, onChange, onError, onClearError, title = 'Question sound', hint = 'Record, upload, or paste a link to an audio file', assetLayout, linkLabel = 'Link', uploadEmptyLabel = 'Upload' }) {
+    const [recording, setRecording] = reactExports.useState(false), [seconds, setSeconds] = reactExports.useState(0), [level, setLevel] = reactExports.useState(0), [countIn, setCountIn] = reactExports.useState(null);
+    const [busy, setBusy] = reactExports.useState(null), [linking, setLinking] = reactExports.useState(false), [clipOpen, setClipOpen] = reactExports.useState(false), [warn, setWarn] = reactExports.useState(''), [durationHint, setDurationHint] = reactExports.useState(), [dragOver, setDragOver] = reactExports.useState(false);
+    const [pending, setPending] = reactExports.useState(null);
+    const live = reactExports.useRef(null), input = reactExports.useRef(null), cancelCount = reactExports.useRef(false);
+    const linked = !!audio?.startsWith('https://'), drive = !!audio && isDriveLink(audio);
     reactExports.useEffect(() => () => { const l = live.current; if (l) {
         window.clearInterval(l.timer);
         l.stream.getTracks().forEach(t => t.stop());
+        l.ctx?.close().catch(() => { });
     } }, []);
-    reactExports.useEffect(() => { if (audio?.startsWith('https://'))
-        setLink(audio);
-    else if (!audio) {
-        setLink('');
+    reactExports.useEffect(() => { if (!audio) {
         setLinking(false);
         setDurationHint(undefined);
     } }, [audio]);
     reactExports.useEffect(() => {
         setWarn('');
-        if (!audio?.startsWith('https://'))
+        if (!linked)
             return;
-        if (isDriveLink(audio)) {
+        if (drive) {
             setWarn(DRIVE_SHARE_LEGACY_HINT);
             return;
         }
@@ -29865,10 +30519,14 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         void probeAudioLink(audio).then(ok => { if (!cancelled && !ok)
             setWarn('This linked sound cannot play. Remove it, then use a direct audio URL or upload the file.'); });
         return () => { cancelled = true; };
-    }, [audio]);
+    }, [audio, linked, drive]);
+    function closePending() { if (pending)
+        URL.revokeObjectURL(pending.url); setPending(null); setClipOpen(false); }
+    function clearAudio() { setLinking(false); setWarn(''); setDurationHint(undefined); onEditChange?.(undefined); onAudioNameChange?.(undefined); onChange(undefined); }
+    function recordingFileName(mime) { const sub = mime.split('/')[1]?.split(';')[0]?.toLowerCase() || 'webm'; return normalizeSoundFileName(`Recording.${MIME_EXT[sub] || sub.replace(/^x-/, '') || 'webm'}`); }
     async function applyLink(next) {
         onError('');
-        const raw = (next ?? link).trim();
+        const raw = next.trim();
         if (!raw) {
             onAudioNameChange?.(undefined);
             onChange(undefined);
@@ -29887,23 +30545,75 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
             pushMediaLinkError('That link is too long.');
             return false;
         }
-        setBusy('Checking sound…');
+        setBusy({ label: 'Checking sound…' });
         const ok = await probeAudioLink(raw);
-        setBusy('');
+        setBusy(null);
         if (!ok) {
-            pushMediaLinkError('No sound was found at this link. Paste a direct link to an audio file (MP3, WAV, OGG, …), or upload the file.');
+            pushMediaLinkError('No playable sound was found at this link. Paste a direct link to an audio file (MP3, WAV, OGG, …), or upload the file.');
             return false;
         }
         onEditChange?.(undefined);
         onChange(url);
-        const linked = basenameFromUrl(url);
-        onAudioNameChange?.(linked ? normalizeSoundFileName(linked) : undefined);
+        const base = basenameFromUrl(url);
+        onAudioNameChange?.(base ? normalizeSoundFileName(base) : undefined);
         return true;
     }
-    function recordingFileName(mime) {
-        const sub = mime.split('/')[1]?.split(';')[0]?.toLowerCase() || 'webm';
-        const ext = MIME_EXT[sub] || sub.replace(/^x-/, '') || 'webm';
-        return normalizeSoundFileName(`Recording.${ext}`);
+    async function upload(file) {
+        if (!file || busy || recording)
+            return;
+        onError('');
+        const typed = typedMediaFile(file, 'audio');
+        if (!typed) {
+            onError('Choose a sound file (MP3, M4A, WAV, OGG or WebM).');
+            return;
+        }
+        const blob = typed.type ? typed : new Blob([typed], { type: guessType(file.name) || 'audio/mpeg' });
+        if (blob.size > 80 * 1024 * 1024) {
+            onError(`That file is ${formatBytes(blob.size)} — too large to open here.`);
+            return;
+        }
+        const fits = dataUrlLength(blob.size, blob.type) <= MAX_AUDIO_CHARS;
+        setBusy({ label: fits ? 'Reading sound…' : 'Opening sound…' });
+        try {
+            const url = URL.createObjectURL(blob);
+            const meta = await probeMediaSrc(url, 'audio');
+            if (!meta.ok) {
+                URL.revokeObjectURL(url);
+                throw new Error('This sound file could not be opened in your browser.');
+            }
+            if (fits && meta.duration <= MAX_AUDIO_SECONDS + 5) {
+                const data = await blobToDataUrl(blob, p => setBusy({ label: 'Reading sound…', progress: p }));
+                URL.revokeObjectURL(url);
+                if (!audioSafe(data))
+                    throw new Error('This sound could not be saved.');
+                onEditChange?.(undefined);
+                onChange(data);
+                setDurationHint(meta.duration || undefined);
+                onAudioNameChange?.(normalizeSoundFileName(file.name));
+                return;
+            }
+            // Too big or too long: trim in the editor, then only the selection is compressed.
+            setPending({ url, name: file.name, size: blob.size, duration: meta.duration });
+            setClipOpen(true);
+        }
+        catch (e) {
+            onError(e?.message || 'This sound could not be added.');
+        }
+        finally {
+            setBusy(null);
+        }
+    }
+    async function acceptBaked(data, len, name) {
+        if (data.length > MAX_AUDIO_CHARS)
+            throw new Error(`Still too large (${formatBytes(Math.round(data.length * 0.75))}). Choose a shorter section.`);
+        if (!audioSafe(data))
+            throw new Error('This sound could not be saved.');
+        onEditChange?.(undefined);
+        onChange(data);
+        setDurationHint(len);
+        if (name !== undefined)
+            onAudioNameChange?.(normalizeSoundFileName(name));
+        closePending();
     }
     async function start() {
         onError('');
@@ -29919,37 +30629,60 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
             onError(e?.name === 'NotAllowedError' ? 'Allow the microphone to record, or upload a sound file instead.' : 'The microphone could not start.');
             return;
         }
+        let ctx, analyser;
+        try {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            ctx = new Ctx();
+            analyser = ctx.createAnalyser();
+            analyser.fftSize = 256;
+            ctx.createMediaStreamSource(stream).connect(analyser);
+        }
+        catch { }
         cancelCount.current = false;
         for (const n of [3, 2, 1]) {
             if (cancelCount.current)
                 break;
             setCountIn(n);
             playPreset('tick');
-            await new Promise(r => window.setTimeout(r, 1000));
+            await new Promise(r => window.setTimeout(r, 900));
         }
         setCountIn(null);
         if (cancelCount.current) {
             stream.getTracks().forEach(t => t.stop());
+            ctx?.close().catch(() => { });
             return;
         }
         playPreset('go');
-        await new Promise(r => window.setTimeout(r, 300));
-        const { recorder, done } = record(stream, recorderType()), began = Date.now();
-        const timer = window.setInterval(() => { const s = (Date.now() - began) / 1000; setSeconds(s); if (s >= MAX_SECONDS && recorder.state === 'recording')
-            recorder.stop(); }, 200);
-        live.current = { recorder, stream, timer };
+        await new Promise(r => window.setTimeout(r, 250));
+        const { recorder, done } = record(stream, recorderType()), began = Date.now(), buf = analyser ? new Uint8Array(analyser.frequencyBinCount) : null;
+        const timer = window.setInterval(() => {
+            const s = (Date.now() - began) / 1000;
+            setSeconds(s);
+            if (analyser && buf) {
+                analyser.getByteTimeDomainData(buf);
+                let m = 0;
+                for (let i = 0; i < buf.length; i++)
+                    m = Math.max(m, Math.abs(buf[i] - 128));
+                setLevel(m / 128);
+            }
+            if (s >= MAX_AUDIO_SECONDS && recorder.state === 'recording')
+                recorder.stop();
+        }, 100);
+        live.current = { recorder, stream, timer, ctx };
         setSeconds(0);
+        setLevel(0);
         setRecording(true);
-        const blob = await done;
+        const blob = await done, elapsed = (Date.now() - began) / 1000;
         window.clearInterval(timer);
         stream.getTracks().forEach(t => t.stop());
+        ctx?.close().catch(() => { });
         live.current = null;
         setRecording(false);
         if (!blob.size) {
             onError('Nothing was recorded. Try again.');
             return;
         }
-        const data = await dataUrl$1(blob);
+        const data = await blobToDataUrl(blob);
         if (data.length > MAX_AUDIO_CHARS) {
             onError('This recording is too large. ' + tooLong);
             return;
@@ -29957,158 +30690,135 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         onEditChange?.(undefined);
         onChange(data);
         onAudioNameChange?.(recordingFileName(blob.type || recorderType() || 'audio/webm'));
-        setDurationHint(Math.max(1, Math.round(seconds)) || undefined);
+        setDurationHint(Math.max(0.5, elapsed));
     }
     function stop() { const r = live.current?.recorder; if (r && r.state === 'recording')
         r.stop(); }
-    function clearAudio() { setLinking(false); setLink(''); setWarn(''); setDurationHint(undefined); onEditChange?.(undefined); onAudioNameChange?.(undefined); onChange(undefined); }
-    async function upload(file) {
-        if (!file)
-            return;
-        onError('');
-        setBusy('Reading sound…');
-        try {
-            onEditChange?.(undefined);
-            const { data, duration } = await soundFromFile(file, pct => setBusy(pct < 100 ? `Processing… ${pct}%` : 'Almost done…'));
-            onChange(data);
-            setDurationHint(duration || undefined);
-            onAudioNameChange?.(normalizeSoundFileName(file.name));
-        }
-        catch (e) {
-            onError(e.message || 'This sound could not be added.');
-        }
-        finally {
-            setBusy('');
-        }
-    }
-    const countBtn = (cls) => countIn !== null && React.createElement("button", { type: "button", className: cls, "aria-label": "Cancel recording", onClick: () => { cancelCount.current = true; } },
-        React.createElement("span", { className: "sound-count-num", "aria-live": "assertive" }, countIn),
-        "Starting\u2026 Cancel");
-    const caption = countIn !== null ? `Recording starts in ${countIn}…` : recording ? `Recording… ${time(seconds)} of ${time(MAX_SECONDS)}` : busy || (assetLayout && audio && !recording ? '' : audio?.startsWith('https://') && !isDriveLink(audio) ? 'Linked audio' : audio && !assetLayout ? 'Ready to preview' : hint);
-    const recordLabel = audio ? 'Re-record' : 'Record';
-    const uploadLabel = busy ? 'Adding…' : audio && !audio.startsWith('https://') ? 'Upload' : (uploadEmptyLabel || 'Upload');
-    const assetActions = countIn !== null ? countBtn('media-action is-recording') : recording ? React.createElement("button", { type: "button", className: "media-action is-recording", "aria-label": "Stop recording", title: "Stop recording", onClick: stop },
-        React.createElement(Square, { size: 13, fill: "currentColor" }),
-        "Stop recording") : React.createElement(React.Fragment, null,
-        React.createElement("button", { type: "button", className: "media-action", disabled: !!busy, "aria-label": audio ? 'Re-record sound' : 'Record sound', onClick: start },
-            React.createElement(Mic, { size: 14 }),
-            recordLabel),
-        React.createElement("button", { type: "button", className: "media-action", disabled: !!busy, "aria-label": audio && !audio.startsWith('https://') ? 'Change sound file' : 'Upload sound file', onClick: () => { setLinking(false); input.current?.click(); } },
-            busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : audio && !audio.startsWith('https://') ? React.createElement(RefreshCw, { size: 14 }) : React.createElement(Upload, { size: 14 }),
-            uploadLabel),
-        !recording && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, "aria-controls": linking ? 'question-sound-link' : undefined, disabled: !!busy, onClick: () => { onClearError?.(); setLinking(v => !v); } },
-            React.createElement(Link2, { size: 14 }),
-            linkLabel),
-        audio && !recording && !isDriveLink(audio) && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
+    /* ui bits */
+    const busyAny = !!busy || recording || countIn !== null;
+    const badge = recording || countIn !== null ? { text: 'Recording', cls: 'is-rec' } : !audio ? { text: 'Not added', cls: 'is-empty' } : warn || drive ? { text: 'Needs attention', cls: 'is-warn' } : { text: 'Added', cls: 'is-ok' };
+    const caption = countIn !== null ? `Starting in ${countIn}…` : recording ? `Up to ${fmtTime(MAX_AUDIO_SECONDS)} · tap Stop when you're done` : busy ? busy.label : audio ? (drive ? 'This link needs attention' : linked ? 'Linked audio · plays in the quiz' : edit ? 'Edited · tap play to preview' : 'Tap play to preview') : hint;
+    const shownName = audio ? soundDisplayName(audio, audioName) : '', fullName = audio ? soundFileTitle(audio, audioName) : '';
+    const openLink = () => { onClearError?.(); setLinking(v => !v); };
+    const pickFile = () => { setLinking(false); input.current?.click(); };
+    const drop = {
+        onDragOver: (e) => { if (e.dataTransfer.types.includes('Files')) {
+            e.preventDefault();
+            setDragOver(true);
+        } },
+        onDragLeave: () => setDragOver(false),
+        onDrop: (e) => { e.preventDefault(); setDragOver(false); void upload(e.dataTransfer.files?.[0]); },
+    };
+    const body = countIn !== null
+        ? React.createElement("div", { className: "mf-rec is-count" },
+            React.createElement("b", { className: "mf-count", "aria-live": "assertive" }, countIn),
+            React.createElement("span", null, "Recording starts\u2026"),
+            React.createElement("button", { type: "button", className: "mf-rec-stop", onClick: () => { cancelCount.current = true; } },
+                React.createElement(X, { size: 14 }),
+                "Cancel"))
+        : recording
+            ? React.createElement("div", { className: "mf-rec", role: "status" },
+                React.createElement("span", { className: "mf-rec-dot", "aria-hidden": "true" }),
+                React.createElement("span", { className: "mf-rec-time" },
+                    fmtTime(seconds),
+                    React.createElement("small", null,
+                        " / ",
+                        fmtTime(MAX_AUDIO_SECONDS))),
+                React.createElement("span", { className: "mf-rec-meter", "aria-hidden": "true" },
+                    React.createElement("i", { style: { width: `${Math.round(clamp$1(level * 1.6, 0.04, 1) * 100)}%` } })),
+                React.createElement("button", { type: "button", className: "mf-rec-stop", "aria-label": "Stop recording", onClick: stop },
+                    React.createElement(Square, { size: 13, fill: "currentColor" }),
+                    "Stop"))
+            : busy
+                ? React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
+                    React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
+                        React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
+                    React.createElement("div", { className: "mf-progress-row" },
+                        React.createElement("span", null,
+                            busy.label,
+                            busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : ''),
+                        busy.cancel && React.createElement("button", { type: "button", onClick: busy.cancel }, "Cancel")))
+                : audio
+                    ? (drive ? React.createElement(DriveShareLegacyNotice, { kind: "sound" }) : React.createElement(SoundPlayer, { src: audio, edit: edit, durationHint: durationHint, variant: "media", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" }))
+                    : React.createElement("div", { className: "mf-empty" },
+                        React.createElement("button", { type: "button", className: "mf-tile", onClick: start },
+                            React.createElement(Mic, { size: 20 }),
+                            "Record"),
+                        React.createElement("button", { type: "button", className: "mf-tile", onClick: pickFile },
+                            React.createElement(Upload, { size: 20 }),
+                            uploadEmptyLabel),
+                        React.createElement("button", { type: "button", className: "mf-tile", "aria-expanded": linking, onClick: openLink },
+                            React.createElement(Link2, { size: 20 }),
+                            linkLabel));
+    const actions = audio && !busyAny && React.createElement("div", { className: "mf-actions" },
+        !drive && React.createElement("button", { type: "button", className: "mf-action is-primary", "aria-label": `Edit ${title.toLowerCase()}`, onClick: () => setClipOpen(true) },
             React.createElement(Scissors, { size: 14 }),
             "Edit"),
-        audio && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: clearAudio },
-            React.createElement(Trash2, { size: 14 })));
-    const inlineActions = countIn !== null ? countBtn('is-recording') : recording ? React.createElement("button", { type: "button", className: "is-recording", "aria-label": "Stop recording", title: "Stop recording", onClick: stop },
-        React.createElement(Square, { size: 13, fill: "currentColor" }),
-        "Stop") : React.createElement(React.Fragment, null,
-        React.createElement("button", { type: "button", disabled: !!busy, "aria-label": audio ? 'Re-record sound' : 'Record sound', onClick: start },
+        React.createElement("button", { type: "button", className: "mf-action", "aria-label": "Re-record sound", onClick: start },
             React.createElement(Mic, { size: 14 }),
-            React.createElement("span", { className: "editor-action-text" }, recordLabel)),
-        React.createElement("button", { type: "button", disabled: !!busy, "aria-label": audio && !audio.startsWith('https://') ? 'Change sound file' : 'Upload sound file', onClick: () => { setLinking(false); input.current?.click(); } },
-            busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : audio && !audio.startsWith('https://') ? React.createElement(RefreshCw, { size: 14 }) : React.createElement(Upload, { size: 14 }),
-            React.createElement("span", { className: "editor-action-text" }, audio && !audio.startsWith('https://') ? 'Change' : 'Upload')),
-        !recording && React.createElement("button", { type: "button", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, "aria-controls": linking ? 'question-sound-link' : undefined, disabled: !!busy, onClick: () => { onClearError?.(); setLinking(v => !v); } },
+            "Re-record"),
+        React.createElement("button", { type: "button", className: "mf-action", "aria-label": "Replace sound file", onClick: pickFile },
+            React.createElement(RefreshCw, { size: 14 }),
+            "Replace"),
+        React.createElement("button", { type: "button", className: "mf-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, "aria-controls": linking ? 'question-sound-link' : undefined, onClick: openLink },
             React.createElement(Link2, { size: 14 }),
-            React.createElement("span", { className: "editor-action-text" }, "Link")),
-        audio && !recording && !isDriveLink(audio) && React.createElement("button", { type: "button", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
-            React.createElement(Scissors, { size: 14 }),
-            React.createElement("span", { className: "editor-action-text" }, "Edit")),
-        audio && React.createElement("button", { type: "button", className: "is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: clearAudio },
+            linkLabel),
+        React.createElement("button", { type: "button", className: "mf-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: clearAudio },
             React.createElement(Trash2, { size: 14 })));
-    const shownName = audio ? soundDisplayName(audio, audioName) : '';
-    const fullName = audio ? soundFileTitle(audio, audioName) : '';
-    const player = audio && !recording && !isDriveLink(audio) && (assetLayout ? React.createElement("div", { className: "asset-media-extra" },
-        React.createElement(SoundPlayer, { src: audio, edit: edit, durationHint: durationHint, variant: "media", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" })) : React.createElement(SoundPlayer, { src: audio, edit: edit, durationHint: durationHint, displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "quiz-sound editor-sound-player" }));
-    const legacy = audio && !recording && isDriveLink(audio) && React.createElement(DriveShareLegacyNotice, { kind: "sound" });
-    const warnEl = warn && !recording && React.createElement("p", { className: assetLayout ? 'media-alert' : 'editor-inline-warn', role: "status" },
+    const warnEl = warn && !recording && React.createElement("p", { className: "mf-alert", role: "status" },
         React.createElement(CircleAlert, { size: 14, "aria-hidden": "true" }),
-        React.createElement("span", null, assetLayout && warn.includes('cannot play') ? React.createElement(React.Fragment, null,
-            React.createElement("strong", null, "Linked sound can\u2019t play."),
+        React.createElement("span", null, warn.includes('cannot play') ? React.createElement(React.Fragment, null,
+            React.createElement("strong", null, "Linked sound can't play."),
             " Remove it, upload the file, or use a direct audio URL.") : warn));
-    const linkForm = !recording && linking && React.createElement(MediaLinkForm, { autoFocus: true, id: "question-sound-link", label: "Sound link", placeholder: "https://example.com/sound.mp3", submitLabel: "Add", initialUrl: audio?.startsWith('https://') && !isDriveLink(audio) ? audio : link, onClearError: onClearError, onCancel: () => { setLink(''); setLinking(false); onClearError?.(); }, onSubmit: async (url) => { setLink(url); if (await applyLink(url))
+    const linkForm = !recording && linking && React.createElement(MediaLinkForm, { autoFocus: true, id: "question-sound-link", label: "Sound link", placeholder: "https://example.com/sound.mp3", submitLabel: "Add", initialUrl: linked && !drive ? audio : '', onClearError: onClearError, onCancel: () => { setLinking(false); onClearError?.(); }, onSubmit: async (url) => { if (await applyLink(url))
             setLinking(false); } });
-    const clip = clipOpen && audio && React.createElement(MediaClipEditor, { kind: "audio", title: `Edit ${title.toLowerCase()}`, src: audio, initial: edit, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
+    const clip = clipOpen && (pending
+        ? React.createElement(MediaClipEditor, { kind: "audio", title: "Trim before adding", fileName: pending.name, src: pending.url, saveMode: "bake", maxSeconds: MAX_AUDIO_SECONDS, onReplace: (data, len) => acceptBaked(data, len, pending.name), onSave: () => closePending(), onCancel: closePending })
+        : audio ? React.createElement(MediaClipEditor, { kind: "audio", title: `Edit ${title.toLowerCase()}`, fileName: fullName, src: audio, initial: edit, onReplace: audio.startsWith('data:') ? (data, len) => acceptBaked(data, len) : undefined, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } }) : null);
     const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, "aria-label": `Upload ${title.toLowerCase()}`, accept: "audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus", onChange: e => { const f = e.currentTarget.files?.[0]; e.currentTarget.value = ''; void upload(f); } });
-    if (assetLayout) {
-        const badge = recording ? 'Recording' : !audio ? 'Not added' : warn || isDriveLink(audio) ? 'Needs attention' : 'Added';
-        const badgeClass = `asset-state${recording ? ' is-warn' : !audio ? ' is-empty' : warn || isDriveLink(audio) ? ' is-warn' : ' is-ok'}`;
-        const desc = recording ? caption : (audio && !isDriveLink(audio) ? 'Tap play to preview' : hint);
-        const legacyExtra = legacy && React.createElement("div", { className: "asset-media-extra" }, legacy);
-        return React.createElement("article", { className: `asset${audio ? ' has-image' : ''}${linking ? ' is-linking' : ''}`, "data-recording": recording || undefined },
-            React.createElement("header", { className: "media-head" },
-                React.createElement("span", { className: "media-ico", "aria-hidden": "true" }, recording ? React.createElement("span", { className: "sound-rec-dot" }) : React.createElement(AudioLines, { size: 17 })),
-                React.createElement("div", { className: "media-headmain" },
-                    React.createElement("div", { className: "media-titlerow" },
-                        React.createElement("span", { className: "asset-name" }, title),
-                        React.createElement("span", { className: badgeClass }, badge)),
-                    React.createElement("small", { className: "asset-caption" }, desc))),
-            !recording ? player : null,
-            !recording ? legacyExtra : null,
-            !recording ? warnEl : null,
-            React.createElement("div", { className: "asset-actions" }, assetActions),
-            fileInput,
-            linkForm,
-            clip);
-    }
-    return React.createElement("div", { className: `editor-inline-image editor-sound${audio ? ' has-image' : ''}${linking ? ' is-linking' : ''}`, "data-recording": recording || undefined },
-        React.createElement("span", { className: "editor-inline-icon" }, recording ? React.createElement("span", { className: "sound-rec-dot", "aria-hidden": "true" }) : React.createElement(AudioLines, { size: 18 })),
-        React.createElement("div", { className: "editor-inline-copy" },
-            React.createElement("strong", null, title),
-            React.createElement("small", null, caption)),
-        React.createElement("div", { className: "editor-inline-actions" }, inlineActions),
+    return React.createElement("article", { className: `mf mf-sound${audio ? ' has-media' : ''}${assetLayout ? ' is-asset' : ''}${dragOver ? ' is-dragover' : ''}`, "data-recording": recording || undefined, ...drop },
+        React.createElement("header", { className: "mf-head" },
+            React.createElement("span", { className: "mf-ico", "aria-hidden": "true" }, recording ? React.createElement("span", { className: "mf-rec-dot" }) : React.createElement(AudioLines, { size: 18 })),
+            React.createElement("div", { className: "mf-headmain" },
+                React.createElement("div", { className: "mf-titlerow" },
+                    React.createElement("strong", null, title),
+                    React.createElement("span", { className: `mf-badge ${badge.cls}` }, badge.text)),
+                React.createElement("small", { className: "mf-caption" }, caption))),
+        body,
+        !recording && warnEl,
+        actions,
         fileInput,
-        player,
-        legacy,
-        warnEl,
         linkForm,
         clip);
 }
 
-function dataUrl(blob) { return new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(String(r.result)); r.onerror = () => reject(new Error('Could not read this video.')); r.readAsDataURL(blob); }); }
 function VideoPlayer({ src, className = '', label = 'Play video', edit }) {
-    const drive = isDriveLink(src);
-    const [failed, setFailed] = reactExports.useState(false);
-    const video = React.useRef(null);
-    const clipRef = React.useRef(edit);
-    clipRef.current = edit;
-    reactExports.useEffect(() => { setFailed(false); }, [src]);
-    reactExports.useEffect(() => {
-        const el = video.current;
-        if (!el || drive)
-            return;
-        const apply = () => { const len = el.duration; if (!Number.isFinite(len) || len <= 0)
-            return; const clip = normalizeEdit(clipRef.current, len); el.muted = !!clip.muted; el.volume = clip.volume ?? 1; };
-        const tick = () => { const len = el.duration; if (!Number.isFinite(len))
-            return; const clip = normalizeEdit(clipRef.current, len); if (clip && el.currentTime >= clip.trimEnd - 0.02 && !el.paused) {
-            el.pause();
-            el.currentTime = clip.trimStart;
-        } };
-        el.addEventListener('loadedmetadata', apply);
-        el.addEventListener('durationchange', apply);
-        el.addEventListener('timeupdate', tick);
-        apply();
-        return () => { el.removeEventListener('loadedmetadata', apply); el.removeEventListener('durationchange', apply); el.removeEventListener('timeupdate', tick); };
-    }, [src, drive, edit]);
-    if (drive || failed && src.includes('drive.google.com'))
-        return React.createElement("div", { className: `video-player ${className}`.trim() },
+    const video = reactExports.useRef(null);
+    const pb = useClipPlayback(video, src, edit);
+    if (isDriveLink(src))
+        return React.createElement("div", { className: `vp ${className}`.trim() },
             React.createElement(DriveShareLegacyNotice, { kind: "video" }));
-    return React.createElement("div", { className: `video-player ${className}` },
-        React.createElement("video", { ref: video, controls: true, playsInline: true, preload: "metadata", src: src, onError: () => setFailed(true), onPlay: e => { const el = e.currentTarget; const len = el.duration; if (!Number.isFinite(len))
-                return; const clip = normalizeEdit(clipRef.current, len); if (clip && el.currentTime < clip.trimStart)
-                el.currentTime = clip.trimStart; } }),
-        failed && React.createElement("p", { className: "video-fallback" }, "This video could not play. Try opening the link in a new tab."));
+    const clip = normalizeEdit(edit, pb.duration), trimmed = pb.duration > 0 && !editIsDefault(edit, pb.duration);
+    return React.createElement("div", { className: `vp ${className}`.trim(), "data-failed": pb.failed || undefined },
+        React.createElement("video", { key: src, ref: video, controls: true, playsInline: true, preload: "metadata", src: playbackSrc(src), "aria-label": label }),
+        trimmed && React.createElement("span", { className: "vp-badge" },
+            React.createElement(Scissors, { size: 11 }),
+            fmtTime(clip.trimEnd - clip.trimStart)),
+        pb.failed && React.createElement("p", { className: "vp-fallback" },
+            "This video could not play.",
+            !isEmbeddedMedia(src) && React.createElement(React.Fragment, null,
+                " ",
+                React.createElement("a", { href: src, target: "_blank", rel: "noreferrer" }, "Open the link"),
+                " to check it.")));
 }
-function VideoField({ video, edit, onEditChange, onChange, onError, onClearError, title = 'Question video', hint = 'Prefer a short upload — large files fill browser storage quickly.', assetLayout, emptyHint, linkLabel = 'Paste link', uploadEmptyLabel = 'Upload video' }) {
-    const [busy, setBusy] = reactExports.useState(''), [linking, setLinking] = reactExports.useState(false), [clipOpen, setClipOpen] = reactExports.useState(false);
-    const input = React.useRef(null);
-    reactExports.useEffect(() => { if (!video)
-        setLinking(false); }, [video]);
+function VideoField({ video, edit, onEditChange, onChange, onError, onClearError, title = 'Question video', hint = 'Prefer a short upload — large files fill browser storage quickly.', assetLayout, emptyHint, linkLabel = 'Link', uploadEmptyLabel = 'Upload' }) {
+    const [busy, setBusy] = reactExports.useState(null), [linking, setLinking] = reactExports.useState(false), [clipOpen, setClipOpen] = reactExports.useState(false), [dragOver, setDragOver] = reactExports.useState(false), [meta, setMeta] = reactExports.useState(null);
+    const input = reactExports.useRef(null);
+    const drive = !!video && isDriveLink(video), linked = !!video?.startsWith('https://');
+    reactExports.useEffect(() => { if (!video) {
+        setLinking(false);
+        setMeta(null);
+    } }, [video]);
     function applyLink(url) {
         onError('');
         const resolved = resolveMediaLink(url.trim());
@@ -30120,92 +30830,106 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
             pushMediaLinkError(DRIVE_SHARE_REJECT);
             return false;
         }
-        if (!videoSafe(resolved)) {
-            pushMediaLinkError('Use an https video file, or upload a small video.');
+        if (!/^https:\/\//i.test(resolved) || !videoSafe(resolved)) {
+            pushMediaLinkError('Use an https link to a video file (MP4 or WebM), or upload a small video.');
             return false;
         }
         onEditChange?.(undefined);
         onChange(resolved);
+        setMeta(null);
         return true;
     }
     async function upload(file) {
-        if (!file)
+        if (!file || busy)
             return;
         onError('');
-        setBusy('Adding…');
+        const typed = typedMediaFile(file, 'video');
+        if (!typed) {
+            onError('Choose a video file (MP4, WebM or MOV).');
+            return;
+        }
+        const blob = typed instanceof File ? typed : new File([typed], file.name || 'video.mp4', { type: typed.type });
+        if (dataUrlLength(blob.size, blob.type) > MAX_VIDEO_CHARS) {
+            onError(`This video is ${formatBytes(blob.size)}; the limit is about ${formatBytes(maxBytesForChars(MAX_VIDEO_CHARS))}. Trim or compress it first, or paste an https link.`);
+            return;
+        }
+        setBusy({ label: 'Checking video…' });
         try {
-            const typed = typedMediaFile(file, 'video');
-            if (!typed)
-                throw new Error('Choose a video file (MP4 or WebM).');
-            const data = await dataUrl(typed instanceof File ? typed : new File([typed], 'video.mp4', { type: typed.type }));
-            if (data.length > MAX_VIDEO_CHARS)
-                throw new Error('This video is too large to store. Use a shorter clip, or an https video file.');
+            const url = URL.createObjectURL(blob);
+            const probe = await probeMediaSrc(url, 'video');
+            URL.revokeObjectURL(url);
+            if (!probe.ok)
+                throw new Error('This video could not be opened in your browser. MP4 (H.264) plays everywhere.');
+            const data = await blobToDataUrl(blob, p => setBusy({ label: 'Adding video…', progress: p }));
             if (!videoSafe(data))
                 throw new Error('This video could not be saved.');
             onEditChange?.(undefined);
             onChange(data);
+            setMeta({ duration: probe.duration, size: blob.size });
         }
         catch (e) {
-            onError(e.message || 'This video could not be added.');
+            onError(e?.message || 'This video could not be added.');
         }
         finally {
-            setBusy('');
+            setBusy(null);
         }
     }
-    const uploadLabel = busy ? 'Adding…' : video ? 'Change' : uploadEmptyLabel;
-    const uploadBtn = React.createElement("button", { type: "button", className: assetLayout ? 'media-action' : undefined, disabled: !!busy, "aria-label": video ? 'Change video file' : 'Upload video file', onClick: () => { setLinking(false); input.current?.click(); } },
-        busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : video ? React.createElement(RefreshCw, { size: 14 }) : React.createElement(Upload, { size: 14 }),
-        assetLayout ? uploadLabel : React.createElement("span", { className: "editor-action-text" }, video ? 'Change' : 'Upload'));
-    const linkBtn = React.createElement("button", { type: "button", className: assetLayout ? 'media-action' : undefined, "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, disabled: !!busy, onClick: () => { onClearError?.(); setLinking(v => !v); } },
-        React.createElement(Link2, { size: 14 }),
-        assetLayout ? linkLabel : React.createElement("span", { className: "editor-action-text" }, "Link"));
-    const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, accept: "video/*,.mp4,.webm,.mov", onChange: e => { const f = e.currentTarget.files?.[0]; e.currentTarget.value = ''; void upload(f); } });
-    const linkForm = linking && React.createElement(MediaLinkForm, { autoFocus: true, label: `${title} link`, placeholder: "https://\u2026/clip.mp4", submitLabel: "Add", initialUrl: video?.startsWith('https://') && !isDriveLink(video) ? video : '', onClearError: onClearError, onCancel: () => setLinking(false), onSubmit: url => { if (applyLink(url))
+    const badge = !video ? { text: 'Not added', cls: 'is-empty' } : drive ? { text: 'Needs attention', cls: 'is-warn' } : { text: 'Added', cls: 'is-ok' };
+    const caption = busy ? busy.label : video ? (drive ? 'This link needs attention' : linked ? 'Linked video · plays in the quiz' : [meta && fmtTime(meta.duration), meta && formatBytes(meta.size), edit ? 'edited' : null].filter(Boolean).join(' · ') || 'Tap play to preview') : (emptyHint || hint);
+    const openLink = () => { onClearError?.(); setLinking(v => !v); };
+    const pickFile = () => { setLinking(false); input.current?.click(); };
+    const drop = {
+        onDragOver: (e) => { if (e.dataTransfer.types.includes('Files')) {
+            e.preventDefault();
+            setDragOver(true);
+        } },
+        onDragLeave: () => setDragOver(false),
+        onDrop: (e) => { e.preventDefault(); setDragOver(false); void upload(e.dataTransfer.files?.[0]); },
+    };
+    const body = busy
+        ? React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
+            React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
+                React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
+            React.createElement("div", { className: "mf-progress-row" },
+                React.createElement("span", null,
+                    busy.label,
+                    busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : '')))
+        : video
+            ? (drive ? React.createElement(DriveShareLegacyNotice, { kind: "video" }) : React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` }))
+            : React.createElement("div", { className: "mf-empty" },
+                React.createElement("button", { type: "button", className: "mf-tile", onClick: pickFile },
+                    React.createElement(Upload, { size: 20 }),
+                    uploadEmptyLabel),
+                React.createElement("button", { type: "button", className: "mf-tile", "aria-expanded": linking, onClick: openLink },
+                    React.createElement(Link2, { size: 20 }),
+                    linkLabel));
+    const actions = video && !busy && React.createElement("div", { className: "mf-actions" },
+        !drive && React.createElement("button", { type: "button", className: "mf-action is-primary", "aria-label": `Edit ${title.toLowerCase()}`, onClick: () => setClipOpen(true) },
+            React.createElement(Scissors, { size: 14 }),
+            "Edit"),
+        React.createElement("button", { type: "button", className: "mf-action", "aria-label": "Replace video file", onClick: pickFile },
+            React.createElement(RefreshCw, { size: 14 }),
+            "Replace"),
+        React.createElement("button", { type: "button", className: "mf-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, onClick: openLink },
+            React.createElement(Link2, { size: 14 }),
+            linkLabel),
+        React.createElement("button", { type: "button", className: "mf-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
+            React.createElement(Trash2, { size: 14 })));
+    const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, accept: "video/*,.mp4,.webm,.mov,.m4v", onChange: e => { const f = e.currentTarget.files?.[0]; e.currentTarget.value = ''; void upload(f); } });
+    const linkForm = linking && React.createElement(MediaLinkForm, { autoFocus: true, label: `${title} link`, placeholder: "https://\u2026/clip.mp4", submitLabel: "Add", initialUrl: linked && !drive ? video : '', onClearError: onClearError, onCancel: () => setLinking(false), onSubmit: url => { if (applyLink(url))
             setLinking(false); } });
     const clip = clipOpen && video && React.createElement(MediaClipEditor, { kind: "video", title: `Edit ${title.toLowerCase()}`, src: video, initial: edit, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
-    if (assetLayout) {
-        const badge = video ? (isDriveLink(video) ? 'Needs attention' : 'Added') : 'Not added';
-        const badgeClass = `asset-state${!video ? ' is-empty' : isDriveLink(video) ? ' is-warn' : ' is-ok'}`;
-        const caption = busy || (video ? (isDriveLink(video) ? 'This link needs attention' : 'Tap play to preview') : (emptyHint || hint));
-        const preview = video ? React.createElement("div", { className: "asset-media-extra" }, isDriveLink(video) ? React.createElement(DriveShareLegacyNotice, { kind: "video" }) : React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` })) : null;
-        return React.createElement("article", { className: `asset${video ? ' has-image' : ''}${linking ? ' is-linking' : ''}` },
-            React.createElement("header", { className: "media-head" },
-                React.createElement("span", { className: "media-ico", "aria-hidden": "true" },
-                    React.createElement(Film, { size: 17 })),
-                React.createElement("div", { className: "media-headmain" },
-                    React.createElement("div", { className: "media-titlerow" },
-                        React.createElement("span", { className: "asset-name" }, title),
-                        React.createElement("span", { className: badgeClass }, badge)),
-                    React.createElement("small", { className: "asset-caption" }, caption))),
-            preview,
-            React.createElement("div", { className: "asset-actions" },
-                uploadBtn,
-                linkBtn,
-                video && !isDriveLink(video) && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
-                    React.createElement(Scissors, { size: 14 }),
-                    "Edit"),
-                video && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
-                    React.createElement(Trash2, { size: 14 }))),
-            fileInput,
-            linkForm,
-            clip);
-    }
-    return React.createElement("div", { className: `editor-inline-image editor-video${video ? ' has-image' : ''}${linking ? ' is-linking' : ''}` },
-        React.createElement("span", { className: "editor-inline-icon" },
-            React.createElement(Film, { size: 18 })),
-        React.createElement("div", { className: "editor-inline-copy" },
-            React.createElement("strong", null, title),
-            React.createElement("small", null, busy || (video ? 'Plays with the question' : hint))),
-        video && isDriveLink(video) && React.createElement(DriveShareLegacyNotice, { kind: "video" }),
-        video && !isDriveLink(video) && React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` }),
-        React.createElement("div", { className: "editor-inline-actions" },
-            uploadBtn,
-            linkBtn,
-            video && !isDriveLink(video) && React.createElement("button", { type: "button", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
-                React.createElement(Scissors, { size: 14 }),
-                React.createElement("span", { className: "editor-action-text" }, "Edit")),
-            video && React.createElement("button", { type: "button", className: "is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
-                React.createElement(Trash2, { size: 14 }))),
+    return React.createElement("article", { className: `mf mf-video${video ? ' has-media' : ''}${assetLayout ? ' is-asset' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
+        React.createElement("header", { className: "mf-head" },
+            React.createElement("span", { className: "mf-ico", "aria-hidden": "true" },
+                React.createElement(Film, { size: 18 })),
+            React.createElement("div", { className: "mf-headmain" },
+                React.createElement("div", { className: "mf-titlerow" },
+                    React.createElement("strong", null, title),
+                    React.createElement("span", { className: `mf-badge ${badge.cls}` }, badge.text)),
+                React.createElement("small", { className: "mf-caption" }, caption))),
+        body,
+        actions,
         fileInput,
         linkForm,
         clip);
