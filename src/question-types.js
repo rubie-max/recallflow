@@ -105,9 +105,10 @@ export function videoSafe(x){return typeof x==='string'&&((/^data:video\/[a-z0-9
 export function mediaEditSafe(x){
  if(x===undefined||x===null)return true;
  if(typeof x!=='object')return false;
- const {trimStart,trimEnd,muted,volume,fadeIn,fadeOut,gain}=x;
+ const {trimStart,trimEnd,muted,volume,fadeIn,fadeOut,gain,frame}=x;
  const opt=(v,min,max)=>v===undefined||(typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max);
- return typeof trimStart==='number'&&typeof trimEnd==='number'&&typeof muted==='boolean'&&Number.isFinite(trimStart)&&Number.isFinite(trimEnd)&&trimStart>=0&&trimEnd>trimStart&&opt(volume,0,1)&&opt(fadeIn,0,600)&&opt(fadeOut,0,600)&&opt(gain,0.1,8);
+ const frameOk=frame===undefined||(frame&&typeof frame==='object'&&typeof frame.k==='number'&&Number.isFinite(frame.k)&&frame.k>0&&frame.k<100&&typeof frame.x==='number'&&Number.isFinite(frame.x)&&typeof frame.y==='number'&&Number.isFinite(frame.y)&&(frame.fx===undefined||typeof frame.fx==='boolean')&&(frame.fy===undefined||typeof frame.fy==='boolean'));
+ return typeof trimStart==='number'&&typeof trimEnd==='number'&&typeof muted==='boolean'&&Number.isFinite(trimStart)&&Number.isFinite(trimEnd)&&trimStart>=0&&trimEnd>trimStart&&opt(volume,0,1)&&opt(fadeIn,0,600)&&opt(fadeOut,0,600)&&opt(gain,0.1,8)&&frameOk;
 }
 
 const trimmed=x=>typeof x==='string'?x.trim():'';

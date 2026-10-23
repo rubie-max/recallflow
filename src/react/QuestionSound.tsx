@@ -231,7 +231,7 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
  const linkForm=!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={linked&&!drive?audio!:''} onClearError={onClearError} onCancel={()=>{setLinking(false);onClearError?.();}} onSubmit={async url=>{if(await applyLink(url))setLinking(false);}}/>;
  const clip=clipOpen&&(pending
   ?<MediaClipEditor kind="audio" title="Trim before adding" fileName={pending.name} src={pending.url} saveMode="bake" maxSeconds={MAX_AUDIO_SECONDS} onReplace={(data,len)=>acceptBaked(data,len,pending.name)} onSave={()=>closePending()} onCancel={closePending}/>
-  :audio?<MediaClipEditor kind="audio" title={`Edit ${title.toLowerCase()}`} fileName={fullName} src={audio} initial={edit} onReplace={audio.startsWith('data:')?(data,len)=>acceptBaked(data,len):undefined} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>:null);
+  :audio?<MediaClipEditor kind="audio" title="Adjust sound" fileName={fullName} src={audio} initial={edit} onReplace={audio.startsWith('data:')?(data,len)=>acceptBaked(data,len):undefined} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>:null);
  const fileInput=<input ref={input} type="file" hidden aria-label={`Upload ${title.toLowerCase()}`} accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>;
 
  if(assetLayout){

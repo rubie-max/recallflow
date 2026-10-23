@@ -1,17 +1,17 @@
 import React,{useCallback,useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
-import {ArrowLeft,Check,Undo2,Redo2,Volume2,VolumeX,Download,ChevronDown,RotateCcw,RotateCw,Play,Pause,AudioLines,ArrowLeftToLine,ArrowRightToLine,Minus,Plus,Repeat,Wand2,AlertCircle,ExternalLink,LoaderCircle,Save} from 'lucide-react';
-import {Button} from './components/Button';
+import {X,Check,Play,Pause,ArrowLeftToLine,ArrowRightToLine,Repeat,Download,Undo2,Volume2,VolumeX,Wand2,ZoomIn,ZoomOut,Shrink,Expand,FlipHorizontal2,FlipVertical2,Crop,Scissors,AudioLines,LoaderCircle,AlertCircle,ExternalLink,Save,FileAudio,FileVideo,ArrowLeft} from 'lucide-react';
 import {driveFileId,isDriveLink,resolveMediaPlaybackSrc,saneDuration,blobToDataUrl} from '../question-types.js';
 import {playPreset} from '../feedback-sounds.js';
 
 /* ───────────────────────── model ───────────────────────── */
-export type MediaEdit={trimStart:number;trimEnd:number;muted:boolean;volume?:number;fadeIn?:number;fadeOut?:number;gain?:number};
+export type MediaFrame={k:number;x:number;y:number;fx?:boolean;fy?:boolean};
+export type MediaEdit={trimStart:number;trimEnd:number;muted:boolean;volume?:number;fadeIn?:number;fadeOut?:number;gain?:number;frame?:MediaFrame};
 export type Peaks={peaks:number[];duration:number;peak:number;channels:number;sampleRate:number};
-type Norm=Required<MediaEdit>;
+type Norm=Required<Omit<MediaEdit,'frame'>>&{frame?:MediaFrame};
 
-const MIN_LEN=0.1,SPEEDS=[0.5,0.75,1,1.25,1.5,2];
-const clamp=(v:number,a:number,b:number)=>Math.min(b,Math.max(a,v));
+const MIN_LEN=0.1;
+const clamp=(v:number,a:number,b:number)=>Math.min(Math.max(v,Math.min(a,b)),Math.max(a,b));
 const num=(v:unknown,fb:number)=>typeof v==='number'&&Number.isFinite(v)?v:fb;
 export const fmtTime=(s:number)=>{s=Math.max(0,num(s,0));return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;};
 export const fmtFine=(s:number)=>`${fmtTime(s)}.${Math.floor((Math.max(0,num(s,0))%1)*10)}`;
@@ -22,17 +22,16 @@ const AC=()=>(window.AudioContext||(window as any).webkitAudioContext) as typeof
 export function defaultEdit(duration:number):Norm{const d=Math.max(0,num(duration,0));return {trimStart:0,trimEnd:d,muted:false,volume:1,fadeIn:0,fadeOut:0,gain:1};}
 export function normalizeEdit(edit:MediaEdit|undefined|null,duration:number):Norm{
  const d=Math.max(0,num(duration,0));
- if(!d||!edit)return defaultEdit(d);
+ if(!d||!edit)return {...defaultEdit(d),frame:edit?.frame};
  const trimStart=clamp(num(edit.trimStart,0),0,Math.max(0,d-MIN_LEN));
  const trimEnd=clamp(num(edit.trimEnd,d),Math.min(d,trimStart+MIN_LEN),d);
  const len=Math.max(MIN_LEN,trimEnd-trimStart);
- return {trimStart,trimEnd,muted:!!edit.muted,volume:clamp(num(edit.volume,1),0,1),fadeIn:clamp(num(edit.fadeIn,0),0,len/2),fadeOut:clamp(num(edit.fadeOut,0),0,len/2),gain:clamp(num(edit.gain,1),0.25,4)};
+ return {trimStart,trimEnd,muted:!!edit.muted,volume:clamp(num(edit.volume,1),0,1),fadeIn:clamp(num(edit.fadeIn,0),0,len/2),fadeOut:clamp(num(edit.fadeOut,0),0,len/2),gain:clamp(num(edit.gain,1),0.25,4),frame:edit.frame};
 }
 export function editIsDefault(edit:MediaEdit|undefined|null,duration:number){
  const n=normalizeEdit(edit,duration);
- return !n.muted&&n.volume===1&&n.gain===1&&n.fadeIn===0&&n.fadeOut===0&&n.trimStart<=0.01&&Math.abs(n.trimEnd-duration)<=0.05;
+ return !n.frame&&!n.muted&&n.volume===1&&n.gain===1&&n.fadeIn===0&&n.fadeOut===0&&n.trimStart<=0.01&&Math.abs(n.trimEnd-duration)<=0.05;
 }
-/** Linear gain the clip should play at time t (0 = silent). Includes mute, volume, boost and fades. */
 export function levelAt(e:MediaEdit,t:number){
  if(e.muted)return 0;
  let a=1;
@@ -41,13 +40,68 @@ export function levelAt(e:MediaEdit,t:number){
  return clamp(a,0,1)*num(e.volume,1)*num(e.gain,1);
 }
 
+/* ───────────────────────── 4:3 frame (same model as ImageEditor) ───────────────────────── */
+export const FRAME_W=1200,FRAME_H=900;
+export const fitK=(w:number,h:number)=>Math.min(FRAME_W/w,FRAME_H/h);
+export const fillK=(w:number,h:number)=>Math.max(FRAME_W/w,FRAME_H/h);
+const maxK=(w:number,h:number)=>fillK(w,h)*4;
+export const centredFrame=(k:number,extra?:Partial<MediaFrame>):MediaFrame=>({k,x:FRAME_W/2,y:FRAME_H/2,...extra});
+export function limitFrame(f:MediaFrame,w:number,h:number):MediaFrame{
+ const k=clamp(num(f.k,1),fitK(w,h),maxK(w,h)),sw=w*k,sh=h*k;
+ return {k,x:clamp(num(f.x,FRAME_W/2),sw/2,FRAME_W-sw/2),y:clamp(num(f.y,FRAME_H/2),sh/2,FRAME_H-sh/2),fx:!!f.fx||undefined,fy:!!f.fy||undefined};
+}
+export function frameFor(edit:MediaEdit|undefined|null,w:number,h:number):MediaFrame{
+ if(!w||!h)return centredFrame(1);
+ const f=edit?.frame;
+ return f&&Number.isFinite(f.k)?limitFrame(f,w,h):centredFrame(fitK(w,h));
+}
+export function frameIsDefault(f:MediaFrame,w:number,h:number){return !f.fx&&!f.fy&&Math.abs(f.k-fitK(w,h))<1e-6&&Math.abs(f.x-FRAME_W/2)<0.5&&Math.abs(f.y-FRAME_H/2)<0.5;}
+const zoomAround=(f:MediaFrame,k:number,ox:number,oy:number):MediaFrame=>{const r=k/f.k;return {...f,k,x:ox-(ox-f.x)*r,y:oy-(oy-f.y)*r};};
+/** CSS placement of a <video> inside a 4:3 box, in percentages — no measuring needed. */
+export function frameStyle(f:MediaFrame,w:number,h:number):React.CSSProperties{
+ if(!w||!h)return {position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'contain'};
+ const sw=w*f.k,sh=h*f.k;
+ return {position:'absolute',left:`${(f.x-sw/2)/FRAME_W*100}%`,top:`${(f.y-sh/2)/FRAME_H*100}%`,width:`${sw/FRAME_W*100}%`,height:`${sh/FRAME_H*100}%`,maxWidth:'none',maxHeight:'none',transform:`scale(${f.fx?-1:1},${f.fy?-1:1})`};
+}
+export function useVideoDims(ref:React.RefObject<HTMLVideoElement|null>,src:string){
+ const [dims,setDims]=useState({w:0,h:0});
+ useEffect(()=>{
+  const v=ref.current;setDims({w:0,h:0});if(!v)return;
+  const read=()=>{if(v.videoWidth&&v.videoHeight)setDims({w:v.videoWidth,h:v.videoHeight});};
+  v.addEventListener('loadedmetadata',read);v.addEventListener('loadeddata',read);read();
+  return()=>{v.removeEventListener('loadedmetadata',read);v.removeEventListener('loadeddata',read);};
+ },[src,ref]);
+ return dims;
+}
+function useBackdrop(video:React.RefObject<HTMLVideoElement|null>,canvas:React.RefObject<HTMLCanvasElement|null>,src:string,playing:boolean){
+ useEffect(()=>{
+  const v=video.current,c=canvas.current;if(!v||!c)return;
+  c.width=32;c.height=24;const g=c.getContext('2d');if(!g)return;
+  const draw=()=>{if(v.readyState<2||!v.videoWidth)return;const k=Math.max(32/v.videoWidth,24/v.videoHeight),w=v.videoWidth*k,h=v.videoHeight*k;try{g.drawImage(v,(32-w)/2,(24-h)/2,w,h);}catch{}};
+  let raf=0,last=0;const loop=(t:number)=>{if(t-last>120){draw();last=t;}raf=requestAnimationFrame(loop);};
+  v.addEventListener('loadeddata',draw);v.addEventListener('seeked',draw);draw();
+  if(playing)raf=requestAnimationFrame(loop);
+  return()=>{cancelAnimationFrame(raf);v.removeEventListener('loadeddata',draw);v.removeEventListener('seeked',draw);};
+ },[src,playing,video,canvas]);
+}
+/** A 4:3 box with a blurred backdrop and the video placed by `frame`. Used by the player and the editor. */
+export const VideoFrame=React.forwardRef<HTMLVideoElement,{src:string;frame:MediaFrame;dims:{w:number;h:number};playing:boolean;className?:string;preload?:'metadata'|'auto';onClick?:()=>void;children?:React.ReactNode}>(function VideoFrame({src,frame,dims,playing,className='',preload='metadata',onClick,children},ref){
+ const inner=useRef<HTMLVideoElement|null>(null),canvas=useRef<HTMLCanvasElement>(null);
+ const setRef=useCallback((el:HTMLVideoElement|null)=>{inner.current=el;if(typeof ref==='function')ref(el);else if(ref)(ref as React.MutableRefObject<HTMLVideoElement|null>).current=el;},[ref]);
+ useBackdrop(inner,canvas,src,playing);
+ return <div className={`vf ${className}`.trim()} onClick={onClick}>
+  <canvas ref={canvas} className="vf-backdrop" aria-hidden="true"/>
+  <video key={src} ref={setRef} src={playbackSrc(src)} playsInline preload={preload} style={frameStyle(frame,dims.w,dims.h)}/>
+  {children}
+ </div>;
+});
+
 /* ───────────────────────── duration & probing ───────────────────────── */
 function readDuration(el:HTMLMediaElement){
  const d=saneDuration(el.duration);if(d)return d;
  try{const s=el.seekable;if(s.length)return saneDuration(s.end(s.length-1));}catch{}
  return 0;
 }
-/** Real duration of a media element. Fixes MediaRecorder WebM (Infinity/NaN) by seeking to the end once. */
 export function resolveMediaDuration(el:HTMLMediaElement,timeoutMs=15000):Promise<number>{
  return new Promise(resolve=>{
   let done=false,fixing=false;
@@ -71,7 +125,6 @@ export function resolveMediaDuration(el:HTMLMediaElement,timeoutMs=15000):Promis
 export function seekElement(el:HTMLMediaElement,t:number){
  return new Promise<void>(resolve=>{let timer=0;const done=()=>{el.removeEventListener('seeked',done);window.clearTimeout(timer);resolve();};el.addEventListener('seeked',done);timer=window.setTimeout(done,3000);try{el.currentTime=t;}catch{done();}});
 }
-/** Can this browser play the URL, and how long is it? Works for data:, blob: and https. */
 export function probeMediaSrc(src:string,kind:'audio'|'video',timeoutMs=15000):Promise<{ok:boolean;duration:number}>{
  return new Promise(resolve=>{
   const el=document.createElement(kind);el.preload='auto';el.muted=true;(el as HTMLVideoElement).playsInline=true;
@@ -98,19 +151,16 @@ export function computePeaks(buf:AudioBuffer,bars:number):Peaks{
 }
 const peakCache=new Map<string,Promise<Peaks|null>>();
 const cacheKey=(src:string,bars:number)=>`${bars}:${src.length}:${src.slice(0,96)}:${src.slice(-96)}`;
-/** Normalised peaks for a waveform. Cached. Resolves null when the file can't be decoded (e.g. CORS-blocked link). */
 export function decodePeaks(src:string,bars=240):Promise<Peaks|null>{
  const key=cacheKey(src,bars);const hit=peakCache.get(key);if(hit)return hit;
  const p=decodeAudioFromSrc(src).then(b=>computePeaks(b,bars)).catch(()=>null);
  peakCache.set(key,p);if(peakCache.size>16)peakCache.delete(peakCache.keys().next().value as string);
  return p;
 }
-/** Absolute peak (0–1) between two fractions of the file. */
 export function peakWithin(p:Peaks,from:number,to:number){
  const n=p.peaks.length,a=clamp(Math.floor(from*n),0,n-1),b=clamp(Math.ceil(to*n),a+1,n);let m=0;
  for(let i=a;i<b;i++)if(p.peaks[i]>m)m=p.peaks[i];return m*p.peak;
 }
-/** Offline render of the selection with volume, boost and fades applied. Instant (no realtime playback). */
 export async function renderEditedAudio(src:string,edit:MediaEdit|undefined,opts:{mono?:boolean;sampleRate?:number}={}):Promise<AudioBuffer>{
  const buf=await decodeAudioFromSrc(src);
  const e=normalizeEdit(edit,buf.duration),len=Math.max(MIN_LEN,e.trimEnd-e.trimStart);
@@ -134,7 +184,6 @@ export function audioBufferToWav(buf:AudioBuffer):Blob{
  let o=44;for(let i=0;i<n;i++)for(let c=0;c<chs;c++){const v=clamp(data[c][i],-1,1);dv.setInt16(o,v<0?v*0x8000:v*0x7fff,true);o+=2;}
  return new Blob([ab],{type:'audio/wav'});
 }
-/** Compress an AudioBuffer with MediaRecorder. Runs in real time (browsers have no offline Opus encoder) — pass onProgress/signal. */
 export async function encodeAudioBuffer(buf:AudioBuffer,{bitrate=48000,onProgress,signal}:{bitrate?:number;onProgress?:(p:number)=>void;signal?:AbortSignal}={}):Promise<Blob>{
  if(typeof MediaRecorder==='undefined')throw new Error('This browser cannot compress audio.');
  const Ctx=AC();if(!Ctx)throw new Error('Web Audio is not available in this browser.');
@@ -159,12 +208,18 @@ export async function encodeAudioBuffer(buf:AudioBuffer,{bitrate=48000,onProgres
   return blob;
  }finally{ctx.close().catch(()=>{});}
 }
-/** Compressed (WebM/Opus) export of the edited selection. Kept for API compatibility. */
 export async function exportTrimmedAudio(src:string,edit:MediaEdit,opts:{onProgress?:(p:number)=>void;signal?:AbortSignal}={}):Promise<Blob>{
  return encodeAudioBuffer(await renderEditedAudio(src,edit),{bitrate:64000,...opts});
 }
 export async function exportTrimmedWav(src:string,edit:MediaEdit):Promise<Blob>{return audioBufferToWav(await renderEditedAudio(src,edit));}
-/** Real video export: plays the selection through a canvas + Web Audio graph into MediaRecorder. Real time; uploaded clips only. */
+function paintVideoFrame(g:CanvasRenderingContext2D,v:HTMLVideoElement,f:MediaFrame,W:number,H:number,tmp:HTMLCanvasElement){
+ const s=W/FRAME_W,vw=v.videoWidth,vh=v.videoHeight,w=vw*f.k*s,h=vh*f.k*s;
+ const k=Math.max(32/vw,24/vh);tmp.getContext('2d')!.drawImage(v,(32-vw*k)/2,(24-vh*k)/2,vw*k,vh*k);
+ g.save();if('filter' in g)(g as any).filter='blur(8px)';g.drawImage(tmp,-W*0.06,-H*0.06,W*1.12,H*1.12);g.restore();
+ g.fillStyle='rgba(0,0,0,.15)';g.fillRect(0,0,W,H);
+ g.save();g.translate(f.x*s,f.y*s);g.scale(f.fx?-1:1,f.fy?-1:1);g.drawImage(v,-w/2,-h/2,w,h);g.restore();
+}
+/** Real video export: selection + fades + volume + 4:3 crop frame → WebM via canvas.captureStream. Real time; uploaded clips only. */
 export async function exportTrimmedVideo(src:string,edit:MediaEdit,opts:{onProgress?:(p:number)=>void;signal?:AbortSignal}={}):Promise<Blob>{
  if(typeof MediaRecorder==='undefined')throw new Error('This browser cannot export video.');
  if(!isEmbeddedMedia(src))throw new Error('Exporting an edited video needs an uploaded clip.');
@@ -173,11 +228,11 @@ export async function exportTrimmedVideo(src:string,edit:MediaEdit,opts:{onProgr
  let ctx:AudioContext|null=null;
  try{
   const d=await resolveMediaDuration(v);if(!d)throw new Error('Could not read this video.');
-  const e=normalizeEdit(edit,d),len=Math.max(MIN_LEN,e.trimEnd-e.trimStart);
   await new Promise<void>((res,rej)=>{if(v.readyState>=2)return res();v.addEventListener('loadeddata',()=>res(),{once:true});v.addEventListener('error',()=>rej(new Error('Could not read this video.')),{once:true});});
-  const w=v.videoWidth||640,h=v.videoHeight||360,scale=Math.min(1,1280/Math.max(w,h));
-  const canvas=document.createElement('canvas');canvas.width=Math.max(2,Math.round(w*scale)&~1);canvas.height=Math.max(2,Math.round(h*scale)&~1);
+  const e=normalizeEdit(edit,d),len=Math.max(MIN_LEN,e.trimEnd-e.trimStart),f=frameFor(edit,v.videoWidth,v.videoHeight);
+  const W=960,H=720,canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
   const c2=canvas.getContext('2d');if(!c2)throw new Error('Canvas is not available.');
+  const tmp=document.createElement('canvas');tmp.width=32;tmp.height=24;
   const stream=canvas.captureStream(30);
   let gain:GainNode|null=null;const Ctx=AC();
   if(!e.muted&&Ctx){ctx=new Ctx();await ctx.resume().catch(()=>{});const node=ctx.createMediaElementSource(v);gain=ctx.createGain();const dest=ctx.createMediaStreamDestination();node.connect(gain).connect(dest);dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));}
@@ -187,12 +242,12 @@ export async function exportTrimmedVideo(src:string,edit:MediaEdit,opts:{onProgr
   const chunks:Blob[]=[];rec.ondataavailable=ev=>{if(ev.data.size)chunks.push(ev.data);};
   const stopped=new Promise<Blob>(res=>{rec.onstop=()=>res(new Blob(chunks,{type:rec.mimeType||mime||'video/webm'}));});
   await seekElement(v,e.trimStart);
-  c2.drawImage(v,0,0,canvas.width,canvas.height);
+  paintVideoFrame(c2,v,f,W,H,tmp);
   rec.start(500);
   let raf=0,aborted=false;
   const finish=()=>{cancelAnimationFrame(raf);v.pause();if(rec.state!=='inactive')rec.stop();};
   const draw=()=>{
-   const t=v.currentTime;c2.drawImage(v,0,0,canvas.width,canvas.height);
+   const t=v.currentTime;paintVideoFrame(c2,v,f,W,H,tmp);
    if(gain&&ctx)gain.gain.setTargetAtTime(levelAt(e,t),ctx.currentTime,0.01);
    opts.onProgress?.(clamp((t-e.trimStart)/len,0,1));
    if(t>=e.trimEnd-0.02||v.ended){finish();return;}
@@ -215,13 +270,8 @@ async function downloadOriginal(src:string,name:string){
 }
 const extFor=(mime:string,kind:'audio'|'video')=>/mp4/.test(mime)?(kind==='audio'?'m4a':'mp4'):/ogg/.test(mime)?'ogg':/wav/.test(mime)?'wav':'webm';
 
-/* ───────────────────────── shared playback hook (editor + players) ───────────────────────── */
+/* ───────────────────────── shared playback hook ───────────────────────── */
 export type ClipPlayback={duration:number;at:number;playing:boolean;failed:boolean;ready:boolean;clip:Norm;seek:(t:number,free?:boolean)=>void;play:()=>void;pause:()=>void;toggle:()=>void;levels:(bars:number)=>number[]|null};
-/**
- * Applies a MediaEdit to a media element: trim loop, mute, volume, boost and fades.
- * Uses a Web Audio graph for data:/blob: sources (allows gain > 1 and live levels); plain element volume for links.
- * Render the element with key={src} so a fresh element is created when the source changes.
- */
 export function useClipPlayback(ref:React.RefObject<HTMLMediaElement|null>,src:string,edit:MediaEdit|undefined|null,opts:{durationHint?:number;loop?:boolean;analyser?:boolean}={}):ClipPlayback{
  const [duration,setDuration]=useState(0),[at,setAt]=useState(0),[playing,setPlaying]=useState(false),[failed,setFailed]=useState(false),[ready,setReady]=useState(false);
  const graph=useRef<{el:HTMLMediaElement;ctx:AudioContext;gain:GainNode;analyser?:AnalyserNode;data?:Uint8Array}|null>(null);
@@ -346,7 +396,7 @@ function useStrip(canvas:React.RefObject<HTMLCanvasElement|null>,src:string,kind
   if(fr.length){const fw=w/fr.length;fr.forEach((f,i)=>g.drawImage(f,i*fw,0,fw+0.5,h));}
   if(peaks&&peaks.length){
    const n=peaks.length,bw=w/n,video=kind==='video',mid=video?h*0.78:h/2,amp=video?h*0.2:h*0.46;
-   g.fillStyle=getComputedStyle(c).getPropertyValue('--mc-wave').trim()||'#a99cff';g.globalAlpha=video?0.85:1;
+   g.fillStyle='#a99cff';g.globalAlpha=video?0.85:1;
    for(let i=0;i<n;i++){const bh=Math.max(1,peaks[i]*amp);g.fillRect(i*bw+bw*0.2,mid-bh,Math.max(1,bw*0.6),bh*2);}
    g.globalAlpha=1;
   }
@@ -364,258 +414,258 @@ function useStrip(canvas:React.RefObject<HTMLCanvasElement|null>,src:string,kind
   const ro=new ResizeObserver(()=>drawRef.current());ro.observe(c);return()=>ro.disconnect();
  },[peaks,kind,canvas]);
 }
-
-/* ───────────────────────── history ───────────────────────── */
-function useHistory<T>(initial:T){
- const [h,setH]=useState({past:[] as T[],present:initial,future:[] as T[]});
- const set=useCallback((next:T)=>setH(s=>({past:[...s.past.slice(-60),s.present],present:next,future:[]})),[]);
- const undo=useCallback(()=>setH(s=>s.past.length?{past:s.past.slice(0,-1),present:s.past[s.past.length-1],future:[s.present,...s.future]}:s),[]);
- const redo=useCallback(()=>setH(s=>s.future.length?{past:[...s.past,s.present],present:s.future[0],future:s.future.slice(1)}:s),[]);
- return {state:h.present,set,undo,redo,canUndo:h.past.length>0,canRedo:h.future.length>0};
+/** Big waveform for the audio stage: dim outside the selection, playhead on top. */
+function useWaveStage(canvas:React.RefObject<HTMLCanvasElement|null>,peaks:number[]|null,duration:number,start:number,end:number,at:number){
+ useEffect(()=>{
+  const c=canvas.current;if(!c)return;
+  const dpr=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;if(!w||!h)return;
+  const W=Math.round(w*dpr),H=Math.round(h*dpr);if(c.width!==W||c.height!==H){c.width=W;c.height=H;}
+  const g=c.getContext('2d');if(!g)return;
+  g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,w,h);
+  const p=peaks&&peaks.length?peaks:Array.from({length:120},(_,i)=>0.2+0.1*Math.abs(Math.sin(i*0.7)));
+  const n=p.length,bw=w/n,mid=h/2,amp=h*0.42,a=duration?start/duration:0,b=duration?end/duration:1;
+  for(let i=0;i<n;i++){const f=(i+0.5)/n;g.fillStyle=f>=a&&f<=b?'#b5aaff':'#4c4870';const bh=Math.max(1.5,p[i]*amp);g.fillRect(i*bw+bw*0.2,mid-bh,Math.max(1,bw*0.6),bh*2);}
+  if(duration){const x=clamp(at/duration,0,1)*w;g.fillStyle='#fff';g.fillRect(x-1,0,2,h);}
+ },[canvas,peaks,duration,start,end,at]);
 }
 
 /* ───────────────────────── editor ───────────────────────── */
+type Tab='crop'|'trim'|'sound'|'fades';
 type DragKind='start'|'end'|'move'|'seek';
 type Props={
  src:string;kind:'audio'|'video';title:string;initial?:MediaEdit;
  onSave:(edit:MediaEdit|undefined)=>void;onCancel:()=>void;
- /** Audio only. Renders + compresses the selection and hands back a data: URL (bakes the edits, frees storage). Throw to show an error. */
  onReplace?:(dataUrl:string,duration:number)=>void|Promise<void>;
- /** 'bake': the Done button renders the selection and calls onReplace (used when importing a file that is too big to store). */
- saveMode?:'edits'|'bake';
- /** Longest allowed selection (bake mode shows a warning when exceeded). */
- maxSeconds?:number;
- fileName?:string;
+ saveMode?:'edits'|'bake';maxSeconds?:number;fileName?:string;
 };
+const bubbleStyle=(pct:number):React.CSSProperties=>pct<9?{left:0,transform:'none'}:pct>91?{right:0,left:'auto',transform:'none'}:{left:`${pct}%`,transform:'translateX(-50%)'};
 
 export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplace,saveMode='edits',maxSeconds,fileName}:Props){
  const media=useRef<HTMLVideoElement|HTMLAudioElement|null>(null);
- const scrub=useRef<HTMLDivElement>(null),strip=useRef<HTMLCanvasElement>(null),dialog=useRef<HTMLElement>(null),menuRef=useRef<HTMLSpanElement>(null);
- const hist=useHistory<MediaEdit|null>(initial??null);
- const [draft,setDraft]=useState<MediaEdit|null>(null);const draftRef=useRef<MediaEdit|null>(null);draftRef.current=draft;
- const [loop,setLoop]=useState(false),[speed,setSpeed]=useState(1),[dragging,setDragging]=useState<DragKind|null>(null),[menu,setMenu]=useState(false),[slow,setSlow]=useState(false);
+ const stageEl=useRef<HTMLDivElement>(null),frameEl=useRef<HTMLDivElement>(null),strip=useRef<HTMLCanvasElement>(null),waveStage=useRef<HTMLCanvasElement>(null),root=useRef<HTMLDivElement>(null);
+ const [edit,setEdit]=useState<MediaEdit|undefined>(initial);
+ const [tab,setTab]=useState<Tab>(kind==='video'?'crop':'trim');
+ const [loop,setLoop]=useState(false),[dragging,setDragging]=useState<DragKind|null>(null),[menu,setMenu]=useState(false),[moving,setMoving]=useState(false),[slow,setSlow]=useState(false);
+ const [size,setSize]=useState({w:0,h:0});
  const [job,setJob]=useState<{label:string;progress:number}|null>(null);const jobAbort=useRef<AbortController|null>(null);
  const [note,setNote]=useState<{text:string;kind:'info'|'error'}|null>(null);
  const [peaksInfo,setPeaksInfo]=useState<Peaks|null|undefined>(undefined);
- const raw=draft??hist.state??undefined;
- const pb=useClipPlayback(media,src,raw,{loop});
+ const pb=useClipPlayback(media,src,edit,{loop});
  const {duration,at,playing,failed}=pb;
- const edit=normalizeEdit(raw,duration);
- const embedded=isEmbeddedMedia(src),drive=!embedded&&(!!driveFileId(src)||isDriveLink(src)),playback=playbackSrc(src);
- const len=Math.max(0,edit.trimEnd-edit.trimStart);
- const tooLong=!!maxSeconds&&len>maxSeconds+0.5;
+ const dims=useVideoDims(media as React.RefObject<HTMLVideoElement|null>,kind==='video'?src:'');
+ const e=normalizeEdit(edit,duration);
+ const frame=frameFor(edit,dims.w,dims.h);
+ const embedded=isEmbeddedMedia(src),drive=!embedded&&(!!driveFileId(src)||isDriveLink(src));
+ const len=Math.max(0,e.trimEnd-e.trimStart),tooLong=!!maxSeconds&&len>maxSeconds+0.5;
  const canBake=kind==='audio'&&embedded&&!!onReplace,bakeMode=saveMode==='bake'&&canBake;
  const canRender=!!peaksInfo,canExportVideo=embedded&&typeof MediaRecorder!=='undefined';
- const stem=(fileName||(kind==='audio'?'audio':'video')).replace(/\.[a-z0-9]+$/i,'')||'clip';
+ const stem=(fileName||kind).replace(/\.[a-z0-9]+$/i,'')||'clip';
+ const ratio=kind==='video'?FRAME_W/FRAME_H:2;
 
  useStrip(strip,src,kind,duration,peaksInfo?.peaks??null);
+ useWaveStage(waveStage,kind==='audio'?(peaksInfo?.peaks??null):null,duration,e.trimStart,e.trimEnd,at);
  useEffect(()=>{let c=false;setPeaksInfo(undefined);void decodePeaks(src).then(p=>{if(!c)setPeaksInfo(p);});return()=>{c=true;};},[src]);
  useEffect(()=>{setSlow(false);if(duration||failed)return;const t=window.setTimeout(()=>setSlow(true),8000);return()=>window.clearTimeout(t);},[duration,failed,src]);
- useEffect(()=>{const el=media.current;if(el)el.playbackRate=speed;},[speed,src]);
- useEffect(()=>{
-  const prev=document.activeElement as HTMLElement|null,ov=document.body.style.overflow;
-  document.body.style.overflow='hidden';dialog.current?.focus({preventScroll:true});
-  return()=>{document.body.style.overflow=ov;prev?.focus?.();};
- },[]);
- useEffect(()=>{if(!menu)return;const on=(e:PointerEvent)=>{if(!menuRef.current?.contains(e.target as Node))setMenu(false);};document.addEventListener('pointerdown',on);return()=>document.removeEventListener('pointerdown',on);},[menu]);
+ useEffect(()=>{const el=stageEl.current;if(!el)return;const measure=()=>{const b=el.getBoundingClientRect(),aw=Math.max(0,b.width-24),ah=Math.max(0,b.height-24),w=Math.min(aw,ah*ratio);setSize({w:Math.floor(w),h:Math.floor(w/ratio)});};measure();const o=new ResizeObserver(measure);o.observe(el);return()=>o.disconnect();},[ratio]);
+ useEffect(()=>{if(!note)return;const t=window.setTimeout(()=>setNote(null),5000);return()=>window.clearTimeout(t);},[note]);
  const cancelRef=useRef(()=>{});cancelRef.current=()=>{jobAbort.current?.abort();onCancel();};
  useEffect(()=>{
+  const prev=document.activeElement as HTMLElement|null,ov=document.body.style.overflow;document.body.style.overflow='hidden';root.current?.focus({preventScroll:true});
   try{history.pushState({rfClipEditor:true},'');}catch{}
-  const onPop=()=>cancelRef.current();
-  window.addEventListener('popstate',onPop);
-  return()=>{window.removeEventListener('popstate',onPop);if(history.state?.rfClipEditor){try{history.back();}catch{}}};
+  const onPop=()=>cancelRef.current();window.addEventListener('popstate',onPop);
+  return()=>{window.removeEventListener('popstate',onPop);if(history.state?.rfClipEditor){try{history.back();}catch{}}document.body.style.overflow=ov;prev?.focus?.();};
  },[]);
- useEffect(()=>{if(!note)return;const t=window.setTimeout(()=>setNote(null),5000);return()=>window.clearTimeout(t);},[note]);
  const flash=(text:string,k:'info'|'error'='info')=>setNote({text,kind:k});
 
  /* edits */
- const commit=(next:MediaEdit,sound=true)=>{hist.set(normalizeEdit(next,duration));if(sound)playPreset('tick');};
- const commitDraft=()=>{const d=draftRef.current;if(d){commit(d,false);setDraft(null);}};
- const setStart=(t:number)=>commit({...edit,trimStart:clamp(t,0,edit.trimEnd-MIN_LEN)});
- const setEnd=(t:number)=>commit({...edit,trimEnd:clamp(t,edit.trimStart+MIN_LEN,duration)});
- const slider=(field:'volume'|'fadeIn'|'fadeOut')=>({
-  onChange:(e:React.ChangeEvent<HTMLInputElement>)=>{const v=Number(e.target.value);setDraft({...edit,...(field==='volume'?{volume:v/100,muted:false}:{[field]:v})});},
-  onPointerUp:commitDraft,onKeyUp:commitDraft,onBlur:commitDraft,
- });
+ const patch=(p:Partial<MediaEdit>,sound=false)=>{setEdit(prev=>({...normalizeEdit(prev,duration),...p}));if(sound)playPreset('tick');};
+ const setStart=(t:number)=>patch({trimStart:clamp(t,0,e.trimEnd-MIN_LEN)},true);
+ const setEnd=(t:number)=>patch({trimEnd:clamp(t,e.trimStart+MIN_LEN,duration)},true);
+ const setFrame=(f:MediaFrame)=>{if(!dims.w)return;patch({frame:limitFrame(f,dims.w,dims.h)});};
  function normalize(){
   if(!peaksInfo||!duration)return;
-  const pk=peakWithin(peaksInfo,edit.trimStart/duration,edit.trimEnd/duration);
+  const pk=peakWithin(peaksInfo,e.trimStart/duration,e.trimEnd/duration);
   if(!pk){flash('This selection is silent.');return;}
   const g=Math.round(clamp(0.9/pk,0.25,4)*100)/100;
-  commit({...edit,gain:g,volume:1,muted:false},false);
-  flash(g>1.02?`Boosted ${g.toFixed(1)}× — applies to uploaded clips in the quiz, and to exports.`:g<0.98?`Lowered to ${g.toFixed(1)}×.`:'Already at a good level.');
+  patch({gain:g,volume:1,muted:false});
+  flash(g>1.02?`Boosted ${g.toFixed(1)}×`:g<0.98?`Lowered to ${g.toFixed(1)}×`:'Already at a good level.');
  }
+ const resetTab=()=>{
+  if(tab==='crop')patch({frame:undefined});
+  else if(tab==='trim')patch({trimStart:0,trimEnd:duration});
+  else if(tab==='sound')patch({muted:false,volume:1,gain:1});
+  else patch({fadeIn:0,fadeOut:0});
+ };
+ const tabIsDefault=tab==='crop'?(!dims.w||frameIsDefault(frame,dims.w,dims.h)):tab==='trim'?(e.trimStart<=0.01&&Math.abs(e.trimEnd-duration)<=0.05):tab==='sound'?(!e.muted&&e.volume===1&&e.gain===1):(e.fadeIn===0&&e.fadeOut===0);
 
  /* timeline interaction */
- const drag=useRef<{kind:DragKind;x0:number;base:Norm}|null>(null);
- const tAt=(x:number)=>{const r=scrub.current?.getBoundingClientRect();if(!r||!duration)return 0;return clamp((x-r.left)/r.width,0,1)*duration;};
- function onPointerDown(kind:DragKind,e:React.PointerEvent){
-  if(!duration||(e.button&&e.button!==0))return;
-  e.preventDefault();e.stopPropagation();
-  try{(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);}catch{}
-  drag.current={kind,x0:e.clientX,base:edit};setDragging(kind);
-  if(kind==='seek')pb.seek(tAt(e.clientX),true);
-  else{pb.pause();if(kind!=='move')pb.seek(kind==='start'?edit.trimStart:edit.trimEnd,true);}
+ const stripBox=useRef<HTMLDivElement>(null),drag=useRef<{kind:DragKind;x0:number;base:Norm}|null>(null);
+ const tAt=(x:number)=>{const r=stripBox.current?.getBoundingClientRect();if(!r||!duration)return 0;return clamp((x-r.left)/r.width,0,1)*duration;};
+ function tlDown(k:DragKind,ev:React.PointerEvent){
+  if(!duration||(ev.button&&ev.button!==0))return;ev.preventDefault();ev.stopPropagation();
+  try{(ev.currentTarget as HTMLElement).setPointerCapture(ev.pointerId);}catch{}
+  drag.current={kind:k,x0:ev.clientX,base:e};setDragging(k);
+  if(k==='seek')pb.seek(tAt(ev.clientX),true);else{pb.pause();if(k!=='move')pb.seek(k==='start'?e.trimStart:e.trimEnd,true);}
  }
- function onPointerMove(e:React.PointerEvent){
-  const d=drag.current;if(!d)return;
-  const t=tAt(e.clientX);
+ function tlMove(ev:React.PointerEvent){
+  const d=drag.current;if(!d)return;const t=tAt(ev.clientX);
   if(d.kind==='seek'){pb.seek(t,true);return;}
   let next:MediaEdit;
   if(d.kind==='start')next={...d.base,trimStart:Math.min(t,d.base.trimEnd-MIN_LEN)};
   else if(d.kind==='end')next={...d.base,trimEnd:Math.max(t,d.base.trimStart+MIN_LEN)};
-  else{const w=scrub.current?.getBoundingClientRect().width||1,dt=(e.clientX-d.x0)/w*duration,l=d.base.trimEnd-d.base.trimStart,s=clamp(d.base.trimStart+dt,0,duration-l);next={...d.base,trimStart:s,trimEnd:s+l};}
-  const n=normalizeEdit(next,duration);setDraft(n);
-  pb.seek(d.kind==='end'?n.trimEnd:n.trimStart,true);
+  else{const w=stripBox.current?.getBoundingClientRect().width||1,dt=(ev.clientX-d.x0)/w*duration,l=d.base.trimEnd-d.base.trimStart,s=clamp(d.base.trimStart+dt,0,duration-l);next={...d.base,trimStart:s,trimEnd:s+l};}
+  const n=normalizeEdit(next,duration);setEdit(n);pb.seek(d.kind==='end'?n.trimEnd:n.trimStart,true);
  }
- function onPointerUp(e:React.PointerEvent){
-  const d=drag.current;if(!d)return;drag.current=null;setDragging(null);
-  try{(e.target as HTMLElement).releasePointerCapture(e.pointerId);}catch{}
-  const cur=draftRef.current;if(d.kind!=='seek'&&cur)commit(cur);setDraft(null);
- }
- function handleKey(which:'start'|'end',e:React.KeyboardEvent){
-  const step=e.shiftKey?1:0.1,dir=e.key==='ArrowLeft'||e.key==='ArrowDown'?-1:e.key==='ArrowRight'||e.key==='ArrowUp'?1:0;
-  if(!dir)return;e.preventDefault();e.stopPropagation();
-  if(which==='start')setStart(edit.trimStart+dir*step);else setEnd(edit.trimEnd+dir*step);
- }
- function onKey(e:React.KeyboardEvent){
-  const tag=(e.target as HTMLElement).tagName;
-  if(e.key==='Escape'){e.preventDefault();cancel();return;}
-  if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA')return;
-  if(e.key===' '&&tag!=='BUTTON'){e.preventDefault();pb.toggle();}
-  else if(e.key==='ArrowLeft'){e.preventDefault();pb.seek(at-(e.shiftKey?5:1),true);}
-  else if(e.key==='ArrowRight'){e.preventDefault();pb.seek(at+(e.shiftKey?5:1),true);}
-  else if(e.key==='Home'){e.preventDefault();pb.seek(edit.trimStart);}
-  else if(e.key==='End'){e.preventDefault();pb.seek(edit.trimEnd-0.1);}
-  else if(e.key.toLowerCase()==='i'&&duration)setStart(at);
-  else if(e.key.toLowerCase()==='o'&&duration)setEnd(at);
-  else if(e.key.toLowerCase()==='l')setLoop(v=>!v);
+ function tlUp(ev:React.PointerEvent){const d=drag.current;if(!d)return;drag.current=null;setDragging(null);try{(ev.target as HTMLElement).releasePointerCapture(ev.pointerId);}catch{}if(d.kind!=='seek')playPreset('tick');}
+ function handleKey(which:'start'|'end',ev:React.KeyboardEvent){
+  const step=ev.shiftKey?1:0.1,dir=ev.key==='ArrowLeft'||ev.key==='ArrowDown'?-1:ev.key==='ArrowRight'||ev.key==='ArrowUp'?1:0;
+  if(!dir)return;ev.preventDefault();ev.stopPropagation();
+  if(which==='start')setStart(e.trimStart+dir*step);else setEnd(e.trimEnd+dir*step);
  }
 
- /* jobs: export / bake */
+ /* crop gesture (same maths as ImageEditor) */
+ const pointers=useRef(new Map<number,{x:number;y:number}>()),gesture=useRef<{f:MediaFrame;x:number;y:number;dist:number}|null>(null),movedRef=useRef(false);
+ const toOutput=(cx:number,cy:number)=>{const b=frameEl.current!.getBoundingClientRect();return {x:(cx-b.left)*FRAME_W/b.width,y:(cy-b.top)*FRAME_H/b.height};};
+ function startGesture(){const pts=[...pointers.current.values()];if(!pts.length){gesture.current=null;return;}const x=pts.reduce((s,p)=>s+p.x,0)/pts.length,y=pts.reduce((s,p)=>s+p.y,0)/pts.length;gesture.current={f:frame,x,y,dist:pts.length>1?Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y):0};}
+ function cropDown(ev:React.PointerEvent){if(tab!=='crop'||!dims.w)return;ev.preventDefault();try{(ev.currentTarget as Element).setPointerCapture(ev.pointerId);}catch{}pointers.current.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});movedRef.current=false;startGesture();setMoving(true);}
+ function cropMove(ev:React.PointerEvent){
+  const g=gesture.current;if(!g||!dims.w||!pointers.current.has(ev.pointerId))return;
+  pointers.current.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
+  const pts=[...pointers.current.values()],b=frameEl.current!.getBoundingClientRect(),scale=FRAME_W/b.width;
+  const mx=pts.reduce((s,p)=>s+p.x,0)/pts.length,my=pts.reduce((s,p)=>s+p.y,0)/pts.length;
+  if(Math.abs(mx-g.x)+Math.abs(my-g.y)>3)movedRef.current=true;
+  let next={...g.f,x:g.f.x+(mx-g.x)*scale,y:g.f.y+(my-g.y)*scale};
+  if(pts.length>1&&g.dist){const k=clamp(g.f.k*Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y)/g.dist,fitK(dims.w,dims.h),maxK(dims.w,dims.h)),o=toOutput(mx,my);next=zoomAround(next,k,o.x,o.y);}
+  setFrame(next);
+ }
+ function cropUp(ev:React.PointerEvent){pointers.current.delete(ev.pointerId);startGesture();if(!pointers.current.size){setMoving(false);if(!movedRef.current)pb.toggle();}}
+ function wheel(ev:React.WheelEvent){if(tab!=='crop'||!dims.w)return;const o=toOutput(ev.clientX,ev.clientY);setFrame(zoomAround(frame,clamp(frame.k*Math.exp(-ev.deltaY*.0015),fitK(dims.w,dims.h),maxK(dims.w,dims.h)),o.x,o.y));}
+ const zoomTo=(k:number)=>{if(!dims.w)return;setFrame(zoomAround(frame,clamp(k,fitK(dims.w,dims.h),maxK(dims.w,dims.h)),FRAME_W/2,FRAME_H/2));};
+ const lo=dims.w?fitK(dims.w,dims.h):1,hi=dims.w?maxK(dims.w,dims.h):1,level=dims.w&&hi>lo?Math.log(frame.k/lo)/Math.log(hi/lo):0;
+ const mode=dims.w?(Math.abs(frame.k-lo)<1e-6?'fit':Math.abs(frame.k-fillK(dims.w,dims.h))<1e-6?'fill':''):'';
+
+ function onKey(ev:React.KeyboardEvent){
+  const tag=(ev.target as HTMLElement).tagName;
+  if(ev.key==='Escape'){ev.preventDefault();cancel();return;}
+  if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA')return;
+  if(ev.key===' '&&tag!=='BUTTON'){ev.preventDefault();pb.toggle();}
+  else if(ev.key==='ArrowLeft'&&tab!=='crop'){ev.preventDefault();pb.seek(at-(ev.shiftKey?5:1),true);}
+  else if(ev.key==='ArrowRight'&&tab!=='crop'){ev.preventDefault();pb.seek(at+(ev.shiftKey?5:1),true);}
+  else if(ev.key.toLowerCase()==='i'&&duration)setStart(at);
+  else if(ev.key.toLowerCase()==='o'&&duration)setEnd(at);
+  else if(ev.key.toLowerCase()==='l')setLoop(v=>!v);
+ }
+
+ /* jobs */
  async function run(label:string,fn:(signal:AbortSignal,progress:(p:number)=>void)=>Promise<void>){
-  if(job)return;const ac=new AbortController();jobAbort.current=ac;setJob({label,progress:0});pb.pause();
+  if(job)return;const ac=new AbortController();jobAbort.current=ac;setJob({label,progress:0});pb.pause();setMenu(false);
   try{await fn(ac.signal,p=>setJob(j=>j&&{...j,progress:p}));}
-  catch(e:any){if(!ac.signal.aborted)flash(e?.message||'That did not work.','error');}
+  catch(err:any){if(!ac.signal.aborted)flash(err?.message||'That did not work.','error');}
   finally{setJob(null);jobAbort.current=null;}
  }
- const exportWav=()=>run('Rendering…',async()=>{saveBlob(await exportTrimmedWav(src,edit),`${stem}-edited.wav`);flash('WAV saved.');});
- const exportWebm=()=>run('Compressing…',async(signal,progress)=>{const blob=await exportTrimmedAudio(src,edit,{onProgress:progress,signal});saveBlob(blob,`${stem}-edited.${extFor(blob.type,'audio')}`);flash('Edited clip saved.');});
+ const exportWav=()=>run('Rendering…',async()=>{saveBlob(await exportTrimmedWav(src,e),`${stem}-edited.wav`);flash('WAV saved.');});
+ const exportWebm=()=>run('Compressing…',async(signal,progress)=>{const blob=await exportTrimmedAudio(src,e,{onProgress:progress,signal});saveBlob(blob,`${stem}-edited.${extFor(blob.type,'audio')}`);flash('Edited clip saved.');});
  const exportVideo=()=>run('Exporting video… keep this tab visible',async(signal,progress)=>{const blob=await exportTrimmedVideo(src,edit,{onProgress:progress,signal});saveBlob(blob,`${stem}-edited.${extFor(blob.type,'video')}`);flash('Edited video saved.');});
  const bake=()=>{
   if(!onReplace)return;
   if(tooLong){flash(`Keep the selection under ${fmtTime(maxSeconds!)}.`,'error');return;}
   void run('Compressing…',async(signal,progress)=>{
-   const buf=await renderEditedAudio(src,edit,{mono:true,sampleRate:24000});
+   const buf=await renderEditedAudio(src,e,{mono:true,sampleRate:24000});
    const blob=await encodeAudioBuffer(buf,{bitrate:40000,onProgress:progress,signal});
-   await onReplace(await blobToDataUrl(blob),buf.duration);
-   playPreset('go');
+   await onReplace(await blobToDataUrl(blob),buf.duration);playPreset('go');
   });
  };
- function done(){if(job)return;if(bakeMode){bake();return;}playPreset('go');onSave(editIsDefault(edit,duration)?undefined:edit);}
+ function done(){
+  if(job)return;if(bakeMode){bake();return;}
+  playPreset('go');
+  const out:MediaEdit={...e};
+  if(!out.frame||!dims.w||frameIsDefault(frameFor(out,dims.w,dims.h),dims.w,dims.h))delete out.frame;else out.frame=frameFor(out,dims.w,dims.h);
+  onSave(editIsDefault(out,duration)?undefined:out);
+ }
  function cancel(){jobAbort.current?.abort();onCancel();}
 
  /* render */
- const left=duration?edit.trimStart/duration*100:0,right=duration?edit.trimEnd/duration*100:100;
- const vol=Math.round((edit.muted?0:edit.volume)*100),maxFade=Math.max(0.1,Math.min(10,len/2));
- const rf=duration<10?fmtFine:fmtTime;
- const ruler=duration?[0,.25,.5,.75,1].map(fr=>rf(fr*duration)):[];
- const chip=(label:string,value:number,set:(t:number)=>void)=><span className="mc-chip"><i>{label}</i><span className="mc-nudge"><button type="button" aria-label={`${label} 0.1 s earlier`} disabled={!duration} onClick={()=>set(value-0.1)}><Minus size={13}/></button><b>{fmtFine(value)}</b><button type="button" aria-label={`${label} 0.1 s later`} disabled={!duration} onClick={()=>set(value+0.1)}><Plus size={13}/></button></span></span>;
+ const left=duration?e.trimStart/duration*100:0,right=duration?e.trimEnd/duration*100:100;
+ const showStartBubble=dragging==='start'||dragging==='move'||e.trimStart>0.05,showEndBubble=dragging==='end'||dragging==='move'||(duration>0&&e.trimEnd<duration-0.05);
+ const vol=Math.round((e.muted?0:e.volume)*100),maxFade=Math.max(0.1,Math.min(10,len/2));
+ const selFmt=len<10?fmtFine:fmtTime;
+ const tabs:{id:Tab;label:string;icon:React.ReactNode}[]=[...(kind==='video'?[{id:'crop' as Tab,label:'Crop',icon:<Crop size={14}/>}]:[]),{id:'trim',label:'Trim',icon:<Scissors size={14}/>},{id:'sound',label:'Sound',icon:<Volume2 size={14}/>},{id:'fades',label:'Fades',icon:<AudioLines size={14}/>}];
+ const hint=job?'':bakeMode?`Pick up to ${fmtTime(maxSeconds||60)} — only the selection is kept`:tab==='crop'?'Drag to move · pinch or slide to zoom · tap to play':tab==='trim'?(dragging?`Release to set ${dragging==='start'?'the start':dragging==='end'?'the end':'the selection'}`:'Drag the handles to trim · tap to play'):tab==='sound'?(e.gain!==1?`${e.gain>1?'Boosted':'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports`:'Volume applies when the question plays'):'Fades are shown on the timeline';
+ const sq=(icon:React.ReactNode,label:string,onClick:()=>void,o:{disabled?:boolean;on?:boolean;aria?:string}={})=><button type="button" disabled={o.disabled} aria-pressed={o.on} aria-label={o.aria} onClick={onClick}>{icon}<span>{label}</span></button>;
 
- return createPortal(<div className="mc-page" role="dialog" aria-modal="true" aria-labelledby="mc-title" data-kind={kind} onKeyDown={onKey}>
-  <header className="mc-head">
-   <button type="button" className="mc-iconbtn" aria-label="Back" onClick={cancel}><ArrowLeft size={18}/></button>
-   <div className="mc-headtext"><h2 id="mc-title">{title}</h2>{fileName&&<small>{fileName}</small>}</div>
-   <Button size="sm" onClick={done} disabled={!!job||(bakeMode&&(!duration||tooLong))}>{bakeMode?<><Save size={15}/>Use clip</>:<><Check size={15}/>Done</>}</Button>
+ return createPortal(<div ref={root} className="me" role="dialog" aria-modal="true" aria-labelledby="me-title" data-kind={kind} tabIndex={-1} onKeyDown={onKey}>
+  <header className="me-head">
+   <button type="button" aria-label="Cancel" onClick={cancel}><X size={20}/></button>
+   <h2 id="me-title">{kind==='video'?<Crop size={17}/>:<AudioLines size={17}/>}{title}</h2>
+   <button type="button" className="me-done" disabled={!!job||(bakeMode&&(!duration||tooLong))} onClick={done}>{job?<LoaderCircle size={16} className="speech-spinner"/>:bakeMode?<Save size={16}/>:<Check size={16}/>}{bakeMode?'Use clip':'Done'}</button>
   </header>
-  <section ref={dialog} className="mc" tabIndex={-1}>
-   <div className="mc-stage" data-kind={kind}>
-    {kind==='video'
-     ?<video key={playback} ref={media as React.RefObject<HTMLVideoElement>} src={playback} playsInline preload={embedded?'auto':'metadata'} onClick={pb.toggle}/>
-     :<audio key={playback} ref={media as React.RefObject<HTMLAudioElement>} src={playback} preload={embedded?'auto':'metadata'} hidden/>}
-    {kind==='audio'&&!failed&&<div className="mc-face" aria-hidden="true" data-playing={playing||undefined}><AudioLines size={28}/><strong>{fmtFine(clamp(at-edit.trimStart,0,len))}</strong><span>{duration?`of ${fmtFine(len)} selected`:slow?'Still loading — large file or slow link…':'Loading clip…'}</span></div>}
-    {kind==='video'&&!duration&&!failed&&<div className="mc-state"><LoaderCircle size={20} className="mc-spin"/><span>{slow?'Still loading — large file or slow link…':'Loading clip…'}</span></div>}
-    {failed&&<div className="mc-state is-error"><AlertCircle size={20}/><span>This clip could not be loaded.{drive?' Google Drive links need "Anyone with the link" sharing — or upload the file instead.':''}</span>{!embedded&&<a href={src} target="_blank" rel="noreferrer"><ExternalLink size={14}/>Open link</a>}</div>}
-   </div>
 
-   <div className="mc-timeline">
-    <div className="mc-chips">
-     {chip('Start',edit.trimStart,setStart)}
-     <span className={`mc-chip is-len${tooLong?' is-bad':''}`}><i>Length</i><b>{fmtFine(len)}</b>{tooLong&&<small>max {fmtTime(maxSeconds!)}</small>}</span>
-     {chip('End',edit.trimEnd,setEnd)}
-    </div>
-    <div ref={scrub} className={`mc-scrub${dragging?' is-dragging':''}${!duration&&!failed?' is-loading':''}`} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
-     <canvas ref={strip} className="mc-strip" aria-hidden="true"/>
+  <div className="me-stage" ref={stageEl}>
+   {size.w>0&&<div ref={frameEl} className={`me-frame${moving?' is-moving':''}${tab==='crop'?' is-crop':''}`} style={{width:size.w,height:size.h}} role="application" aria-label={kind==='video'?'Video frame. Drag to move, pinch or use the slider to zoom':'Waveform'}
+    onPointerDown={kind==='video'?cropDown:undefined} onPointerMove={kind==='video'?cropMove:undefined} onPointerUp={kind==='video'?cropUp:undefined} onPointerCancel={kind==='video'?cropUp:undefined} onWheel={kind==='video'?wheel:undefined} onDoubleClick={()=>{if(tab==='crop'&&dims.w)setFrame(centredFrame(mode==='fill'?lo:fillK(dims.w,dims.h)));}}>
+    {kind==='video'
+     ?<VideoFrame ref={media as React.Ref<HTMLVideoElement>} src={src} frame={frame} dims={dims} playing={playing} preload={embedded?'auto':'metadata'}>{tab==='crop'&&<span className="me-grid" aria-hidden="true"/>}</VideoFrame>
+     :<><audio key={src} ref={media as React.RefObject<HTMLAudioElement>} src={playbackSrc(src)} preload={embedded?'auto':'metadata'} hidden/><canvas ref={waveStage} className="me-wave" onClick={pb.toggle} aria-hidden="true"/></>}
+    {!playing&&duration>0&&!failed&&<button type="button" className="me-playbig" aria-label="Play selection" onClick={ev=>{ev.stopPropagation();pb.play();}} onPointerDown={ev=>ev.stopPropagation()}><Play size={22} fill="currentColor"/></button>}
+    {playing&&<button type="button" className="me-playbig is-pause" aria-label="Pause" onClick={ev=>{ev.stopPropagation();pb.pause();}} onPointerDown={ev=>ev.stopPropagation()}><Pause size={20} fill="currentColor"/></button>}
+    {duration>0&&<span className="me-badge">{selFmt(clamp(at-e.trimStart,0,len))} / {selFmt(len)}</span>}
+    {!duration&&!failed&&<div className="me-state"><LoaderCircle size={22} className="speech-spinner"/><span>{slow?'Still loading — large file or slow link…':'Loading clip…'}</span></div>}
+    {failed&&<div className="me-state is-error"><AlertCircle size={20}/><span>This clip could not be loaded.{drive?' Google Drive links need "Anyone with the link" sharing — or upload the file instead.':''}</span>{!embedded&&<a href={src} target="_blank" rel="noreferrer"><ExternalLink size={14}/>Open link</a>}</div>}
+   </div>}
+  </div>
+
+  <div className="me-tools">
+   {tab==='crop'&&<>
+    <div className="me-zoom"><button type="button" aria-label="Zoom out" disabled={!dims.w||frame.k<=lo+1e-6} onClick={()=>zoomTo(frame.k/1.25)}><ZoomOut size={18}/></button><input type="range" min={0} max={1000} step={1} aria-label="Zoom" disabled={!dims.w||hi<=lo} value={Math.round(level*1000)} onChange={ev=>zoomTo(lo*Math.exp(Number(ev.target.value)/1000*Math.log(hi/lo)))}/><button type="button" aria-label="Zoom in" disabled={!dims.w||frame.k>=hi-1e-6} onClick={()=>zoomTo(frame.k*1.25)}><ZoomIn size={18}/></button></div>
+    <div className="me-pills" role="radiogroup" aria-label="Video size"><button type="button" role="radio" aria-checked={mode==='fit'} disabled={!dims.w} onClick={()=>setFrame(centredFrame(lo,{fx:frame.fx,fy:frame.fy}))}><Shrink size={15}/>Whole video</button><button type="button" role="radio" aria-checked={mode==='fill'} disabled={!dims.w} onClick={()=>dims.w&&setFrame(centredFrame(fillK(dims.w,dims.h),{fx:frame.fx,fy:frame.fy}))}><Expand size={15}/>Fill frame</button></div>
+   </>}
+   {tab==='trim'&&<div className="me-timeline">
+    <div ref={stripBox} className={`me-strip${dragging?' is-dragging':''}${!duration&&!failed?' is-loading':''}`} onPointerMove={tlMove} onPointerUp={tlUp} onPointerCancel={tlUp}>
+     <canvas ref={strip} className="me-strip-canvas" aria-hidden="true"/>
      {duration>0&&<>
-      <div className="mc-track" onPointerDown={e=>onPointerDown('seek',e)}/>
-      <span className="mc-cut" style={{left:0,width:`${left}%`}}/>
-      <span className="mc-cut" style={{left:`${right}%`,right:0}}/>
-      <div className="mc-range" style={{left:`${left}%`,width:`${right-left}%`}} onPointerDown={e=>onPointerDown('move',e)} title="Drag to move the selection">
-       {edit.fadeIn>0&&<span className="mc-fade is-in" style={{width:`${edit.fadeIn/len*100}%`}}/>}
-       {edit.fadeOut>0&&<span className="mc-fade is-out" style={{width:`${edit.fadeOut/len*100}%`}}/>}
+      <div className="me-track" onPointerDown={ev=>tlDown('seek',ev)}/>
+      <span className="me-cut" style={{left:0,width:`${left}%`}}/><span className="me-cut" style={{left:`${right}%`,right:0}}/>
+      <div className="me-range" style={{left:`${left}%`,width:`${right-left}%`}} onPointerDown={ev=>tlDown('move',ev)}>
+       {e.fadeIn>0&&<span className="me-fade is-in" style={{width:`${e.fadeIn/len*100}%`}}/>}
+       {e.fadeOut>0&&<span className="me-fade is-out" style={{width:`${e.fadeOut/len*100}%`}}/>}
       </div>
-      <span className="mc-playhead" style={{left:`${clamp(at/duration*100,0,100)}%`}}/>
-      <button type="button" className="mc-handle is-start" style={{left:`${left}%`}} aria-label={`Trim start ${fmtFine(edit.trimStart)}. Arrow keys adjust, Shift for 1 s`} onKeyDown={e=>handleKey('start',e)} onPointerDown={e=>onPointerDown('start',e)}><b>{fmtFine(edit.trimStart)}</b></button>
-      <button type="button" className="mc-handle is-end" style={{left:`${right}%`}} aria-label={`Trim end ${fmtFine(edit.trimEnd)}. Arrow keys adjust, Shift for 1 s`} onKeyDown={e=>handleKey('end',e)} onPointerDown={e=>onPointerDown('end',e)}><b>{fmtFine(edit.trimEnd)}</b></button>
+      <span className="me-playhead" style={{left:`${clamp(at/duration*100,0,100)}%`}}/>
+      <button type="button" className={`me-handle${dragging==='start'?' is-active':''}`} style={{left:`${left}%`}} aria-label={`Trim start ${fmtFine(e.trimStart)}. Arrow keys adjust`} onKeyDown={ev=>handleKey('start',ev)} onPointerDown={ev=>tlDown('start',ev)}/>
+      <button type="button" className={`me-handle${dragging==='end'?' is-active':''}`} style={{left:`${right}%`}} aria-label={`Trim end ${fmtFine(e.trimEnd)}. Arrow keys adjust`} onKeyDown={ev=>handleKey('end',ev)} onPointerDown={ev=>tlDown('end',ev)}/>
+      {showStartBubble&&<b className={`me-bubble${dragging==='start'?' is-active':''}`} style={{...bubbleStyle(left),...(showEndBubble&&right-left<14?{bottom:'calc(100% + 26px)'}:{})}}>{fmtFine(e.trimStart)}</b>}
+      {showEndBubble&&<b className={`me-bubble${dragging==='end'?' is-active':''}`} style={bubbleStyle(right)}>{fmtFine(e.trimEnd)}</b>}
      </>}
     </div>
-    <div className="mc-ruler" aria-hidden="true">{ruler.map((r,i)=><span key={i}>{r}</span>)}</div>
-   </div>
+    <div className="me-ruler" aria-hidden="true"><span>0:00</span><span>{duration?(duration<10?fmtFine(duration):fmtTime(duration)):'–:––'}</span></div>
+   </div>}
+   {tab==='sound'&&<div className="me-row"><button type="button" className="me-mute" aria-pressed={e.muted} aria-label={e.muted?'Unmute':'Mute'} onClick={()=>patch({muted:!e.muted})}>{e.muted||vol===0?<VolumeX size={18}/>:<Volume2 size={18}/>}</button><input type="range" min={0} max={100} step={5} value={vol} aria-label="Volume" onChange={ev=>patch({volume:Number(ev.target.value)/100,muted:false})}/><span className="me-val">{vol}%</span></div>}
+   {tab==='fades'&&<>
+    <label className="me-row"><span className="me-lab">In</span><input type="range" min={0} max={maxFade} step={0.1} value={e.fadeIn} disabled={!duration} aria-label="Fade in" onChange={ev=>patch({fadeIn:Number(ev.target.value)})}/><span className="me-val">{e.fadeIn.toFixed(1)} s</span></label>
+    <label className="me-row"><span className="me-lab">Out</span><input type="range" min={0} max={maxFade} step={0.1} value={e.fadeOut} disabled={!duration} aria-label="Fade out" onChange={ev=>patch({fadeOut:Number(ev.target.value)})}/><span className="me-val">{e.fadeOut.toFixed(1)} s</span></label>
+   </>}
 
-   <div className="mc-transport">
-    <button type="button" className="mc-skip" disabled={!duration} aria-label="Back 5 seconds" onClick={()=>pb.seek(at-5,true)}><RotateCcw size={16}/><small>5</small></button>
-    <button type="button" className="mc-play" disabled={!duration} aria-label={playing?'Pause':'Play selection'} onClick={pb.toggle}>{playing?<Pause size={22} fill="currentColor"/>:<Play size={22} fill="currentColor"/>}</button>
-    <button type="button" className="mc-skip" disabled={!duration} aria-label="Forward 5 seconds" onClick={()=>pb.seek(at+5,true)}><RotateCw size={16}/><small>5</small></button>
-    <span className="mc-clock"><b>{fmtFine(at)}</b><span>/ {fmtFine(duration)}</span></span>
-    <button type="button" className={`mc-iconbtn is-toggle${loop?' is-on':''}`} aria-pressed={loop} aria-label="Loop selection" title="Loop selection (L)" onClick={()=>setLoop(v=>!v)}><Repeat size={16}/></button>
-    <select className="mc-speed" aria-label="Preview speed" value={speed} onChange={e=>setSpeed(Number(e.target.value))}>{SPEEDS.map(s=><option key={s} value={s}>{s}×</option>)}</select>
-   </div>
-   <div className="mc-marks">
-    <button type="button" disabled={!duration} onClick={()=>setStart(at)}><ArrowLeftToLine size={15}/>Set start here</button>
-    <button type="button" disabled={!duration} onClick={()=>setEnd(at)}><ArrowRightToLine size={15}/>Set end here</button>
-   </div>
+   <div className="me-pills is-tabs" role="tablist">{tabs.map(t=><button key={t.id} type="button" role="tab" aria-selected={tab===t.id} onClick={()=>{setTab(t.id);setMenu(false);}}>{t.icon}{t.label}</button>)}</div>
 
-   <section className="mc-panel" aria-label="Sound">
-    <header><Volume2 size={14}/><span>Sound</span>{edit.gain!==1&&<em>{edit.gain>1?'Boosted':'Lowered'} {edit.gain.toFixed(1)}×</em>}</header>
-    <div className="mc-row">
-     <button type="button" className="mc-mute" aria-pressed={edit.muted} aria-label={edit.muted?'Unmute':'Mute'} onClick={()=>commit({...edit,muted:!edit.muted},false)}>{edit.muted||vol===0?<VolumeX size={17}/>:<Volume2 size={17}/>}</button>
-     <input type="range" min={0} max={100} step={5} value={vol} aria-label="Volume" {...slider('volume')}/>
-     <span className="mc-val">{vol}%</span>
-    </div>
-    <div className="mc-row is-wrap">
-     <button type="button" className="mc-chipbtn" disabled={!canRender||!duration||!!job} onClick={normalize} title="Sets the loudest point of the selection to 90%"><Wand2 size={14}/>{edit.gain!==1?'Re-normalize':'Normalize loudness'}</button>
-     {edit.gain!==1&&<button type="button" className="mc-chipbtn is-quiet" onClick={()=>commit({...edit,gain:1},false)}>Remove boost</button>}
-     {peaksInfo===null&&<small className="mc-hint">{embedded?'This file could not be analysed, so normalize and export are off.':'Normalize needs an uploaded clip (this link blocks cross-origin access).'}</small>}
-    </div>
-   </section>
-   <section className="mc-panel" aria-label="Fades">
-    <header><AudioLines size={14}/><span>Fades</span></header>
-    <label className="mc-row"><span className="mc-lab">In</span><input type="range" min={0} max={maxFade} step={0.1} value={edit.fadeIn} disabled={!duration} aria-label="Fade in" {...slider('fadeIn')}/><span className="mc-val">{edit.fadeIn.toFixed(1)} s</span></label>
-    <label className="mc-row"><span className="mc-lab">Out</span><input type="range" min={0} max={maxFade} step={0.1} value={edit.fadeOut} disabled={!duration} aria-label="Fade out" {...slider('fadeOut')}/><span className="mc-val">{edit.fadeOut.toFixed(1)} s</span></label>
-   </section>
-
-   {bakeMode&&<p className="mc-note is-info"><strong>This file is too big to store as-is.</strong> Pick up to {fmtTime(maxSeconds||60)}. When you tap <b>Use clip</b> only the selection is compressed into a small clip.</p>}
-   {!embedded&&!failed&&<p className="mc-note">{drive?'Google Drive clip: edits apply when the question plays. If nothing plays, set sharing to "Anyone with the link" or upload the file instead.':'Linked clip: trim, fades and volume apply when the question plays. Exporting an edited file needs an uploaded clip.'}</p>}
-   {note&&<p className={`mc-note is-${note.kind}`} role="status">{note.text}</p>}
-   {job&&<div className="mc-job" role="status" aria-live="polite"><div className="mc-jobbar"><i style={{width:`${Math.round(job.progress*100)}%`}}/></div><span>{job.label} {Math.round(job.progress*100)}%</span><button type="button" onClick={()=>jobAbort.current?.abort()}>Cancel</button></div>}
-
-   <div className="mc-toolbar">
-    <button type="button" className="mc-tool" disabled={!hist.canUndo} onClick={hist.undo} aria-label="Undo"><Undo2 size={16}/>Undo</button>
-    <button type="button" className="mc-tool" disabled={!hist.canRedo} onClick={hist.redo} aria-label="Redo"><Redo2 size={16}/>Redo</button>
-    <button type="button" className="mc-tool" disabled={!duration||editIsDefault(edit,duration)} onClick={()=>commit(defaultEdit(duration),false)} aria-label="Reset all edits"><RotateCcw size={16}/>Reset</button>
-    {canBake&&!bakeMode&&<button type="button" className="mc-tool" disabled={!!job||!duration||!canRender||editIsDefault(edit,duration)} onClick={bake} title="Re-encodes the selection into the question (smaller file, edits become permanent)"><Save size={16}/>Save as new clip</button>}
-    <span className="mc-download" ref={menuRef}>
-     <button type="button" className="mc-tool" aria-expanded={menu} aria-haspopup="menu" disabled={!!job} onClick={()=>setMenu(v=>!v)}><Download size={16}/>Export<ChevronDown size={14}/></button>
-     {menu&&<span className="mc-menu" role="menu">
-      <button type="button" role="menuitem" onClick={()=>{setMenu(false);void downloadOriginal(src,`${stem}.${kind==='audio'?'webm':'mp4'}`);}}>Original file</button>
-      {kind==='audio'?<>
-       <button type="button" role="menuitem" disabled={!canRender||!duration} onClick={()=>{setMenu(false);void exportWav();}}>Edited clip · WAV<small>Instant, lossless, larger file</small></button>
-       <button type="button" role="menuitem" disabled={!canRender||!duration} onClick={()=>{setMenu(false);void exportWebm();}}>Edited clip · compressed<small>Takes about {fmtTime(len)} to encode</small></button>
-      </>:<button type="button" role="menuitem" disabled={!canExportVideo||!duration} onClick={()=>{setMenu(false);void exportVideo();}}>Edited clip · WebM<small>{canExportVideo?`Re-encodes in real time (~${fmtTime(len)})`:'Uploaded videos only'}</small></button>}
-     </span>}
-    </span>
+   {menu?<div className="me-menu" role="menu">
+    <button type="button" role="menuitem" onClick={()=>{setMenu(false);void downloadOriginal(src,`${stem}.${kind==='audio'?'webm':'mp4'}`);}}>{kind==='audio'?<FileAudio size={16}/>:<FileVideo size={16}/>}<span>Original file</span></button>
+    {kind==='audio'?<>
+     <button type="button" role="menuitem" disabled={!canRender||!duration} onClick={exportWav}><Download size={16}/><span>Edited clip · WAV <small>instant, larger file</small></span></button>
+     <button type="button" role="menuitem" disabled={!canRender||!duration} onClick={exportWebm}><Download size={16}/><span>Edited clip · compressed <small>takes about {fmtTime(len)}</small></span></button>
+     {canBake&&!bakeMode&&<button type="button" role="menuitem" disabled={!canRender||!duration} onClick={bake}><Save size={16}/><span>Save as new clip in this question <small>smaller file, edits become permanent</small></span></button>}
+    </>:<button type="button" role="menuitem" disabled={!canExportVideo||!duration} onClick={exportVideo}><Download size={16}/><span>Edited clip · WebM <small>{canExportVideo?`re-encodes in real time (~${fmtTime(len)})`:'uploaded videos only'}</small></span></button>}
+    <button type="button" role="menuitem" className="is-close" onClick={()=>setMenu(false)}><ArrowLeft size={16}/><span>Back</span></button>
    </div>
-   <p className="mc-keys">Space play · ← → seek · I / O set start / end · L loop · Shift = bigger steps</p>
-  </section>
+   :<div className="me-actions">
+    {tab==='crop'&&<>{sq(<FlipHorizontal2 size={18}/>,'Mirror',()=>setFrame({...frame,fx:!frame.fx}),{disabled:!dims.w,on:!!frame.fx})}{sq(<FlipVertical2 size={18}/>,'Flip',()=>setFrame({...frame,fy:!frame.fy}),{disabled:!dims.w,on:!!frame.fy})}</>}
+    {tab==='trim'&&<>{sq(<ArrowLeftToLine size={18}/>,'Start',()=>setStart(at),{disabled:!duration,aria:'Set start here'})}{sq(<ArrowRightToLine size={18}/>,'End',()=>setEnd(at),{disabled:!duration,aria:'Set end here'})}{sq(<Repeat size={18}/>,'Loop',()=>setLoop(v=>!v),{on:loop})}{sq(<Download size={18}/>,'Export',()=>setMenu(true),{disabled:!!job})}</>}
+    {tab==='sound'&&<>{sq(<Wand2 size={18}/>,'Normalize',normalize,{disabled:!canRender||!duration})}{e.gain!==1&&sq(<Undo2 size={18}/>,'No boost',()=>patch({gain:1}))}</>}
+    {sq(<Undo2 size={18}/>,'Reset',resetTab,{disabled:tabIsDefault,aria:`Reset ${tab}`})}
+   </div>}
+
+   {job&&<div className="me-job" role="status" aria-live="polite"><div className="me-jobbar"><i style={{width:`${Math.round(job.progress*100)}%`}}/></div><span>{job.label} {Math.round(job.progress*100)}%</span><button type="button" onClick={()=>jobAbort.current?.abort()}>Cancel</button></div>}
+   {note&&<p className={`me-note is-${note.kind}`} role="status">{note.text}</p>}
+   {!note&&peaksInfo===null&&tab==='sound'&&<p className="me-note">{embedded?'This file could not be analysed, so normalize and export are off.':'Normalize and export need an uploaded clip.'}</p>}
+   {hint&&<small className="me-hint">{hint}</small>}
+  </div>
  </div>,document.body);
 }

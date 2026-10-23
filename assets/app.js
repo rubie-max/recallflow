@@ -17476,7 +17476,7 @@ const createLucideIcon = (iconName, iconNode) => {
  */
 
 
-const __iconNode$23 = [
+const __iconNode$24 = [
   [
     "path",
     {
@@ -17485,7 +17485,21 @@ const __iconNode$23 = [
     }
   ]
 ];
-const Activity = createLucideIcon("Activity", __iconNode$23);
+const Activity = createLucideIcon("Activity", __iconNode$24);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$23 = [
+  ["path", { d: "M12 5v14", key: "s699le" }],
+  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+];
+const ArrowDown = createLucideIcon("ArrowDown", __iconNode$23);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17496,10 +17510,12 @@ const Activity = createLucideIcon("Activity", __iconNode$23);
 
 
 const __iconNode$22 = [
-  ["path", { d: "M12 5v14", key: "s699le" }],
-  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
+  ["path", { d: "M4 7h16", key: "6tx8e3" }],
+  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
+  ["path", { d: "M20 17H4", key: "h6l3hr" }]
 ];
-const ArrowDown = createLucideIcon("ArrowDown", __iconNode$22);
+const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$22);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17510,12 +17526,11 @@ const ArrowDown = createLucideIcon("ArrowDown", __iconNode$22);
 
 
 const __iconNode$21 = [
-  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
-  ["path", { d: "M4 7h16", key: "6tx8e3" }],
-  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
-  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+  ["path", { d: "M3 19V5", key: "rwsyhb" }],
+  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
+  ["path", { d: "M7 12h14", key: "uoisry" }]
 ];
-const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$21);
+const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$21);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17526,11 +17541,10 @@ const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$21);
 
 
 const __iconNode$20 = [
-  ["path", { d: "M3 19V5", key: "rwsyhb" }],
-  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
-  ["path", { d: "M7 12h14", key: "uoisry" }]
+  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
+  ["path", { d: "M19 12H5", key: "x3x0zl" }]
 ];
-const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$20);
+const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$20);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17541,10 +17555,11 @@ const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$20);
 
 
 const __iconNode$1$ = [
-  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
-  ["path", { d: "M19 12H5", key: "x3x0zl" }]
+  ["path", { d: "M17 12H3", key: "8awo09" }],
+  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
+  ["path", { d: "M21 5v14", key: "nzette" }]
 ];
-const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$1$);
+const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$1$);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17555,11 +17570,10 @@ const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$1$);
 
 
 const __iconNode$1_ = [
-  ["path", { d: "M17 12H3", key: "8awo09" }],
-  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
-  ["path", { d: "M21 5v14", key: "nzette" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$1_);
+const ArrowRight = createLucideIcon("ArrowRight", __iconNode$1_);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17570,10 +17584,12 @@ const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$1_);
 
 
 const __iconNode$1Z = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
+  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
+  ["path", { d: "M17 20V4", key: "1ejh1v" }],
+  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
+  ["path", { d: "M7 4v16", key: "1glfcx" }]
 ];
-const ArrowRight = createLucideIcon("ArrowRight", __iconNode$1Z);
+const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$1Z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17584,12 +17600,10 @@ const ArrowRight = createLucideIcon("ArrowRight", __iconNode$1Z);
 
 
 const __iconNode$1Y = [
-  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
-  ["path", { d: "M17 20V4", key: "1ejh1v" }],
-  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
-  ["path", { d: "M7 4v16", key: "1glfcx" }]
+  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
+  ["path", { d: "M12 19V5", key: "x0mq9r" }]
 ];
-const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$1Y);
+const ArrowUp = createLucideIcon("ArrowUp", __iconNode$1Y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17600,10 +17614,14 @@ const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$1Y);
 
 
 const __iconNode$1X = [
-  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
-  ["path", { d: "M12 19V5", key: "x0mq9r" }]
+  ["path", { d: "M2 10v3", key: "1fnikh" }],
+  ["path", { d: "M6 6v11", key: "11sgs0" }],
+  ["path", { d: "M10 3v18", key: "yhl04a" }],
+  ["path", { d: "M14 8v7", key: "3a1oy3" }],
+  ["path", { d: "M18 5v13", key: "123xd1" }],
+  ["path", { d: "M22 10v3", key: "154ddg" }]
 ];
-const ArrowUp = createLucideIcon("ArrowUp", __iconNode$1X);
+const AudioLines = createLucideIcon("AudioLines", __iconNode$1X);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17614,14 +17632,16 @@ const ArrowUp = createLucideIcon("ArrowUp", __iconNode$1X);
 
 
 const __iconNode$1W = [
-  ["path", { d: "M2 10v3", key: "1fnikh" }],
-  ["path", { d: "M6 6v11", key: "11sgs0" }],
-  ["path", { d: "M10 3v18", key: "yhl04a" }],
-  ["path", { d: "M14 8v7", key: "3a1oy3" }],
-  ["path", { d: "M18 5v13", key: "123xd1" }],
-  ["path", { d: "M22 10v3", key: "154ddg" }]
+  ["path", { d: "M12 7v14", key: "1akyts" }],
+  [
+    "path",
+    {
+      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+      key: "ruj8y"
+    }
+  ]
 ];
-const AudioLines = createLucideIcon("AudioLines", __iconNode$1W);
+const BookOpen = createLucideIcon("BookOpen", __iconNode$1W);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17632,16 +17652,9 @@ const AudioLines = createLucideIcon("AudioLines", __iconNode$1W);
 
 
 const __iconNode$1V = [
-  ["path", { d: "M12 7v14", key: "1akyts" }],
-  [
-    "path",
-    {
-      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
-      key: "ruj8y"
-    }
-  ]
+  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
 ];
-const BookOpen = createLucideIcon("BookOpen", __iconNode$1V);
+const Bookmark = createLucideIcon("Bookmark", __iconNode$1V);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17652,9 +17665,10 @@ const BookOpen = createLucideIcon("BookOpen", __iconNode$1V);
 
 
 const __iconNode$1U = [
-  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
+  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
+  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
 ];
-const Bookmark = createLucideIcon("Bookmark", __iconNode$1U);
+const Brackets = createLucideIcon("Brackets", __iconNode$1U);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17665,20 +17679,6 @@ const Bookmark = createLucideIcon("Bookmark", __iconNode$1U);
 
 
 const __iconNode$1T = [
-  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
-  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
-];
-const Brackets = createLucideIcon("Brackets", __iconNode$1T);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1S = [
   [
     "path",
     {
@@ -17701,7 +17701,25 @@ const __iconNode$1S = [
   ["path", { d: "M6 18a4 4 0 0 1-1.967-.516", key: "2e4loj" }],
   ["path", { d: "M19.967 17.484A4 4 0 0 1 18 18", key: "159ez6" }]
 ];
-const Brain = createLucideIcon("Brain", __iconNode$1S);
+const Brain = createLucideIcon("Brain", __iconNode$1T);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1S = [
+  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
+  ["path", { d: "M16 2v4", key: "4m81vk" }],
+  ["path", { d: "M8 2v4", key: "1cmpym" }],
+  ["path", { d: "M3 10h5", key: "r794hk" }],
+  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
+  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
+];
+const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1S);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17712,24 +17730,6 @@ const Brain = createLucideIcon("Brain", __iconNode$1S);
 
 
 const __iconNode$1R = [
-  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
-  ["path", { d: "M16 2v4", key: "4m81vk" }],
-  ["path", { d: "M8 2v4", key: "1cmpym" }],
-  ["path", { d: "M3 10h5", key: "r794hk" }],
-  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
-  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
-];
-const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1R);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1Q = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -17741,7 +17741,27 @@ const __iconNode$1Q = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1Q);
+const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1R);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1Q = [
+  [
+    "path",
+    {
+      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
+      key: "1tc9qg"
+    }
+  ],
+  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
+];
+const Camera = createLucideIcon("Camera", __iconNode$1Q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17752,31 +17772,11 @@ const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1Q);
 
 
 const __iconNode$1P = [
-  [
-    "path",
-    {
-      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
-      key: "1tc9qg"
-    }
-  ],
-  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
-];
-const Camera = createLucideIcon("Camera", __iconNode$1P);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1O = [
   ["line", { x1: "12", x2: "12", y1: "20", y2: "10", key: "1vz5eb" }],
   ["line", { x1: "18", x2: "18", y1: "20", y2: "4", key: "cun8e5" }],
   ["line", { x1: "6", x2: "6", y1: "20", y2: "16", key: "hq0ia6" }]
 ];
-const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1O);
+const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1P);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17786,8 +17786,8 @@ const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasin
  */
 
 
-const __iconNode$1N = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("Check", __iconNode$1N);
+const __iconNode$1O = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("Check", __iconNode$1O);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17797,8 +17797,8 @@ const Check = createLucideIcon("Check", __iconNode$1N);
  */
 
 
-const __iconNode$1M = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1M);
+const __iconNode$1N = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1N);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17808,8 +17808,8 @@ const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1M);
  */
 
 
-const __iconNode$1L = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1L);
+const __iconNode$1M = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1M);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17819,8 +17819,23 @@ const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1L);
  */
 
 
-const __iconNode$1K = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1K);
+const __iconNode$1L = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1L);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1K = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1K);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17832,10 +17847,9 @@ const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1K);
 
 const __iconNode$1J = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1J);
+const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1J);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17847,9 +17861,9 @@ const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1J);
 
 const __iconNode$1I = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
 ];
-const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1I);
+const CircleDot = createLucideIcon("CircleDot", __iconNode$1I);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17861,9 +17875,10 @@ const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1I);
 
 const __iconNode$1H = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const CircleDot = createLucideIcon("CircleDot", __iconNode$1H);
+const CircleX = createLucideIcon("CircleX", __iconNode$1H);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17874,21 +17889,6 @@ const CircleDot = createLucideIcon("CircleDot", __iconNode$1H);
 
 
 const __iconNode$1G = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
-];
-const CircleX = createLucideIcon("CircleX", __iconNode$1G);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1F = [
   [
     "path",
     { d: "M15 2H9a1 1 0 0 0-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z", key: "1pp7kr" }
@@ -17902,7 +17902,25 @@ const __iconNode$1F = [
   ],
   ["path", { d: "m17 10 4 4-4 4", key: "vp2hj1" }]
 ];
-const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1F);
+const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1G);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1F = [
+  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
+  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
+  [
+    "path",
+    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
+  ]
+];
+const CloudOff = createLucideIcon("CloudOff", __iconNode$1F);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17913,14 +17931,11 @@ const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1F);
 
 
 const __iconNode$1E = [
-  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
-  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
-  [
-    "path",
-    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
-  ]
+  ["path", { d: "M12 13v8", key: "1l5pq0" }],
+  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
+  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
 ];
-const CloudOff = createLucideIcon("CloudOff", __iconNode$1E);
+const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1E);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17931,11 +17946,9 @@ const CloudOff = createLucideIcon("CloudOff", __iconNode$1E);
 
 
 const __iconNode$1D = [
-  ["path", { d: "M12 13v8", key: "1l5pq0" }],
-  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
-  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
+  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
 ];
-const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1D);
+const Cloud = createLucideIcon("Cloud", __iconNode$1D);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17946,9 +17959,10 @@ const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1D);
 
 
 const __iconNode$1C = [
-  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
 ];
-const Cloud = createLucideIcon("Cloud", __iconNode$1C);
+const Contrast = createLucideIcon("Contrast", __iconNode$1C);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17959,10 +17973,11 @@ const Cloud = createLucideIcon("Cloud", __iconNode$1C);
 
 
 const __iconNode$1B = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
+  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Contrast = createLucideIcon("Contrast", __iconNode$1B);
+const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1B);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17973,11 +17988,10 @@ const Contrast = createLucideIcon("Contrast", __iconNode$1B);
 
 
 const __iconNode$1A = [
-  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
   ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
   ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1A);
+const Copy = createLucideIcon("Copy", __iconNode$1A);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17988,10 +18002,10 @@ const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1A);
 
 
 const __iconNode$1z = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
+  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
 ];
-const Copy = createLucideIcon("Copy", __iconNode$1z);
+const Crop = createLucideIcon("Crop", __iconNode$1z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18002,10 +18016,13 @@ const Copy = createLucideIcon("Copy", __iconNode$1z);
 
 
 const __iconNode$1y = [
-  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
-  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
+  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
+  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
+  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
 ];
-const Crop = createLucideIcon("Crop", __iconNode$1y);
+const Crosshair = createLucideIcon("Crosshair", __iconNode$1y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18016,13 +18033,11 @@ const Crop = createLucideIcon("Crop", __iconNode$1y);
 
 
 const __iconNode$1x = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
-  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
-  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
-  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
 ];
-const Crosshair = createLucideIcon("Crosshair", __iconNode$1x);
+const Database = createLucideIcon("Database", __iconNode$1x);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18033,21 +18048,6 @@ const Crosshair = createLucideIcon("Crosshair", __iconNode$1x);
 
 
 const __iconNode$1w = [
-  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
-  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
-  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
-];
-const Database = createLucideIcon("Database", __iconNode$1w);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1v = [
   ["path", { d: "M13 4h3a2 2 0 0 1 2 2v14", key: "hrm0s9" }],
   ["path", { d: "M2 20h3", key: "1gaodv" }],
   ["path", { d: "M13 20h9", key: "s90cdi" }],
@@ -18060,7 +18060,22 @@ const __iconNode$1v = [
     }
   ]
 ];
-const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1v);
+const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1w);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1v = [
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
+  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+];
+const Download = createLucideIcon("Download", __iconNode$1v);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18071,11 +18086,15 @@ const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1v);
 
 
 const __iconNode$1u = [
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
-  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+  [
+    "path",
+    {
+      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
+      key: "c7niix"
+    }
+  ]
 ];
-const Download = createLucideIcon("Download", __iconNode$1u);
+const Droplet = createLucideIcon("Droplet", __iconNode$1u);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18086,15 +18105,11 @@ const Download = createLucideIcon("Download", __iconNode$1u);
 
 
 const __iconNode$1t = [
-  [
-    "path",
-    {
-      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
-      key: "c7niix"
-    }
-  ]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
+  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
 ];
-const Droplet = createLucideIcon("Droplet", __iconNode$1t);
+const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1t);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18105,11 +18120,16 @@ const Droplet = createLucideIcon("Droplet", __iconNode$1t);
 
 
 const __iconNode$1s = [
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
-  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
-  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
+  ["path", { d: "m15 15 6 6", key: "1s409w" }],
+  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
+  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
+  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
+  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
+  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
+  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
+  ["path", { d: "M9 9 3 3", key: "v551iv" }]
 ];
-const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1s);
+const Expand = createLucideIcon("Expand", __iconNode$1s);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18120,16 +18140,11 @@ const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1s);
 
 
 const __iconNode$1r = [
-  ["path", { d: "m15 15 6 6", key: "1s409w" }],
-  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
-  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
-  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
-  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
-  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
-  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
-  ["path", { d: "M9 9 3 3", key: "v551iv" }]
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
 ];
-const Expand = createLucideIcon("Expand", __iconNode$1r);
+const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1r);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18140,21 +18155,6 @@ const Expand = createLucideIcon("Expand", __iconNode$1r);
 
 
 const __iconNode$1q = [
-  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
-  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
-  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
-];
-const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1q);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1p = [
   [
     "path",
     {
@@ -18172,7 +18172,27 @@ const __iconNode$1p = [
   ],
   ["path", { d: "m2 2 20 20", key: "1ooewy" }]
 ];
-const EyeOff = createLucideIcon("EyeOff", __iconNode$1p);
+const EyeOff = createLucideIcon("EyeOff", __iconNode$1q);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1p = [
+  [
+    "path",
+    {
+      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
+      key: "1nclc0"
+    }
+  ],
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+];
+const Eye = createLucideIcon("Eye", __iconNode$1p);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18183,16 +18203,10 @@ const EyeOff = createLucideIcon("EyeOff", __iconNode$1p);
 
 
 const __iconNode$1o = [
-  [
-    "path",
-    {
-      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
-      key: "1nclc0"
-    }
-  ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
+  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
 ];
-const Eye = createLucideIcon("Eye", __iconNode$1o);
+const FastForward = createLucideIcon("FastForward", __iconNode$1o);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18203,20 +18217,6 @@ const Eye = createLucideIcon("Eye", __iconNode$1o);
 
 
 const __iconNode$1n = [
-  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
-  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
-];
-const FastForward = createLucideIcon("FastForward", __iconNode$1n);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1m = [
   ["path", { d: "M10 12v-1", key: "v7bkov" }],
   ["path", { d: "M10 18v-2", key: "1cjy8d" }],
   ["path", { d: "M10 7V6", key: "dljcrl" }],
@@ -18227,7 +18227,28 @@ const __iconNode$1m = [
   ],
   ["circle", { cx: "10", cy: "20", r: "2", key: "1xzdoj" }]
 ];
-const FileArchive = createLucideIcon("FileArchive", __iconNode$1m);
+const FileArchive = createLucideIcon("FileArchive", __iconNode$1n);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1m = [
+  ["path", { d: "M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3", key: "rslqgf" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  [
+    "path",
+    {
+      d: "M2 19a2 2 0 1 1 4 0v1a2 2 0 1 1-4 0v-4a6 6 0 0 1 12 0v4a2 2 0 1 1-4 0v-1a2 2 0 1 1 4 0",
+      key: "9f7x3i"
+    }
+  ]
+];
+const FileAudio = createLucideIcon("FileAudio", __iconNode$1m);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18327,16 +18348,11 @@ const FileUp = createLucideIcon("FileUp", __iconNode$1h);
 
 
 const __iconNode$1g = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
-  ["path", { d: "M7 3v18", key: "bbkbws" }],
-  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
-  ["path", { d: "M3 12h18", key: "1i2n21" }],
-  ["path", { d: "M3 16.5h4", key: "1230mu" }],
-  ["path", { d: "M17 3v18", key: "in4fa5" }],
-  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
-  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  ["path", { d: "m10 11 5 3-5 3v-6Z", key: "7ntvm4" }]
 ];
-const Film = createLucideIcon("Film", __iconNode$1g);
+const FileVideo = createLucideIcon("FileVideo", __iconNode$1g);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18347,15 +18363,16 @@ const Film = createLucideIcon("Film", __iconNode$1g);
 
 
 const __iconNode$1f = [
-  [
-    "path",
-    {
-      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
-      key: "96xj49"
-    }
-  ]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M7 3v18", key: "bbkbws" }],
+  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
+  ["path", { d: "M3 12h18", key: "1i2n21" }],
+  ["path", { d: "M3 16.5h4", key: "1230mu" }],
+  ["path", { d: "M17 3v18", key: "in4fa5" }],
+  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
+  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
 ];
-const Flame = createLucideIcon("Flame", __iconNode$1f);
+const Film = createLucideIcon("Film", __iconNode$1f);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18366,14 +18383,15 @@ const Flame = createLucideIcon("Flame", __iconNode$1f);
 
 
 const __iconNode$1e = [
-  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
-  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
-  ["path", { d: "M12 20v2", key: "1lh1kg" }],
-  ["path", { d: "M12 14v2", key: "8jcxud" }],
-  ["path", { d: "M12 8v2", key: "1woqiv" }],
-  ["path", { d: "M12 2v2", key: "tus03m" }]
+  [
+    "path",
+    {
+      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+      key: "96xj49"
+    }
+  ]
 ];
-const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1e);
+const Flame = createLucideIcon("Flame", __iconNode$1e);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18384,14 +18402,14 @@ const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1e);
 
 
 const __iconNode$1d = [
-  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
-  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
-  ["path", { d: "M4 12H2", key: "rhcxmi" }],
-  ["path", { d: "M10 12H8", key: "s88cx1" }],
-  ["path", { d: "M16 12h-2", key: "10asgb" }],
-  ["path", { d: "M22 12h-2", key: "14jgyd" }]
+  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
+  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "M12 14v2", key: "8jcxud" }],
+  ["path", { d: "M12 8v2", key: "1woqiv" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }]
 ];
-const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1d);
+const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1d);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18402,11 +18420,14 @@ const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1d);
 
 
 const __iconNode$1c = [
-  ["path", { d: "M7 2h10", key: "nczekb" }],
-  ["path", { d: "M5 6h14", key: "u2x4p" }],
-  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
+  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
+  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
+  ["path", { d: "M4 12H2", key: "rhcxmi" }],
+  ["path", { d: "M10 12H8", key: "s88cx1" }],
+  ["path", { d: "M16 12h-2", key: "10asgb" }],
+  ["path", { d: "M22 12h-2", key: "14jgyd" }]
 ];
-const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1c);
+const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1c);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18417,14 +18438,11 @@ const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1c)
 
 
 const __iconNode$1b = [
-  ["circle", { cx: "9", cy: "12", r: "1", key: "1vctgf" }],
-  ["circle", { cx: "9", cy: "5", r: "1", key: "hp0tcf" }],
-  ["circle", { cx: "9", cy: "19", r: "1", key: "fkjjf6" }],
-  ["circle", { cx: "15", cy: "12", r: "1", key: "1tmaij" }],
-  ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
-  ["circle", { cx: "15", cy: "19", r: "1", key: "f4zoj3" }]
+  ["path", { d: "M7 2h10", key: "nczekb" }],
+  ["path", { d: "M5 6h14", key: "u2x4p" }],
+  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
 ];
-const GripVertical = createLucideIcon("GripVertical", __iconNode$1b);
+const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1b);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18435,12 +18453,14 @@ const GripVertical = createLucideIcon("GripVertical", __iconNode$1b);
 
 
 const __iconNode$1a = [
-  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
-  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
-  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
-  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
+  ["circle", { cx: "9", cy: "12", r: "1", key: "1vctgf" }],
+  ["circle", { cx: "9", cy: "5", r: "1", key: "hp0tcf" }],
+  ["circle", { cx: "9", cy: "19", r: "1", key: "fkjjf6" }],
+  ["circle", { cx: "15", cy: "12", r: "1", key: "1tmaij" }],
+  ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
+  ["circle", { cx: "15", cy: "19", r: "1", key: "f4zoj3" }]
 ];
-const Hash = createLucideIcon("Hash", __iconNode$1a);
+const GripVertical = createLucideIcon("GripVertical", __iconNode$1a);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18451,11 +18471,12 @@ const Hash = createLucideIcon("Hash", __iconNode$1a);
 
 
 const __iconNode$19 = [
-  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
-  ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
-  ["path", { d: "M12 7v5l4 2", key: "1fdv2h" }]
+  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
+  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
+  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
+  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
 ];
-const History = createLucideIcon("History", __iconNode$19);
+const Hash = createLucideIcon("Hash", __iconNode$19);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18466,10 +18487,11 @@ const History = createLucideIcon("History", __iconNode$19);
 
 
 const __iconNode$18 = [
-  ["path", { d: "m9 11-6 6v3h9l3-3", key: "1a3l36" }],
-  ["path", { d: "m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4", key: "14a9rk" }]
+  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
+  ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
+  ["path", { d: "M12 7v5l4 2", key: "1fdv2h" }]
 ];
-const Highlighter = createLucideIcon("Highlighter", __iconNode$18);
+const History = createLucideIcon("History", __iconNode$18);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18480,16 +18502,10 @@ const Highlighter = createLucideIcon("Highlighter", __iconNode$18);
 
 
 const __iconNode$17 = [
-  ["path", { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" }],
-  [
-    "path",
-    {
-      d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-      key: "1d0kgt"
-    }
-  ]
+  ["path", { d: "m9 11-6 6v3h9l3-3", key: "1a3l36" }],
+  ["path", { d: "m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4", key: "14a9rk" }]
 ];
-const House = createLucideIcon("House", __iconNode$17);
+const Highlighter = createLucideIcon("Highlighter", __iconNode$17);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18500,13 +18516,16 @@ const House = createLucideIcon("House", __iconNode$17);
 
 
 const __iconNode$16 = [
-  ["path", { d: "M16 5h6", key: "1vod17" }],
-  ["path", { d: "M19 2v6", key: "4bpg5p" }],
-  ["path", { d: "M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5", key: "1ue2ih" }],
-  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
-  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }]
+  ["path", { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" }],
+  [
+    "path",
+    {
+      d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+      key: "1d0kgt"
+    }
+  ]
 ];
-const ImagePlus = createLucideIcon("ImagePlus", __iconNode$16);
+const House = createLucideIcon("House", __iconNode$16);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18517,11 +18536,13 @@ const ImagePlus = createLucideIcon("ImagePlus", __iconNode$16);
 
 
 const __iconNode$15 = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
-  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
-  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
+  ["path", { d: "M16 5h6", key: "1vod17" }],
+  ["path", { d: "M19 2v6", key: "4bpg5p" }],
+  ["path", { d: "M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5", key: "1ue2ih" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }]
 ];
-const Image$1 = createLucideIcon("Image", __iconNode$15);
+const ImagePlus = createLucideIcon("ImagePlus", __iconNode$15);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18532,11 +18553,11 @@ const Image$1 = createLucideIcon("Image", __iconNode$15);
 
 
 const __iconNode$14 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 16v-4", key: "1dtifu" }],
-  ["path", { d: "M12 8h.01", key: "e9boi3" }]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
 ];
-const Info = createLucideIcon("Info", __iconNode$14);
+const Image$1 = createLucideIcon("Image", __iconNode$14);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18547,16 +18568,11 @@ const Info = createLucideIcon("Info", __iconNode$14);
 
 
 const __iconNode$13 = [
-  [
-    "path",
-    {
-      d: "M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z",
-      key: "1s6t7t"
-    }
-  ],
-  ["circle", { cx: "16.5", cy: "7.5", r: ".5", fill: "currentColor", key: "w0ekpg" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 16v-4", key: "1dtifu" }],
+  ["path", { d: "M12 8h.01", key: "e9boi3" }]
 ];
-const KeyRound = createLucideIcon("KeyRound", __iconNode$13);
+const Info = createLucideIcon("Info", __iconNode$13);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18567,6 +18583,26 @@ const KeyRound = createLucideIcon("KeyRound", __iconNode$13);
 
 
 const __iconNode$12 = [
+  [
+    "path",
+    {
+      d: "M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z",
+      key: "1s6t7t"
+    }
+  ],
+  ["circle", { cx: "16.5", cy: "7.5", r: ".5", fill: "currentColor", key: "w0ekpg" }]
+];
+const KeyRound = createLucideIcon("KeyRound", __iconNode$12);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$11 = [
   [
     "path",
     {
@@ -18589,23 +18625,7 @@ const __iconNode$12 = [
     }
   ]
 ];
-const Layers = createLucideIcon("Layers", __iconNode$12);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$11 = [
-  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
-  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
-  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
-  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
-];
-const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$11);
+const Layers = createLucideIcon("Layers", __iconNode$11);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18616,12 +18636,12 @@ const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$11);
 
 
 const __iconNode$10 = [
-  ["rect", { width: "7", height: "7", x: "3", y: "3", rx: "1", key: "1g98yp" }],
-  ["rect", { width: "7", height: "7", x: "14", y: "3", rx: "1", key: "6d4xhi" }],
-  ["rect", { width: "7", height: "7", x: "14", y: "14", rx: "1", key: "nxv5o0" }],
-  ["rect", { width: "7", height: "7", x: "3", y: "14", rx: "1", key: "1bb6yr" }]
+  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
+  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
+  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
+  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
 ];
-const LayoutGrid = createLucideIcon("LayoutGrid", __iconNode$10);
+const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$10);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18632,12 +18652,12 @@ const LayoutGrid = createLucideIcon("LayoutGrid", __iconNode$10);
 
 
 const __iconNode$$ = [
-  ["path", { d: "m16 6 4 14", key: "ji33uf" }],
-  ["path", { d: "M12 6v14", key: "1n7gus" }],
-  ["path", { d: "M8 8v12", key: "1gg7y9" }],
-  ["path", { d: "M4 4v16", key: "6qkkli" }]
+  ["rect", { width: "7", height: "7", x: "3", y: "3", rx: "1", key: "1g98yp" }],
+  ["rect", { width: "7", height: "7", x: "14", y: "3", rx: "1", key: "6d4xhi" }],
+  ["rect", { width: "7", height: "7", x: "14", y: "14", rx: "1", key: "nxv5o0" }],
+  ["rect", { width: "7", height: "7", x: "3", y: "14", rx: "1", key: "1bb6yr" }]
 ];
-const Library = createLucideIcon("Library", __iconNode$$);
+const LayoutGrid = createLucideIcon("LayoutGrid", __iconNode$$);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18648,17 +18668,12 @@ const Library = createLucideIcon("Library", __iconNode$$);
 
 
 const __iconNode$_ = [
-  [
-    "path",
-    {
-      d: "M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5",
-      key: "1gvzjb"
-    }
-  ],
-  ["path", { d: "M9 18h6", key: "x1upvd" }],
-  ["path", { d: "M10 22h4", key: "ceow96" }]
+  ["path", { d: "m16 6 4 14", key: "ji33uf" }],
+  ["path", { d: "M12 6v14", key: "1n7gus" }],
+  ["path", { d: "M8 8v12", key: "1gg7y9" }],
+  ["path", { d: "M4 4v16", key: "6qkkli" }]
 ];
-const Lightbulb = createLucideIcon("Lightbulb", __iconNode$_);
+const Library = createLucideIcon("Library", __iconNode$_);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18669,11 +18684,17 @@ const Lightbulb = createLucideIcon("Lightbulb", __iconNode$_);
 
 
 const __iconNode$Z = [
-  ["path", { d: "M9 17H7A5 5 0 0 1 7 7h2", key: "8i5ue5" }],
-  ["path", { d: "M15 7h2a5 5 0 1 1 0 10h-2", key: "1b9ql8" }],
-  ["line", { x1: "8", x2: "16", y1: "12", y2: "12", key: "1jonct" }]
+  [
+    "path",
+    {
+      d: "M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5",
+      key: "1gvzjb"
+    }
+  ],
+  ["path", { d: "M9 18h6", key: "x1upvd" }],
+  ["path", { d: "M10 22h4", key: "ceow96" }]
 ];
-const Link2 = createLucideIcon("Link2", __iconNode$Z);
+const Lightbulb = createLucideIcon("Lightbulb", __iconNode$Z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18684,13 +18705,11 @@ const Link2 = createLucideIcon("Link2", __iconNode$Z);
 
 
 const __iconNode$Y = [
-  ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
-  ["path", { d: "m3 7 2 2 4-4", key: "1obspn" }],
-  ["path", { d: "M13 6h8", key: "15sg57" }],
-  ["path", { d: "M13 12h8", key: "h98zly" }],
-  ["path", { d: "M13 18h8", key: "oe0vm4" }]
+  ["path", { d: "M9 17H7A5 5 0 0 1 7 7h2", key: "8i5ue5" }],
+  ["path", { d: "M15 7h2a5 5 0 1 1 0 10h-2", key: "1b9ql8" }],
+  ["line", { x1: "8", x2: "16", y1: "12", y2: "12", key: "1jonct" }]
 ];
-const ListChecks = createLucideIcon("ListChecks", __iconNode$Y);
+const Link2 = createLucideIcon("Link2", __iconNode$Y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18701,14 +18720,13 @@ const ListChecks = createLucideIcon("ListChecks", __iconNode$Y);
 
 
 const __iconNode$X = [
-  ["path", { d: "M10 12h11", key: "6m4ad9" }],
-  ["path", { d: "M10 18h11", key: "11hvi2" }],
-  ["path", { d: "M10 6h11", key: "c7qv1k" }],
-  ["path", { d: "M4 10h2", key: "16xx2s" }],
-  ["path", { d: "M4 6h1v4", key: "cnovpq" }],
-  ["path", { d: "M6 18H4c0-1 2-2 2-3s-1-1.5-2-1", key: "m9a95d" }]
+  ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
+  ["path", { d: "m3 7 2 2 4-4", key: "1obspn" }],
+  ["path", { d: "M13 6h8", key: "15sg57" }],
+  ["path", { d: "M13 12h8", key: "h98zly" }],
+  ["path", { d: "M13 18h8", key: "oe0vm4" }]
 ];
-const ListOrdered = createLucideIcon("ListOrdered", __iconNode$X);
+const ListChecks = createLucideIcon("ListChecks", __iconNode$X);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18719,13 +18737,31 @@ const ListOrdered = createLucideIcon("ListOrdered", __iconNode$X);
 
 
 const __iconNode$W = [
+  ["path", { d: "M10 12h11", key: "6m4ad9" }],
+  ["path", { d: "M10 18h11", key: "11hvi2" }],
+  ["path", { d: "M10 6h11", key: "c7qv1k" }],
+  ["path", { d: "M4 10h2", key: "16xx2s" }],
+  ["path", { d: "M4 6h1v4", key: "cnovpq" }],
+  ["path", { d: "M6 18H4c0-1 2-2 2-3s-1-1.5-2-1", key: "m9a95d" }]
+];
+const ListOrdered = createLucideIcon("ListOrdered", __iconNode$W);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$V = [
   ["rect", { x: "3", y: "5", width: "6", height: "6", rx: "1", key: "1defrl" }],
   ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
   ["path", { d: "M13 6h8", key: "15sg57" }],
   ["path", { d: "M13 12h8", key: "h98zly" }],
   ["path", { d: "M13 18h8", key: "oe0vm4" }]
 ];
-const ListTodo = createLucideIcon("ListTodo", __iconNode$W);
+const ListTodo = createLucideIcon("ListTodo", __iconNode$V);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18735,23 +18771,8 @@ const ListTodo = createLucideIcon("ListTodo", __iconNode$W);
  */
 
 
-const __iconNode$V = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("LoaderCircle", __iconNode$V);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$U = [
-  ["circle", { cx: "12", cy: "16", r: "1", key: "1au0dj" }],
-  ["rect", { x: "3", y: "10", width: "18", height: "12", rx: "2", key: "6s8ecr" }],
-  ["path", { d: "M7 10V7a5 5 0 0 1 10 0v3", key: "1pqi11" }]
-];
-const LockKeyhole = createLucideIcon("LockKeyhole", __iconNode$U);
+const __iconNode$U = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("LoaderCircle", __iconNode$U);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18762,10 +18783,11 @@ const LockKeyhole = createLucideIcon("LockKeyhole", __iconNode$U);
 
 
 const __iconNode$T = [
-  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 9.9-1", key: "1mm8w8" }]
+  ["circle", { cx: "12", cy: "16", r: "1", key: "1au0dj" }],
+  ["rect", { x: "3", y: "10", width: "18", height: "12", rx: "2", key: "6s8ecr" }],
+  ["path", { d: "M7 10V7a5 5 0 0 1 10 0v3", key: "1pqi11" }]
 ];
-const LockOpen = createLucideIcon("LockOpen", __iconNode$T);
+const LockKeyhole = createLucideIcon("LockKeyhole", __iconNode$T);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18777,9 +18799,9 @@ const LockOpen = createLucideIcon("LockOpen", __iconNode$T);
 
 const __iconNode$S = [
   ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
+  ["path", { d: "M7 11V7a5 5 0 0 1 9.9-1", key: "1mm8w8" }]
 ];
-const Lock = createLucideIcon("Lock", __iconNode$S);
+const LockOpen = createLucideIcon("LockOpen", __iconNode$S);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18790,11 +18812,10 @@ const Lock = createLucideIcon("Lock", __iconNode$S);
 
 
 const __iconNode$R = [
-  ["path", { d: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4", key: "u53s6r" }],
-  ["polyline", { points: "10 17 15 12 10 7", key: "1ail0h" }],
-  ["line", { x1: "15", x2: "3", y1: "12", y2: "12", key: "v6grx8" }]
+  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
+  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
 ];
-const LogIn = createLucideIcon("LogIn", __iconNode$R);
+const Lock = createLucideIcon("Lock", __iconNode$R);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18805,11 +18826,11 @@ const LogIn = createLucideIcon("LogIn", __iconNode$R);
 
 
 const __iconNode$Q = [
-  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }],
-  ["polyline", { points: "16 17 21 12 16 7", key: "1gabdz" }],
-  ["line", { x1: "21", x2: "9", y1: "12", y2: "12", key: "1uyos4" }]
+  ["path", { d: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4", key: "u53s6r" }],
+  ["polyline", { points: "10 17 15 12 10 7", key: "1ail0h" }],
+  ["line", { x1: "15", x2: "3", y1: "12", y2: "12", key: "v6grx8" }]
 ];
-const LogOut = createLucideIcon("LogOut", __iconNode$Q);
+const LogIn = createLucideIcon("LogIn", __iconNode$Q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18820,12 +18841,11 @@ const LogOut = createLucideIcon("LogOut", __iconNode$Q);
 
 
 const __iconNode$P = [
-  ["polyline", { points: "15 3 21 3 21 9", key: "mznyad" }],
-  ["polyline", { points: "9 21 3 21 3 15", key: "1avn1i" }],
-  ["line", { x1: "21", x2: "14", y1: "3", y2: "10", key: "ota7mn" }],
-  ["line", { x1: "3", x2: "10", y1: "21", y2: "14", key: "1atl0r" }]
+  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }],
+  ["polyline", { points: "16 17 21 12 16 7", key: "1gabdz" }],
+  ["line", { x1: "21", x2: "9", y1: "12", y2: "12", key: "1uyos4" }]
 ];
-const Maximize2 = createLucideIcon("Maximize2", __iconNode$P);
+const LogOut = createLucideIcon("LogOut", __iconNode$P);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18836,11 +18856,27 @@ const Maximize2 = createLucideIcon("Maximize2", __iconNode$P);
 
 
 const __iconNode$O = [
+  ["polyline", { points: "15 3 21 3 21 9", key: "mznyad" }],
+  ["polyline", { points: "9 21 3 21 3 15", key: "1avn1i" }],
+  ["line", { x1: "21", x2: "14", y1: "3", y2: "10", key: "ota7mn" }],
+  ["line", { x1: "3", x2: "10", y1: "21", y2: "14", key: "1atl0r" }]
+];
+const Maximize2 = createLucideIcon("Maximize2", __iconNode$O);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$N = [
   ["path", { d: "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z", key: "131961" }],
   ["path", { d: "M19 10v2a7 7 0 0 1-14 0v-2", key: "1vc78b" }],
   ["line", { x1: "12", x2: "12", y1: "19", y2: "22", key: "x3vr5v" }]
 ];
-const Mic = createLucideIcon("Mic", __iconNode$O);
+const Mic = createLucideIcon("Mic", __iconNode$N);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18850,24 +18886,8 @@ const Mic = createLucideIcon("Mic", __iconNode$O);
  */
 
 
-const __iconNode$N = [["path", { d: "M5 12h14", key: "1ays0h" }]];
-const Minus = createLucideIcon("Minus", __iconNode$N);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$M = [
-  ["path", { d: "M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8", key: "10dyio" }],
-  ["path", { d: "M10 19v-3.96 3.15", key: "1irgej" }],
-  ["path", { d: "M7 19h5", key: "qswx4l" }],
-  ["rect", { width: "6", height: "10", x: "16", y: "12", rx: "2", key: "1egngj" }]
-];
-const MonitorSmartphone = createLucideIcon("MonitorSmartphone", __iconNode$M);
+const __iconNode$M = [["path", { d: "M5 12h14", key: "1ays0h" }]];
+const Minus = createLucideIcon("Minus", __iconNode$M);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18878,9 +18898,12 @@ const MonitorSmartphone = createLucideIcon("MonitorSmartphone", __iconNode$M);
 
 
 const __iconNode$L = [
-  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
+  ["path", { d: "M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8", key: "10dyio" }],
+  ["path", { d: "M10 19v-3.96 3.15", key: "1irgej" }],
+  ["path", { d: "M7 19h5", key: "qswx4l" }],
+  ["rect", { width: "6", height: "10", x: "16", y: "12", rx: "2", key: "1egngj" }]
 ];
-const Moon = createLucideIcon("Moon", __iconNode$L);
+const MonitorSmartphone = createLucideIcon("MonitorSmartphone", __iconNode$L);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18891,11 +18914,9 @@ const Moon = createLucideIcon("Moon", __iconNode$L);
 
 
 const __iconNode$K = [
-  ["path", { d: "M9 18V5l12-2v13", key: "1jmyc2" }],
-  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
-  ["circle", { cx: "18", cy: "16", r: "3", key: "1hluhg" }]
+  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
 ];
-const Music = createLucideIcon("Music", __iconNode$K);
+const Moon = createLucideIcon("Moon", __iconNode$K);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18906,6 +18927,21 @@ const Music = createLucideIcon("Music", __iconNode$K);
 
 
 const __iconNode$J = [
+  ["path", { d: "M9 18V5l12-2v13", key: "1jmyc2" }],
+  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
+  ["circle", { cx: "18", cy: "16", r: "3", key: "1hluhg" }]
+];
+const Music = createLucideIcon("Music", __iconNode$J);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$I = [
   ["circle", { cx: "13.5", cy: "6.5", r: ".5", fill: "currentColor", key: "1okk4w" }],
   ["circle", { cx: "17.5", cy: "10.5", r: ".5", fill: "currentColor", key: "f64h9f" }],
   ["circle", { cx: "8.5", cy: "7.5", r: ".5", fill: "currentColor", key: "fotxhn" }],
@@ -18918,21 +18954,7 @@ const __iconNode$J = [
     }
   ]
 ];
-const Palette = createLucideIcon("Palette", __iconNode$J);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$I = [
-  ["rect", { x: "14", y: "4", width: "4", height: "16", rx: "1", key: "zuxfzm" }],
-  ["rect", { x: "6", y: "4", width: "4", height: "16", rx: "1", key: "1okwgv" }]
-];
-const Pause = createLucideIcon("Pause", __iconNode$I);
+const Palette = createLucideIcon("Palette", __iconNode$I);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18943,16 +18965,10 @@ const Pause = createLucideIcon("Pause", __iconNode$I);
 
 
 const __iconNode$H = [
-  ["path", { d: "M12 20h9", key: "t2du7b" }],
-  [
-    "path",
-    {
-      d: "M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z",
-      key: "1ykcvy"
-    }
-  ]
+  ["rect", { x: "14", y: "4", width: "4", height: "16", rx: "1", key: "zuxfzm" }],
+  ["rect", { x: "6", y: "4", width: "4", height: "16", rx: "1", key: "1okwgv" }]
 ];
-const PenLine = createLucideIcon("PenLine", __iconNode$H);
+const Pause = createLucideIcon("Pause", __iconNode$H);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18963,6 +18979,26 @@ const PenLine = createLucideIcon("PenLine", __iconNode$H);
 
 
 const __iconNode$G = [
+  ["path", { d: "M12 20h9", key: "t2du7b" }],
+  [
+    "path",
+    {
+      d: "M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z",
+      key: "1ykcvy"
+    }
+  ]
+];
+const PenLine = createLucideIcon("PenLine", __iconNode$G);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$F = [
   [
     "path",
     {
@@ -18972,7 +19008,7 @@ const __iconNode$G = [
   ],
   ["path", { d: "m15 5 4 4", key: "1mk7zo" }]
 ];
-const Pencil = createLucideIcon("Pencil", __iconNode$G);
+const Pencil = createLucideIcon("Pencil", __iconNode$F);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18982,22 +19018,8 @@ const Pencil = createLucideIcon("Pencil", __iconNode$G);
  */
 
 
-const __iconNode$F = [["polygon", { points: "6 3 20 12 6 21 6 3", key: "1oa8hb" }]];
-const Play = createLucideIcon("Play", __iconNode$F);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$E = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "M12 5v14", key: "s699le" }]
-];
-const Plus = createLucideIcon("Plus", __iconNode$E);
+const __iconNode$E = [["polygon", { points: "6 3 20 12 6 21 6 3", key: "1oa8hb" }]];
+const Play = createLucideIcon("Play", __iconNode$E);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19008,15 +19030,10 @@ const Plus = createLucideIcon("Plus", __iconNode$E);
 
 
 const __iconNode$D = [
-  [
-    "path",
-    {
-      d: "M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z",
-      key: "w46dr5"
-    }
-  ]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "M12 5v14", key: "s699le" }]
 ];
-const Puzzle = createLucideIcon("Puzzle", __iconNode$D);
+const Plus = createLucideIcon("Plus", __iconNode$D);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19027,10 +19044,15 @@ const Puzzle = createLucideIcon("Puzzle", __iconNode$D);
 
 
 const __iconNode$C = [
-  ["path", { d: "m15 14 5-5-5-5", key: "12vg1m" }],
-  ["path", { d: "M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13", key: "6uklza" }]
+  [
+    "path",
+    {
+      d: "M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z",
+      key: "w46dr5"
+    }
+  ]
 ];
-const Redo2 = createLucideIcon("Redo2", __iconNode$C);
+const Puzzle = createLucideIcon("Puzzle", __iconNode$C);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -20851,7 +20873,7 @@ function restoreBackup(data){const entries={recallflow_bank_v2:data.questions,re
 
 const EVENT$1 = 'recallflow-zoom';
 const MIN = 1, MAX = 5;
-const clamp$5 = (v, a, b) => Math.min(b, Math.max(a, v));
+const clamp$6 = (v, a, b) => Math.min(b, Math.max(a, v));
 function openZoom(src, alt = '') { if (src)
     window.dispatchEvent(new CustomEvent(EVENT$1, { detail: { src, alt } })); }
 function ImageViewer({ src, alt = '', onClose }) {
@@ -20867,10 +20889,10 @@ function ImageViewer({ src, alt = '', onClose }) {
         zoomBy(1 / 1.4);
     else if (e.key === '0')
         setView({ s: 1, x: 0, y: 0 }); }; window.addEventListener('keydown', key, true); const overflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; closeBtn.current?.focus(); return () => { window.removeEventListener('keydown', key, true); document.body.style.overflow = overflow; }; }, []);
-    function limit(v) { const r = stage.current?.getBoundingClientRect(), s = clamp$5(v.s, MIN, MAX); if (!r || s === 1)
-        return { s, x: 0, y: 0 }; const mx = r.width * (s - 1) / 2, my = r.height * (s - 1) / 2; return { s, x: clamp$5(v.x, -mx, mx), y: clamp$5(v.y, -my, my) }; }
+    function limit(v) { const r = stage.current?.getBoundingClientRect(), s = clamp$6(v.s, MIN, MAX); if (!r || s === 1)
+        return { s, x: 0, y: 0 }; const mx = r.width * (s - 1) / 2, my = r.height * (s - 1) / 2; return { s, x: clamp$6(v.x, -mx, mx), y: clamp$6(v.y, -my, my) }; }
     // Zoom keeping the point under (cx,cy) fixed; coordinates are relative to the stage centre.
-    function zoomAt(factor, cx = 0, cy = 0) { setView(v => { const s = clamp$5(v.s * factor, MIN, MAX), k = s / v.s; return limit({ s, x: cx - (cx - v.x) * k, y: cy - (cy - v.y) * k }); }); }
+    function zoomAt(factor, cx = 0, cy = 0) { setView(v => { const s = clamp$6(v.s * factor, MIN, MAX), k = s / v.s; return limit({ s, x: cx - (cx - v.x) * k, y: cy - (cy - v.y) * k }); }); }
     function zoomBy(factor) { zoomAt(factor); }
     function local(e) { const r = stage.current.getBoundingClientRect(); return { x: e.clientX - r.left - r.width / 2, y: e.clientY - r.top - r.height / 2 }; }
     function down(e) { try {
@@ -20885,7 +20907,7 @@ function ImageViewer({ src, alt = '', onClose }) {
     function move(e) { if (!pointers.current.has(e.pointerId))
         return; pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY }); const g = gesture.current; if (!g)
         return; const pts = [...pointers.current.values()]; if (g.type === 'pinch' && pts.length === 2) {
-        const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), mid = local({ clientX: (pts[0].x + pts[1].x) / 2, clientY: (pts[0].y + pts[1].y) / 2 }), s = clamp$5(g.view.s * d / g.d, MIN, MAX), k = s / g.view.s;
+        const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), mid = local({ clientX: (pts[0].x + pts[1].x) / 2, clientY: (pts[0].y + pts[1].y) / 2 }), s = clamp$6(g.view.s * d / g.d, MIN, MAX), k = s / g.view.s;
         setView(limit({ s, x: mid.x - (mid.x - g.view.x) * k, y: mid.y - (mid.y - g.view.y) * k }));
     }
     else if (g.type === 'pan') {
@@ -21178,9 +21200,10 @@ function videoSafe(x){return typeof x==='string'&&((/^data:video\/[a-z0-9.+-]+(?
 function mediaEditSafe(x){
  if(x===undefined||x===null)return true;
  if(typeof x!=='object')return false;
- const {trimStart,trimEnd,muted,volume,fadeIn,fadeOut,gain}=x;
+ const {trimStart,trimEnd,muted,volume,fadeIn,fadeOut,gain,frame}=x;
  const opt=(v,min,max)=>v===undefined||(typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max);
- return typeof trimStart==='number'&&typeof trimEnd==='number'&&typeof muted==='boolean'&&Number.isFinite(trimStart)&&Number.isFinite(trimEnd)&&trimStart>=0&&trimEnd>trimStart&&opt(volume,0,1)&&opt(fadeIn,0,600)&&opt(fadeOut,0,600)&&opt(gain,0.1,8);
+ const frameOk=frame===undefined||(frame&&typeof frame==='object'&&typeof frame.k==='number'&&Number.isFinite(frame.k)&&frame.k>0&&frame.k<100&&typeof frame.x==='number'&&Number.isFinite(frame.x)&&typeof frame.y==='number'&&Number.isFinite(frame.y)&&(frame.fx===undefined||typeof frame.fx==='boolean')&&(frame.fy===undefined||typeof frame.fy==='boolean'));
+ return typeof trimStart==='number'&&typeof trimEnd==='number'&&typeof muted==='boolean'&&Number.isFinite(trimStart)&&Number.isFinite(trimEnd)&&trimStart>=0&&trimEnd>trimStart&&opt(volume,0,1)&&opt(fadeIn,0,600)&&opt(fadeOut,0,600)&&opt(gain,0.1,8)&&frameOk;
 }
 
 const trimmed=x=>typeof x==='string'?x.trim():'';
@@ -27042,7 +27065,7 @@ configure({useWebWorkers:false});
 const PART=/^(.+)\.(\d{3})$/;
 const IMAGE=/(?:^|\/)images\/([a-f0-9]{32}\.(webp|jpg|png|gif))$/;
 const TYPES={webp:'image/webp',jpg:'image/jpeg',png:'image/png',gif:'image/gif'};
-const VOICES=['af_heart','af_bella','am_michael','am_fenrir','bf_emma'],SPEEDS$1=[.8,.9,1,1.1,1.2];
+const VOICES=['af_heart','af_bella','am_michael','am_fenrir','bf_emma'],SPEEDS=[.8,.9,1,1.1,1.2];
 
 function orderParts(files){
   if(files.length===1&&!PART.test(files[0].name))return {name:files[0].name,files,total:1};
@@ -27065,7 +27088,7 @@ function backupFromState(s){
     questions:Array.isArray(s.items)?s.items:[],reports:Array.isArray(s.reports)?s.reports:[],
     quizCount:Number.isInteger(s.quizCount)&&s.quizCount>=0?s.quizCount:0,streakDays:Array.isArray(s.streakDays)?s.streakDays:[],
     preferences:{theme:['light','dark','system'].includes(p.recallflow_theme)?p.recallflow_theme:'light',voice:VOICES.includes(p.recallflow_kokoro_voice)?p.recallflow_kokoro_voice:'af_heart',
-      speed:SPEEDS$1.includes(speed)?speed:1,speechEngine:p.recallflow_speech_engine||'system',
+      speed:SPEEDS.includes(speed)?speed:1,speechEngine:p.recallflow_speech_engine||'system',
       quiz:quiz&&Number.isInteger(quiz.count)&&typeof quiz.shuffle==='boolean'?quiz:{count:0,shuffle:true},
       quizSetups:json('recallflow_quiz_setups_v1',[]),app:json('recallflow_app_preferences_v1',undefined)},
     synced:Object.fromEntries(Object.entries(p).filter(([k,v])=>k.startsWith('recallflow_')&&typeof v==='string'))};
@@ -27750,17 +27773,17 @@ function photoLayout(w,h,edit){
   const turned=edit.rotate%180!==0,rw=turned?h:w,rh=turned?w:h,scale=edit.zoom/Math.min(rw,rh);
   return {scale,maxX:Math.max(0,(rw*scale-1)/2),maxY:Math.max(0,(rh*scale-1)/2)};
 }
-const clamp$4=(v,lo,hi)=>Math.min(hi,Math.max(lo,v))+0;
+const clamp$5=(v,lo,hi)=>Math.min(hi,Math.max(lo,v))+0;
 function clampEdit(w,h,edit){
-  const zoom=clamp$4(edit.zoom,MIN_ZOOM,MAX_ZOOM),{maxX,maxY}=photoLayout(w,h,{...edit,zoom});
-  return {...edit,zoom,x:clamp$4(edit.x,-maxX,maxX),y:clamp$4(edit.y,-maxY,maxY)};
+  const zoom=clamp$5(edit.zoom,MIN_ZOOM,MAX_ZOOM),{maxX,maxY}=photoLayout(w,h,{...edit,zoom});
+  return {...edit,zoom,x:clamp$5(edit.x,-maxX,maxX),y:clamp$5(edit.y,-maxY,maxY)};
 }
 
 // Same maths as CSS brightness() contrast() saturate(), applied in that order.
 function adjustPixels(data,{brightness:b=1,contrast:c=1,saturation:s=1}){
   if(b===1&&c===1&&s===1)return;
   const m=[.213+.787*s,.715-.715*s,.072-.072*s,.213-.213*s,.715+.285*s,.072-.072*s,.213-.213*s,.715-.715*s,.072+.928*s];
-  const step=v=>clamp$4((clamp$4(v*b,0,255)-127.5)*c+127.5,0,255);
+  const step=v=>clamp$5((clamp$5(v*b,0,255)-127.5)*c+127.5,0,255);
   for(let i=0;i<data.length;i+=4){
     const r=step(data[i]),g=step(data[i+1]),bl=step(data[i+2]);
     data[i]=m[0]*r+m[1]*g+m[2]*bl;data[i+1]=m[3]*r+m[4]*g+m[5]*bl;data[i+2]=m[6]*r+m[7]*g+m[8]*bl;
@@ -29045,7 +29068,7 @@ function TransferPage({ items, selectedIds, initial = 'import', onImport, onBack
 }
 
 // Answer areas for the newer question types. Each keeps its own answer and reports it through onGrade.
-const clamp$3 = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
+const clamp$4 = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
 function ListRecallAnswer({ item, disabled, onGrade }) {
     const total = item.listItems?.length || 0, need = Math.max(1, listNeed(item));
     const [values, setValues] = reactExports.useState(() => Array(need).fill('')), fields = reactExports.useRef([]);
@@ -29146,14 +29169,14 @@ function ImageTapAnswer({ item, disabled, onGrade }) {
     const [spot, setSpot] = reactExports.useState(null), board = reactExports.useRef(null);
     const hit = disabled && hotspotHit(item.hotspot, spot);
     function place(e) { if (disabled)
-        return; const r = board.current.getBoundingClientRect(); setSpot({ x: clamp$3((e.clientX - r.left) / r.width), y: clamp$3((e.clientY - r.top) / r.height) }); }
+        return; const r = board.current.getBoundingClientRect(); setSpot({ x: clamp$4((e.clientX - r.left) / r.width), y: clamp$4((e.clientY - r.top) / r.height) }); }
     function key(e) {
         if (disabled)
             return;
         const moves = { ArrowLeft: [-0.02, 0], ArrowRight: [.02, 0], ArrowUp: [0, -0.02], ArrowDown: [0, .02] };
         if (moves[e.key]) {
             e.preventDefault();
-            setSpot(s => ({ x: clamp$3((s?.x ?? .5) + moves[e.key][0]), y: clamp$3((s?.y ?? .5) + moves[e.key][1]) }));
+            setSpot(s => ({ x: clamp$4((s?.x ?? .5) + moves[e.key][0]), y: clamp$4((s?.y ?? .5) + moves[e.key][1]) }));
         }
         else if ((e.key === 'Enter' || e.key === ' ') && !spot) {
             e.preventDefault();
@@ -29175,10 +29198,10 @@ function ImageTapAnswer({ item, disabled, onGrade }) {
 }
 function SliderAnswer({ item, disabled, onGrade }) {
     const min = Number(item.sliderMin ?? 0), max = Number(item.sliderMax ?? 100), step = Number(item.sliderStep) || 1;
-    const decimals = Math.min(6, (String(step).split('.')[1] || '').length), snap = (v) => Number(clamp$3(min + Math.round((v - min) / step) * step, min, max).toFixed(decimals));
+    const decimals = Math.min(6, (String(step).split('.')[1] || '').length), snap = (v) => Number(clamp$4(min + Math.round((v - min) / step) * step, min, max).toFixed(decimals));
     const [value, setValue] = reactExports.useState(null), shown = value ?? snap((min + max) / 2);
     const answer = Number(item.answer), tolerance = Number(item.numericTolerance) || 0, span = max - min || 1;
-    const pct = (v) => clamp$3((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    const pct = (v) => clamp$4((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
     const right = disabled && value !== null && Math.abs(value - answer) <= tolerance + 1e-9;
     const unit = item.unit ? React.createElement("small", null, item.unit) : null;
     return React.createElement("div", { className: "extra-answer slider-answer" },
@@ -29321,8 +29344,8 @@ function MediaLinkForm({ id, label, placeholder = 'https://…', submitLabel = '
                     React.createElement("button", { type: "button", className: "media-link-add", disabled: !url.trim() || busy || !!hint, onClick: () => void submit() }, busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : submitLabel))))), document.body);
 }
 
-const MIN_LEN = 0.1, SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2];
-const clamp$2 = (v, a, b) => Math.min(b, Math.max(a, v));
+const MIN_LEN = 0.1;
+const clamp$3 = (v, a, b) => Math.min(Math.max(v, Math.min(a, b)), Math.max(a, b));
 const num = (v, fb) => typeof v === 'number' && Number.isFinite(v) ? v : fb;
 const fmtTime = (s) => { s = Math.max(0, num(s, 0)); return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`; };
 const fmtFine = (s) => `${fmtTime(s)}.${Math.floor((Math.max(0, num(s, 0)) % 1) * 10)}`;
@@ -29333,17 +29356,16 @@ function defaultEdit(duration) { const d = Math.max(0, num(duration, 0)); return
 function normalizeEdit(edit, duration) {
     const d = Math.max(0, num(duration, 0));
     if (!d || !edit)
-        return defaultEdit(d);
-    const trimStart = clamp$2(num(edit.trimStart, 0), 0, Math.max(0, d - MIN_LEN));
-    const trimEnd = clamp$2(num(edit.trimEnd, d), Math.min(d, trimStart + MIN_LEN), d);
+        return { ...defaultEdit(d), frame: edit?.frame };
+    const trimStart = clamp$3(num(edit.trimStart, 0), 0, Math.max(0, d - MIN_LEN));
+    const trimEnd = clamp$3(num(edit.trimEnd, d), Math.min(d, trimStart + MIN_LEN), d);
     const len = Math.max(MIN_LEN, trimEnd - trimStart);
-    return { trimStart, trimEnd, muted: !!edit.muted, volume: clamp$2(num(edit.volume, 1), 0, 1), fadeIn: clamp$2(num(edit.fadeIn, 0), 0, len / 2), fadeOut: clamp$2(num(edit.fadeOut, 0), 0, len / 2), gain: clamp$2(num(edit.gain, 1), 0.25, 4) };
+    return { trimStart, trimEnd, muted: !!edit.muted, volume: clamp$3(num(edit.volume, 1), 0, 1), fadeIn: clamp$3(num(edit.fadeIn, 0), 0, len / 2), fadeOut: clamp$3(num(edit.fadeOut, 0), 0, len / 2), gain: clamp$3(num(edit.gain, 1), 0.25, 4), frame: edit.frame };
 }
 function editIsDefault(edit, duration) {
     const n = normalizeEdit(edit, duration);
-    return !n.muted && n.volume === 1 && n.gain === 1 && n.fadeIn === 0 && n.fadeOut === 0 && n.trimStart <= 0.01 && Math.abs(n.trimEnd - duration) <= 0.05;
+    return !n.frame && !n.muted && n.volume === 1 && n.gain === 1 && n.fadeIn === 0 && n.fadeOut === 0 && n.trimStart <= 0.01 && Math.abs(n.trimEnd - duration) <= 0.05;
 }
-/** Linear gain the clip should play at time t (0 = silent). Includes mute, volume, boost and fades. */
 function levelAt(e, t) {
     if (e.muted)
         return 0;
@@ -29352,8 +29374,90 @@ function levelAt(e, t) {
         a = Math.min(a, (t - e.trimStart) / e.fadeIn);
     if (e.fadeOut && e.fadeOut > 0)
         a = Math.min(a, (e.trimEnd - t) / e.fadeOut);
-    return clamp$2(a, 0, 1) * num(e.volume, 1) * num(e.gain, 1);
+    return clamp$3(a, 0, 1) * num(e.volume, 1) * num(e.gain, 1);
 }
+/* ───────────────────────── 4:3 frame (same model as ImageEditor) ───────────────────────── */
+const FRAME_W = 1200, FRAME_H = 900;
+const fitK$1 = (w, h) => Math.min(FRAME_W / w, FRAME_H / h);
+const fillK$1 = (w, h) => Math.max(FRAME_W / w, FRAME_H / h);
+const maxK$1 = (w, h) => fillK$1(w, h) * 4;
+const centredFrame = (k, extra) => ({ k, x: FRAME_W / 2, y: FRAME_H / 2, ...extra });
+function limitFrame(f, w, h) {
+    const k = clamp$3(num(f.k, 1), fitK$1(w, h), maxK$1(w, h)), sw = w * k, sh = h * k;
+    return { k, x: clamp$3(num(f.x, FRAME_W / 2), sw / 2, FRAME_W - sw / 2), y: clamp$3(num(f.y, FRAME_H / 2), sh / 2, FRAME_H - sh / 2), fx: !!f.fx || undefined, fy: !!f.fy || undefined };
+}
+function frameFor(edit, w, h) {
+    if (!w || !h)
+        return centredFrame(1);
+    const f = edit?.frame;
+    return f && Number.isFinite(f.k) ? limitFrame(f, w, h) : centredFrame(fitK$1(w, h));
+}
+function frameIsDefault(f, w, h) { return !f.fx && !f.fy && Math.abs(f.k - fitK$1(w, h)) < 1e-6 && Math.abs(f.x - FRAME_W / 2) < 0.5 && Math.abs(f.y - FRAME_H / 2) < 0.5; }
+const zoomAround$1 = (f, k, ox, oy) => { const r = k / f.k; return { ...f, k, x: ox - (ox - f.x) * r, y: oy - (oy - f.y) * r }; };
+/** CSS placement of a <video> inside a 4:3 box, in percentages — no measuring needed. */
+function frameStyle(f, w, h) {
+    if (!w || !h)
+        return { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' };
+    const sw = w * f.k, sh = h * f.k;
+    return { position: 'absolute', left: `${(f.x - sw / 2) / FRAME_W * 100}%`, top: `${(f.y - sh / 2) / FRAME_H * 100}%`, width: `${sw / FRAME_W * 100}%`, height: `${sh / FRAME_H * 100}%`, maxWidth: 'none', maxHeight: 'none', transform: `scale(${f.fx ? -1 : 1},${f.fy ? -1 : 1})` };
+}
+function useVideoDims(ref, src) {
+    const [dims, setDims] = reactExports.useState({ w: 0, h: 0 });
+    reactExports.useEffect(() => {
+        const v = ref.current;
+        setDims({ w: 0, h: 0 });
+        if (!v)
+            return;
+        const read = () => { if (v.videoWidth && v.videoHeight)
+            setDims({ w: v.videoWidth, h: v.videoHeight }); };
+        v.addEventListener('loadedmetadata', read);
+        v.addEventListener('loadeddata', read);
+        read();
+        return () => { v.removeEventListener('loadedmetadata', read); v.removeEventListener('loadeddata', read); };
+    }, [src, ref]);
+    return dims;
+}
+function useBackdrop(video, canvas, src, playing) {
+    reactExports.useEffect(() => {
+        const v = video.current, c = canvas.current;
+        if (!v || !c)
+            return;
+        c.width = 32;
+        c.height = 24;
+        const g = c.getContext('2d');
+        if (!g)
+            return;
+        const draw = () => { if (v.readyState < 2 || !v.videoWidth)
+            return; const k = Math.max(32 / v.videoWidth, 24 / v.videoHeight), w = v.videoWidth * k, h = v.videoHeight * k; try {
+            g.drawImage(v, (32 - w) / 2, (24 - h) / 2, w, h);
+        }
+        catch { } };
+        let raf = 0, last = 0;
+        const loop = (t) => { if (t - last > 120) {
+            draw();
+            last = t;
+        } raf = requestAnimationFrame(loop); };
+        v.addEventListener('loadeddata', draw);
+        v.addEventListener('seeked', draw);
+        draw();
+        if (playing)
+            raf = requestAnimationFrame(loop);
+        return () => { cancelAnimationFrame(raf); v.removeEventListener('loadeddata', draw); v.removeEventListener('seeked', draw); };
+    }, [src, playing, video, canvas]);
+}
+/** A 4:3 box with a blurred backdrop and the video placed by `frame`. Used by the player and the editor. */
+const VideoFrame = React.forwardRef(function VideoFrame({ src, frame, dims, playing, className = '', preload = 'metadata', onClick, children }, ref) {
+    const inner = reactExports.useRef(null), canvas = reactExports.useRef(null);
+    const setRef = reactExports.useCallback((el) => { inner.current = el; if (typeof ref === 'function')
+        ref(el);
+    else if (ref)
+        ref.current = el; }, [ref]);
+    useBackdrop(inner, canvas, src, playing);
+    return React.createElement("div", { className: `vf ${className}`.trim(), onClick: onClick },
+        React.createElement("canvas", { ref: canvas, className: "vf-backdrop", "aria-hidden": "true" }),
+        React.createElement("video", { key: src, ref: setRef, src: playbackSrc(src), playsInline: true, preload: preload, style: frameStyle(frame, dims.w, dims.h) }),
+        children);
+});
 /* ───────────────────────── duration & probing ───────────────────────── */
 function readDuration(el) {
     const d = saneDuration(el.duration);
@@ -29367,7 +29471,6 @@ function readDuration(el) {
     catch { }
     return 0;
 }
-/** Real duration of a media element. Fixes MediaRecorder WebM (Infinity/NaN) by seeking to the end once. */
 function resolveMediaDuration(el, timeoutMs = 15000) {
     return new Promise(resolve => {
         let done = false, fixing = false;
@@ -29412,7 +29515,6 @@ function seekElement(el, t) {
         done();
     } });
 }
-/** Can this browser play the URL, and how long is it? Works for data:, blob: and https. */
 function probeMediaSrc(src, kind, timeoutMs = 15000) {
     return new Promise(resolve => {
         const el = document.createElement(kind);
@@ -29467,7 +29569,6 @@ function computePeaks(buf, bars) {
 }
 const peakCache = new Map();
 const cacheKey = (src, bars) => `${bars}:${src.length}:${src.slice(0, 96)}:${src.slice(-96)}`;
-/** Normalised peaks for a waveform. Cached. Resolves null when the file can't be decoded (e.g. CORS-blocked link). */
 function decodePeaks(src, bars = 240) {
     const key = cacheKey(src, bars);
     const hit = peakCache.get(key);
@@ -29479,16 +29580,14 @@ function decodePeaks(src, bars = 240) {
         peakCache.delete(peakCache.keys().next().value);
     return p;
 }
-/** Absolute peak (0–1) between two fractions of the file. */
 function peakWithin(p, from, to) {
-    const n = p.peaks.length, a = clamp$2(Math.floor(from * n), 0, n - 1), b = clamp$2(Math.ceil(to * n), a + 1, n);
+    const n = p.peaks.length, a = clamp$3(Math.floor(from * n), 0, n - 1), b = clamp$3(Math.ceil(to * n), a + 1, n);
     let m = 0;
     for (let i = a; i < b; i++)
         if (p.peaks[i] > m)
             m = p.peaks[i];
     return m * p.peak;
 }
-/** Offline render of the selection with volume, boost and fades applied. Instant (no realtime playback). */
 async function renderEditedAudio(src, edit, opts = {}) {
     const buf = await decodeAudioFromSrc(src);
     const e = normalizeEdit(edit, buf.duration), len = Math.max(MIN_LEN, e.trimEnd - e.trimStart);
@@ -29532,13 +29631,12 @@ function audioBufferToWav(buf) {
     let o = 44;
     for (let i = 0; i < n; i++)
         for (let c = 0; c < chs; c++) {
-            const v = clamp$2(data[c][i], -1, 1);
+            const v = clamp$3(data[c][i], -1, 1);
             dv.setInt16(o, v < 0 ? v * 0x8000 : v * 0x7fff, true);
             o += 2;
         }
     return new Blob([ab], { type: 'audio/wav' });
 }
-/** Compress an AudioBuffer with MediaRecorder. Runs in real time (browsers have no offline Opus encoder) — pass onProgress/signal. */
 async function encodeAudioBuffer(buf, { bitrate = 48000, onProgress, signal } = {}) {
     if (typeof MediaRecorder === 'undefined')
         throw new Error('This browser cannot compress audio.');
@@ -29561,7 +29659,7 @@ async function encodeAudioBuffer(buf, { bitrate = 48000, onProgress, signal } = 
         const done = new Promise(res => { rec.onstop = () => res(new Blob(chunks, { type: rec.mimeType || mime || 'audio/webm' })); });
         const t0 = ctx.currentTime;
         let aborted = false;
-        const tick = window.setInterval(() => onProgress?.(clamp$2((ctx.currentTime - t0) / buf.duration, 0, 0.99)), 200);
+        const tick = window.setInterval(() => onProgress?.(clamp$3((ctx.currentTime - t0) / buf.duration, 0, 0.99)), 200);
         const stop = () => { window.clearInterval(tick); if (rec.state !== 'inactive')
             rec.stop(); };
         s.onended = stop;
@@ -29581,12 +29679,28 @@ async function encodeAudioBuffer(buf, { bitrate = 48000, onProgress, signal } = 
         ctx.close().catch(() => { });
     }
 }
-/** Compressed (WebM/Opus) export of the edited selection. Kept for API compatibility. */
 async function exportTrimmedAudio(src, edit, opts = {}) {
     return encodeAudioBuffer(await renderEditedAudio(src, edit), { bitrate: 64000, ...opts });
 }
 async function exportTrimmedWav(src, edit) { return audioBufferToWav(await renderEditedAudio(src, edit)); }
-/** Real video export: plays the selection through a canvas + Web Audio graph into MediaRecorder. Real time; uploaded clips only. */
+function paintVideoFrame(g, v, f, W, H, tmp) {
+    const s = W / FRAME_W, vw = v.videoWidth, vh = v.videoHeight, w = vw * f.k * s, h = vh * f.k * s;
+    const k = Math.max(32 / vw, 24 / vh);
+    tmp.getContext('2d').drawImage(v, (32 - vw * k) / 2, (24 - vh * k) / 2, vw * k, vh * k);
+    g.save();
+    if ('filter' in g)
+        g.filter = 'blur(8px)';
+    g.drawImage(tmp, -W * 0.06, -H * 0.06, W * 1.12, H * 1.12);
+    g.restore();
+    g.fillStyle = 'rgba(0,0,0,.15)';
+    g.fillRect(0, 0, W, H);
+    g.save();
+    g.translate(f.x * s, f.y * s);
+    g.scale(f.fx ? -1 : 1, f.fy ? -1 : 1);
+    g.drawImage(v, -w / 2, -h / 2, w, h);
+    g.restore();
+}
+/** Real video export: selection + fades + volume + 4:3 crop frame → WebM via canvas.captureStream. Real time; uploaded clips only. */
 async function exportTrimmedVideo(src, edit, opts = {}) {
     if (typeof MediaRecorder === 'undefined')
         throw new Error('This browser cannot export video.');
@@ -29604,16 +29718,18 @@ async function exportTrimmedVideo(src, edit, opts = {}) {
         const d = await resolveMediaDuration(v);
         if (!d)
             throw new Error('Could not read this video.');
-        const e = normalizeEdit(edit, d), len = Math.max(MIN_LEN, e.trimEnd - e.trimStart);
         await new Promise((res, rej) => { if (v.readyState >= 2)
             return res(); v.addEventListener('loadeddata', () => res(), { once: true }); v.addEventListener('error', () => rej(new Error('Could not read this video.')), { once: true }); });
-        const w = v.videoWidth || 640, h = v.videoHeight || 360, scale = Math.min(1, 1280 / Math.max(w, h));
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.max(2, Math.round(w * scale) & ~1);
-        canvas.height = Math.max(2, Math.round(h * scale) & ~1);
+        const e = normalizeEdit(edit, d), len = Math.max(MIN_LEN, e.trimEnd - e.trimStart), f = frameFor(edit, v.videoWidth, v.videoHeight);
+        const W = 960, H = 720, canvas = document.createElement('canvas');
+        canvas.width = W;
+        canvas.height = H;
         const c2 = canvas.getContext('2d');
         if (!c2)
             throw new Error('Canvas is not available.');
+        const tmp = document.createElement('canvas');
+        tmp.width = 32;
+        tmp.height = 24;
         const stream = canvas.captureStream(30);
         let gain = null;
         const Ctx = AC();
@@ -29635,17 +29751,17 @@ async function exportTrimmedVideo(src, edit, opts = {}) {
             chunks.push(ev.data); };
         const stopped = new Promise(res => { rec.onstop = () => res(new Blob(chunks, { type: rec.mimeType || mime || 'video/webm' })); });
         await seekElement(v, e.trimStart);
-        c2.drawImage(v, 0, 0, canvas.width, canvas.height);
+        paintVideoFrame(c2, v, f, W, H, tmp);
         rec.start(500);
         let raf = 0, aborted = false;
         const finish = () => { cancelAnimationFrame(raf); v.pause(); if (rec.state !== 'inactive')
             rec.stop(); };
         const draw = () => {
             const t = v.currentTime;
-            c2.drawImage(v, 0, 0, canvas.width, canvas.height);
+            paintVideoFrame(c2, v, f, W, H, tmp);
             if (gain && ctx)
                 gain.gain.setTargetAtTime(levelAt(e, t), ctx.currentTime, 0.01);
-            opts.onProgress?.(clamp$2((t - e.trimStart) / len, 0, 1));
+            opts.onProgress?.(clamp$3((t - e.trimStart) / len, 0, 1));
             if (t >= e.trimEnd - 0.02 || v.ended) {
                 finish();
                 return;
@@ -29687,11 +29803,6 @@ async function downloadOriginal(src, name) {
     }
 }
 const extFor = (mime, kind) => /mp4/.test(mime) ? (kind === 'audio' ? 'm4a' : 'mp4') : /ogg/.test(mime) ? 'ogg' : /wav/.test(mime) ? 'wav' : 'webm';
-/**
- * Applies a MediaEdit to a media element: trim loop, mute, volume, boost and fades.
- * Uses a Web Audio graph for data:/blob: sources (allows gain > 1 and live levels); plain element volume for links.
- * Render the element with key={src} so a fresh element is created when the source changes.
- */
 function useClipPlayback(ref, src, edit, opts = {}) {
     const [duration, setDuration] = reactExports.useState(0), [at, setAt] = reactExports.useState(0), [playing, setPlaying] = reactExports.useState(false), [failed, setFailed] = reactExports.useState(false), [ready, setReady] = reactExports.useState(false);
     const graph = reactExports.useRef(null);
@@ -29785,7 +29896,7 @@ function useClipPlayback(ref, src, edit, opts = {}) {
         else {
             el.muted = c.muted;
             try {
-                el.volume = clamp$2(lvl, 0, 1);
+                el.volume = clamp$3(lvl, 0, 1);
             }
             catch { }
         }
@@ -29837,7 +29948,7 @@ function useClipPlayback(ref, src, edit, opts = {}) {
         if (!el)
             return;
         const c = clipRef.current, d = durRef.current;
-        const next = d ? (free ? clamp$2(t, 0, d) : clamp$2(t, c.trimStart, c.trimEnd)) : Math.max(0, t);
+        const next = d ? (free ? clamp$3(t, 0, d) : clamp$3(t, c.trimStart, c.trimEnd)) : Math.max(0, t);
         try {
             el.currentTime = next;
         }
@@ -29938,7 +30049,7 @@ function useStrip(canvas, src, kind, duration, peaks) {
         }
         if (peaks && peaks.length) {
             const n = peaks.length, bw = w / n, video = kind === 'video', mid = video ? h * 0.78 : h / 2, amp = video ? h * 0.2 : h * 0.46;
-            g.fillStyle = getComputedStyle(c).getPropertyValue('--mc-wave').trim() || '#a99cff';
+            g.fillStyle = '#a99cff';
             g.globalAlpha = video ? 0.85 : 1;
             for (let i = 0; i < n; i++) {
                 const bh = Math.max(1, peaks[i] * amp);
@@ -29966,55 +30077,79 @@ function useStrip(canvas, src, kind, duration, peaks) {
         return () => ro.disconnect();
     }, [peaks, kind, canvas]);
 }
-/* ───────────────────────── history ───────────────────────── */
-function useHistory(initial) {
-    const [h, setH] = reactExports.useState({ past: [], present: initial, future: [] });
-    const set = reactExports.useCallback((next) => setH(s => ({ past: [...s.past.slice(-60), s.present], present: next, future: [] })), []);
-    const undo = reactExports.useCallback(() => setH(s => s.past.length ? { past: s.past.slice(0, -1), present: s.past[s.past.length - 1], future: [s.present, ...s.future] } : s), []);
-    const redo = reactExports.useCallback(() => setH(s => s.future.length ? { past: [...s.past, s.present], present: s.future[0], future: s.future.slice(1) } : s), []);
-    return { state: h.present, set, undo, redo, canUndo: h.past.length > 0, canRedo: h.future.length > 0 };
+/** Big waveform for the audio stage: dim outside the selection, playhead on top. */
+function useWaveStage(canvas, peaks, duration, start, end, at) {
+    reactExports.useEffect(() => {
+        const c = canvas.current;
+        if (!c)
+            return;
+        const dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
+        if (!w || !h)
+            return;
+        const W = Math.round(w * dpr), H = Math.round(h * dpr);
+        if (c.width !== W || c.height !== H) {
+            c.width = W;
+            c.height = H;
+        }
+        const g = c.getContext('2d');
+        if (!g)
+            return;
+        g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        g.clearRect(0, 0, w, h);
+        const p = peaks && peaks.length ? peaks : Array.from({ length: 120 }, (_, i) => 0.2 + 0.1 * Math.abs(Math.sin(i * 0.7)));
+        const n = p.length, bw = w / n, mid = h / 2, amp = h * 0.42, a = duration ? start / duration : 0, b = duration ? end / duration : 1;
+        for (let i = 0; i < n; i++) {
+            const f = (i + 0.5) / n;
+            g.fillStyle = f >= a && f <= b ? '#b5aaff' : '#4c4870';
+            const bh = Math.max(1.5, p[i] * amp);
+            g.fillRect(i * bw + bw * 0.2, mid - bh, Math.max(1, bw * 0.6), bh * 2);
+        }
+        if (duration) {
+            const x = clamp$3(at / duration, 0, 1) * w;
+            g.fillStyle = '#fff';
+            g.fillRect(x - 1, 0, 2, h);
+        }
+    }, [canvas, peaks, duration, start, end, at]);
 }
+const bubbleStyle = (pct) => pct < 9 ? { left: 0, transform: 'none' } : pct > 91 ? { right: 0, left: 'auto', transform: 'none' } : { left: `${pct}%`, transform: 'translateX(-50%)' };
 function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplace, saveMode = 'edits', maxSeconds, fileName }) {
     const media = reactExports.useRef(null);
-    const scrub = reactExports.useRef(null), strip = reactExports.useRef(null), dialog = reactExports.useRef(null), menuRef = reactExports.useRef(null);
-    const hist = useHistory(initial ?? null);
-    const [draft, setDraft] = reactExports.useState(null);
-    const draftRef = reactExports.useRef(null);
-    draftRef.current = draft;
-    const [loop, setLoop] = reactExports.useState(false), [speed, setSpeed] = reactExports.useState(1), [dragging, setDragging] = reactExports.useState(null), [menu, setMenu] = reactExports.useState(false), [slow, setSlow] = reactExports.useState(false);
+    const stageEl = reactExports.useRef(null), frameEl = reactExports.useRef(null), strip = reactExports.useRef(null), waveStage = reactExports.useRef(null), root = reactExports.useRef(null);
+    const [edit, setEdit] = reactExports.useState(initial);
+    const [tab, setTab] = reactExports.useState(kind === 'video' ? 'crop' : 'trim');
+    const [loop, setLoop] = reactExports.useState(false), [dragging, setDragging] = reactExports.useState(null), [menu, setMenu] = reactExports.useState(false), [moving, setMoving] = reactExports.useState(false), [slow, setSlow] = reactExports.useState(false);
+    const [size, setSize] = reactExports.useState({ w: 0, h: 0 });
     const [job, setJob] = reactExports.useState(null);
     const jobAbort = reactExports.useRef(null);
     const [note, setNote] = reactExports.useState(null);
     const [peaksInfo, setPeaksInfo] = reactExports.useState(undefined);
-    const raw = draft ?? hist.state ?? undefined;
-    const pb = useClipPlayback(media, src, raw, { loop });
+    const pb = useClipPlayback(media, src, edit, { loop });
     const { duration, at, playing, failed } = pb;
-    const edit = normalizeEdit(raw, duration);
-    const embedded = isEmbeddedMedia(src), drive = !embedded && (!!driveFileId(src) || isDriveLink(src)), playback = playbackSrc(src);
-    const len = Math.max(0, edit.trimEnd - edit.trimStart);
-    const tooLong = !!maxSeconds && len > maxSeconds + 0.5;
+    const dims = useVideoDims(media, kind === 'video' ? src : '');
+    const e = normalizeEdit(edit, duration);
+    const frame = frameFor(edit, dims.w, dims.h);
+    const embedded = isEmbeddedMedia(src), drive = !embedded && (!!driveFileId(src) || isDriveLink(src));
+    const len = Math.max(0, e.trimEnd - e.trimStart), tooLong = !!maxSeconds && len > maxSeconds + 0.5;
     const canBake = kind === 'audio' && embedded && !!onReplace, bakeMode = saveMode === 'bake' && canBake;
     const canRender = !!peaksInfo, canExportVideo = embedded && typeof MediaRecorder !== 'undefined';
-    const stem = (fileName || (kind === 'audio' ? 'audio' : 'video')).replace(/\.[a-z0-9]+$/i, '') || 'clip';
+    const stem = (fileName || kind).replace(/\.[a-z0-9]+$/i, '') || 'clip';
+    const ratio = kind === 'video' ? FRAME_W / FRAME_H : 2;
     useStrip(strip, src, kind, duration, peaksInfo?.peaks ?? null);
+    useWaveStage(waveStage, kind === 'audio' ? (peaksInfo?.peaks ?? null) : null, duration, e.trimStart, e.trimEnd, at);
     reactExports.useEffect(() => { let c = false; setPeaksInfo(undefined); void decodePeaks(src).then(p => { if (!c)
         setPeaksInfo(p); }); return () => { c = true; }; }, [src]);
     reactExports.useEffect(() => { setSlow(false); if (duration || failed)
         return; const t = window.setTimeout(() => setSlow(true), 8000); return () => window.clearTimeout(t); }, [duration, failed, src]);
-    reactExports.useEffect(() => { const el = media.current; if (el)
-        el.playbackRate = speed; }, [speed, src]);
-    reactExports.useEffect(() => {
-        const prev = document.activeElement, ov = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
-        dialog.current?.focus({ preventScroll: true });
-        return () => { document.body.style.overflow = ov; prev?.focus?.(); };
-    }, []);
-    reactExports.useEffect(() => { if (!menu)
-        return; const on = (e) => { if (!menuRef.current?.contains(e.target))
-        setMenu(false); }; document.addEventListener('pointerdown', on); return () => document.removeEventListener('pointerdown', on); }, [menu]);
+    reactExports.useEffect(() => { const el = stageEl.current; if (!el)
+        return; const measure = () => { const b = el.getBoundingClientRect(), aw = Math.max(0, b.width - 24), ah = Math.max(0, b.height - 24), w = Math.min(aw, ah * ratio); setSize({ w: Math.floor(w), h: Math.floor(w / ratio) }); }; measure(); const o = new ResizeObserver(measure); o.observe(el); return () => o.disconnect(); }, [ratio]);
+    reactExports.useEffect(() => { if (!note)
+        return; const t = window.setTimeout(() => setNote(null), 5000); return () => window.clearTimeout(t); }, [note]);
     const cancelRef = reactExports.useRef(() => { });
     cancelRef.current = () => { jobAbort.current?.abort(); onCancel(); };
     reactExports.useEffect(() => {
+        const prev = document.activeElement, ov = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        root.current?.focus({ preventScroll: true });
         try {
             history.pushState({ rfClipEditor: true }, '');
         }
@@ -30026,64 +30161,67 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
                 history.back();
             }
             catch { }
-        } };
+        } document.body.style.overflow = ov; prev?.focus?.(); };
     }, []);
-    reactExports.useEffect(() => { if (!note)
-        return; const t = window.setTimeout(() => setNote(null), 5000); return () => window.clearTimeout(t); }, [note]);
     const flash = (text, k = 'info') => setNote({ text, kind: k });
     /* edits */
-    const commit = (next, sound = true) => { hist.set(normalizeEdit(next, duration)); if (sound)
+    const patch = (p, sound = false) => { setEdit(prev => ({ ...normalizeEdit(prev, duration), ...p })); if (sound)
         playPreset('tick'); };
-    const commitDraft = () => { const d = draftRef.current; if (d) {
-        commit(d, false);
-        setDraft(null);
-    } };
-    const setStart = (t) => commit({ ...edit, trimStart: clamp$2(t, 0, edit.trimEnd - MIN_LEN) });
-    const setEnd = (t) => commit({ ...edit, trimEnd: clamp$2(t, edit.trimStart + MIN_LEN, duration) });
-    const slider = (field) => ({
-        onChange: (e) => { const v = Number(e.target.value); setDraft({ ...edit, ...(field === 'volume' ? { volume: v / 100, muted: false } : { [field]: v }) }); },
-        onPointerUp: commitDraft, onKeyUp: commitDraft, onBlur: commitDraft,
-    });
+    const setStart = (t) => patch({ trimStart: clamp$3(t, 0, e.trimEnd - MIN_LEN) }, true);
+    const setEnd = (t) => patch({ trimEnd: clamp$3(t, e.trimStart + MIN_LEN, duration) }, true);
+    const setFrame = (f) => { if (!dims.w)
+        return; patch({ frame: limitFrame(f, dims.w, dims.h) }); };
     function normalize() {
         if (!peaksInfo || !duration)
             return;
-        const pk = peakWithin(peaksInfo, edit.trimStart / duration, edit.trimEnd / duration);
+        const pk = peakWithin(peaksInfo, e.trimStart / duration, e.trimEnd / duration);
         if (!pk) {
             flash('This selection is silent.');
             return;
         }
-        const g = Math.round(clamp$2(0.9 / pk, 0.25, 4) * 100) / 100;
-        commit({ ...edit, gain: g, volume: 1, muted: false }, false);
-        flash(g > 1.02 ? `Boosted ${g.toFixed(1)}× — applies to uploaded clips in the quiz, and to exports.` : g < 0.98 ? `Lowered to ${g.toFixed(1)}×.` : 'Already at a good level.');
+        const g = Math.round(clamp$3(0.9 / pk, 0.25, 4) * 100) / 100;
+        patch({ gain: g, volume: 1, muted: false });
+        flash(g > 1.02 ? `Boosted ${g.toFixed(1)}×` : g < 0.98 ? `Lowered to ${g.toFixed(1)}×` : 'Already at a good level.');
     }
+    const resetTab = () => {
+        if (tab === 'crop')
+            patch({ frame: undefined });
+        else if (tab === 'trim')
+            patch({ trimStart: 0, trimEnd: duration });
+        else if (tab === 'sound')
+            patch({ muted: false, volume: 1, gain: 1 });
+        else
+            patch({ fadeIn: 0, fadeOut: 0 });
+    };
+    const tabIsDefault = tab === 'crop' ? (!dims.w || frameIsDefault(frame, dims.w, dims.h)) : tab === 'trim' ? (e.trimStart <= 0.01 && Math.abs(e.trimEnd - duration) <= 0.05) : tab === 'sound' ? (!e.muted && e.volume === 1 && e.gain === 1) : (e.fadeIn === 0 && e.fadeOut === 0);
     /* timeline interaction */
-    const drag = reactExports.useRef(null);
-    const tAt = (x) => { const r = scrub.current?.getBoundingClientRect(); if (!r || !duration)
-        return 0; return clamp$2((x - r.left) / r.width, 0, 1) * duration; };
-    function onPointerDown(kind, e) {
-        if (!duration || (e.button && e.button !== 0))
+    const stripBox = reactExports.useRef(null), drag = reactExports.useRef(null);
+    const tAt = (x) => { const r = stripBox.current?.getBoundingClientRect(); if (!r || !duration)
+        return 0; return clamp$3((x - r.left) / r.width, 0, 1) * duration; };
+    function tlDown(k, ev) {
+        if (!duration || (ev.button && ev.button !== 0))
             return;
-        e.preventDefault();
-        e.stopPropagation();
+        ev.preventDefault();
+        ev.stopPropagation();
         try {
-            e.currentTarget.setPointerCapture(e.pointerId);
+            ev.currentTarget.setPointerCapture(ev.pointerId);
         }
         catch { }
-        drag.current = { kind, x0: e.clientX, base: edit };
-        setDragging(kind);
-        if (kind === 'seek')
-            pb.seek(tAt(e.clientX), true);
+        drag.current = { kind: k, x0: ev.clientX, base: e };
+        setDragging(k);
+        if (k === 'seek')
+            pb.seek(tAt(ev.clientX), true);
         else {
             pb.pause();
-            if (kind !== 'move')
-                pb.seek(kind === 'start' ? edit.trimStart : edit.trimEnd, true);
+            if (k !== 'move')
+                pb.seek(k === 'start' ? e.trimStart : e.trimEnd, true);
         }
     }
-    function onPointerMove(e) {
+    function tlMove(ev) {
         const d = drag.current;
         if (!d)
             return;
-        const t = tAt(e.clientX);
+        const t = tAt(ev.clientX);
         if (d.kind === 'seek') {
             pb.seek(t, true);
             return;
@@ -30094,76 +30232,98 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
         else if (d.kind === 'end')
             next = { ...d.base, trimEnd: Math.max(t, d.base.trimStart + MIN_LEN) };
         else {
-            const w = scrub.current?.getBoundingClientRect().width || 1, dt = (e.clientX - d.x0) / w * duration, l = d.base.trimEnd - d.base.trimStart, s = clamp$2(d.base.trimStart + dt, 0, duration - l);
+            const w = stripBox.current?.getBoundingClientRect().width || 1, dt = (ev.clientX - d.x0) / w * duration, l = d.base.trimEnd - d.base.trimStart, s = clamp$3(d.base.trimStart + dt, 0, duration - l);
             next = { ...d.base, trimStart: s, trimEnd: s + l };
         }
         const n = normalizeEdit(next, duration);
-        setDraft(n);
+        setEdit(n);
         pb.seek(d.kind === 'end' ? n.trimEnd : n.trimStart, true);
     }
-    function onPointerUp(e) {
-        const d = drag.current;
-        if (!d)
-            return;
-        drag.current = null;
-        setDragging(null);
-        try {
-            e.target.releasePointerCapture(e.pointerId);
-        }
-        catch { }
-        const cur = draftRef.current;
-        if (d.kind !== 'seek' && cur)
-            commit(cur);
-        setDraft(null);
+    function tlUp(ev) { const d = drag.current; if (!d)
+        return; drag.current = null; setDragging(null); try {
+        ev.target.releasePointerCapture(ev.pointerId);
     }
-    function handleKey(which, e) {
-        const step = e.shiftKey ? 1 : 0.1, dir = e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -1 : e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 1 : 0;
+    catch { } if (d.kind !== 'seek')
+        playPreset('tick'); }
+    function handleKey(which, ev) {
+        const step = ev.shiftKey ? 1 : 0.1, dir = ev.key === 'ArrowLeft' || ev.key === 'ArrowDown' ? -1 : ev.key === 'ArrowRight' || ev.key === 'ArrowUp' ? 1 : 0;
         if (!dir)
             return;
-        e.preventDefault();
-        e.stopPropagation();
+        ev.preventDefault();
+        ev.stopPropagation();
         if (which === 'start')
-            setStart(edit.trimStart + dir * step);
+            setStart(e.trimStart + dir * step);
         else
-            setEnd(edit.trimEnd + dir * step);
+            setEnd(e.trimEnd + dir * step);
     }
-    function onKey(e) {
-        const tag = e.target.tagName;
-        if (e.key === 'Escape') {
-            e.preventDefault();
+    /* crop gesture (same maths as ImageEditor) */
+    const pointers = reactExports.useRef(new Map()), gesture = reactExports.useRef(null), movedRef = reactExports.useRef(false);
+    const toOutput = (cx, cy) => { const b = frameEl.current.getBoundingClientRect(); return { x: (cx - b.left) * FRAME_W / b.width, y: (cy - b.top) * FRAME_H / b.height }; };
+    function startGesture() { const pts = [...pointers.current.values()]; if (!pts.length) {
+        gesture.current = null;
+        return;
+    } const x = pts.reduce((s, p) => s + p.x, 0) / pts.length, y = pts.reduce((s, p) => s + p.y, 0) / pts.length; gesture.current = { f: frame, x, y, dist: pts.length > 1 ? Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) : 0 }; }
+    function cropDown(ev) { if (tab !== 'crop' || !dims.w)
+        return; ev.preventDefault(); try {
+        ev.currentTarget.setPointerCapture(ev.pointerId);
+    }
+    catch { } pointers.current.set(ev.pointerId, { x: ev.clientX, y: ev.clientY }); movedRef.current = false; startGesture(); setMoving(true); }
+    function cropMove(ev) {
+        const g = gesture.current;
+        if (!g || !dims.w || !pointers.current.has(ev.pointerId))
+            return;
+        pointers.current.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+        const pts = [...pointers.current.values()], b = frameEl.current.getBoundingClientRect(), scale = FRAME_W / b.width;
+        const mx = pts.reduce((s, p) => s + p.x, 0) / pts.length, my = pts.reduce((s, p) => s + p.y, 0) / pts.length;
+        if (Math.abs(mx - g.x) + Math.abs(my - g.y) > 3)
+            movedRef.current = true;
+        let next = { ...g.f, x: g.f.x + (mx - g.x) * scale, y: g.f.y + (my - g.y) * scale };
+        if (pts.length > 1 && g.dist) {
+            const k = clamp$3(g.f.k * Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) / g.dist, fitK$1(dims.w, dims.h), maxK$1(dims.w, dims.h)), o = toOutput(mx, my);
+            next = zoomAround$1(next, k, o.x, o.y);
+        }
+        setFrame(next);
+    }
+    function cropUp(ev) { pointers.current.delete(ev.pointerId); startGesture(); if (!pointers.current.size) {
+        setMoving(false);
+        if (!movedRef.current)
+            pb.toggle();
+    } }
+    function wheel(ev) { if (tab !== 'crop' || !dims.w)
+        return; const o = toOutput(ev.clientX, ev.clientY); setFrame(zoomAround$1(frame, clamp$3(frame.k * Math.exp(-ev.deltaY * .0015), fitK$1(dims.w, dims.h), maxK$1(dims.w, dims.h)), o.x, o.y)); }
+    const zoomTo = (k) => { if (!dims.w)
+        return; setFrame(zoomAround$1(frame, clamp$3(k, fitK$1(dims.w, dims.h), maxK$1(dims.w, dims.h)), FRAME_W / 2, FRAME_H / 2)); };
+    const lo = dims.w ? fitK$1(dims.w, dims.h) : 1, hi = dims.w ? maxK$1(dims.w, dims.h) : 1, level = dims.w && hi > lo ? Math.log(frame.k / lo) / Math.log(hi / lo) : 0;
+    const mode = dims.w ? (Math.abs(frame.k - lo) < 1e-6 ? 'fit' : Math.abs(frame.k - fillK$1(dims.w, dims.h)) < 1e-6 ? 'fill' : '') : '';
+    function onKey(ev) {
+        const tag = ev.target.tagName;
+        if (ev.key === 'Escape') {
+            ev.preventDefault();
             cancel();
             return;
         }
         if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA')
             return;
-        if (e.key === ' ' && tag !== 'BUTTON') {
-            e.preventDefault();
+        if (ev.key === ' ' && tag !== 'BUTTON') {
+            ev.preventDefault();
             pb.toggle();
         }
-        else if (e.key === 'ArrowLeft') {
-            e.preventDefault();
-            pb.seek(at - (e.shiftKey ? 5 : 1), true);
+        else if (ev.key === 'ArrowLeft' && tab !== 'crop') {
+            ev.preventDefault();
+            pb.seek(at - (ev.shiftKey ? 5 : 1), true);
         }
-        else if (e.key === 'ArrowRight') {
-            e.preventDefault();
-            pb.seek(at + (e.shiftKey ? 5 : 1), true);
+        else if (ev.key === 'ArrowRight' && tab !== 'crop') {
+            ev.preventDefault();
+            pb.seek(at + (ev.shiftKey ? 5 : 1), true);
         }
-        else if (e.key === 'Home') {
-            e.preventDefault();
-            pb.seek(edit.trimStart);
-        }
-        else if (e.key === 'End') {
-            e.preventDefault();
-            pb.seek(edit.trimEnd - 0.1);
-        }
-        else if (e.key.toLowerCase() === 'i' && duration)
+        else if (ev.key.toLowerCase() === 'i' && duration)
             setStart(at);
-        else if (e.key.toLowerCase() === 'o' && duration)
+        else if (ev.key.toLowerCase() === 'o' && duration)
             setEnd(at);
-        else if (e.key.toLowerCase() === 'l')
+        else if (ev.key.toLowerCase() === 'l')
             setLoop(v => !v);
     }
-    /* jobs: export / bake */
+    /* jobs */
     async function run(label, fn) {
         if (job)
             return;
@@ -30171,20 +30331,21 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
         jobAbort.current = ac;
         setJob({ label, progress: 0 });
         pb.pause();
+        setMenu(false);
         try {
             await fn(ac.signal, p => setJob(j => j && { ...j, progress: p }));
         }
-        catch (e) {
+        catch (err) {
             if (!ac.signal.aborted)
-                flash(e?.message || 'That did not work.', 'error');
+                flash(err?.message || 'That did not work.', 'error');
         }
         finally {
             setJob(null);
             jobAbort.current = null;
         }
     }
-    const exportWav = () => run('Rendering…', async () => { saveBlob(await exportTrimmedWav(src, edit), `${stem}-edited.wav`); flash('WAV saved.'); });
-    const exportWebm = () => run('Compressing…', async (signal, progress) => { const blob = await exportTrimmedAudio(src, edit, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'audio')}`); flash('Edited clip saved.'); });
+    const exportWav = () => run('Rendering…', async () => { saveBlob(await exportTrimmedWav(src, e), `${stem}-edited.wav`); flash('WAV saved.'); });
+    const exportWebm = () => run('Compressing…', async (signal, progress) => { const blob = await exportTrimmedAudio(src, e, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'audio')}`); flash('Edited clip saved.'); });
     const exportVideo = () => run('Exporting video… keep this tab visible', async (signal, progress) => { const blob = await exportTrimmedVideo(src, edit, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'video')}`); flash('Edited video saved.'); });
     const bake = () => {
         if (!onReplace)
@@ -30194,161 +30355,173 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
             return;
         }
         void run('Compressing…', async (signal, progress) => {
-            const buf = await renderEditedAudio(src, edit, { mono: true, sampleRate: 24000 });
+            const buf = await renderEditedAudio(src, e, { mono: true, sampleRate: 24000 });
             const blob = await encodeAudioBuffer(buf, { bitrate: 40000, onProgress: progress, signal });
             await onReplace(await blobToDataUrl(blob), buf.duration);
             playPreset('go');
         });
     };
-    function done() { if (job)
-        return; if (bakeMode) {
-        bake();
-        return;
-    } playPreset('go'); onSave(editIsDefault(edit, duration) ? undefined : edit); }
+    function done() {
+        if (job)
+            return;
+        if (bakeMode) {
+            bake();
+            return;
+        }
+        playPreset('go');
+        const out = { ...e };
+        if (!out.frame || !dims.w || frameIsDefault(frameFor(out, dims.w, dims.h), dims.w, dims.h))
+            delete out.frame;
+        else
+            out.frame = frameFor(out, dims.w, dims.h);
+        onSave(editIsDefault(out, duration) ? undefined : out);
+    }
     function cancel() { jobAbort.current?.abort(); onCancel(); }
     /* render */
-    const left = duration ? edit.trimStart / duration * 100 : 0, right = duration ? edit.trimEnd / duration * 100 : 100;
-    const vol = Math.round((edit.muted ? 0 : edit.volume) * 100), maxFade = Math.max(0.1, Math.min(10, len / 2));
-    const rf = duration < 10 ? fmtFine : fmtTime;
-    const ruler = duration ? [0, .25, .5, .75, 1].map(fr => rf(fr * duration)) : [];
-    const chip = (label, value, set) => React.createElement("span", { className: "mc-chip" },
-        React.createElement("i", null, label),
-        React.createElement("span", { className: "mc-nudge" },
-            React.createElement("button", { type: "button", "aria-label": `${label} 0.1 s earlier`, disabled: !duration, onClick: () => set(value - 0.1) },
-                React.createElement(Minus, { size: 13 })),
-            React.createElement("b", null, fmtFine(value)),
-            React.createElement("button", { type: "button", "aria-label": `${label} 0.1 s later`, disabled: !duration, onClick: () => set(value + 0.1) },
-                React.createElement(Plus, { size: 13 }))));
-    return reactDomExports.createPortal(React.createElement("div", { className: "mc-page", role: "dialog", "aria-modal": "true", "aria-labelledby": "mc-title", "data-kind": kind, onKeyDown: onKey },
-        React.createElement("header", { className: "mc-head" },
-            React.createElement("button", { type: "button", className: "mc-iconbtn", "aria-label": "Back", onClick: cancel },
-                React.createElement(ArrowLeft, { size: 18 })),
-            React.createElement("div", { className: "mc-headtext" },
-                React.createElement("h2", { id: "mc-title" }, title),
-                fileName && React.createElement("small", null, fileName)),
-            React.createElement(Button, { size: "sm", onClick: done, disabled: !!job || (bakeMode && (!duration || tooLong)) }, bakeMode ? React.createElement(React.Fragment, null,
-                React.createElement(Save, { size: 15 }),
-                "Use clip") : React.createElement(React.Fragment, null,
-                React.createElement(Check, { size: 15 }),
-                "Done"))),
-        React.createElement("section", { ref: dialog, className: "mc", tabIndex: -1 },
-            React.createElement("div", { className: "mc-stage", "data-kind": kind },
-                kind === 'video'
-                    ? React.createElement("video", { key: playback, ref: media, src: playback, playsInline: true, preload: embedded ? 'auto' : 'metadata', onClick: pb.toggle })
-                    : React.createElement("audio", { key: playback, ref: media, src: playback, preload: embedded ? 'auto' : 'metadata', hidden: true }),
-                kind === 'audio' && !failed && React.createElement("div", { className: "mc-face", "aria-hidden": "true", "data-playing": playing || undefined },
-                    React.createElement(AudioLines, { size: 28 }),
-                    React.createElement("strong", null, fmtFine(clamp$2(at - edit.trimStart, 0, len))),
-                    React.createElement("span", null, duration ? `of ${fmtFine(len)} selected` : slow ? 'Still loading — large file or slow link…' : 'Loading clip…')),
-                kind === 'video' && !duration && !failed && React.createElement("div", { className: "mc-state" },
-                    React.createElement(LoaderCircle, { size: 20, className: "mc-spin" }),
-                    React.createElement("span", null, slow ? 'Still loading — large file or slow link…' : 'Loading clip…')),
-                failed && React.createElement("div", { className: "mc-state is-error" },
-                    React.createElement(CircleAlert, { size: 20 }),
-                    React.createElement("span", null,
-                        "This clip could not be loaded.",
-                        drive ? ' Google Drive links need "Anyone with the link" sharing — or upload the file instead.' : ''),
-                    !embedded && React.createElement("a", { href: src, target: "_blank", rel: "noreferrer" },
-                        React.createElement(ExternalLink, { size: 14 }),
-                        "Open link"))),
-            React.createElement("div", { className: "mc-timeline" },
-                React.createElement("div", { className: "mc-chips" },
-                    chip('Start', edit.trimStart, setStart),
-                    React.createElement("span", { className: `mc-chip is-len${tooLong ? ' is-bad' : ''}` },
-                        React.createElement("i", null, "Length"),
-                        React.createElement("b", null, fmtFine(len)),
-                        tooLong && React.createElement("small", null,
-                            "max ",
-                            fmtTime(maxSeconds))),
-                    chip('End', edit.trimEnd, setEnd)),
-                React.createElement("div", { ref: scrub, className: `mc-scrub${dragging ? ' is-dragging' : ''}${!duration && !failed ? ' is-loading' : ''}`, onPointerMove: onPointerMove, onPointerUp: onPointerUp, onPointerCancel: onPointerUp },
-                    React.createElement("canvas", { ref: strip, className: "mc-strip", "aria-hidden": "true" }),
+    const left = duration ? e.trimStart / duration * 100 : 0, right = duration ? e.trimEnd / duration * 100 : 100;
+    const showStartBubble = dragging === 'start' || dragging === 'move' || e.trimStart > 0.05, showEndBubble = dragging === 'end' || dragging === 'move' || (duration > 0 && e.trimEnd < duration - 0.05);
+    const vol = Math.round((e.muted ? 0 : e.volume) * 100), maxFade = Math.max(0.1, Math.min(10, len / 2));
+    const selFmt = len < 10 ? fmtFine : fmtTime;
+    const tabs = [...(kind === 'video' ? [{ id: 'crop', label: 'Crop', icon: React.createElement(Crop, { size: 14 }) }] : []), { id: 'trim', label: 'Trim', icon: React.createElement(Scissors, { size: 14 }) }, { id: 'sound', label: 'Sound', icon: React.createElement(Volume2, { size: 14 }) }, { id: 'fades', label: 'Fades', icon: React.createElement(AudioLines, { size: 14 }) }];
+    const hint = job ? '' : bakeMode ? `Pick up to ${fmtTime(maxSeconds || 60)} — only the selection is kept` : tab === 'crop' ? 'Drag to move · pinch or slide to zoom · tap to play' : tab === 'trim' ? (dragging ? `Release to set ${dragging === 'start' ? 'the start' : dragging === 'end' ? 'the end' : 'the selection'}` : 'Drag the handles to trim · tap to play') : tab === 'sound' ? (e.gain !== 1 ? `${e.gain > 1 ? 'Boosted' : 'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports` : 'Volume applies when the question plays') : 'Fades are shown on the timeline';
+    const sq = (icon, label, onClick, o = {}) => React.createElement("button", { type: "button", disabled: o.disabled, "aria-pressed": o.on, "aria-label": o.aria, onClick: onClick },
+        icon,
+        React.createElement("span", null, label));
+    return reactDomExports.createPortal(React.createElement("div", { ref: root, className: "me", role: "dialog", "aria-modal": "true", "aria-labelledby": "me-title", "data-kind": kind, tabIndex: -1, onKeyDown: onKey },
+        React.createElement("header", { className: "me-head" },
+            React.createElement("button", { type: "button", "aria-label": "Cancel", onClick: cancel },
+                React.createElement(X, { size: 20 })),
+            React.createElement("h2", { id: "me-title" },
+                kind === 'video' ? React.createElement(Crop, { size: 17 }) : React.createElement(AudioLines, { size: 17 }),
+                title),
+            React.createElement("button", { type: "button", className: "me-done", disabled: !!job || (bakeMode && (!duration || tooLong)), onClick: done },
+                job ? React.createElement(LoaderCircle, { size: 16, className: "speech-spinner" }) : bakeMode ? React.createElement(Save, { size: 16 }) : React.createElement(Check, { size: 16 }),
+                bakeMode ? 'Use clip' : 'Done')),
+        React.createElement("div", { className: "me-stage", ref: stageEl }, size.w > 0 && React.createElement("div", { ref: frameEl, className: `me-frame${moving ? ' is-moving' : ''}${tab === 'crop' ? ' is-crop' : ''}`, style: { width: size.w, height: size.h }, role: "application", "aria-label": kind === 'video' ? 'Video frame. Drag to move, pinch or use the slider to zoom' : 'Waveform', onPointerDown: kind === 'video' ? cropDown : undefined, onPointerMove: kind === 'video' ? cropMove : undefined, onPointerUp: kind === 'video' ? cropUp : undefined, onPointerCancel: kind === 'video' ? cropUp : undefined, onWheel: kind === 'video' ? wheel : undefined, onDoubleClick: () => { if (tab === 'crop' && dims.w)
+                setFrame(centredFrame(mode === 'fill' ? lo : fillK$1(dims.w, dims.h))); } },
+            kind === 'video'
+                ? React.createElement(VideoFrame, { ref: media, src: src, frame: frame, dims: dims, playing: playing, preload: embedded ? 'auto' : 'metadata' }, tab === 'crop' && React.createElement("span", { className: "me-grid", "aria-hidden": "true" }))
+                : React.createElement(React.Fragment, null,
+                    React.createElement("audio", { key: src, ref: media, src: playbackSrc(src), preload: embedded ? 'auto' : 'metadata', hidden: true }),
+                    React.createElement("canvas", { ref: waveStage, className: "me-wave", onClick: pb.toggle, "aria-hidden": "true" })),
+            !playing && duration > 0 && !failed && React.createElement("button", { type: "button", className: "me-playbig", "aria-label": "Play selection", onClick: ev => { ev.stopPropagation(); pb.play(); }, onPointerDown: ev => ev.stopPropagation() },
+                React.createElement(Play, { size: 22, fill: "currentColor" })),
+            playing && React.createElement("button", { type: "button", className: "me-playbig is-pause", "aria-label": "Pause", onClick: ev => { ev.stopPropagation(); pb.pause(); }, onPointerDown: ev => ev.stopPropagation() },
+                React.createElement(Pause, { size: 20, fill: "currentColor" })),
+            duration > 0 && React.createElement("span", { className: "me-badge" },
+                selFmt(clamp$3(at - e.trimStart, 0, len)),
+                " / ",
+                selFmt(len)),
+            !duration && !failed && React.createElement("div", { className: "me-state" },
+                React.createElement(LoaderCircle, { size: 22, className: "speech-spinner" }),
+                React.createElement("span", null, slow ? 'Still loading — large file or slow link…' : 'Loading clip…')),
+            failed && React.createElement("div", { className: "me-state is-error" },
+                React.createElement(CircleAlert, { size: 20 }),
+                React.createElement("span", null,
+                    "This clip could not be loaded.",
+                    drive ? ' Google Drive links need "Anyone with the link" sharing — or upload the file instead.' : ''),
+                !embedded && React.createElement("a", { href: src, target: "_blank", rel: "noreferrer" },
+                    React.createElement(ExternalLink, { size: 14 }),
+                    "Open link")))),
+        React.createElement("div", { className: "me-tools" },
+            tab === 'crop' && React.createElement(React.Fragment, null,
+                React.createElement("div", { className: "me-zoom" },
+                    React.createElement("button", { type: "button", "aria-label": "Zoom out", disabled: !dims.w || frame.k <= lo + 1e-6, onClick: () => zoomTo(frame.k / 1.25) },
+                        React.createElement(ZoomOut, { size: 18 })),
+                    React.createElement("input", { type: "range", min: 0, max: 1000, step: 1, "aria-label": "Zoom", disabled: !dims.w || hi <= lo, value: Math.round(level * 1000), onChange: ev => zoomTo(lo * Math.exp(Number(ev.target.value) / 1000 * Math.log(hi / lo))) }),
+                    React.createElement("button", { type: "button", "aria-label": "Zoom in", disabled: !dims.w || frame.k >= hi - 1e-6, onClick: () => zoomTo(frame.k * 1.25) },
+                        React.createElement(ZoomIn, { size: 18 }))),
+                React.createElement("div", { className: "me-pills", role: "radiogroup", "aria-label": "Video size" },
+                    React.createElement("button", { type: "button", role: "radio", "aria-checked": mode === 'fit', disabled: !dims.w, onClick: () => setFrame(centredFrame(lo, { fx: frame.fx, fy: frame.fy })) },
+                        React.createElement(Shrink, { size: 15 }),
+                        "Whole video"),
+                    React.createElement("button", { type: "button", role: "radio", "aria-checked": mode === 'fill', disabled: !dims.w, onClick: () => dims.w && setFrame(centredFrame(fillK$1(dims.w, dims.h), { fx: frame.fx, fy: frame.fy })) },
+                        React.createElement(Expand, { size: 15 }),
+                        "Fill frame"))),
+            tab === 'trim' && React.createElement("div", { className: "me-timeline" },
+                React.createElement("div", { ref: stripBox, className: `me-strip${dragging ? ' is-dragging' : ''}${!duration && !failed ? ' is-loading' : ''}`, onPointerMove: tlMove, onPointerUp: tlUp, onPointerCancel: tlUp },
+                    React.createElement("canvas", { ref: strip, className: "me-strip-canvas", "aria-hidden": "true" }),
                     duration > 0 && React.createElement(React.Fragment, null,
-                        React.createElement("div", { className: "mc-track", onPointerDown: e => onPointerDown('seek', e) }),
-                        React.createElement("span", { className: "mc-cut", style: { left: 0, width: `${left}%` } }),
-                        React.createElement("span", { className: "mc-cut", style: { left: `${right}%`, right: 0 } }),
-                        React.createElement("div", { className: "mc-range", style: { left: `${left}%`, width: `${right - left}%` }, onPointerDown: e => onPointerDown('move', e), title: "Drag to move the selection" },
-                            edit.fadeIn > 0 && React.createElement("span", { className: "mc-fade is-in", style: { width: `${edit.fadeIn / len * 100}%` } }),
-                            edit.fadeOut > 0 && React.createElement("span", { className: "mc-fade is-out", style: { width: `${edit.fadeOut / len * 100}%` } })),
-                        React.createElement("span", { className: "mc-playhead", style: { left: `${clamp$2(at / duration * 100, 0, 100)}%` } }),
-                        React.createElement("button", { type: "button", className: "mc-handle is-start", style: { left: `${left}%` }, "aria-label": `Trim start ${fmtFine(edit.trimStart)}. Arrow keys adjust, Shift for 1 s`, onKeyDown: e => handleKey('start', e), onPointerDown: e => onPointerDown('start', e) },
-                            React.createElement("b", null, fmtFine(edit.trimStart))),
-                        React.createElement("button", { type: "button", className: "mc-handle is-end", style: { left: `${right}%` }, "aria-label": `Trim end ${fmtFine(edit.trimEnd)}. Arrow keys adjust, Shift for 1 s`, onKeyDown: e => handleKey('end', e), onPointerDown: e => onPointerDown('end', e) },
-                            React.createElement("b", null, fmtFine(edit.trimEnd))))),
-                React.createElement("div", { className: "mc-ruler", "aria-hidden": "true" }, ruler.map((r, i) => React.createElement("span", { key: i }, r)))),
-            React.createElement("div", { className: "mc-transport" },
-                React.createElement("button", { type: "button", className: "mc-skip", disabled: !duration, "aria-label": "Back 5 seconds", onClick: () => pb.seek(at - 5, true) },
-                    React.createElement(RotateCcw, { size: 16 }),
-                    React.createElement("small", null, "5")),
-                React.createElement("button", { type: "button", className: "mc-play", disabled: !duration, "aria-label": playing ? 'Pause' : 'Play selection', onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 22, fill: "currentColor" }) : React.createElement(Play, { size: 22, fill: "currentColor" })),
-                React.createElement("button", { type: "button", className: "mc-skip", disabled: !duration, "aria-label": "Forward 5 seconds", onClick: () => pb.seek(at + 5, true) },
-                    React.createElement(RotateCw, { size: 16 }),
-                    React.createElement("small", null, "5")),
-                React.createElement("span", { className: "mc-clock" },
-                    React.createElement("b", null, fmtFine(at)),
-                    React.createElement("span", null,
-                        "/ ",
-                        fmtFine(duration))),
-                React.createElement("button", { type: "button", className: `mc-iconbtn is-toggle${loop ? ' is-on' : ''}`, "aria-pressed": loop, "aria-label": "Loop selection", title: "Loop selection (L)", onClick: () => setLoop(v => !v) },
-                    React.createElement(Repeat, { size: 16 })),
-                React.createElement("select", { className: "mc-speed", "aria-label": "Preview speed", value: speed, onChange: e => setSpeed(Number(e.target.value)) }, SPEEDS.map(s => React.createElement("option", { key: s, value: s },
-                    s,
-                    "\u00D7")))),
-            React.createElement("div", { className: "mc-marks" },
-                React.createElement("button", { type: "button", disabled: !duration, onClick: () => setStart(at) },
-                    React.createElement(ArrowLeftToLine, { size: 15 }),
-                    "Set start here"),
-                React.createElement("button", { type: "button", disabled: !duration, onClick: () => setEnd(at) },
-                    React.createElement(ArrowRightToLine, { size: 15 }),
-                    "Set end here")),
-            React.createElement("section", { className: "mc-panel", "aria-label": "Sound" },
-                React.createElement("header", null,
-                    React.createElement(Volume2, { size: 14 }),
-                    React.createElement("span", null, "Sound"),
-                    edit.gain !== 1 && React.createElement("em", null,
-                        edit.gain > 1 ? 'Boosted' : 'Lowered',
-                        " ",
-                        edit.gain.toFixed(1),
-                        "\u00D7")),
-                React.createElement("div", { className: "mc-row" },
-                    React.createElement("button", { type: "button", className: "mc-mute", "aria-pressed": edit.muted, "aria-label": edit.muted ? 'Unmute' : 'Mute', onClick: () => commit({ ...edit, muted: !edit.muted }, false) }, edit.muted || vol === 0 ? React.createElement(VolumeX, { size: 17 }) : React.createElement(Volume2, { size: 17 })),
-                    React.createElement("input", { type: "range", min: 0, max: 100, step: 5, value: vol, "aria-label": "Volume", ...slider('volume') }),
-                    React.createElement("span", { className: "mc-val" },
-                        vol,
-                        "%")),
-                React.createElement("div", { className: "mc-row is-wrap" },
-                    React.createElement("button", { type: "button", className: "mc-chipbtn", disabled: !canRender || !duration || !!job, onClick: normalize, title: "Sets the loudest point of the selection to 90%" },
-                        React.createElement(WandSparkles, { size: 14 }),
-                        edit.gain !== 1 ? 'Re-normalize' : 'Normalize loudness'),
-                    edit.gain !== 1 && React.createElement("button", { type: "button", className: "mc-chipbtn is-quiet", onClick: () => commit({ ...edit, gain: 1 }, false) }, "Remove boost"),
-                    peaksInfo === null && React.createElement("small", { className: "mc-hint" }, embedded ? 'This file could not be analysed, so normalize and export are off.' : 'Normalize needs an uploaded clip (this link blocks cross-origin access).'))),
-            React.createElement("section", { className: "mc-panel", "aria-label": "Fades" },
-                React.createElement("header", null,
-                    React.createElement(AudioLines, { size: 14 }),
-                    React.createElement("span", null, "Fades")),
-                React.createElement("label", { className: "mc-row" },
-                    React.createElement("span", { className: "mc-lab" }, "In"),
-                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: edit.fadeIn, disabled: !duration, "aria-label": "Fade in", ...slider('fadeIn') }),
-                    React.createElement("span", { className: "mc-val" },
-                        edit.fadeIn.toFixed(1),
+                        React.createElement("div", { className: "me-track", onPointerDown: ev => tlDown('seek', ev) }),
+                        React.createElement("span", { className: "me-cut", style: { left: 0, width: `${left}%` } }),
+                        React.createElement("span", { className: "me-cut", style: { left: `${right}%`, right: 0 } }),
+                        React.createElement("div", { className: "me-range", style: { left: `${left}%`, width: `${right - left}%` }, onPointerDown: ev => tlDown('move', ev) },
+                            e.fadeIn > 0 && React.createElement("span", { className: "me-fade is-in", style: { width: `${e.fadeIn / len * 100}%` } }),
+                            e.fadeOut > 0 && React.createElement("span", { className: "me-fade is-out", style: { width: `${e.fadeOut / len * 100}%` } })),
+                        React.createElement("span", { className: "me-playhead", style: { left: `${clamp$3(at / duration * 100, 0, 100)}%` } }),
+                        React.createElement("button", { type: "button", className: `me-handle${dragging === 'start' ? ' is-active' : ''}`, style: { left: `${left}%` }, "aria-label": `Trim start ${fmtFine(e.trimStart)}. Arrow keys adjust`, onKeyDown: ev => handleKey('start', ev), onPointerDown: ev => tlDown('start', ev) }),
+                        React.createElement("button", { type: "button", className: `me-handle${dragging === 'end' ? ' is-active' : ''}`, style: { left: `${right}%` }, "aria-label": `Trim end ${fmtFine(e.trimEnd)}. Arrow keys adjust`, onKeyDown: ev => handleKey('end', ev), onPointerDown: ev => tlDown('end', ev) }),
+                        showStartBubble && React.createElement("b", { className: `me-bubble${dragging === 'start' ? ' is-active' : ''}`, style: { ...bubbleStyle(left), ...(showEndBubble && right - left < 14 ? { bottom: 'calc(100% + 26px)' } : {}) } }, fmtFine(e.trimStart)),
+                        showEndBubble && React.createElement("b", { className: `me-bubble${dragging === 'end' ? ' is-active' : ''}`, style: bubbleStyle(right) }, fmtFine(e.trimEnd)))),
+                React.createElement("div", { className: "me-ruler", "aria-hidden": "true" },
+                    React.createElement("span", null, "0:00"),
+                    React.createElement("span", null, duration ? (duration < 10 ? fmtFine(duration) : fmtTime(duration)) : '–:––'))),
+            tab === 'sound' && React.createElement("div", { className: "me-row" },
+                React.createElement("button", { type: "button", className: "me-mute", "aria-pressed": e.muted, "aria-label": e.muted ? 'Unmute' : 'Mute', onClick: () => patch({ muted: !e.muted }) }, e.muted || vol === 0 ? React.createElement(VolumeX, { size: 18 }) : React.createElement(Volume2, { size: 18 })),
+                React.createElement("input", { type: "range", min: 0, max: 100, step: 5, value: vol, "aria-label": "Volume", onChange: ev => patch({ volume: Number(ev.target.value) / 100, muted: false }) }),
+                React.createElement("span", { className: "me-val" },
+                    vol,
+                    "%")),
+            tab === 'fades' && React.createElement(React.Fragment, null,
+                React.createElement("label", { className: "me-row" },
+                    React.createElement("span", { className: "me-lab" }, "In"),
+                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: e.fadeIn, disabled: !duration, "aria-label": "Fade in", onChange: ev => patch({ fadeIn: Number(ev.target.value) }) }),
+                    React.createElement("span", { className: "me-val" },
+                        e.fadeIn.toFixed(1),
                         " s")),
-                React.createElement("label", { className: "mc-row" },
-                    React.createElement("span", { className: "mc-lab" }, "Out"),
-                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: edit.fadeOut, disabled: !duration, "aria-label": "Fade out", ...slider('fadeOut') }),
-                    React.createElement("span", { className: "mc-val" },
-                        edit.fadeOut.toFixed(1),
+                React.createElement("label", { className: "me-row" },
+                    React.createElement("span", { className: "me-lab" }, "Out"),
+                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: e.fadeOut, disabled: !duration, "aria-label": "Fade out", onChange: ev => patch({ fadeOut: Number(ev.target.value) }) }),
+                    React.createElement("span", { className: "me-val" },
+                        e.fadeOut.toFixed(1),
                         " s"))),
-            bakeMode && React.createElement("p", { className: "mc-note is-info" },
-                React.createElement("strong", null, "This file is too big to store as-is."),
-                " Pick up to ",
-                fmtTime(maxSeconds || 60),
-                ". When you tap ",
-                React.createElement("b", null, "Use clip"),
-                " only the selection is compressed into a small clip."),
-            !embedded && !failed && React.createElement("p", { className: "mc-note" }, drive ? 'Google Drive clip: edits apply when the question plays. If nothing plays, set sharing to "Anyone with the link" or upload the file instead.' : 'Linked clip: trim, fades and volume apply when the question plays. Exporting an edited file needs an uploaded clip.'),
-            note && React.createElement("p", { className: `mc-note is-${note.kind}`, role: "status" }, note.text),
-            job && React.createElement("div", { className: "mc-job", role: "status", "aria-live": "polite" },
-                React.createElement("div", { className: "mc-jobbar" },
+            React.createElement("div", { className: "me-pills is-tabs", role: "tablist" }, tabs.map(t => React.createElement("button", { key: t.id, type: "button", role: "tab", "aria-selected": tab === t.id, onClick: () => { setTab(t.id); setMenu(false); } },
+                t.icon,
+                t.label))),
+            menu ? React.createElement("div", { className: "me-menu", role: "menu" },
+                React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(false); void downloadOriginal(src, `${stem}.${kind === 'audio' ? 'webm' : 'mp4'}`); } },
+                    kind === 'audio' ? React.createElement(FileAudio, { size: 16 }) : React.createElement(FileVideo, { size: 16 }),
+                    React.createElement("span", null, "Original file")),
+                kind === 'audio' ? React.createElement(React.Fragment, null,
+                    React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: exportWav },
+                        React.createElement(Download, { size: 16 }),
+                        React.createElement("span", null,
+                            "Edited clip \u00B7 WAV ",
+                            React.createElement("small", null, "instant, larger file"))),
+                    React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: exportWebm },
+                        React.createElement(Download, { size: 16 }),
+                        React.createElement("span", null,
+                            "Edited clip \u00B7 compressed ",
+                            React.createElement("small", null,
+                                "takes about ",
+                                fmtTime(len)))),
+                    canBake && !bakeMode && React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: bake },
+                        React.createElement(Save, { size: 16 }),
+                        React.createElement("span", null,
+                            "Save as new clip in this question ",
+                            React.createElement("small", null, "smaller file, edits become permanent")))) : React.createElement("button", { type: "button", role: "menuitem", disabled: !canExportVideo || !duration, onClick: exportVideo },
+                    React.createElement(Download, { size: 16 }),
+                    React.createElement("span", null,
+                        "Edited clip \u00B7 WebM ",
+                        React.createElement("small", null, canExportVideo ? `re-encodes in real time (~${fmtTime(len)})` : 'uploaded videos only'))),
+                React.createElement("button", { type: "button", role: "menuitem", className: "is-close", onClick: () => setMenu(false) },
+                    React.createElement(ArrowLeft, { size: 16 }),
+                    React.createElement("span", null, "Back")))
+                : React.createElement("div", { className: "me-actions" },
+                    tab === 'crop' && React.createElement(React.Fragment, null,
+                        sq(React.createElement(FlipHorizontal2, { size: 18 }), 'Mirror', () => setFrame({ ...frame, fx: !frame.fx }), { disabled: !dims.w, on: !!frame.fx }),
+                        sq(React.createElement(FlipVertical2, { size: 18 }), 'Flip', () => setFrame({ ...frame, fy: !frame.fy }), { disabled: !dims.w, on: !!frame.fy })),
+                    tab === 'trim' && React.createElement(React.Fragment, null,
+                        sq(React.createElement(ArrowLeftToLine, { size: 18 }), 'Start', () => setStart(at), { disabled: !duration, aria: 'Set start here' }),
+                        sq(React.createElement(ArrowRightToLine, { size: 18 }), 'End', () => setEnd(at), { disabled: !duration, aria: 'Set end here' }),
+                        sq(React.createElement(Repeat, { size: 18 }), 'Loop', () => setLoop(v => !v), { on: loop }),
+                        sq(React.createElement(Download, { size: 18 }), 'Export', () => setMenu(true), { disabled: !!job })),
+                    tab === 'sound' && React.createElement(React.Fragment, null,
+                        sq(React.createElement(WandSparkles, { size: 18 }), 'Normalize', normalize, { disabled: !canRender || !duration }),
+                        e.gain !== 1 && sq(React.createElement(Undo2, { size: 18 }), 'No boost', () => patch({ gain: 1 }))),
+                    sq(React.createElement(Undo2, { size: 18 }), 'Reset', resetTab, { disabled: tabIsDefault, aria: `Reset ${tab}` })),
+            job && React.createElement("div", { className: "me-job", role: "status", "aria-live": "polite" },
+                React.createElement("div", { className: "me-jobbar" },
                     React.createElement("i", { style: { width: `${Math.round(job.progress * 100)}%` } })),
                 React.createElement("span", null,
                     job.label,
@@ -30356,42 +30529,12 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
                     Math.round(job.progress * 100),
                     "%"),
                 React.createElement("button", { type: "button", onClick: () => jobAbort.current?.abort() }, "Cancel")),
-            React.createElement("div", { className: "mc-toolbar" },
-                React.createElement("button", { type: "button", className: "mc-tool", disabled: !hist.canUndo, onClick: hist.undo, "aria-label": "Undo" },
-                    React.createElement(Undo2, { size: 16 }),
-                    "Undo"),
-                React.createElement("button", { type: "button", className: "mc-tool", disabled: !hist.canRedo, onClick: hist.redo, "aria-label": "Redo" },
-                    React.createElement(Redo2, { size: 16 }),
-                    "Redo"),
-                React.createElement("button", { type: "button", className: "mc-tool", disabled: !duration || editIsDefault(edit, duration), onClick: () => commit(defaultEdit(duration), false), "aria-label": "Reset all edits" },
-                    React.createElement(RotateCcw, { size: 16 }),
-                    "Reset"),
-                canBake && !bakeMode && React.createElement("button", { type: "button", className: "mc-tool", disabled: !!job || !duration || !canRender || editIsDefault(edit, duration), onClick: bake, title: "Re-encodes the selection into the question (smaller file, edits become permanent)" },
-                    React.createElement(Save, { size: 16 }),
-                    "Save as new clip"),
-                React.createElement("span", { className: "mc-download", ref: menuRef },
-                    React.createElement("button", { type: "button", className: "mc-tool", "aria-expanded": menu, "aria-haspopup": "menu", disabled: !!job, onClick: () => setMenu(v => !v) },
-                        React.createElement(Download, { size: 16 }),
-                        "Export",
-                        React.createElement(ChevronDown, { size: 14 })),
-                    menu && React.createElement("span", { className: "mc-menu", role: "menu" },
-                        React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(false); void downloadOriginal(src, `${stem}.${kind === 'audio' ? 'webm' : 'mp4'}`); } }, "Original file"),
-                        kind === 'audio' ? React.createElement(React.Fragment, null,
-                            React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: () => { setMenu(false); void exportWav(); } },
-                                "Edited clip \u00B7 WAV",
-                                React.createElement("small", null, "Instant, lossless, larger file")),
-                            React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: () => { setMenu(false); void exportWebm(); } },
-                                "Edited clip \u00B7 compressed",
-                                React.createElement("small", null,
-                                    "Takes about ",
-                                    fmtTime(len),
-                                    " to encode"))) : React.createElement("button", { type: "button", role: "menuitem", disabled: !canExportVideo || !duration, onClick: () => { setMenu(false); void exportVideo(); } },
-                            "Edited clip \u00B7 WebM",
-                            React.createElement("small", null, canExportVideo ? `Re-encodes in real time (~${fmtTime(len)})` : 'Uploaded videos only'))))),
-            React.createElement("p", { className: "mc-keys" }, "Space play \u00B7 \u2190 \u2192 seek \u00B7 I / O set start / end \u00B7 L loop \u00B7 Shift = bigger steps"))), document.body);
+            note && React.createElement("p", { className: `me-note is-${note.kind}`, role: "status" }, note.text),
+            !note && peaksInfo === null && tab === 'sound' && React.createElement("p", { className: "me-note" }, embedded ? 'This file could not be analysed, so normalize and export are off.' : 'Normalize and export need an uploaded clip.'),
+            hint && React.createElement("small", { className: "me-hint" }, hint))), document.body);
 }
 
-const clamp$1 = (v, a, b) => Math.min(b, Math.max(a, v));
+const clamp$2 = (v, a, b) => Math.min(b, Math.max(a, v));
 const recorderType = () => typeof MediaRecorder === 'undefined' ? '' : ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
 const guessType = (name) => ({ mp3: 'audio/mpeg', m4a: 'audio/mp4', aac: 'audio/aac', wav: 'audio/wav', ogg: 'audio/ogg', oga: 'audio/ogg', opus: 'audio/ogg', webm: 'audio/webm' }[name.split('.').pop()?.toLowerCase() || ''] || '');
 const tooLong = `Keep the sound to about ${fmtTime(MAX_AUDIO_SECONDS)} or less.`;
@@ -30448,7 +30591,7 @@ function useWaveform(src, bars, start, end) {
     return reactExports.useMemo(() => {
         if (!raw)
             return Array.from({ length: bars }, (_, i) => 0.22 + 0.12 * Math.abs(Math.sin(i * 0.9)));
-        const d = raw.duration || 1, n = raw.peaks.length, a = clamp$1((end > start ? start : 0) / d, 0, 1) * n, b = Math.max(a + 1, clamp$1((end > start ? end : d) / d, 0, 1) * n);
+        const d = raw.duration || 1, n = raw.peaks.length, a = clamp$2((end > start ? start : 0) / d, 0, 1) * n, b = Math.max(a + 1, clamp$2((end > start ? end : d) / d, 0, 1) * n);
         return Array.from({ length: bars }, (_, i) => { const s = Math.floor(a + (i / bars) * (b - a)), e = Math.max(s + 1, Math.floor(a + ((i + 1) / bars) * (b - a))); let m = 0; for (let j = s; j < e && j < n; j++)
             if (raw.peaks[j] > m)
                 m = raw.peaks[j]; return m; });
@@ -30470,7 +30613,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
     const pb = useClipPlayback(audio, src, edit, { durationHint, analyser: variant === 'overlay' });
     const { duration, at, playing, failed } = pb;
     const known = duration > 0, clip = normalizeEdit(edit, duration), selLen = known ? clip.trimEnd - clip.trimStart : 0;
-    const played = known ? clamp$1((at - clip.trimStart) / Math.max(0.1, selLen), 0, 1) : 0;
+    const played = known ? clamp$2((at - clip.trimStart) / Math.max(0.1, selLen), 0, 1) : 0;
     const bars = variant === 'media' ? 48 : variant === 'overlay' ? 30 : 36;
     const peaks = useWaveform(src, bars, known ? clip.trimStart : 0, known ? clip.trimEnd : 0);
     const live = useLiveLevels(pb.levels, bars, playing && variant === 'overlay');
@@ -30482,7 +30625,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
     const cur = known ? f(Math.max(0, at - clip.trimStart)) : '0:00', total = known ? f(selLen) : '–:––';
     if (variant === 'media') {
         const seekAt = (x) => { const r = bar.current?.getBoundingClientRect(); if (!r || !known)
-            return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
+            return; pb.seek(clip.trimStart + clamp$2((x - r.left) / r.width, 0, 1) * selLen); };
         return React.createElement("div", { className: `sp sp-pill ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
             React.createElement("button", { type: "button", className: "sp-pill-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 16, fill: "currentColor" }) : React.createElement(Play, { size: 16, fill: "currentColor" })),
             React.createElement("div", { className: "sp-pill-body" },
@@ -30509,7 +30652,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
             React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
     }
     const seekAt = (x) => { const r = wave.current?.getBoundingClientRect(); if (!r || !known)
-        return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
+        return; pb.seek(clip.trimStart + clamp$2((x - r.left) / r.width, 0, 1) * selLen); };
     return React.createElement("div", { className: `sp sp-${variant} ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
         React.createElement("button", { type: "button", className: "sp-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
         React.createElement("div", { className: "sp-body" },
@@ -30788,7 +30931,7 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
             setLinking(false); } });
     const clip = clipOpen && (pending
         ? React.createElement(MediaClipEditor, { kind: "audio", title: "Trim before adding", fileName: pending.name, src: pending.url, saveMode: "bake", maxSeconds: MAX_AUDIO_SECONDS, onReplace: (data, len) => acceptBaked(data, len, pending.name), onSave: () => closePending(), onCancel: closePending })
-        : audio ? React.createElement(MediaClipEditor, { kind: "audio", title: `Edit ${title.toLowerCase()}`, fileName: fullName, src: audio, initial: edit, onReplace: audio.startsWith('data:') ? (data, len) => acceptBaked(data, len) : undefined, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } }) : null);
+        : audio ? React.createElement(MediaClipEditor, { kind: "audio", title: "Adjust sound", fileName: fullName, src: audio, initial: edit, onReplace: audio.startsWith('data:') ? (data, len) => acceptBaked(data, len) : undefined, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } }) : null);
     const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, "aria-label": `Upload ${title.toLowerCase()}`, accept: "audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus", onChange: e => { const f = e.currentTarget.files?.[0]; e.currentTarget.value = ''; void upload(f); } });
     if (assetLayout) {
         const badge = recording || countIn !== null ? 'Recording' : !audio ? 'Not added' : warn || drive ? 'Needs attention' : 'Added';
@@ -30827,18 +30970,46 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         clip);
 }
 
+const clamp$1 = (v, a, b) => Math.min(b, Math.max(a, v));
+/** Quiz/preview player: 4:3 frame with blurred backdrop, crop/trim/fades applied, tap to play, drag the bar to seek. */
 function VideoPlayer({ src, className = '', label = 'Play video', edit }) {
-    const video = reactExports.useRef(null);
+    const video = reactExports.useRef(null), bar = reactExports.useRef(null);
     const pb = useClipPlayback(video, src, edit);
+    const dims = useVideoDims(video, src);
     if (isDriveLink(src))
         return React.createElement("div", { className: `vp ${className}`.trim() },
             React.createElement(DriveShareLegacyNotice, { kind: "video" }));
-    const clip = normalizeEdit(edit, pb.duration), trimmed = pb.duration > 0 && !editIsDefault(edit, pb.duration);
-    return React.createElement("div", { className: `vp ${className}`.trim(), "data-failed": pb.failed || undefined },
-        React.createElement("video", { key: src, ref: video, controls: true, playsInline: true, preload: "metadata", src: playbackSrc(src), "aria-label": label }),
-        trimmed && React.createElement("span", { className: "vp-badge" },
-            React.createElement(Scissors, { size: 11 }),
-            fmtTime(clip.trimEnd - clip.trimStart)),
+    const clip = pb.clip, sel = Math.max(0, clip.trimEnd - clip.trimStart), known = pb.duration > 0, f = sel < 10 ? fmtFine : fmtTime;
+    const played = known ? clamp$1((pb.at - clip.trimStart) / Math.max(0.1, sel), 0, 1) : 0;
+    const edited = known && !editIsDefault(edit, pb.duration);
+    const seekAt = (x) => { const r = bar.current?.getBoundingClientRect(); if (!r || !known)
+        return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * sel); };
+    return React.createElement("div", { className: `vp ${className}`.trim(), "data-failed": pb.failed || undefined, "data-playing": pb.playing || undefined },
+        React.createElement(VideoFrame, { ref: video, src: src, frame: frameFor(edit, dims.w, dims.h), dims: dims, playing: pb.playing, onClick: pb.toggle },
+            React.createElement("button", { type: "button", className: "vp-play", "aria-label": pb.playing ? 'Pause' : label, onClick: ev => { ev.stopPropagation(); pb.toggle(); } }, pb.playing ? React.createElement(Pause, { size: 20, fill: "currentColor" }) : React.createElement(Play, { size: 22, fill: "currentColor" })),
+            known && React.createElement("span", { className: "vp-badge" },
+                f(clamp$1(pb.at - clip.trimStart, 0, sel)),
+                " / ",
+                f(sel),
+                edited && React.createElement(Crop, { size: 11 })),
+            React.createElement("div", { ref: bar, className: "vp-bar", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(played * 100), tabIndex: known ? 0 : -1, onClick: ev => ev.stopPropagation(), onPointerDown: ev => { ev.stopPropagation(); if (!known)
+                    return; ev.preventDefault(); try {
+                    ev.currentTarget.setPointerCapture(ev.pointerId);
+                }
+                catch { } seekAt(ev.clientX); }, onPointerMove: ev => { if (ev.buttons & 1)
+                    seekAt(ev.clientX); }, onKeyDown: ev => { if (ev.key === 'ArrowLeft') {
+                    ev.preventDefault();
+                    pb.seek(pb.at - 1);
+                }
+                else if (ev.key === 'ArrowRight') {
+                    ev.preventDefault();
+                    pb.seek(pb.at + 1);
+                }
+                else if (ev.key === ' ') {
+                    ev.preventDefault();
+                    pb.toggle();
+                } } },
+                React.createElement("i", { style: { width: `${played * 100}%` } }))),
         pb.failed && React.createElement("p", { className: "vp-fallback" },
             "This video could not play.",
             !isEmbeddedMedia(src) && React.createElement(React.Fragment, null,
@@ -30846,7 +31017,7 @@ function VideoPlayer({ src, className = '', label = 'Play video', edit }) {
                 React.createElement("a", { href: src, target: "_blank", rel: "noreferrer" }, "Open the link"),
                 " to check it.")));
 }
-function VideoField({ video, edit, onEditChange, onChange, onError, onClearError, title = 'Question video', hint = 'Prefer a short upload — large files fill browser storage quickly.', assetLayout, emptyHint, linkLabel = 'Link', uploadEmptyLabel = 'Upload' }) {
+function VideoField({ video, edit, onEditChange, onChange, onError, onClearError, title = 'Question video', hint = 'Prefer a short upload — large files fill browser storage quickly.', assetLayout, emptyHint, linkLabel = 'Add link', uploadEmptyLabel = 'Upload video' }) {
     const [busy, setBusy] = reactExports.useState(null), [linking, setLinking] = reactExports.useState(false), [clipOpen, setClipOpen] = reactExports.useState(false), [dragOver, setDragOver] = reactExports.useState(false), [meta, setMeta] = reactExports.useState(null);
     const input = reactExports.useRef(null);
     const drive = !!video && isDriveLink(video), linked = !!video?.startsWith('https://');
@@ -30901,87 +31072,71 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
             onEditChange?.(undefined);
             onChange(data);
             setMeta({ duration: probe.duration, size: blob.size });
+            setClipOpen(true); // open the editor right away, like pictures do
         }
-        catch (e) {
-            onError(e?.message || 'This video could not be added.');
+        catch (err) {
+            onError(err?.message || 'This video could not be added.');
         }
         finally {
             setBusy(null);
         }
     }
+    const badge = !video ? { text: 'Not added', cls: 'is-empty' } : drive ? { text: 'Needs attention', cls: 'is-warn' } : { text: 'Added', cls: 'is-ok' };
+    const caption = busy ? busy.label : video ? (drive ? 'This link needs attention' : linked ? 'Linked video · plays in the quiz' : [meta && fmtTime(meta.duration), meta && formatBytes(meta.size), edit ? 'edited' : null].filter(Boolean).join(' · ') || 'Tap to preview') : (emptyHint || hint);
     const openLink = () => { onClearError?.(); setLinking(v => !v); };
     const pickFile = () => { setLinking(false); input.current?.click(); };
     const drop = {
-        onDragOver: (e) => { if (e.dataTransfer.types.includes('Files')) {
-            e.preventDefault();
+        onDragOver: (ev) => { if (ev.dataTransfer.types.includes('Files')) {
+            ev.preventDefault();
             setDragOver(true);
         } },
         onDragLeave: () => setDragOver(false),
-        onDrop: (e) => { e.preventDefault(); setDragOver(false); void upload(e.dataTransfer.files?.[0]); },
+        onDrop: (ev) => { ev.preventDefault(); setDragOver(false); void upload(ev.dataTransfer.files?.[0]); },
     };
-    const uploadLabel = busy ? busy.label : video ? 'Change video' : uploadEmptyLabel;
-    const uploadBtn = React.createElement("button", { type: "button", className: assetLayout ? 'media-action' : undefined, disabled: !!busy, "aria-label": video ? 'Change video file' : 'Upload video file', onClick: pickFile },
-        busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : video ? React.createElement(RefreshCw, { size: 14 }) : React.createElement(Upload, { size: 14 }),
-        assetLayout ? uploadLabel : React.createElement("span", { className: "editor-action-text" }, video ? 'Change' : 'Upload'));
-    const linkBtn = React.createElement("button", { type: "button", className: assetLayout ? 'media-action' : undefined, "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, disabled: !!busy, onClick: openLink },
-        React.createElement(Link2, { size: 14 }),
-        assetLayout ? linkLabel : React.createElement("span", { className: "editor-action-text" }, "Link"));
-    const progress = busy && React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
-        React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
-            React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
-        React.createElement("div", { className: "mf-progress-row" },
-            React.createElement("span", null,
-                busy.label,
-                busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : '')));
-    const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, accept: "video/*,.mp4,.webm,.mov,.m4v", onChange: e => { const f = e.currentTarget.files?.[0]; e.currentTarget.value = ''; void upload(f); } });
+    const body = busy
+        ? React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
+            React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
+                React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
+            React.createElement("div", { className: "mf-progress-row" },
+                React.createElement("span", null,
+                    busy.label,
+                    busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : '')))
+        : video ? (drive ? React.createElement(DriveShareLegacyNotice, { kind: "video" }) : React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` })) : null;
+    const actions = !busy && (video
+        ? React.createElement("div", { className: "mf-actions" },
+            !drive && React.createElement("button", { type: "button", className: "mf-action is-primary", "aria-label": `Edit ${title.toLowerCase()}`, onClick: () => setClipOpen(true) },
+                React.createElement(Scissors, { size: 14 }),
+                "Edit"),
+            React.createElement("button", { type: "button", className: "mf-action", "aria-label": "Replace video file", onClick: pickFile },
+                React.createElement(RefreshCw, { size: 14 }),
+                "Replace"),
+            React.createElement("button", { type: "button", className: "mf-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, onClick: openLink },
+                React.createElement(Link2, { size: 14 }),
+                linkLabel),
+            React.createElement("button", { type: "button", className: "mf-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
+                React.createElement(Trash2, { size: 14 })))
+        : React.createElement("div", { className: "mf-actions is-empty" },
+            React.createElement("button", { type: "button", className: "mf-action", onClick: pickFile },
+                React.createElement(Upload, { size: 14 }),
+                uploadEmptyLabel),
+            React.createElement("button", { type: "button", className: "mf-action", "aria-expanded": linking, onClick: openLink },
+                React.createElement(Link2, { size: 14 }),
+                linkLabel)));
+    const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, accept: "video/*,.mp4,.webm,.mov,.m4v", onChange: ev => { const f = ev.currentTarget.files?.[0]; ev.currentTarget.value = ''; void upload(f); } });
     const linkForm = linking && React.createElement(MediaLinkForm, { autoFocus: true, label: `${title} link`, placeholder: "https://\u2026/clip.mp4", submitLabel: "Add", initialUrl: linked && !drive ? video : '', onClearError: onClearError, onCancel: () => setLinking(false), onSubmit: url => { if (applyLink(url))
             setLinking(false); } });
-    const clip = clipOpen && video && React.createElement(MediaClipEditor, { kind: "video", title: `Edit ${title.toLowerCase()}`, src: video, initial: edit, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
-    if (assetLayout) {
-        const badge = video ? (drive ? 'Needs attention' : 'Added') : 'Not added';
-        const badgeClass = `asset-state${!video ? ' is-empty' : drive ? ' is-warn' : ' is-ok'}`;
-        const caption = busy ? busy.label : (video ? (drive ? 'This link needs attention' : 'Tap play to preview') : (emptyHint || hint));
-        const preview = video ? React.createElement("div", { className: "asset-media-extra" }, drive ? React.createElement(DriveShareLegacyNotice, { kind: "video" }) : React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` })) : null;
-        return React.createElement("article", { className: `asset${video ? ' has-image' : ''}${linking ? ' is-linking' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
-            React.createElement("header", { className: "media-head" },
-                React.createElement("span", { className: "media-ico", "aria-hidden": "true" },
-                    React.createElement(Film, { size: 17 })),
-                React.createElement("div", { className: "media-headmain" },
-                    React.createElement("div", { className: "media-titlerow" },
-                        React.createElement("span", { className: "asset-name" }, title),
-                        React.createElement("span", { className: badgeClass }, badge)),
-                    React.createElement("small", { className: "asset-caption" }, caption))),
-            progress,
-            preview,
-            React.createElement("div", { className: "asset-actions" },
-                uploadBtn,
-                linkBtn,
-                video && !drive && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
-                    React.createElement(Scissors, { size: 14 }),
-                    "Edit"),
-                video && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
-                    React.createElement(Trash2, { size: 14 }))),
-            fileInput,
-            linkForm,
-            clip);
-    }
-    return React.createElement("div", { className: `editor-inline-image editor-video${video ? ' has-image' : ''}${linking ? ' is-linking' : ''}`, ...drop },
-        React.createElement("span", { className: "editor-inline-icon" },
-            React.createElement(Film, { size: 18 })),
-        React.createElement("div", { className: "editor-inline-copy" },
-            React.createElement("strong", null, title),
-            React.createElement("small", null, busy ? busy.label : (video ? 'Plays with the question' : hint))),
-        video && drive && React.createElement(DriveShareLegacyNotice, { kind: "video" }),
-        video && !drive && React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` }),
-        progress,
-        React.createElement("div", { className: "editor-inline-actions" },
-            uploadBtn,
-            linkBtn,
-            video && !drive && React.createElement("button", { type: "button", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
-                React.createElement(Scissors, { size: 14 }),
-                React.createElement("span", { className: "editor-action-text" }, "Edit")),
-            video && React.createElement("button", { type: "button", className: "is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
-                React.createElement(Trash2, { size: 14 }))),
+    const clip = clipOpen && video && !drive && React.createElement(MediaClipEditor, { kind: "video", title: "Adjust video", src: video, initial: edit, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
+    return React.createElement("article", { className: `mf mf-video${video ? ' has-media' : ''}${assetLayout ? ' is-asset' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
+        React.createElement("header", { className: "mf-head" },
+            React.createElement("span", { className: "mf-ico", "aria-hidden": "true" },
+                React.createElement(Film, { size: 18 })),
+            React.createElement("div", { className: "mf-headmain" },
+                React.createElement("div", { className: "mf-titlerow" },
+                    React.createElement("strong", null, title),
+                    React.createElement("span", { className: `mf-badge ${badge.cls}` }, badge.text)),
+                React.createElement("small", { className: "mf-caption" }, caption))),
+        body,
+        actions,
         fileInput,
         linkForm,
         clip);
@@ -31837,14 +31992,14 @@ function PreviewQuestionMedia({ draft }) {
     return React.createElement(React.Fragment, null,
         hasImg && React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: draft.image, alt: "Question illustration", label: "Enlarge question image" }),
         audio && React.createElement(SoundPlayer, { src: audio, ...soundProps, className: "quiz-sound" }),
-        draft.video && React.createElement(VideoPlayer, { src: draft.video, className: "is-compact quiz-video", label: "Preview question video" }));
+        draft.video && React.createElement(VideoPlayer, { src: draft.video, edit: draft.videoEdit, className: "is-compact quiz-video", label: "Preview question video" }));
 }
 function FlashcardEditorPreview({ draft }) {
     const [showBack, setShowBack] = reactExports.useState(false);
     return React.createElement("div", { className: "editor-question-preview" },
         React.createElement("small", null, "Flashcard \u00B7 tap to flip"),
         draft.image && React.createElement("img", { src: draft.image, alt: "Flashcard image" }),
-        draft.video && React.createElement(VideoPlayer, { src: draft.video, className: "is-compact", label: "Preview question video" }),
+        draft.video && React.createElement(VideoPlayer, { src: draft.video, edit: draft.videoEdit, className: "is-compact", label: "Preview question video" }),
         React.createElement("button", { type: "button", className: "editor-flashcard-preview", "aria-pressed": showBack, "aria-label": showBack ? 'Show flashcard front' : 'Show flashcard back', onClick: () => setShowBack(value => !value) },
             React.createElement("span", { className: `editor-flashcard-preview-inner${showBack ? ' is-back' : ''}` },
                 React.createElement("span", { className: "editor-flashcard-preview-face editor-flashcard-front" },
@@ -31854,8 +32009,8 @@ function FlashcardEditorPreview({ draft }) {
                 React.createElement("span", { className: "editor-flashcard-preview-face editor-flashcard-back" },
                     React.createElement("small", null, "BACK \u00B7 ANSWER"),
                     draft.answerImage && React.createElement("img", { className: "editor-flashcard-answer-image", src: draft.answerImage, alt: "" }),
-                    draft.answerVideo && React.createElement(VideoPlayer, { src: draft.answerVideo, className: "is-compact", label: "Preview answer video" }),
-                    draft.answerAudio && React.createElement(SoundPlayer, { src: draft.answerAudio, className: "is-compact", label: "Preview answer sound" }),
+                    draft.answerVideo && React.createElement(VideoPlayer, { src: draft.answerVideo, edit: draft.answerVideoEdit, className: "is-compact", label: "Preview answer video" }),
+                    draft.answerAudio && React.createElement(SoundPlayer, { src: draft.answerAudio, edit: draft.answerAudioEdit, className: "is-compact", label: "Preview answer sound" }),
                     React.createElement("strong", null, draft.answer || 'Your answer appears here'),
                     React.createElement("em", null, "Tap to see the question")))));
 }
@@ -31958,8 +32113,8 @@ function QuestionTypePreview({ draft, choices, pairs, steps }) {
             revealed && React.createElement("small", { className: correct() ? 'is-correct-text' : 'is-wrong-text' },
                 "Correct order: ",
                 steps.filter(Boolean).join(' → '))),
-        revealed && draft.answerVideo && React.createElement(VideoPlayer, { src: draft.answerVideo, className: "is-compact", label: "Preview answer video" }),
-        revealed && draft.answerAudio && React.createElement(SoundPlayer, { src: draft.answerAudio, className: "is-compact", label: "Preview answer sound" }),
+        revealed && draft.answerVideo && React.createElement(VideoPlayer, { src: draft.answerVideo, edit: draft.answerVideoEdit, className: "is-compact", label: "Preview answer video" }),
+        revealed && draft.answerAudio && React.createElement(SoundPlayer, { src: draft.answerAudio, edit: draft.answerAudioEdit, className: "is-compact", label: "Preview answer sound" }),
         revealed && draft.answerImage && React.createElement("img", { className: "editor-preview-answer-image", src: draft.answerImage, alt: "Answer illustration" }));
 }
 function ExtraPreview({ draft }) {
@@ -32359,7 +32514,7 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
                 allTypes.length > 1 && React.createElement("div", { className: "editor-variant-tabs", role: "tablist", "aria-label": "Preview type" }, allTypes.map((v, i) => React.createElement("button", { type: "button", role: "tab", key: i, "aria-selected": active === i, onClick: () => setVi(i) },
                     React.createElement("span", null, i + 1),
                     typeLabel(v.type)))),
-                React.createElement(QuestionTypePreview, { key: active, draft: { ...draft, ...d, image: draft.image, answerImage: draft.answerImage, audio: draft.audio, audioEdit: draft.audioEdit, audioName: draft.audioName, video: draft.video, answerAudio: draft.answerAudio, answerVideo: draft.answerVideo }, choices: choices, pairs: pairs, steps: steps }))),
+                React.createElement(QuestionTypePreview, { key: active, draft: { ...draft, ...d, image: draft.image, answerImage: draft.answerImage, audio: draft.audio, audioEdit: draft.audioEdit, audioName: draft.audioName, video: draft.video, videoEdit: draft.videoEdit, answerAudio: draft.answerAudio, answerAudioEdit: draft.answerAudioEdit, answerVideo: draft.answerVideo, answerVideoEdit: draft.answerVideoEdit }, choices: choices, pairs: pairs, steps: steps }))),
         React.createElement(ImageLightbox, { src: zoom, onClose: () => setZoom(null) }),
         editImg && React.createElement(ImageEditor, { src: editImg.src, onCancel: closeEditor, onSave: (image) => { place(image, editImg.key, editImg.target); closeEditor(); } }),
         status && !busy && /^Saved successfully|Question saved|preparing/i.test(status) && React.createElement("p", { className: "editor-save-message", id: statusId, role: "status", "aria-live": "polite" },
