@@ -9,6 +9,7 @@ import {SpeechButton} from "../KokoroPanel";
 import {SettingsPage} from "../SettingsPage";
 import {TransferPage} from "../TransferPage";
 import {appPreferences, applyAppPreferences} from "../../app-preferences.js";
+import {playFeedback} from "../../feedback-sounds.js";
 import {resolveVariant, variantAt, retakeVariant, seededShuffle, itemTypes, draftFromSpec, specFromDraft, isPictureLabel} from "../../question-variants.js";
 import {audioCache} from "../../audio-cache.js";
 import {quizPreferences, prepareQuiz} from "../../quiz-preferences.js";
@@ -231,7 +232,8 @@ export default function IndexPage(){
   }
   useEffect(()=>{
     if(countdown===null)return;
-    const timer=window.setTimeout(()=>{if(countdown<=1){setCountdown(null);setStarted(Date.now());}else setCountdown(countdown-1);},1000);
+    playFeedback('tick');
+    const timer=window.setTimeout(()=>{if(countdown<=1){playFeedback('go');setCountdown(null);setStarted(Date.now());}else setCountdown(countdown-1);},1000);
     return()=>window.clearTimeout(timer);
   },[countdown]);
   useEffect(()=>{
@@ -277,7 +279,7 @@ export default function IndexPage(){
     const ok=forced ?? gradeQuestion(current,Array.isArray(givenAnswer)?givenAnswer:["multi_select","matching","ordering","cloze","fill_blank_options"].includes(current.type||"")?selected:givenAnswer);
     const category=forced!==undefined?(ok?"correct":"wrong"):["short_answer","fill_blank"].includes(current.type||"short_answer")?textGrade(current,givenAnswer):(ok?"correct":"wrong");
     const seconds=Math.max(1,Math.round((Date.now()-started)/1000));
-    setResult(ok);setRevealed(true);
+    setResult(ok);setRevealed(true);playFeedback(ok?'correct':'incorrect');
     setResults(r=>[...r,{grading:category,knowledge_id:current.id,subject:current.subject,topic:current.topic,type:current.type||"short_answer",prompt:current.prompt||"Picture question",correct_answer:answerText(current),user_answer:current.type==="flashcard"?(ok?"self-marked: knew":"self-marked: did not know"):extraTypes.includes(current.type||"")?describeAnswer(current,givenAnswer):["multi_select","matching","ordering","cloze","fill_blank_options"].includes(current.type||"")?(Array.isArray(givenAnswer)?givenAnswer:selected).join("; "):givenAnswer,selected_answers:current.type==="multi_select"?selected:undefined,correct:ok,response_time_seconds:seconds}]);
     setItems(xs=>xs.map(x=>x.id===current.id&&(!reviewedOn(x,today())||!x.due||x.due<=today())?scheduled(x,ok):x));
   }

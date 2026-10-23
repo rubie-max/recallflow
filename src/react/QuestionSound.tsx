@@ -4,6 +4,7 @@ import {MediaLinkForm,DriveShareLegacyNotice} from './MediaLinkForm';
 import {MAX_AUDIO_CHARS,driveFileId,isDriveLink,resolveMediaLink,resolveMediaPlaybackSrc,DRIVE_SHARE_REJECT,DRIVE_SHARE_LEGACY_HINT,typedMediaFile} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
 import {Scissors} from 'lucide-react';
+import {playPreset} from '../feedback-sounds.js';
 
 const MAX_SECONDS=60,BITRATE=32000;
 const time=(s:number)=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
@@ -70,20 +71,20 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  const audio=useRef<HTMLAudioElement>(null),[playing,setPlaying]=useState(false),[at,setAt]=useState(0),[length,setLength]=useState(0),[failed,setFailed]=useState(false);
  const clip=length>0?normalizeEdit(edit,length):edit;
  useEffect(()=>{setPlaying(false);setAt(0);setLength(0);setFailed(false);return()=>audio.current?.pause();},[src]);
- useEffect(()=>{const a=audio.current;if(a)a.muted=!!clip?.muted;},[clip?.muted,src]);
+ useEffect(()=>{const a=audio.current;if(a){a.muted=!!clip?.muted;a.volume=clip?.volume??1;}},[clip?.muted,clip?.volume,src]);
  const known=Number.isFinite(length)&&length>0;
  const played=known?(clip?Math.max(0,Math.min(1,(at-clip.trimStart)/Math.max(0.05,clip.trimEnd-clip.trimStart))):at/length):(playing?1:0);
  const bars=variant==='media'?40:30;
  const name=displayName||soundDisplayName(src);
  function toggle(){const a=audio.current;if(!a)return;if(a.paused){setFailed(false);if(clip&&a.currentTime<clip.trimStart)a.currentTime=clip.trimStart;a.play().catch(()=>setFailed(true));}else a.pause();}
- function seek(e:React.MouseEvent<HTMLSpanElement>){const a=audio.current;if(!a||!known)return;const r=e.currentTarget.getBoundingClientRect();const t=(e.clientX-r.left)/r.width*length;const next=clip?Math.min(clip.trimEnd,Math.max(clip.trimStart,t)):Math.min(length,Math.max(0,t));a.currentTime=next;setAt(next);}
+ function seek(e:React.MouseEvent<HTMLSpanElement>){const a=audio.current;if(!a||!known)return;const r=e.currentTarget.getBoundingClientRect();const f=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),t=clip?clip.trimStart+f*(clip.trimEnd-clip.trimStart):f*length;const next=clip?Math.min(clip.trimEnd,Math.max(clip.trimStart,t)):Math.min(length,Math.max(0,t));a.currentTime=next;setAt(next);}
  function onTime(){const a=audio.current;if(!a)return;setAt(a.currentTime);if(clip&&a.currentTime>=clip.trimEnd-0.02&&!a.paused){a.pause();a.currentTime=clip.trimStart;setAt(a.currentTime);setPlaying(false);}}
  if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
- const durationLabel=known?time(length):'0:00';
+ const durationLabel=known?time(clip?clip.trimEnd-clip.trimStart:length):'0:00';
  return <div className={`sound-player ${variant==='overlay'?'is-overlay':variant==='media'?'is-media':''} ${className}`.trim()} data-playing={playing||undefined}>
   <button type="button" className="sound-play" aria-label={playing?'Pause sound':label} onClick={toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
   {variant==='media'
-   ? <span className="sound-media-body"><span className="sound-media-top"><span className="sound-filename">{failed?'Could not play':name}</span><span className="sound-time" aria-hidden="true">{durationLabel}</span></span><span className="sound-wave" onClick={seek} role="presentation" aria-hidden="true">{Array.from({length:bars},(_,i)=><i key={i} data-on={i/bars<=played||undefined} style={{height:`${22+((i*19)%78)}%`}}/>)}</span></span>
+   ? <span className="sound-media-body"><span className="sound-filename">{failed?'Could not play':name}</span><span className="sound-progress" onClick={seek} role="presentation" aria-hidden="true"><i style={{width:`${played*100}%`}}/></span><span className="sound-times" aria-hidden="true"><span>{known?time(clip?Math.max(0,at-clip.trimStart):at):'0:00'}</span><span>{durationLabel}</span></span></span>
    :variant==='overlay'
    ? <span className="sound-wave" onClick={seek} role="presentation">{Array.from({length:bars},(_,i)=><i key={i} data-on={i/bars<=played||undefined} style={{height:`${30+((i*37)%70)}%`}}/>)}</span>
    : <span className="sound-body"><span className="sound-title">{failed?'This sound could not play':playing?'Playing':'Listen'}</span><span className="sound-bar" onClick={seek}><i style={{width:`${known?at/length*100:playing?100:0}%`}} data-live={!known&&playing||undefined}/></span></span>}
@@ -95,6 +96,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
 export function SoundField({audio,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https audio file',assetLayout,linkLabel='Paste link',uploadEmptyLabel='Upload'}:{audio?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string;assetLayout?:boolean;linkLabel?:string;uploadEmptyLabel?:string}){
  const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false),[warn,setWarn]=useState('');
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
+ const [countIn,setCountIn]=useState<number|null>(null),cancelCount=useRef(false);
  useEffect(()=>()=>{const l=live.current;if(l){window.clearInterval(l.timer);l.stream.getTracks().forEach(t=>t.stop());}},[]);
  useEffect(()=>{if(audio?.startsWith('https://'))setLink(audio);else if(!audio){setLink('');setLinking(false);}},[audio]);
  useEffect(()=>{
@@ -129,6 +131,11 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   let stream:MediaStream;
   try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});}
   catch(e:any){onError(e?.name==='NotAllowedError'?'Allow the microphone to record, or upload a sound file instead.':'The microphone could not start.');return;}
+  cancelCount.current=false;
+  for(const n of [3,2,1]){if(cancelCount.current)break;setCountIn(n);playPreset('tick');await new Promise(r=>window.setTimeout(r,1000));}
+  setCountIn(null);
+  if(cancelCount.current){stream.getTracks().forEach(t=>t.stop());return;}
+  playPreset('go');await new Promise(r=>window.setTimeout(r,300));
   const {recorder,done}=record(stream,recorderType()),began=Date.now();
   const timer=window.setInterval(()=>{const s=(Date.now()-began)/1000;setSeconds(s);if(s>=MAX_SECONDS&&recorder.state==='recording')recorder.stop();},200);
   live.current={recorder,stream,timer};setSeconds(0);setRecording(true);
@@ -146,17 +153,18 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
   catch(e:any){onError(e.message||'This sound could not be added.');}
   finally{setBusy('');}
  }
- const caption=recording?`Recording… ${time(seconds)} of ${time(MAX_SECONDS)}`:busy||(assetLayout&&audio&&!recording?'':audio?.startsWith('https://')&&!isDriveLink(audio)?'Linked audio':audio&&!assetLayout?'Ready to preview':hint);
+ const countBtn=(cls:string)=>countIn!==null&&<button type="button" className={cls} aria-label="Cancel recording" onClick={()=>{cancelCount.current=true;}}><span className="sound-count-num" aria-live="assertive">{countIn}</span>Starting… Cancel</button>;
+ const caption=countIn!==null?`Recording starts in ${countIn}…`:recording?`Recording… ${time(seconds)} of ${time(MAX_SECONDS)}`:busy||(assetLayout&&audio&&!recording?'':audio?.startsWith('https://')&&!isDriveLink(audio)?'Linked audio':audio&&!assetLayout?'Ready to preview':hint);
  const recordLabel=audio?'Re-record':'Record';
  const uploadLabel=busy?'Adding…':audio&&!audio.startsWith('https://')?'Upload':(uploadEmptyLabel||'Upload');
- const assetActions=recording?<button type="button" className="media-action is-recording" aria-label="Stop recording" title="Stop recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop recording</button>:<>
+ const assetActions=countIn!==null?countBtn('media-action is-recording'):recording?<button type="button" className="media-action is-recording" aria-label="Stop recording" title="Stop recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop recording</button>:<>
   <button type="button" className="media-action" disabled={!!busy} aria-label={audio?'Re-record sound':'Record sound'} onClick={start}><Mic size={14}/>{recordLabel}</button>
   <button type="button" className="media-action" disabled={!!busy} aria-label={audio&&!audio.startsWith('https://')?'Change sound file':'Upload sound file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{uploadLabel}</button>
   {!recording&&<button type="button" className="media-action" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>{linkLabel}</button>}
   {audio&&!recording&&!isDriveLink(audio)&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
   {audio&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
  </>;
- const inlineActions=recording?<button type="button" className="is-recording" aria-label="Stop recording" title="Stop recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
+ const inlineActions=countIn!==null?countBtn('is-recording'):recording?<button type="button" className="is-recording" aria-label="Stop recording" title="Stop recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
   <button type="button" disabled={!!busy} aria-label={audio?'Re-record sound':'Record sound'} onClick={start}><Mic size={14}/><span className="editor-action-text">{recordLabel}</span></button>
   <button type="button" disabled={!!busy} aria-label={audio&&!audio.startsWith('https://')?'Change sound file':'Upload sound file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}<span className="editor-action-text">{audio&&!audio.startsWith('https://')?'Change':'Upload'}</span></button>
   {!recording&&<button type="button" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/><span className="editor-action-text">Link</span></button>}

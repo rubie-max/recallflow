@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight} from 'lucide-react';
+import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight,Music,Play,Upload} from 'lucide-react';
+import {customSounds,saveCustomSound,readSoundFile,playFeedback} from '../feedback-sounds.js';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
 import {BackupRestore,OfflineSettings} from './LearningFeatures';
@@ -79,6 +80,25 @@ function QuizDefaults({onSaved}:any){
    <Toggle icon={FastForward} title="Continue automatically" detail="Move on shortly after a correct answer." checked={prefs.autoAdvance} onChange={(v:boolean)=>update({autoAdvance:v})}/>
    <Toggle icon={DoorOpen} title="Confirm before leaving a quiz" detail="Avoid losing progress by accident." checked={prefs.confirmExit} onChange={(v:boolean)=>update({confirmExit:v})}/>
   </div>
+ </Panel>;
+}
+
+function SoundEffects(){
+ const [prefs,update]=usePrefs(),[custom,setCustom]=useState(customSounds),[error,setError]=useState('');
+ const pickers={correct:useRef<HTMLInputElement>(null),incorrect:useRef<HTMLInputElement>(null)};
+ async function upload(kind:'correct'|'incorrect',file?:File){if(!file)return;setError('');try{setCustom(saveCustomSound(kind,await readSoundFile(file)));}catch(e:any){setError(e.message);}}
+ const row=(kind:'correct'|'incorrect',label:string)=><div className="settings-sound-row" key={kind}>
+  <span className="settings-sound-copy"><strong>{label}</strong><small>{custom[kind]?'Custom file':'Using default chime'}</small></span>
+  <button type="button" className="settings-sound-btn" aria-label={`Preview ${label.toLowerCase()}`} onClick={()=>playFeedback(kind,'custom')}><Play size={14}/></button>
+  <button type="button" className="settings-sound-btn" onClick={()=>pickers[kind].current?.click()}><Upload size={14}/>{custom[kind]?'Replace':'Upload'}</button>
+  {custom[kind]&&<button type="button" className="settings-sound-btn is-remove" aria-label={`Remove custom ${label.toLowerCase()}`} onClick={()=>setCustom(saveCustomSound(kind,''))}><Trash2 size={14}/></button>}
+  <input ref={pickers[kind]} type="file" accept="audio/*" hidden onChange={e=>{void upload(kind,e.target.files?.[0]);e.target.value='';}}/>
+ </div>;
+ return <Panel icon={Music} title="Sound effects" detail="Chimes for right and wrong answers and the 3-2-1 countdown.">
+  <div className="settings-segmented" role="radiogroup" aria-label="Sound effects">{[['default','Default'],['custom','Custom'],['off','Off']].map(([id,label])=><button key={id} role="radio" aria-checked={prefs.soundEffects===id} onClick={()=>{update({soundEffects:id});if(id!=='off')playFeedback('correct',id);}}>{label}</button>)}</div>
+  {prefs.soundEffects==='default'&&<div className="settings-sound-preview"><button type="button" className="settings-sound-btn" onClick={()=>playFeedback('correct','default')}><Play size={14}/>Correct</button><button type="button" className="settings-sound-btn" onClick={()=>playFeedback('incorrect','default')}><Play size={14}/>Incorrect</button></div>}
+  {prefs.soundEffects==='custom'&&<div className="settings-sound-list">{row('correct','Correct answer')}{row('incorrect','Wrong answer')}<p className="settings-hint">Short clips work best (under 400 KB). Empty slots use the default chime.</p></div>}
+  {error&&<p className="settings-error" role="alert">{error}</p>}
  </Panel>;
 }
 
@@ -212,13 +232,13 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
  const jump=(id:string)=>{setActiveSection(id);document.getElementById(`settings-${id}`)?.scrollIntoView({behavior:document.documentElement.classList.contains('rf-reduce-motion')?'auto':'smooth',block:'start'});};
  const open=(id:string)=>{history.pushState({...history.state,rfSettings:id},'',location.href);setOpenSection(id);window.scrollTo(0,0);};
  const close=()=>{if(history.state?.rfSettings)history.back();else setOpenSection(null);window.scrollTo(0,0);};
- const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Device voice or Kokoro, speed',quiz:'Questions per quiz, shuffle, countdown',data:'Import, export, backup, reset',app:'Install, offline, about'};
+ const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Device voice or Kokoro, speed',quiz:'Questions, countdown, sound effects',data:'Import, export, backup, reset',app:'Install, offline, about'};
  const groups:Record<string,React.ReactNode>={
   profile:<ProfileSettings/>,
   account:<AccountSettings/>,
   appearance:<AppearanceSettings theme={theme} onTheme={onTheme}/>,
   voice:<><KokoroPanel/><VoiceBehaviour/></>,
-  quiz:<QuizDefaults onSaved={onQuizDefaults}/>,
+  quiz:<><QuizDefaults onSaved={onQuizDefaults}/><SoundEffects/></>,
   data:<>
    <Panel icon={Database} title="Storage" detail="A copy on this device, so it works offline."><StorageMeter items={items}/></Panel>
    <button className="settings-link-card" onClick={onOpenTransfer}><span className="settings-icon"><ArrowLeftRight size={19}/></span><span><strong>Import & export questions</strong><small>CSV, Anki, JSON or plain text</small></span><ArrowRight size={18}/></button>

@@ -15,7 +15,7 @@ export function VideoPlayer({src,className='',label='Play video',edit}:{src:stri
  useEffect(()=>{setFailed(false);},[src]);
  useEffect(()=>{
   const el=video.current;if(!el||drive)return;
-  const apply=()=>{const len=el.duration;if(!Number.isFinite(len)||len<=0)return;const clip=normalizeEdit(clipRef.current,len);el.muted=!!clip.muted;};
+  const apply=()=>{const len=el.duration;if(!Number.isFinite(len)||len<=0)return;const clip=normalizeEdit(clipRef.current,len);el.muted=!!clip.muted;el.volume=clip.volume??1;};
   const tick=()=>{const len=el.duration;if(!Number.isFinite(len))return;const clip=normalizeEdit(clipRef.current,len);if(clip&&el.currentTime>=clip.trimEnd-0.02&&!el.paused){el.pause();el.currentTime=clip.trimStart;}};
   el.addEventListener('loadedmetadata',apply);el.addEventListener('durationchange',apply);el.addEventListener('timeupdate',tick);
   apply();
