@@ -78,7 +78,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  </div>;
 }
 
-export function SoundField({audio,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https audio file',assetLayout}:{audio?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string;assetLayout?:boolean}){
+export function SoundField({audio,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https audio file',assetLayout,linkLabel='Paste link',uploadEmptyLabel='Upload'}:{audio?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string;assetLayout?:boolean;linkLabel?:string;uploadEmptyLabel?:string}){
  const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false),[warn,setWarn]=useState('');
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
  useEffect(()=>()=>{const l=live.current;if(l){window.clearInterval(l.timer);l.stream.getTracks().forEach(t=>t.stop());}},[]);
@@ -135,10 +135,12 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
  const caption=recording?`Recording… ${time(seconds)} of ${time(MAX_SECONDS)}`:busy||(audio?.startsWith('https://')&&!isDriveLink(audio)?'Linked audio':audio?'Ready to preview':hint);
  const badge=recording?'Recording':!audio?'Not added':warn||isDriveLink(audio)?'Needs attention':'Added';
  const badgeClass=`asset-state${!audio&&!recording?' is-empty':warn||isDriveLink(audio)||recording?'':audio?' is-ok':''}`;
- const actions=recording?<button type="button" className={assetLayout?'media-action is-primary':'is-recording'} aria-label="Stop recording" title="Stop recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
-  <button type="button" className={assetLayout?'media-action':undefined} disabled={!!busy} aria-label={audio?'Re-record sound':'Record sound'} onClick={start}><Mic size={14}/>{assetLayout?'Record':<span className="editor-action-text">{audio?'Re-record':'Record'}</span>}</button>
-  <button type="button" className={assetLayout?'media-action':undefined} disabled={!!busy} aria-label={audio&&!audio.startsWith('https://')?'Change sound file':'Upload sound file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{assetLayout?'Upload':<span className="editor-action-text">{audio&&!audio.startsWith('https://')?'Change':'Upload'}</span>}</button>
-  {!recording&&<button type="button" className={assetLayout?'media-action':undefined} aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>{assetLayout?'Paste link':<span className="editor-action-text">Link</span>}</button>}
+ const recordLabel=audio?'Re-record':'Record';
+ const uploadLabel=busy?'Adding…':audio&&!audio.startsWith('https://')?'Upload':(uploadEmptyLabel||'Upload');
+ const actions=recording?<button type="button" className={assetLayout?'media-action':'is-recording'} aria-label="Stop recording" title="Stop recording" onClick={stop}><Square size={13} fill="currentColor"/>Stop</button>:<>
+  <button type="button" className={assetLayout?'media-action':undefined} disabled={!!busy} aria-label={audio?'Re-record sound':'Record sound'} onClick={start}><Mic size={14}/>{assetLayout?recordLabel:<span className="editor-action-text">{recordLabel}</span>}</button>
+  <button type="button" className={assetLayout?'media-action':undefined} disabled={!!busy} aria-label={audio&&!audio.startsWith('https://')?'Change sound file':'Upload sound file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&!audio.startsWith('https://')?<RefreshCw size={14}/>:<Upload size={14}/>}{assetLayout?uploadLabel:<span className="editor-action-text">{audio&&!audio.startsWith('https://')?'Change':'Upload'}</span>}</button>
+  {!recording&&<button type="button" className={assetLayout?'media-action':undefined} aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>{assetLayout?linkLabel:<span className="editor-action-text">Link</span>}</button>}
   {audio&&!recording&&!isDriveLink(audio)&&<button type="button" className={assetLayout?'media-action':undefined} aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>{assetLayout?'Edit':<span className="editor-action-text">Edit</span>}</button>}
   {audio&&<button type="button" className={assetLayout?'media-action is-remove':'is-remove'} aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}
  </>;
@@ -148,10 +150,14 @@ export function SoundField({audio,edit,onEditChange,onChange,onError,onClearErro
  const linkForm=!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')&&!isDriveLink(audio)?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={async url=>{setLink(url);if(await applyLink(url))setLinking(false);}}/>;
  const clip=clipOpen&&audio&&<MediaClipEditor kind="audio" title={`Edit ${title.toLowerCase()}`} src={audio} initial={edit} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>;
  const fileInput=<input ref={input} type="file" hidden aria-label={`Upload ${title.toLowerCase()}`} accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>;
- if(assetLayout)return <article className={`asset${audio?' has-image':''}${linking?' is-linking':''}`} data-recording={recording||undefined}>
-  <div className="asset-top"><span className="asset-thumb" aria-hidden="true">{recording?<span className="sound-rec-dot"/>:(<AudioLines size={22}/>)}</span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></div>
-  <div className="asset-actions">{actions}</div>{fileInput}{player}{legacy}{warnEl}{linkForm}{clip}
- </article>;
+ if(assetLayout){
+  const actionRow=<div className={`asset-actions${!audio&&!recording?' is-multi':''}`}>{actions}</div>;
+  if(!audio&&!recording)return <article className={`asset is-empty-slot${linking?' is-linking':''}`}><div className="asset-empty-body"><span className="asset-empty-icon" aria-hidden="true"><AudioLines size={24}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className="asset-state is-empty">Not added</span></div><small className="asset-caption">{hint}</small></div></div>{actionRow}{fileInput}{linkForm}{clip}</article>;
+  return <article className={`asset${audio?' has-image':''}${linking?' is-linking':''}`} data-recording={recording||undefined}>
+   <div className="asset-top"><span className="asset-thumb" aria-hidden="true">{recording?<span className="sound-rec-dot"/>:(<AudioLines size={22}/>)}</span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></div>
+   {actionRow}{fileInput}{player}{legacy}{warnEl}{linkForm}{clip}
+  </article>;
+ }
  return <div className={`editor-inline-image editor-sound${audio?' has-image':''}${linking?' is-linking':''}`} data-recording={recording||undefined}>
   <span className="editor-inline-icon">{recording?<span className="sound-rec-dot" aria-hidden="true"/>:<AudioLines size={18}/>}</span>
   <div className="editor-inline-copy"><strong>{title}</strong><small>{caption}</small></div>

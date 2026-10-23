@@ -25,7 +25,7 @@ export function VideoPlayer({src,className='',label='Play video',edit}:{src:stri
  return <div className={`video-player ${className}`}><video ref={video} controls playsInline preload="metadata" src={src} onError={()=>setFailed(true)} onPlay={e=>{const el=e.currentTarget;const len=el.duration;if(!Number.isFinite(len))return;const clip=normalizeEdit(clipRef.current,len);if(clip&&el.currentTime<clip.trimStart)el.currentTime=clip.trimStart;}}/>{failed&&<p className="video-fallback">This video could not play. Try opening the link in a new tab.</p>}</div>;
 }
 
-export function VideoField({video,edit,onEditChange,onChange,onError,onClearError,title='Question video',hint='Prefer a short upload — large files fill browser storage quickly.',assetLayout,emptyHint}:{video?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string;assetLayout?:boolean;emptyHint?:string}){
+export function VideoField({video,edit,onEditChange,onChange,onError,onClearError,title='Question video',hint='Prefer a short upload — large files fill browser storage quickly.',assetLayout,emptyHint,linkLabel='Paste link',uploadEmptyLabel='Upload video'}:{video?:string;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string;assetLayout?:boolean;emptyHint?:string;linkLabel?:string;uploadEmptyLabel?:string}){
  const [busy,setBusy]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false);
  const input=React.useRef<HTMLInputElement>(null);
  useEffect(()=>{if(!video)setLinking(false);},[video]);
@@ -50,22 +50,23 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   }catch(e:any){onError(e.message||'This video could not be added.');}
   finally{setBusy('');}
  }
- const uploadBtn=<button type="button" className={assetLayout?'media-action':undefined} disabled={!!busy} aria-label={video?'Change video file':'Upload video file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:video&&!assetLayout?<RefreshCw size={14}/>:<Upload size={14}/>}{assetLayout?(busy?'Adding…':video?'Change':'Upload'):<span className="editor-action-text">{video?'Change':'Upload'}</span>}</button>;
- const linkBtn=<button type="button" className={assetLayout?'media-action':undefined} aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>{assetLayout?'Paste link':<span className="editor-action-text">Link</span>}</button>;
+ const uploadLabel=busy?'Adding…':video?'Change':uploadEmptyLabel;
+ const uploadBtn=<button type="button" className={assetLayout?'media-action':undefined} disabled={!!busy} aria-label={video?'Change video file':'Upload video file'} onClick={()=>{setLinking(false);input.current?.click();}}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:video?<RefreshCw size={14}/>:<Upload size={14}/>}{assetLayout?uploadLabel:<span className="editor-action-text">{video?'Change':'Upload'}</span>}</button>;
+ const linkBtn=<button type="button" className={assetLayout?'media-action':undefined} aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} disabled={!!busy} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>{assetLayout?linkLabel:<span className="editor-action-text">Link</span>}</button>;
  const fileInput=<input ref={input} type="file" hidden accept="video/*,.mp4,.webm,.mov" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>;
  const linkForm=linking&&<MediaLinkForm autoFocus label={`${title} link`} placeholder="https://…/clip.mp4" submitLabel="Add" initialUrl={video?.startsWith('https://')&&!isDriveLink(video)?video:''} onClearError={onClearError} onCancel={()=>setLinking(false)} onSubmit={url=>{if(applyLink(url))setLinking(false);}}/>;
  const clip=clipOpen&&video&&<MediaClipEditor kind="video" title={`Edit ${title.toLowerCase()}`} src={video} initial={edit} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>;
  if(assetLayout&&!video&&!isDriveLink(video||'')){
-  return <article className={`empty-drop${linking?' is-linking':''}`}>
-   <div className="empty-left"><span className="empty-symbol" aria-hidden="true"><Film size={17}/></span><span className="empty-text"><strong>{title}</strong><small>{emptyHint||'Short videos work best'}</small></span></div>
-   <div className="empty-drop-actions">{uploadBtn}{linkBtn}</div>{fileInput}{linkForm}
+  return <article className={`asset is-empty-slot${linking?' is-linking':''}`}>
+   <div className="asset-empty-body"><span className="asset-empty-icon" aria-hidden="true"><Film size={24}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className="asset-state is-empty">Not added</span></div><small className="asset-caption">{emptyHint||hint}</small></div></div>
+   <div className="asset-actions is-dual">{uploadBtn}{linkBtn}</div>{fileInput}{linkForm}
   </article>;
  }
  if(assetLayout){
   const badge=video?(isDriveLink(video)?'Needs attention':'Added'):'Not added';
   const badgeClass=`asset-state${!video?' is-empty':isDriveLink(video)?'':' is-ok'}`;
   return <article className={`asset${video?' has-image':''}${linking?' is-linking':''}`}>
-   <div className="asset-top"><span className="asset-thumb" aria-hidden="true"><Film size={22}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{busy||(video?'Plays with the question':hint)}</small></div></div>
+   <div className="asset-top"><span className="asset-thumb" aria-hidden="true"><Film size={22}/></span><div className="asset-copy"><div className="asset-name-line"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{busy||(video?'Tap to preview in the player below':hint)}</small></div></div>
    {video&&isDriveLink(video)&&<DriveShareLegacyNotice kind="video"/>}
    {video&&!isDriveLink(video)&&<VideoPlayer src={video} edit={edit} className="is-compact" label={`Preview ${title.toLowerCase()}`}/>}
    <div className="asset-actions">{uploadBtn}{linkBtn}{video&&!isDriveLink(video)&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}{video&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>{setLinking(false);onEditChange?.(undefined);onChange(undefined);}}><Trash2 size={14}/></button>}</div>
