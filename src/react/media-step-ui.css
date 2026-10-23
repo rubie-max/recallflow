@@ -38,17 +38,8 @@
 .editor-media-step .media-banner{display:block;width:100%;padding:0;border:1px solid #2a2e3a;border-radius:12px;overflow:hidden;background:#20242f;cursor:pointer}
 .editor-media-step .media-banner img{display:block;width:100%;max-height:170px;object-fit:cover}
 .editor-media-step .media-filemeta{margin-top:7px;font-size:11px;color:var(--ms-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.editor-media-step .asset-media-extra .sound-player.is-media{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;margin:0;width:100%;max-width:none;border:1px solid #2a2e3a;border-radius:12px;background:#12141c;padding:10px 12px;gap:12px;min-width:0}
-.editor-media-step .asset-media-extra .sound-play{width:40px;height:40px;flex:0 0 40px;background:#363051;border:1px solid #403858;color:#d4c8ff;border-radius:12px}
-.editor-media-step .asset-media-extra .sound-media-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
-.editor-media-step .asset-media-extra .sound-media-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-width:0}
-.editor-media-step .asset-media-extra .sound-filename{flex:1;min-width:0;font-size:11.5px;font-weight:550;color:#dfe1ea;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.editor-media-step .asset-media-extra .sound-time{flex:none;font-size:11px;color:var(--ms-muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-.editor-media-step .asset-media-extra .sound-wave{width:100%;height:24px;gap:2px}
-.editor-media-step .asset-media-extra .sound-wave i{width:2px;min-height:14%;border-radius:99px;background:#4a4668}
-.editor-media-step .asset-media-extra .sound-wave i[data-on]{background:#b5a3f4}
-.editor-media-step .asset-media-extra .video-player.is-compact{margin:0;max-width:100%;border:1px solid #2a2e3a;border-radius:12px;background:#12141c;overflow:hidden}
-.editor-media-step .asset-media-extra .video-player.is-compact video{display:block;width:100%;max-height:190px;border-radius:11px}
+.editor-media-step .asset-media-extra .vp{margin:0;max-width:100%}
+.editor-media-step .asset-media-extra .vp.is-compact video{max-height:190px}
 .editor-media-step .sound-rec-dot{width:12px;height:12px;border-radius:50%;background:#ff7a7f;box-shadow:0 0 0 4px #ff7a7f26;animation:sound-e-pulse 1s ease infinite}
 @keyframes sound-e-pulse{50%{opacity:.35}}
 /* Action row — grows to fill; wraps into a tidy even grid when space is tight */
@@ -80,8 +71,7 @@
  .editor-media-step .media-banner img{max-height:150px}
 }
 
-/* Sound card: progress bar player */
-.editor-media-step .asset-media-extra .sound-media-body{gap:6px}
+/* Legacy progress bar (recording UI) */
 .sound-progress{position:relative;display:block;height:4px;border-radius:4px;background:#3c3953;cursor:pointer;overflow:visible}
 .sound-progress::before{content:"";position:absolute;inset:-8px 0}
 .sound-progress i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:#b5a3f4;transition:width .12s linear}

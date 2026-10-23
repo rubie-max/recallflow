@@ -510,7 +510,8 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
  /* render */
  const left=duration?edit.trimStart/duration*100:0,right=duration?edit.trimEnd/duration*100:100;
  const vol=Math.round((edit.muted?0:edit.volume)*100),maxFade=Math.max(0.1,Math.min(10,len/2));
- const ruler=duration?[0,.25,.5,.75,1].map(f=>fmtTime(f*duration)):[];
+ const rf=duration<10?fmtFine:fmtTime;
+ const ruler=duration?[0,.25,.5,.75,1].map(fr=>rf(fr*duration)):[];
  const chip=(label:string,value:number,set:(t:number)=>void)=><span className="mc-chip"><i>{label}</i><span className="mc-nudge"><button type="button" aria-label={`${label} 0.1 s earlier`} disabled={!duration} onClick={()=>set(value-0.1)}><Minus size={13}/></button><b>{fmtFine(value)}</b><button type="button" aria-label={`${label} 0.1 s later`} disabled={!duration} onClick={()=>set(value+0.1)}><Plus size={13}/></button></span></span>;
 
  return createPortal(<div className="mc-layer" role="presentation" onKeyDown={onKey}>

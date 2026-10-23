@@ -2,7 +2,7 @@ import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2,AlertCircle,Scissors} from 'lucide-react';
 import {MediaLinkForm,DriveShareLegacyNotice,pushMediaLinkError} from './MediaLinkForm';
 import {MAX_AUDIO_CHARS,MAX_AUDIO_SECONDS,driveFileId,isDriveLink,resolveMediaLink,DRIVE_SHARE_REJECT,DRIVE_SHARE_LEGACY_HINT,typedMediaFile,blobToDataUrl,dataUrlLength,formatBytes,audioSafe} from '../question-types.js';
-import {MediaClipEditor,normalizeEdit,useClipPlayback,decodePeaks,probeMediaSrc,playbackSrc,fmtTime,type MediaEdit,type Peaks} from './MediaClipEditor';
+import {MediaClipEditor,normalizeEdit,useClipPlayback,decodePeaks,probeMediaSrc,playbackSrc,fmtTime,fmtFine,type MediaEdit,type Peaks} from './MediaClipEditor';
 import {playPreset} from '../feedback-sounds.js';
 
 const clamp=(v:number,a:number,b:number)=>Math.min(b,Math.max(a,v));
@@ -71,7 +71,8 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  const name=displayName||soundDisplayName(src),tip=fileTitle||name;
  const seekAt=(x:number)=>{const r=wave.current?.getBoundingClientRect();if(!r||!known)return;pb.seek(clip.trimStart+clamp((x-r.left)/r.width,0,1)*selLen);};
  if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
- const cur=known?fmtTime(Math.max(0,at-clip.trimStart)):'0:00',total=known?fmtTime(selLen):'–:––';
+ const f=selLen>0&&selLen<10?fmtFine:fmtTime;
+ const cur=known?f(Math.max(0,at-clip.trimStart)):'0:00',total=known?f(selLen):'–:––';
  return <div className={`sp sp-${variant} ${className}`.trim()} data-playing={playing||undefined} data-failed={failed||undefined}>
   <button type="button" className="sp-play" aria-label={playing?'Pause sound':label} onClick={pb.toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
   <div className="sp-body">
