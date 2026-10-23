@@ -29542,21 +29542,24 @@ async function soundFromFile(file, progress) {
     if (!typed)
         throw new Error('Choose a sound file (MP3, M4A, WAV, OGG or WebM).');
     const type = typed.type || guessType(file.name);
-    if (typed.size * 1.37 + 64 <= MAX_AUDIO_CHARS)
-        return dataUrl$1(typed instanceof File && typed.type ? typed : new Blob([typed], { type }));
-    if (typed.size > 40 * 1024 * 1024)
-        throw new Error('This file is too large. ' + tooLong);
-    const mime = recorderType();
-    if (!mime)
-        throw new Error('This sound is too large to store. ' + tooLong);
     const ctx = new AudioContext();
     try {
         await ctx.resume().catch(() => { });
+        const buffer = await ctx.decodeAudioData(await typed.arrayBuffer()).catch(() => { throw new Error('This sound file could not be opened.'); });
+        const duration = saneDuration(buffer.duration);
+        if (duration > MAX_SECONDS + 5)
+            throw new Error(`This clip is ${time(duration)} long. ${tooLong}`);
+        if (typed.size * 1.37 + 64 <= MAX_AUDIO_CHARS) {
+            const data = await dataUrl$1(typed instanceof File && typed.type ? typed : new Blob([typed], { type }));
+            return { data, duration };
+        }
+        if (typed.size > 40 * 1024 * 1024)
+            throw new Error('This file is too large. ' + tooLong);
+        const mime = recorderType();
+        if (!mime)
+            throw new Error('This sound is too large to store. ' + tooLong);
         if (ctx.state !== 'running')
             throw new Error('This sound is too large to store. ' + tooLong);
-        const buffer = await ctx.decodeAudioData(await typed.arrayBuffer()).catch(() => { throw new Error('This sound file could not be opened.'); });
-        if (buffer.duration > MAX_SECONDS + 5)
-            throw new Error(`This clip is ${time(buffer.duration)} long. ${tooLong}`);
         const out = ctx.createMediaStreamDestination(), source = ctx.createBufferSource();
         source.buffer = buffer;
         source.connect(out);
@@ -29567,7 +29570,7 @@ async function soundFromFile(file, progress) {
         const data = await dataUrl$1(await done);
         if (data.length > MAX_AUDIO_CHARS)
             throw new Error('This sound is still too large. ' + tooLong);
-        return data;
+        return { data, duration };
     }
     finally {
         ctx.close().catch(() => { });
@@ -29617,36 +29620,51 @@ function soundDisplayName(src, stored) {
     return title ? formatSoundFileName(title) : '';
 }
 function normalizeSoundFileName(name) { const base = (name || '').replace(/\\/g, '/').split('/').pop()?.trim().replace(/[\x00-\x1f<>:"|?*]/g, '').replace(/\s+/g, ' ') || ''; return base.slice(0, 120); }
-async function waveformPeaks(src, bars) {
+function saneDuration(d) {
+    return Number.isFinite(d) && d > 0 && d < 86400 ? d : 0;
+}
+function readElementDuration(el) {
+    const d = saneDuration(el.duration);
+    if (d)
+        return d;
+    try {
+        if (el.seekable.length > 0)
+            return saneDuration(el.seekable.end(el.seekable.length - 1));
+    }
+    catch { }
+    return 0;
+}
+async function decodeAudioMeta(src, bars) {
     const playback = src.startsWith('https://') ? resolveMediaPlaybackSrc(src) : src;
-    const flat = () => Array.from({ length: bars }, () => 28);
+    const empty = { duration: 0, peaks: Array.from({ length: bars }, () => 28) };
     if (!playback)
-        return flat();
+        return empty;
     try {
         const res = await fetch(playback);
         if (!res.ok)
-            return flat();
+            return empty;
         const ctx = new AudioContext();
         try {
             const buf = await ctx.decodeAudioData(await res.arrayBuffer());
             const ch = buf.getChannelData(0), block = Math.max(1, Math.floor(ch.length / bars));
-            return Array.from({ length: bars }, (_, i) => { let sum = 0; for (let j = 0; j < block; j++)
+            const peaks = Array.from({ length: bars }, (_, i) => { let sum = 0; for (let j = 0; j < block; j++)
                 sum += Math.abs(ch[i * block + j] ?? 0); return Math.round(18 + Math.min(78, sum / block * 520)); });
+            return { duration: saneDuration(buf.duration), peaks };
         }
         finally {
             await ctx.close().catch(() => { });
         }
     }
     catch {
-        return flat();
+        return empty;
     }
 }
 function useSoundWaveHeights(audio, src, bars, playing) {
     const [peaks, setPeaks] = reactExports.useState(() => Array.from({ length: bars }, () => 28));
     const [live, setLive] = reactExports.useState(null);
     const graph = reactExports.useRef(null);
-    reactExports.useEffect(() => { let cancelled = false; setPeaks(Array.from({ length: bars }, () => 28)); void waveformPeaks(src, bars).then(p => { if (!cancelled)
-        setPeaks(p); }); return () => { cancelled = true; }; }, [src, bars]);
+    reactExports.useEffect(() => { let cancelled = false; setPeaks(Array.from({ length: bars }, () => 28)); void decodeAudioMeta(src, bars).then(m => { if (!cancelled)
+        setPeaks(m.peaks); }); return () => { cancelled = true; }; }, [src, bars]);
     reactExports.useEffect(() => {
         const el = audio.current;
         if (!playing || !el) {
@@ -29702,16 +29720,22 @@ function probeAudioLink(url) {
         el.src = playback;
     });
 }
-function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'default', edit, displayName, fileTitle }) {
+function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'default', edit, displayName, fileTitle, durationHint }) {
     const audio = reactExports.useRef(null), [playing, setPlaying] = reactExports.useState(false), [at, setAt] = reactExports.useState(0), [length, setLength] = reactExports.useState(0), [failed, setFailed] = reactExports.useState(false);
     const clip = length > 0 ? normalizeEdit(edit, length) : edit;
+    const setDuration = (d) => { const n = saneDuration(d); if (n)
+        setLength(n); };
     reactExports.useEffect(() => { setPlaying(false); setAt(0); setLength(0); setFailed(false); return () => audio.current?.pause(); }, [src]);
+    reactExports.useEffect(() => { if (durationHint)
+        setDuration(durationHint); }, [durationHint]);
+    reactExports.useEffect(() => { let cancelled = false; void decodeAudioMeta(src, 32).then(m => { if (!cancelled && m.duration)
+        setLength(m.duration); }); return () => { cancelled = true; }; }, [src]);
     reactExports.useEffect(() => { const a = audio.current; if (a) {
         a.muted = !!clip?.muted;
         a.volume = clip?.volume ?? 1;
     } }, [clip?.muted, clip?.volume, src]);
-    const known = Number.isFinite(length) && length > 0;
-    const played = known ? (clip ? Math.max(0, Math.min(1, (at - clip.trimStart) / Math.max(0.05, clip.trimEnd - clip.trimStart))) : at / length) : (playing ? 1 : 0);
+    const known = length > 0;
+    const played = known ? (clip ? Math.max(0, Math.min(1, (at - clip.trimStart) / Math.max(0.05, clip.trimEnd - clip.trimStart))) : at / length) : 0;
     const bars = variant === 'media' ? 40 : 30;
     const waveHeights = useSoundWaveHeights(audio, src, bars, playing && variant === 'overlay');
     const name = displayName || soundDisplayName(src);
@@ -29727,13 +29751,17 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
         a.pause(); }
     function seek(e) { const a = audio.current; if (!a || !known)
         return; const r = e.currentTarget.getBoundingClientRect(); const f = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)), t = clip ? clip.trimStart + f * (clip.trimEnd - clip.trimStart) : f * length; const next = clip ? Math.min(clip.trimEnd, Math.max(clip.trimStart, t)) : Math.min(length, Math.max(0, t)); a.currentTime = next; setAt(next); }
+    function onMeta(e) { setDuration(readElementDuration(e.currentTarget)); }
     function onTime() { const a = audio.current; if (!a)
-        return; setAt(a.currentTime); if (clip && a.currentTime >= clip.trimEnd - 0.02 && !a.paused) {
+        return; setAt(a.currentTime); if (!length)
+        setDuration(readElementDuration(a)); if (clip && a.currentTime >= clip.trimEnd - 0.02 && !a.paused) {
         a.pause();
         a.currentTime = clip.trimStart;
         setAt(a.currentTime);
         setPlaying(false);
     } }
+    function onDone(e) { setPlaying(false); const el = e.currentTarget, t = el.currentTime; if (t > 0 && !length)
+        setDuration(t); const start = clip?.trimStart ?? 0; el.currentTime = start; setAt(start); }
     if (isDriveLink(src))
         return React.createElement(DriveShareLegacyNotice, { kind: "sound" });
     const durationLabel = known ? time(clip ? clip.trimEnd - clip.trimStart : length) : '0:00';
@@ -29752,12 +29780,12 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
                 : React.createElement("span", { className: "sound-body" },
                     React.createElement("span", { className: "sound-title" }, failed ? 'This sound could not play' : playing ? 'Playing' : 'Listen'),
                     React.createElement("span", { className: "sound-bar", onClick: seek },
-                        React.createElement("i", { style: { width: `${known ? at / length * 100 : playing ? 100 : 0}%` }, "data-live": !known && playing || undefined }))),
+                        React.createElement("i", { style: { width: `${known ? at / length * 100 : 0}%` }, "data-live": !known && playing || undefined }))),
         variant !== 'media' && React.createElement("span", { className: "sound-time" }, known ? time(playing || at ? at : length) : at ? time(at) : ''),
-        React.createElement("audio", { ref: audio, src: src.startsWith('https://') ? resolveMediaPlaybackSrc(src) : src, preload: "metadata", onPlay: () => setPlaying(true), onPause: () => setPlaying(false), onEnded: e => { setPlaying(false); const start = clip?.trimStart ?? 0; e.currentTarget.currentTime = start; setAt(start); }, onTimeUpdate: onTime, onLoadedMetadata: e => setLength(e.currentTarget.duration), onDurationChange: e => setLength(e.currentTarget.duration), onError: () => setFailed(true) }));
+        React.createElement("audio", { ref: audio, src: src.startsWith('https://') ? resolveMediaPlaybackSrc(src) : src, preload: "auto", onPlay: () => setPlaying(true), onPause: () => setPlaying(false), onEnded: onDone, onTimeUpdate: onTime, onLoadedMetadata: onMeta, onDurationChange: onMeta, onError: () => setFailed(true) }));
 }
 function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, onChange, onError, onClearError, title = 'Question sound', hint = 'Optional · record, upload, or paste an https audio file', assetLayout, linkLabel = 'Paste link', uploadEmptyLabel = 'Upload' }) {
-    const [recording, setRecording] = reactExports.useState(false), [seconds, setSeconds] = reactExports.useState(0), [busy, setBusy] = reactExports.useState(''), [link, setLink] = reactExports.useState(''), [linking, setLinking] = reactExports.useState(false), [clipOpen, setClipOpen] = reactExports.useState(false), [warn, setWarn] = reactExports.useState('');
+    const [recording, setRecording] = reactExports.useState(false), [seconds, setSeconds] = reactExports.useState(0), [busy, setBusy] = reactExports.useState(''), [link, setLink] = reactExports.useState(''), [linking, setLinking] = reactExports.useState(false), [clipOpen, setClipOpen] = reactExports.useState(false), [warn, setWarn] = reactExports.useState(''), [durationHint, setDurationHint] = reactExports.useState();
     const live = reactExports.useRef(null), input = reactExports.useRef(null);
     const [countIn, setCountIn] = reactExports.useState(null), cancelCount = reactExports.useRef(false);
     reactExports.useEffect(() => () => { const l = live.current; if (l) {
@@ -29769,6 +29797,7 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
     else if (!audio) {
         setLink('');
         setLinking(false);
+        setDurationHint(undefined);
     } }, [audio]);
     reactExports.useEffect(() => {
         setWarn('');
@@ -29874,18 +29903,21 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         onEditChange?.(undefined);
         onChange(data);
         onAudioNameChange?.(recordingFileName(blob.type || recorderType() || 'audio/webm'));
+        setDurationHint(Math.max(1, Math.round(seconds)) || undefined);
     }
     function stop() { const r = live.current?.recorder; if (r && r.state === 'recording')
         r.stop(); }
-    function clearAudio() { setLinking(false); setLink(''); setWarn(''); onEditChange?.(undefined); onAudioNameChange?.(undefined); onChange(undefined); }
+    function clearAudio() { setLinking(false); setLink(''); setWarn(''); setDurationHint(undefined); onEditChange?.(undefined); onAudioNameChange?.(undefined); onChange(undefined); }
     async function upload(file) {
         if (!file)
             return;
         onError('');
-        setBusy('Adding…');
+        setBusy('Reading sound…');
         try {
             onEditChange?.(undefined);
-            onChange(await soundFromFile(file, pct => setBusy(`Shrinking… ${pct}%`)));
+            const { data, duration } = await soundFromFile(file, pct => setBusy(pct < 100 ? `Processing… ${pct}%` : 'Almost done…'));
+            onChange(data);
+            setDurationHint(duration || undefined);
             onAudioNameChange?.(normalizeSoundFileName(file.name));
         }
         catch (e) {
@@ -29938,7 +29970,7 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
     const shownName = audio ? soundDisplayName(audio, audioName) : '';
     const fullName = audio ? soundFileTitle(audio, audioName) : '';
     const player = audio && !recording && !isDriveLink(audio) && (assetLayout ? React.createElement("div", { className: "asset-media-extra" },
-        React.createElement(SoundPlayer, { src: audio, edit: edit, variant: "media", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" })) : React.createElement(SoundPlayer, { src: audio, edit: edit, displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "quiz-sound editor-sound-player" }));
+        React.createElement(SoundPlayer, { src: audio, edit: edit, durationHint: durationHint, variant: "media", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" })) : React.createElement(SoundPlayer, { src: audio, edit: edit, durationHint: durationHint, displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "quiz-sound editor-sound-player" }));
     const legacy = audio && !recording && isDriveLink(audio) && React.createElement(DriveShareLegacyNotice, { kind: "sound" });
     const warnEl = warn && !recording && React.createElement("p", { className: assetLayout ? 'media-alert' : 'editor-inline-warn', role: "status" },
         React.createElement(CircleAlert, { size: 14, "aria-hidden": "true" }),

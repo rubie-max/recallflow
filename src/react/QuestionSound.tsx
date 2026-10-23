@@ -22,19 +22,23 @@ function record(stream:MediaStream,type:string){
 }
 
 // Large files are played through a recorder once, which shrinks them to a small voice-quality clip.
-async function soundFromFile(file:File,progress:(pct:number)=>void){
+async function soundFromFile(file:File,progress:(pct:number)=>void):Promise<{data:string;duration:number}>{
  const typed=typedMediaFile(file,'audio') as File|Blob|null;
  if(!typed)throw new Error('Choose a sound file (MP3, M4A, WAV, OGG or WebM).');
  const type=typed.type||guessType((file as File).name);
- if(typed.size*1.37+64<=MAX_AUDIO_CHARS)return dataUrl(typed instanceof File&&typed.type?typed:new Blob([typed],{type}));
- if(typed.size>40*1024*1024)throw new Error('This file is too large. '+tooLong);
- const mime=recorderType();if(!mime)throw new Error('This sound is too large to store. '+tooLong);
  const ctx=new AudioContext();
  try{
   await ctx.resume().catch(()=>{});
-  if(ctx.state!=='running')throw new Error('This sound is too large to store. '+tooLong);
   const buffer=await ctx.decodeAudioData(await typed.arrayBuffer()).catch(()=>{throw new Error('This sound file could not be opened.');});
-  if(buffer.duration>MAX_SECONDS+5)throw new Error(`This clip is ${time(buffer.duration)} long. ${tooLong}`);
+  const duration=saneDuration(buffer.duration);
+  if(duration>MAX_SECONDS+5)throw new Error(`This clip is ${time(duration)} long. ${tooLong}`);
+  if(typed.size*1.37+64<=MAX_AUDIO_CHARS){
+   const data=await dataUrl(typed instanceof File&&typed.type?typed:new Blob([typed],{type}));
+   return {data,duration};
+  }
+  if(typed.size>40*1024*1024)throw new Error('This file is too large. '+tooLong);
+  const mime=recorderType();if(!mime)throw new Error('This sound is too large to store. '+tooLong);
+  if(ctx.state!=='running')throw new Error('This sound is too large to store. '+tooLong);
   const out=ctx.createMediaStreamDestination(),source=ctx.createBufferSource();source.buffer=buffer;source.connect(out);
   const {recorder,done}=record(out.stream,mime),started=ctx.currentTime;
   const tick=window.setInterval(()=>progress(Math.min(99,Math.round((ctx.currentTime-started)/buffer.duration*100))),250);
@@ -42,7 +46,7 @@ async function soundFromFile(file:File,progress:(pct:number)=>void){
   source.start();
   const data=await dataUrl(await done);
   if(data.length>MAX_AUDIO_CHARS)throw new Error('This sound is still too large. '+tooLong);
-  return data;
+  return {data,duration};
  }finally{ctx.close().catch(()=>{});}
 }
 
@@ -82,27 +86,37 @@ export function soundDisplayName(src:string,stored?:string){
  return title?formatSoundFileName(title):'';
 }
 export function normalizeSoundFileName(name:string){const base=(name||'').replace(/\\/g,'/').split('/').pop()?.trim().replace(/[\x00-\x1f<>:"|?*]/g,'').replace(/\s+/g,' ')||'';return base.slice(0,120);}
-async function waveformPeaks(src:string,bars:number){
+function saneDuration(d:number){
+ return Number.isFinite(d)&&d>0&&d<86400?d:0;
+}
+function readElementDuration(el:HTMLAudioElement){
+ const d=saneDuration(el.duration);
+ if(d)return d;
+ try{if(el.seekable.length>0)return saneDuration(el.seekable.end(el.seekable.length-1));}catch{}
+ return 0;
+}
+async function decodeAudioMeta(src:string,bars:number){
  const playback=src.startsWith('https://')?resolveMediaPlaybackSrc(src):src;
- const flat=()=>Array.from({length:bars},()=>28);
- if(!playback)return flat();
+ const empty={duration:0,peaks:Array.from({length:bars},()=>28)};
+ if(!playback)return empty;
  try{
   const res=await fetch(playback);
-  if(!res.ok)return flat();
+  if(!res.ok)return empty;
   const ctx=new AudioContext();
   try{
    const buf=await ctx.decodeAudioData(await res.arrayBuffer());
    const ch=buf.getChannelData(0),block=Math.max(1,Math.floor(ch.length/bars));
-   return Array.from({length:bars},(_,i)=>{let sum=0;for(let j=0;j<block;j++)sum+=Math.abs(ch[i*block+j]??0);return Math.round(18+Math.min(78,sum/block*520));});
+   const peaks=Array.from({length:bars},(_,i)=>{let sum=0;for(let j=0;j<block;j++)sum+=Math.abs(ch[i*block+j]??0);return Math.round(18+Math.min(78,sum/block*520));});
+   return {duration:saneDuration(buf.duration),peaks};
   }finally{await ctx.close().catch(()=>{});}
- }catch{return flat();}
+ }catch{return empty;}
 }
 
 function useSoundWaveHeights(audio:React.RefObject<HTMLAudioElement|null>,src:string,bars:number,playing:boolean){
  const [peaks,setPeaks]=useState<number[]>(()=>Array.from({length:bars},()=>28));
  const [live,setLive]=useState<number[]|null>(null);
  const graph=useRef<{el:HTMLAudioElement;ctx:AudioContext;analyser:AnalyserNode;raf:number}|null>(null);
- useEffect(()=>{let cancelled=false;setPeaks(Array.from({length:bars},()=>28));void waveformPeaks(src,bars).then(p=>{if(!cancelled)setPeaks(p);});return()=>{cancelled=true;};},[src,bars]);
+ useEffect(()=>{let cancelled=false;setPeaks(Array.from({length:bars},()=>28));void decodeAudioMeta(src,bars).then(m=>{if(!cancelled)setPeaks(m.peaks);});return()=>{cancelled=true;};},[src,bars]);
  useEffect(()=>{
   const el=audio.current;
   if(!playing||!el){if(graph.current)cancelAnimationFrame(graph.current.raf);setLive(null);return;}
@@ -142,20 +156,25 @@ export function probeAudioLink(url:string){
  });
 }
 
-export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media';edit?:MediaEdit;displayName?:string;fileTitle?:string}){
+export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number}){
  const audio=useRef<HTMLAudioElement>(null),[playing,setPlaying]=useState(false),[at,setAt]=useState(0),[length,setLength]=useState(0),[failed,setFailed]=useState(false);
  const clip=length>0?normalizeEdit(edit,length):edit;
+ const setDuration=(d:number)=>{const n=saneDuration(d);if(n)setLength(n);};
  useEffect(()=>{setPlaying(false);setAt(0);setLength(0);setFailed(false);return()=>audio.current?.pause();},[src]);
+ useEffect(()=>{if(durationHint)setDuration(durationHint);},[durationHint]);
+ useEffect(()=>{let cancelled=false;void decodeAudioMeta(src,32).then(m=>{if(!cancelled&&m.duration)setLength(m.duration);});return()=>{cancelled=true;};},[src]);
  useEffect(()=>{const a=audio.current;if(a){a.muted=!!clip?.muted;a.volume=clip?.volume??1;}},[clip?.muted,clip?.volume,src]);
- const known=Number.isFinite(length)&&length>0;
- const played=known?(clip?Math.max(0,Math.min(1,(at-clip.trimStart)/Math.max(0.05,clip.trimEnd-clip.trimStart))):at/length):(playing?1:0);
+ const known=length>0;
+ const played=known?(clip?Math.max(0,Math.min(1,(at-clip.trimStart)/Math.max(0.05,clip.trimEnd-clip.trimStart))):at/length):0;
  const bars=variant==='media'?40:30;
  const waveHeights=useSoundWaveHeights(audio,src,bars,playing&&variant==='overlay');
  const name=displayName||soundDisplayName(src);
  const tip=fileTitle||name;
  function toggle(){const a=audio.current;if(!a)return;if(a.paused){setFailed(false);if(clip&&a.currentTime<clip.trimStart)a.currentTime=clip.trimStart;a.play().catch(()=>setFailed(true));}else a.pause();}
  function seek(e:React.MouseEvent<HTMLSpanElement>){const a=audio.current;if(!a||!known)return;const r=e.currentTarget.getBoundingClientRect();const f=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),t=clip?clip.trimStart+f*(clip.trimEnd-clip.trimStart):f*length;const next=clip?Math.min(clip.trimEnd,Math.max(clip.trimStart,t)):Math.min(length,Math.max(0,t));a.currentTime=next;setAt(next);}
- function onTime(){const a=audio.current;if(!a)return;setAt(a.currentTime);if(clip&&a.currentTime>=clip.trimEnd-0.02&&!a.paused){a.pause();a.currentTime=clip.trimStart;setAt(a.currentTime);setPlaying(false);}}
+ function onMeta(e:React.SyntheticEvent<HTMLAudioElement>){setDuration(readElementDuration(e.currentTarget));}
+ function onTime(){const a=audio.current;if(!a)return;setAt(a.currentTime);if(!length)setDuration(readElementDuration(a));if(clip&&a.currentTime>=clip.trimEnd-0.02&&!a.paused){a.pause();a.currentTime=clip.trimStart;setAt(a.currentTime);setPlaying(false);}}
+ function onDone(e:React.SyntheticEvent<HTMLAudioElement>){setPlaying(false);const el=e.currentTarget,t=el.currentTime;if(t>0&&!length)setDuration(t);const start=clip?.trimStart??0;el.currentTime=start;setAt(start);}
  if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
  const durationLabel=known?time(clip?clip.trimEnd-clip.trimStart:length):'0:00';
  return <div className={`sound-player ${variant==='overlay'?'is-overlay':variant==='media'?'is-media':''} ${className}`.trim()} data-playing={playing||undefined}>
@@ -164,18 +183,18 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
    ? <span className="sound-media-body"><span className="sound-filename" title={failed||tip===name?undefined:tip}>{failed?'Could not play':name}</span><span className="sound-progress" onClick={seek} role="presentation" aria-hidden="true"><i style={{width:`${played*100}%`}}/></span><span className="sound-times" aria-hidden="true"><span>{known?time(clip?Math.max(0,at-clip.trimStart):at):'0:00'}</span><span>{durationLabel}</span></span></span>
    :variant==='overlay'
    ? <span className="sound-wave" onClick={seek} role="presentation">{Array.from({length:bars},(_,i)=><i key={i} data-on={i/bars<=played||undefined} style={{height:`${waveHeights[i]??28}%`}}/>)}</span>
-   : <span className="sound-body"><span className="sound-title">{failed?'This sound could not play':playing?'Playing':'Listen'}</span><span className="sound-bar" onClick={seek}><i style={{width:`${known?at/length*100:playing?100:0}%`}} data-live={!known&&playing||undefined}/></span></span>}
+   : <span className="sound-body"><span className="sound-title">{failed?'This sound could not play':playing?'Playing':'Listen'}</span><span className="sound-bar" onClick={seek}><i style={{width:`${known?at/length*100:0}%`}} data-live={!known&&playing||undefined}/></span></span>}
   {variant!=='media'&&<span className="sound-time">{known?time(playing||at?at:length):at?time(at):''}</span>}
-  <audio ref={audio} src={src.startsWith('https://')?resolveMediaPlaybackSrc(src):src} preload="metadata" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={e=>{setPlaying(false);const start=clip?.trimStart??0;e.currentTarget.currentTime=start;setAt(start);}} onTimeUpdate={onTime} onLoadedMetadata={e=>setLength(e.currentTarget.duration)} onDurationChange={e=>setLength(e.currentTarget.duration)} onError={()=>setFailed(true)}/>
+  <audio ref={audio} src={src.startsWith('https://')?resolveMediaPlaybackSrc(src):src} preload="auto" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onEnded={onDone} onTimeUpdate={onTime} onLoadedMetadata={onMeta} onDurationChange={onMeta} onError={()=>setFailed(true)}/>
  </div>;
 }
 
 export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,onChange,onError,onClearError,title='Question sound',hint='Optional · record, upload, or paste an https audio file',assetLayout,linkLabel='Paste link',uploadEmptyLabel='Upload'}:{audio?:string;audioName?:string;onAudioNameChange?:(value?:string)=>void;edit?:MediaEdit;onEditChange?:(value?:MediaEdit)=>void;onChange:(value?:string)=>void;onError:(message:string)=>void;onClearError?:()=>void;title?:string;hint?:string;assetLayout?:boolean;linkLabel?:string;uploadEmptyLabel?:string}){
- const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false),[warn,setWarn]=useState('');
+ const [recording,setRecording]=useState(false),[seconds,setSeconds]=useState(0),[busy,setBusy]=useState(''),[link,setLink]=useState(''),[linking,setLinking]=useState(false),[clipOpen,setClipOpen]=useState(false),[warn,setWarn]=useState(''),[durationHint,setDurationHint]=useState<number|undefined>();
  const live=useRef<{recorder:MediaRecorder,stream:MediaStream,timer:number}|null>(null),input=useRef<HTMLInputElement>(null);
  const [countIn,setCountIn]=useState<number|null>(null),cancelCount=useRef(false);
  useEffect(()=>()=>{const l=live.current;if(l){window.clearInterval(l.timer);l.stream.getTracks().forEach(t=>t.stop());}},[]);
- useEffect(()=>{if(audio?.startsWith('https://'))setLink(audio);else if(!audio){setLink('');setLinking(false);}},[audio]);
+ useEffect(()=>{if(audio?.startsWith('https://'))setLink(audio);else if(!audio){setLink('');setLinking(false);setDurationHint(undefined);}},[audio]);
  useEffect(()=>{
   setWarn('');
   if(!audio?.startsWith('https://'))return;
@@ -230,12 +249,13 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
   if(data.length>MAX_AUDIO_CHARS){onError('This recording is too large. '+tooLong);return;}
   onEditChange?.(undefined);onChange(data);
   onAudioNameChange?.(recordingFileName(blob.type||recorderType()||'audio/webm'));
+  setDurationHint(Math.max(1,Math.round(seconds))||undefined);
  }
  function stop(){const r=live.current?.recorder;if(r&&r.state==='recording')r.stop();}
- function clearAudio(){setLinking(false);setLink('');setWarn('');onEditChange?.(undefined);onAudioNameChange?.(undefined);onChange(undefined);}
+ function clearAudio(){setLinking(false);setLink('');setWarn('');setDurationHint(undefined);onEditChange?.(undefined);onAudioNameChange?.(undefined);onChange(undefined);}
  async function upload(file?:File){
-  if(!file)return;onError('');setBusy('Adding…');
-  try{onEditChange?.(undefined);onChange(await soundFromFile(file,pct=>setBusy(`Shrinking… ${pct}%`)));onAudioNameChange?.(normalizeSoundFileName(file.name));}
+  if(!file)return;onError('');setBusy('Reading sound…');
+  try{onEditChange?.(undefined);const {data,duration}=await soundFromFile(file,pct=>setBusy(pct<100?`Processing… ${pct}%`:'Almost done…'));onChange(data);setDurationHint(duration||undefined);onAudioNameChange?.(normalizeSoundFileName(file.name));}
   catch(e:any){onError(e.message||'This sound could not be added.');}
   finally{setBusy('');}
  }
@@ -259,7 +279,7 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
  </>;
  const shownName=audio?soundDisplayName(audio,audioName):'';
  const fullName=audio?soundFileTitle(audio,audioName):'';
- const player=audio&&!recording&&!isDriveLink(audio)&&(assetLayout?<div className="asset-media-extra"><SoundPlayer src={audio} edit={edit} variant="media" displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/></div>:<SoundPlayer src={audio} edit={edit} displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/>);
+ const player=audio&&!recording&&!isDriveLink(audio)&&(assetLayout?<div className="asset-media-extra"><SoundPlayer src={audio} edit={edit} durationHint={durationHint} variant="media" displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/></div>:<SoundPlayer src={audio} edit={edit} durationHint={durationHint} displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="quiz-sound editor-sound-player"/>);
  const legacy=audio&&!recording&&isDriveLink(audio)&&<DriveShareLegacyNotice kind="sound"/>;
  const warnEl=warn&&!recording&&<p className={assetLayout?'media-alert':'editor-inline-warn'} role="status"><AlertCircle size={14} aria-hidden="true"/><span>{assetLayout&&warn.includes('cannot play')?<><strong>Linked sound can’t play.</strong> Remove it, upload the file, or use a direct audio URL.</>:warn}</span></p>;
  const linkForm=!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={audio?.startsWith('https://')&&!isDriveLink(audio)?audio:link} onClearError={onClearError} onCancel={()=>{setLink('');setLinking(false);onClearError?.();}} onSubmit={async url=>{setLink(url);if(await applyLink(url))setLinking(false);}}/>;
