@@ -1,6 +1,6 @@
 import React,{useState,useRef} from 'react';
 import {Plus,Trash2,ArrowUp,ArrowDown,Check,Save,LoaderCircle,ImagePlus,Eye,Volume2,X,Maximize2,RefreshCw,Link2,Shuffle,Layers,Upload,Crop,Info,AlertCircle,CircleCheck} from 'lucide-react';
-import {MediaLinkForm} from './MediaLinkForm';
+import {MediaLinkForm,pushMediaLinkError} from './MediaLinkForm';
 import {ImageEditor} from './ImageEditor';
 import {ImageViewer,ZoomableImage} from './ImageViewer';
 import {typeLabel,gradeQuestion,extraTypes,questionTypes,resolveImageLink,driveFileId,DRIVE_SHARE_REJECT,typedMediaFile} from '../question-types.js';
@@ -206,7 +206,7 @@ export function QuestionEditor({draft,setDraft,onSave,onCancel,busy,status,saved
   if(file.size>25*1024*1024){setMediaError('Choose an image under 25 MB.');return;}
   setEditImg({src:URL.createObjectURL(file),key,target,temp:true});
  }
- async function link(url:string,key?:string,target:'image'|'answerImage'='image'){setMediaError('');try{const {image,linked}=await imageFromLink(url);if(linked){await place(image,key,target);}else setEditImg({src:image,key,target});return true;}catch(e:any){setMediaError(e.message);return false;}}
+ async function link(url:string,key?:string,target:'image'|'answerImage'='image'){setMediaError('');try{const {image,linked}=await imageFromLink(url);if(linked){await place(image,key,target);}else setEditImg({src:image,key,target});return true;}catch(e:any){pushMediaLinkError(e.message||'That image link could not be added.');return false;}}
  function closeEditor(){if(editImg?.temp)URL.revokeObjectURL(editImg.src);setEditImg(null);}
  const removeChoiceImage=(choice:string)=>field('optionImages',Object.fromEntries(Object.entries(d.optionImages||{}).filter(([key])=>key!==choice)));
  const choiceImages=imageTypes.includes(d.type);

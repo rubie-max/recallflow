@@ -29120,6 +29120,10 @@ function ExtraAnswer(props) {
 var reactDomExports = requireReactDom();
 
 const ERROR_EVENT = 'recallflow:media-error';
+function pushMediaLinkError(message) {
+    if (message)
+        window.dispatchEvent(new CustomEvent(ERROR_EVENT, { detail: message }));
+}
 function DriveShareLegacyNotice({ kind = 'media' }) {
     const what = kind === 'sound' ? 'Sound' : kind === 'video' ? 'Video' : 'Media';
     return React.createElement("p", { className: "media-drive-legacy", role: "status" },
@@ -29129,48 +29133,74 @@ function DriveShareLegacyNotice({ kind = 'media' }) {
         " ",
         DRIVE_SHARE_LEGACY_HINT);
 }
+function bandTitle(label) {
+    const t = label.replace(/\s*link$/i, '').trim() || 'Media';
+    return /^add\s/i.test(t) ? t : `Add ${t.toLowerCase()} link`;
+}
+function linkHint(label) {
+    const l = label.toLowerCase();
+    if (l.includes('image') || l.includes('picture'))
+        return 'Paste a direct https link to an image file (PNG, JPEG, WebP, GIF).';
+    if (l.includes('video'))
+        return 'Paste a direct https link to a video file (MP4, WebM).';
+    return 'Paste a direct https link to an audio file (MP3, WAV, OGG, …).';
+}
+function bandIcon(label) {
+    const l = label.toLowerCase();
+    if (l.includes('image') || l.includes('picture'))
+        return Image$1;
+    if (l.includes('video'))
+        return Film;
+    return Link2;
+}
 function MediaLinkForm({ id, label, placeholder = 'https://…', submitLabel = 'Add', initialUrl = '', autoFocus = false, resolve = resolveMediaLink, onSubmit, onCancel, onClearError }) {
     const [url, setUrl] = reactExports.useState(initialUrl), [busy, setBusy] = reactExports.useState(false), [error, setError] = reactExports.useState('');
+    const Icon = bandIcon(label);
     reactExports.useEffect(() => { setUrl(initialUrl); }, [initialUrl]);
     reactExports.useEffect(() => { const on = (e) => setError(String(e.detail || '')); window.addEventListener(ERROR_EVENT, on); return () => window.removeEventListener(ERROR_EVENT, on); }, []);
+    const clearInput = () => { if (busy)
+        return; setUrl(''); setError(''); onClearError?.(); };
     const submit = async () => { if (!url.trim() || busy)
-        return; setBusy(true); setError(''); try {
+        return; setBusy(true); setError(''); onClearError?.(); try {
         await onSubmit(resolve(url.trim()));
+    }
+    catch (e) {
+        const msg = e?.message || 'That link could not be added.';
+        setError(msg);
+        pushMediaLinkError(msg);
     }
     finally {
         setBusy(false);
     } };
     const cancel = () => { if (busy)
-        return; setUrl(''); onClearError?.(); onCancel(); };
-    const title = label.replace(/\s*link$/i, '') || 'Media';
+        return; setUrl(''); setError(''); onClearError?.(); onCancel(); };
     return reactDomExports.createPortal(React.createElement("div", { className: "media-link-layer", onMouseDown: e => { if (e.target === e.currentTarget)
             cancel(); } },
-        React.createElement("section", { className: "media-link-dialog", role: "dialog", "aria-modal": "true", "aria-labelledby": `${id || 'media-link'}-title`, id: id },
-            React.createElement("header", null,
-                React.createElement("span", { className: "media-link-ico", "aria-hidden": "true" },
-                    React.createElement(Link2, { size: 18 })),
-                React.createElement("div", null,
-                    React.createElement("h3", { id: `${id || 'media-link'}-title` },
-                        "Add ",
-                        title.toLowerCase(),
-                        " from a link"),
-                    React.createElement("p", null, "Paste a direct https link to the file.")),
-                React.createElement("button", { type: "button", className: "media-link-close", "aria-label": "Close link", disabled: busy, onClick: cancel },
+        React.createElement("section", { className: "media-link-dialog is-band", role: "dialog", "aria-modal": "true", "aria-labelledby": `${id || 'media-link'}-title`, id: id },
+            React.createElement("div", { className: "media-link-band" },
+                React.createElement(Icon, { size: 18, "aria-hidden": "true" }),
+                React.createElement("h3", { id: `${id || 'media-link'}-title` }, bandTitle(label)),
+                React.createElement("button", { type: "button", className: "media-link-close", "aria-label": "Close", disabled: busy, onClick: cancel },
                     React.createElement(X, { size: 18 }))),
-            React.createElement("input", { type: "url", inputMode: "url", autoFocus: autoFocus, "aria-label": label, placeholder: placeholder, value: url, disabled: busy, onChange: e => { setUrl(e.target.value); setError(''); onClearError?.(); }, onKeyDown: e => { if (e.key === 'Enter') {
-                    e.preventDefault();
-                    void submit();
-                } if (e.key === 'Escape') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    cancel();
-                } } }),
-            error && React.createElement("p", { className: "media-link-error", role: "alert" },
-                React.createElement(CircleAlert, { size: 15, "aria-hidden": "true" }),
-                React.createElement("span", null, error)),
-            React.createElement("footer", null,
-                React.createElement("button", { type: "button", className: "media-link-cancel", disabled: busy, onClick: cancel }, "Cancel"),
-                React.createElement("button", { type: "button", className: "media-link-add", disabled: !url.trim() || busy, onClick: () => void submit() }, busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : submitLabel)))), document.body);
+            React.createElement("div", { className: "media-link-body" },
+                React.createElement("p", { className: "media-link-hint" }, linkHint(label)),
+                React.createElement("div", { className: "media-link-input-wrap" },
+                    React.createElement("input", { type: "url", inputMode: "url", autoFocus: autoFocus, "aria-label": label, "aria-invalid": !!error, placeholder: placeholder, value: url, disabled: busy, onChange: e => { setUrl(e.target.value); setError(''); onClearError?.(); }, onKeyDown: e => { if (e.key === 'Enter') {
+                            e.preventDefault();
+                            void submit();
+                        } if (e.key === 'Escape') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            cancel();
+                        } } }),
+                    !!url.trim() && React.createElement("button", { type: "button", className: "media-link-input-clear", "aria-label": "Clear link", disabled: busy, onClick: clearInput },
+                        React.createElement(X, { size: 16 }))),
+                error && React.createElement("p", { className: "media-link-error", role: "alert" },
+                    React.createElement(CircleAlert, { size: 15, "aria-hidden": "true" }),
+                    React.createElement("span", null, error)),
+                React.createElement("footer", null,
+                    React.createElement("button", { type: "button", className: "media-link-cancel", disabled: busy, onClick: cancel }, "Cancel"),
+                    React.createElement("button", { type: "button", className: "media-link-add", disabled: !url.trim() || busy, onClick: () => void submit() }, busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : submitLabel))))), document.body);
 }
 
 const time$1 = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -29822,22 +29852,22 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         }
         const url = resolveMediaLink(raw);
         if (driveFileId(raw) || isDriveLink(url)) {
-            onError(DRIVE_SHARE_REJECT);
+            pushMediaLinkError(DRIVE_SHARE_REJECT);
             return false;
         }
         if (!/^https:\/\//i.test(url)) {
-            onError('Use an https link to the sound file, or upload the file.');
+            pushMediaLinkError('Use an https link to the sound file, or upload the file.');
             return false;
         }
         if (url.length > 2048) {
-            onError('That link is too long.');
+            pushMediaLinkError('That link is too long.');
             return false;
         }
         setBusy('Checking sound…');
         const ok = await probeAudioLink(raw);
         setBusy('');
         if (!ok) {
-            onError('No sound was found at this link. Paste a direct link to an audio file (MP3, WAV, OGG, …), or upload the file.');
+            pushMediaLinkError('No sound was found at this link. Paste a direct link to an audio file (MP3, WAV, OGG, …), or upload the file.');
             return false;
         }
         onEditChange?.(undefined);
@@ -30063,11 +30093,11 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
             return true;
         }
         if (driveFileId(url) || isDriveLink(resolved)) {
-            onError(DRIVE_SHARE_REJECT);
+            pushMediaLinkError(DRIVE_SHARE_REJECT);
             return false;
         }
         if (!videoSafe(resolved)) {
-            onError('Use an https video file, or upload a small video.');
+            pushMediaLinkError('Use an https video file, or upload a small video.');
             return false;
         }
         onEditChange?.(undefined);
@@ -31263,7 +31293,7 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
         return true;
     }
     catch (e) {
-        setMediaError(e.message);
+        pushMediaLinkError(e.message || 'That image link could not be added.');
         return false;
     } }
     function closeEditor() { if (editImg?.temp)

@@ -1,6 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import {Film,Link2,Trash2,Upload,LoaderCircle,RefreshCw,Scissors} from 'lucide-react';
-import {MediaLinkForm,DriveShareLegacyNotice} from './MediaLinkForm';
+import {MediaLinkForm,DriveShareLegacyNotice,pushMediaLinkError} from './MediaLinkForm';
 import {MAX_VIDEO_CHARS,isDriveLink,resolveMediaLink,videoSafe,DRIVE_SHARE_REJECT,typedMediaFile,driveFileId} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
 
@@ -33,8 +33,8 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   onError('');
   const resolved=resolveMediaLink(url.trim());
   if(!resolved){onChange(undefined);return true;}
-  if(driveFileId(url)||isDriveLink(resolved)){onError(DRIVE_SHARE_REJECT);return false;}
-  if(!videoSafe(resolved)){onError('Use an https video file, or upload a small video.');return false;}
+  if(driveFileId(url)||isDriveLink(resolved)){pushMediaLinkError(DRIVE_SHARE_REJECT);return false;}
+  if(!videoSafe(resolved)){pushMediaLinkError('Use an https video file, or upload a small video.');return false;}
   onEditChange?.(undefined);onChange(resolved);
   return true;
  }

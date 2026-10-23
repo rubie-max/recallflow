@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2,AlertCircle} from 'lucide-react';
-import {MediaLinkForm,DriveShareLegacyNotice} from './MediaLinkForm';
+import {MediaLinkForm,DriveShareLegacyNotice,pushMediaLinkError} from './MediaLinkForm';
 import {MAX_AUDIO_CHARS,driveFileId,isDriveLink,resolveMediaLink,resolveMediaPlaybackSrc,DRIVE_SHARE_REJECT,DRIVE_SHARE_LEGACY_HINT,typedMediaFile} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,type MediaEdit} from './MediaClipEditor';
 import {Scissors} from 'lucide-react';
@@ -208,14 +208,14 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
   const raw=(next??link).trim();
   if(!raw){onAudioNameChange?.(undefined);onChange(undefined);return true;}
   const url=resolveMediaLink(raw);
-  if(driveFileId(raw)||isDriveLink(url)){onError(DRIVE_SHARE_REJECT);return false;}
-  if(!/^https:\/\//i.test(url)){onError('Use an https link to the sound file, or upload the file.');return false;}
-  if(url.length>2048){onError('That link is too long.');return false;}
+  if(driveFileId(raw)||isDriveLink(url)){pushMediaLinkError(DRIVE_SHARE_REJECT);return false;}
+  if(!/^https:\/\//i.test(url)){pushMediaLinkError('Use an https link to the sound file, or upload the file.');return false;}
+  if(url.length>2048){pushMediaLinkError('That link is too long.');return false;}
   setBusy('Checking sound…');
   const ok=await probeAudioLink(raw);
   setBusy('');
   if(!ok){
-   onError('No sound was found at this link. Paste a direct link to an audio file (MP3, WAV, OGG, …), or upload the file.');
+   pushMediaLinkError('No sound was found at this link. Paste a direct link to an audio file (MP3, WAV, OGG, …), or upload the file.');
    return false;
   }
   onEditChange?.(undefined);onChange(url);
