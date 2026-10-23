@@ -50,14 +50,47 @@
 .editor-media-step .media-action.is-remove svg{color:inherit}
 .editor-media-step .media-action:disabled{opacity:.55;cursor:wait}
 .editor-media-step .asset-media-extra{display:block;width:100%;min-width:0}
-.editor-media-step .sound-preview{margin:10px 0 0;display:block;width:100%;border:1px solid #303544;background:#12151d;border-radius:13px;padding:10px 12px}
-.editor-media-step .sound-preview .sound-player.is-media{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;margin:0;width:100%;max-width:none;border:0;border-radius:0;background:transparent;padding:0;gap:10px;min-width:0}
-.editor-media-step .sound-preview .sound-play{width:34px;height:34px;flex:0 0 34px;background:#353052;color:#c8c0ff;border-radius:50%}
-.editor-media-step .sound-preview .sound-wave{flex:1 1 auto;min-width:48px;height:26px;gap:2px}
-.editor-media-step .sound-preview .sound-wave i{width:2px;min-height:18%;border-radius:99px;background:#3d3858}
-.editor-media-step .sound-preview .sound-wave i[data-on]{background:#9485ff}
-.editor-media-step .sound-preview .sound-time{font-size:11px;color:#c8cad4;flex:0 0 auto;white-space:nowrap;font-variant-numeric:tabular-nums}
-.editor-media-step .sound-preview .sound-filename{font-size:11px;color:#a2a8ba;flex:0 1 auto;min-width:0;max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Question sound — Option E (editor media step) */
+.editor-media-step .asset.asset-sound-e{padding:16px;border-radius:18px;background:#191c25;border-color:#303440}
+.editor-media-step .asset-sound-e .sound-e-head{display:flex;align-items:center;gap:9px;margin:0 0 0}
+.editor-media-step .sound-e-icon{display:grid;place-items:center;width:30px;height:30px;flex:none;border-radius:9px;background:#242834;border:1px solid #3b3f4b;color:#b5a3f4}
+.editor-media-step .sound-e-icon svg{width:17px;height:17px}
+.editor-media-step .sound-e-title{flex:1;margin:0;font-size:14px;font-weight:600;letter-spacing:-.03em}
+.editor-media-step .sound-e-ready{display:flex;align-items:center;gap:5px;background:#1c3029;border:1px solid #304c40;color:#98d1b7;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.editor-media-step .sound-e-ready:before{content:"";width:5px;height:5px;border-radius:50%;background:#98d1b7;flex:none}
+.editor-media-step .sound-e-ready.is-empty{background:#20232d;border-color:#353a49;color:#a2a8ba}
+.editor-media-step .sound-e-ready.is-empty:before{display:none}
+.editor-media-step .sound-e-ready.is-attention{background:#2b2029;border-color:#49303a;color:#ffb9bc}
+.editor-media-step .sound-e-ready.is-attention:before{background:#ffb9bc}
+.editor-media-step .sound-e-ready.is-recording{background:#2b2438;border-color:#4a3f5c;color:#c8c0ff}
+.editor-media-step .sound-e-ready.is-recording:before{background:#c8c0ff;animation:sound-e-pulse 1s ease infinite}
+@keyframes sound-e-pulse{50%{opacity:.35}}
+.editor-media-step .sound-e-hint{margin:10px 0 0;font-size:10.5px;color:var(--ms-muted);line-height:1.45}
+.editor-media-step .sound-e-hint.is-recording{color:#c8c0ff}
+.editor-media-step .asset-sound-e .sound-player.is-editor-e{margin-top:18px}
+.editor-media-step .sound-e-player{display:flex;align-items:center;gap:12px;min-width:0}
+.editor-media-step .sound-e-play{display:grid;place-items:center;width:40px;height:40px;flex-shrink:0;padding:0;border:1px solid #403858;border-radius:12px;background:#363051;color:#d4c8ff;cursor:pointer;font-family:inherit}
+.editor-media-step .sound-e-play:hover{filter:brightness(1.1)}
+.editor-media-step .sound-e-play svg{display:block;margin-left:2px}
+.editor-media-step .sound-e-play[aria-pressed=true] svg{margin-left:0}
+.editor-media-step .sound-e-grow{flex:1;min-width:0}
+.editor-media-step .sound-e-filename{font-size:12px;font-weight:550;color:#e4e4eb;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.editor-media-step .sound-e-filedetails{display:flex;gap:9px;margin-top:5px;font-size:10px;color:#9293a2}
+.editor-media-step .sound-e-filetype{padding:5px 6px;border:1px solid #3b3f4b;border-radius:5px;background:#242834;color:#bcb1df;font-size:9px;font-weight:600;letter-spacing:.04em;flex:none}
+.editor-media-step .sound-e-track{position:relative;height:3px;margin-top:14px;border-radius:5px;background:#3c3953;cursor:pointer}
+.editor-media-step .sound-e-track span{display:block;height:100%;border-radius:5px;background:#b5a3f4;pointer-events:none}
+.editor-media-step .sound-e-times{display:flex;justify-content:space-between;margin:5px 0 15px;font-size:10px;font-variant-numeric:tabular-nums;color:#9293a2}
+.editor-media-step .sound-e-times span:first-child{color:#beb2e8}
+.editor-media-step .sound-e-actions{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding-top:11px;border-top:1px solid #303440;margin-top:0}
+.editor-media-step .sound-e-actions.is-empty{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px}
+.editor-media-step .sound-e-action{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:47px;min-width:0;padding:5px 1px;border:1px solid #3b3f4b;border-radius:9px;background:#191c25;color:#d7d7e1;font-family:inherit;font-size:10px;line-height:1;cursor:pointer}
+.editor-media-step .sound-e-action svg{width:15px;height:15px;color:#b5a3f4;flex-shrink:0}
+.editor-media-step .sound-e-action.is-upload{background:#242834;border-color:#655d79;color:#e4e4eb}
+.editor-media-step .sound-e-action:hover{background:#242834;border-color:#655d79}
+.editor-media-step .sound-e-action.is-remove{color:#ffb0b2}
+.editor-media-step .sound-e-action.is-remove svg{color:#ffb0b2}
+.editor-media-step .sound-e-action:disabled{opacity:.55;cursor:wait}
+.editor-media-step .asset-sound-e.is-empty-slot .asset-empty-body{display:none}
 .editor-media-step .media-alert{margin:10px 0 0;border:1px solid #49303a;border-radius:12px;background:linear-gradient(100deg,#2b2028,#211b24);padding:10px 11px;display:flex;gap:9px;align-items:flex-start;color:#f1babc;font-size:10.5px;line-height:1.45}
 .editor-media-step .media-alert svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--ms-red)}
 .editor-media-step .media-alert strong{color:#ffd2d3}
@@ -78,4 +111,6 @@
  .editor-media-step .answer-panel .asset-thumb{width:44px;height:44px}
  .editor-media-step .media-action{font-size:10px;padding:0 9px;min-height:35px}
  .editor-media-step .asset-actions.is-dual{gap:7px}
+ .editor-media-step .asset.asset-sound-e{padding:13px}
+ .editor-media-step .sound-e-action{font-size:9px}
 }
