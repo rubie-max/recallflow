@@ -1,6 +1,6 @@
 import React,{useCallback,useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
-import {X,Check,Undo2,Redo2,Volume2,VolumeX,Download,ChevronDown,RotateCcw,RotateCw,Play,Pause,AudioLines,ArrowLeftToLine,ArrowRightToLine,Minus,Plus,Repeat,Wand2,AlertCircle,ExternalLink,LoaderCircle,Save} from 'lucide-react';
+import {ArrowLeft,Check,Undo2,Redo2,Volume2,VolumeX,Download,ChevronDown,RotateCcw,RotateCw,Play,Pause,AudioLines,ArrowLeftToLine,ArrowRightToLine,Minus,Plus,Repeat,Wand2,AlertCircle,ExternalLink,LoaderCircle,Save} from 'lucide-react';
 import {Button} from './components/Button';
 import {driveFileId,isDriveLink,resolveMediaPlaybackSrc,saneDuration,blobToDataUrl} from '../question-types.js';
 import {playPreset} from '../feedback-sounds.js';
@@ -237,7 +237,7 @@ export function useClipPlayback(ref:React.RefObject<HTMLMediaElement|null>,src:s
   setAt(0);setPlaying(false);setFailed(false);setReady(false);setDuration(opts.durationHint||0);
   if(!el)return;
   let cancelled=false;
-  const onErr=()=>{if(!cancelled)setFailed(true);};
+  const onErr=()=>{if(!cancelled&&el.error)setFailed(true);};
   const onReady=()=>{if(!cancelled)setReady(true);};
   el.addEventListener('error',onErr);el.addEventListener('loadeddata',onReady);
   if(el.readyState>=2)setReady(true);
@@ -300,11 +300,12 @@ export function useClipPlayback(ref:React.RefObject<HTMLMediaElement|null>,src:s
  },[applyLevel,ref]);
  const play=useCallback(()=>{
   const el=ref.current;if(!el)return;const c=clipRef.current,d=durRef.current;
+  setFailed(false);
   if(d&&(el.currentTime<c.trimStart-0.01||el.currentTime>=c.trimEnd-0.05)){try{el.currentTime=c.trimStart;}catch{}}
   const g=ensureGraph();applyLevel(el.currentTime);
   const p=el.play();
   if(g&&g.ctx.state!=='running')void g.ctx.resume().catch(()=>{});
-  if(p&&typeof p.catch==='function')p.catch(()=>setFailed(true));
+  if(p&&typeof p.catch==='function')p.catch((e:any)=>{if(e?.name!=='AbortError'&&e?.name!=='NotAllowedError')setFailed(true);});
  },[applyLevel,ensureGraph,ref]);
  const pause=useCallback(()=>{ref.current?.pause();},[ref]);
  const toggle=useCallback(()=>{const el=ref.current;if(!el)return;if(el.paused)play();else el.pause();},[play,ref]);
@@ -417,6 +418,13 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
   return()=>{document.body.style.overflow=ov;prev?.focus?.();};
  },[]);
  useEffect(()=>{if(!menu)return;const on=(e:PointerEvent)=>{if(!menuRef.current?.contains(e.target as Node))setMenu(false);};document.addEventListener('pointerdown',on);return()=>document.removeEventListener('pointerdown',on);},[menu]);
+ const cancelRef=useRef(()=>{});cancelRef.current=()=>{jobAbort.current?.abort();onCancel();};
+ useEffect(()=>{
+  try{history.pushState({rfClipEditor:true},'');}catch{}
+  const onPop=()=>cancelRef.current();
+  window.addEventListener('popstate',onPop);
+  return()=>{window.removeEventListener('popstate',onPop);if(history.state?.rfClipEditor){try{history.back();}catch{}}};
+ },[]);
  useEffect(()=>{if(!note)return;const t=window.setTimeout(()=>setNote(null),5000);return()=>window.clearTimeout(t);},[note]);
  const flash=(text:string,k:'info'|'error'='info')=>setNote({text,kind:k});
 
@@ -514,15 +522,13 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
  const ruler=duration?[0,.25,.5,.75,1].map(fr=>rf(fr*duration)):[];
  const chip=(label:string,value:number,set:(t:number)=>void)=><span className="mc-chip"><i>{label}</i><span className="mc-nudge"><button type="button" aria-label={`${label} 0.1 s earlier`} disabled={!duration} onClick={()=>set(value-0.1)}><Minus size={13}/></button><b>{fmtFine(value)}</b><button type="button" aria-label={`${label} 0.1 s later`} disabled={!duration} onClick={()=>set(value+0.1)}><Plus size={13}/></button></span></span>;
 
- return createPortal(<div className="mc-layer" role="presentation" onKeyDown={onKey}>
-  <button type="button" className="mc-scrim" aria-label="Close editor" onClick={cancel}/>
-  <section ref={dialog} className="mc" role="dialog" aria-modal="true" aria-labelledby="mc-title" tabIndex={-1} data-kind={kind}>
-   <header className="mc-head">
-    <button type="button" className="mc-iconbtn" aria-label="Cancel" onClick={cancel}><X size={18}/></button>
-    <div className="mc-headtext"><h2 id="mc-title">{title}</h2>{fileName&&<small>{fileName}</small>}</div>
-    <Button size="sm" onClick={done} disabled={!!job||(bakeMode&&(!duration||tooLong))}>{bakeMode?<><Save size={15}/>Use clip</>:<><Check size={15}/>Done</>}</Button>
-   </header>
-
+ return createPortal(<div className="mc-page" role="dialog" aria-modal="true" aria-labelledby="mc-title" data-kind={kind} onKeyDown={onKey}>
+  <header className="mc-head">
+   <button type="button" className="mc-iconbtn" aria-label="Back" onClick={cancel}><ArrowLeft size={18}/></button>
+   <div className="mc-headtext"><h2 id="mc-title">{title}</h2>{fileName&&<small>{fileName}</small>}</div>
+   <Button size="sm" onClick={done} disabled={!!job||(bakeMode&&(!duration||tooLong))}>{bakeMode?<><Save size={15}/>Use clip</>:<><Check size={15}/>Done</>}</Button>
+  </header>
+  <section ref={dialog} className="mc" tabIndex={-1}>
    <div className="mc-stage" data-kind={kind}>
     {kind==='video'
      ?<video key={playback} ref={media as React.RefObject<HTMLVideoElement>} src={playback} playsInline preload={embedded?'auto':'metadata'} onClick={pb.toggle}/>

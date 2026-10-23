@@ -29716,7 +29716,7 @@ function useClipPlayback(ref, src, edit, opts = {}) {
         if (!el)
             return;
         let cancelled = false;
-        const onErr = () => { if (!cancelled)
+        const onErr = () => { if (!cancelled && el.error)
             setFailed(true); };
         const onReady = () => { if (!cancelled)
             setReady(true); };
@@ -29850,6 +29850,7 @@ function useClipPlayback(ref, src, edit, opts = {}) {
         if (!el)
             return;
         const c = clipRef.current, d = durRef.current;
+        setFailed(false);
         if (d && (el.currentTime < c.trimStart - 0.01 || el.currentTime >= c.trimEnd - 0.05)) {
             try {
                 el.currentTime = c.trimStart;
@@ -29862,7 +29863,8 @@ function useClipPlayback(ref, src, edit, opts = {}) {
         if (g && g.ctx.state !== 'running')
             void g.ctx.resume().catch(() => { });
         if (p && typeof p.catch === 'function')
-            p.catch(() => setFailed(true));
+            p.catch((e) => { if (e?.name !== 'AbortError' && e?.name !== 'NotAllowedError')
+                setFailed(true); });
     }, [applyLevel, ensureGraph, ref]);
     const pause = reactExports.useCallback(() => { ref.current?.pause(); }, [ref]);
     const toggle = reactExports.useCallback(() => { const el = ref.current; if (!el)
@@ -30010,6 +30012,22 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
     reactExports.useEffect(() => { if (!menu)
         return; const on = (e) => { if (!menuRef.current?.contains(e.target))
         setMenu(false); }; document.addEventListener('pointerdown', on); return () => document.removeEventListener('pointerdown', on); }, [menu]);
+    const cancelRef = reactExports.useRef(() => { });
+    cancelRef.current = () => { jobAbort.current?.abort(); onCancel(); };
+    reactExports.useEffect(() => {
+        try {
+            history.pushState({ rfClipEditor: true }, '');
+        }
+        catch { }
+        const onPop = () => cancelRef.current();
+        window.addEventListener('popstate', onPop);
+        return () => { window.removeEventListener('popstate', onPop); if (history.state?.rfClipEditor) {
+            try {
+                history.back();
+            }
+            catch { }
+        } };
+    }, []);
     reactExports.useEffect(() => { if (!note)
         return; const t = window.setTimeout(() => setNote(null), 5000); return () => window.clearTimeout(t); }, [note]);
     const flash = (text, k = 'info') => setNote({ text, kind: k });
@@ -30201,20 +30219,19 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
             React.createElement("b", null, fmtFine(value)),
             React.createElement("button", { type: "button", "aria-label": `${label} 0.1 s later`, disabled: !duration, onClick: () => set(value + 0.1) },
                 React.createElement(Plus, { size: 13 }))));
-    return reactDomExports.createPortal(React.createElement("div", { className: "mc-layer", role: "presentation", onKeyDown: onKey },
-        React.createElement("button", { type: "button", className: "mc-scrim", "aria-label": "Close editor", onClick: cancel }),
-        React.createElement("section", { ref: dialog, className: "mc", role: "dialog", "aria-modal": "true", "aria-labelledby": "mc-title", tabIndex: -1, "data-kind": kind },
-            React.createElement("header", { className: "mc-head" },
-                React.createElement("button", { type: "button", className: "mc-iconbtn", "aria-label": "Cancel", onClick: cancel },
-                    React.createElement(X, { size: 18 })),
-                React.createElement("div", { className: "mc-headtext" },
-                    React.createElement("h2", { id: "mc-title" }, title),
-                    fileName && React.createElement("small", null, fileName)),
-                React.createElement(Button, { size: "sm", onClick: done, disabled: !!job || (bakeMode && (!duration || tooLong)) }, bakeMode ? React.createElement(React.Fragment, null,
-                    React.createElement(Save, { size: 15 }),
-                    "Use clip") : React.createElement(React.Fragment, null,
-                    React.createElement(Check, { size: 15 }),
-                    "Done"))),
+    return reactDomExports.createPortal(React.createElement("div", { className: "mc-page", role: "dialog", "aria-modal": "true", "aria-labelledby": "mc-title", "data-kind": kind, onKeyDown: onKey },
+        React.createElement("header", { className: "mc-head" },
+            React.createElement("button", { type: "button", className: "mc-iconbtn", "aria-label": "Back", onClick: cancel },
+                React.createElement(ArrowLeft, { size: 18 })),
+            React.createElement("div", { className: "mc-headtext" },
+                React.createElement("h2", { id: "mc-title" }, title),
+                fileName && React.createElement("small", null, fileName)),
+            React.createElement(Button, { size: "sm", onClick: done, disabled: !!job || (bakeMode && (!duration || tooLong)) }, bakeMode ? React.createElement(React.Fragment, null,
+                React.createElement(Save, { size: 15 }),
+                "Use clip") : React.createElement(React.Fragment, null,
+                React.createElement(Check, { size: 15 }),
+                "Done"))),
+        React.createElement("section", { ref: dialog, className: "mc", tabIndex: -1 },
             React.createElement("div", { className: "mc-stage", "data-kind": kind },
                 kind === 'video'
                     ? React.createElement("video", { key: playback, ref: media, src: playback, playsInline: true, preload: embedded ? 'auto' : 'metadata', onClick: pb.toggle })
@@ -30752,7 +30769,7 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         audio && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: clearAudio },
             React.createElement(Trash2, { size: 14 })));
     const player = audio && !recording && !drive && React.createElement("div", { className: "asset-media-extra" },
-        React.createElement(SoundPlayer, { src: audio, edit: edit, durationHint: durationHint, variant: "media", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" }));
+        React.createElement(SoundPlayer, { key: JSON.stringify(edit ?? null), src: audio, edit: edit, durationHint: durationHint, variant: "media", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" }));
     const legacy = audio && !recording && drive && React.createElement("div", { className: "asset-media-extra" },
         React.createElement(DriveShareLegacyNotice, { kind: "sound" }));
     const progress = busy && !recording && React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
