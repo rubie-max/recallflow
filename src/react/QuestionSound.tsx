@@ -46,7 +46,7 @@ async function soundFromFile(file:File,progress:(pct:number)=>void){
  }finally{ctx.close().catch(()=>{});}
 }
 
-const MIME_EXT:Record<string,string>={mpeg:'mp3',mp3:'mp3',mp4:'m4a',x-m4a:'m4a',wav:'wav',wave:'wav',ogg:'ogg',webm:'webm',aac:'aac',opus:'opus'};
+const MIME_EXT:Record<string,string>={mpeg:'mp3',mp3:'mp3',mp4:'m4a','x-m4a':'m4a',wav:'wav',wave:'wav',ogg:'ogg',webm:'webm',aac:'aac',opus:'opus'};
 function extFromDataUrl(src:string){
  const mime=src.match(/^data:audio\/([^;,]+)/i)?.[1]?.toLowerCase()||'';
  return MIME_EXT[mime.split('+')[0]]||mime.replace(/^x-/,'')||'webm';
