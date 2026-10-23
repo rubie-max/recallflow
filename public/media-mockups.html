@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RecallFlow — Media UI concepts</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:#0b0c11;color:#e8eaef;line-height:1.45;-webkit-text-size-adjust:100%}
+svg{display:block;flex-shrink:0}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:440px;margin:0 auto;padding:20px 14px 60px}
+.page-h{font-size:20px;font-weight:700;letter-spacing:-.4px;margin:0 0 4px}
+.page-sub{margin:0 0 20px;font-size:12.5px;color:#9293a2}
+.concept{margin:0 0 30px;border:1px solid #23262f;border-radius:20px;background:#121420;overflow:hidden}
+.concept-h{padding:14px 15px 12px;border-bottom:1px solid #23262f;background:linear-gradient(160deg,#181a26,#13141d)}
+.concept-h .n{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#b5a3f4}
+.concept-h .n b{display:grid;place-items:center;width:20px;height:20px;border-radius:7px;background:#28243f;border:1px solid #413c5c;font-size:11px}
+.concept-h h2{margin:7px 0 3px;font-size:16px;font-weight:650;letter-spacing:-.3px}
+.concept-h p{margin:0;font-size:12px;color:#9293a2}
+.states{padding:14px 13px}
+.state-label{display:flex;align-items:center;gap:7px;margin:4px 2px 9px;font-size:10px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:#6f7585}
+.state-label:before,.state-label:after{content:"";flex:1;height:1px;background:#23262f}
+.state-label span{flex:none}
+.state+.state-label{margin-top:20px}
+
+/* shared icon colors */
+.ic-v{color:#b5a3f4}.ic-g{color:#98d1b7}.ic-r{color:#ff9ba0}.ic-m{color:#9293a2}
+
+/* ============ V1 — Compact unified rows ============ */
+.v1 .row{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #2a2e3a;border-radius:14px;background:#171a24}
+.v1 .row+.row{margin-top:9px}
+.v1 .tile{width:42px;height:42px;flex:none;border-radius:11px;display:grid;place-items:center;border:1px solid #363b48;background:#20242f;color:#b5a3f4;overflow:hidden}
+.v1 .tile img{width:100%;height:100%;object-fit:cover}
+.v1 .mid{flex:1;min-width:0}
+.v1 .mid .t{font-size:13px;font-weight:600}
+.v1 .mid .s{font-size:11px;color:#9293a2;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v1 .seg{display:inline-flex;flex:none;border:1px solid #363b48;border-radius:10px;overflow:hidden}
+.v1 .seg button{display:flex;align-items:center;gap:5px;padding:8px 11px;border:0;background:transparent;color:#d7d7e1;font-size:11px;font-weight:550}
+.v1 .seg button+button{border-left:1px solid #2a2e3a}
+.v1 .seg svg{width:14px;height:14px}
+.v1 .kebab{flex:none;width:34px;height:34px;display:grid;place-items:center;border:1px solid #363b48;border-radius:9px;background:transparent;color:#aeb2c0}
+.v1 .kebab svg{width:16px;height:16px}
+
+/* ============ V2 — Unified icon-grid ============ */
+.v2 .card{border:1px solid #2a2e3a;border-radius:16px;background:#171a24;padding:14px}
+.v2 .card+.card{margin-top:11px}
+.v2 .head{display:flex;align-items:center;gap:10px}
+.v2 .head .ico{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;border:1px solid #363b48;background:#20242f;color:#b5a3f4}
+.v2 .head .ico svg{width:17px;height:17px}
+.v2 .head h3{flex:1;margin:0;font-size:13.5px;font-weight:650}
+.v2 .pill{font-size:10px;font-weight:600;padding:4px 9px;border-radius:20px;border:1px solid #353a49;background:#20232d;color:#9aa0b2}
+.v2 .pill.ok{border-color:#2d4a3f;background:#17271f;color:#98d1b7}
+.v2 .hint{margin:10px 0 0;font-size:11px;color:#9293a2}
+.v2 .preview{display:flex;align-items:center;gap:11px;margin-top:12px;padding:10px;border:1px solid #2a2e3a;border-radius:12px;background:#12141c}
+.v2 .preview .pv{width:44px;height:44px;flex:none;border-radius:10px;overflow:hidden;border:1px solid #363b48;background:#20242f;display:grid;place-items:center;color:#b5a3f4}
+.v2 .preview .pv img{width:100%;height:100%;object-fit:cover}
+.v2 .preview .nm{flex:1;min-width:0;font-size:12px}
+.v2 .preview .nm b{font-weight:600}
+.v2 .preview .nm small{display:block;color:#9293a2;font-size:10.5px;margin-top:2px}
+.v2 .wave{display:flex;align-items:center;gap:2px;height:22px}
+.v2 .wave i{width:2px;border-radius:2px;background:#4a4668}
+.v2 .wave i.on{background:#b5a3f4}
+.v2 .grid{display:grid;grid-template-columns:repeat(var(--c,3),1fr);gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid #23262f}
+.v2 .grid.c5{--c:5}
+.v2 .act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;height:46px;border:1px solid #363b48;border-radius:10px;background:#12141c;color:#d7d7e1;font-size:10px}
+.v2 .act svg{width:15px;height:15px;color:#b5a3f4}
+.v2 .act.primary{background:#242834;border-color:#655d79;color:#efecff}
+.v2 .act.rm{color:#ff9ba0}.v2 .act.rm svg{color:#ff9ba0}
+
+/* ============ V3 — Tap tiles + overflow ============ */
+.v3 .drop{border:1.5px dashed #3d4250;border-radius:16px;background:#141622;padding:20px 14px;text-align:center}
+.v3 .drop .big{width:46px;height:46px;margin:0 auto 10px;border-radius:14px;display:grid;place-items:center;background:#20242f;border:1px solid #363b48;color:#b5a3f4}
+.v3 .drop .big svg{width:22px;height:22px}
+.v3 .drop .add{display:inline-flex;align-items:center;gap:7px;margin:2px auto 0;padding:9px 16px;border:0;border-radius:11px;background:#5b4fe0;color:#fff;font-size:12.5px;font-weight:600}
+.v3 .drop .add svg{width:15px;height:15px}
+.v3 .drop .alt{margin:11px 0 0;font-size:11px;color:#9293a2}
+.v3 .drop .alt a{color:#b5a3f4;text-decoration:none;font-weight:600}
+.v3 .filled{position:relative;border-radius:16px;overflow:hidden;border:1px solid #2a2e3a;aspect-ratio:16/10;background:#20242f}
+.v3 .filled img{width:100%;height:100%;object-fit:cover}
+.v3 .filled .bar{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:9px;padding:20px 11px 11px;background:linear-gradient(transparent,rgba(8,9,13,.92))}
+.v3 .filled .bar .nm{flex:1;min-width:0;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v3 .filled .bar .mini{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;border:1px solid rgba(255,255,255,.22);background:rgba(20,20,28,.6);color:#fff;backdrop-filter:blur(4px)}
+.v3 .filled .bar .mini svg{width:16px;height:16px}
+.v3 .filled .tag{position:absolute;top:10px;left:10px;font-size:10px;font-weight:650;padding:4px 9px;border-radius:20px;background:rgba(16,18,26,.7);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(4px)}
+.v3 .snd{margin-top:11px;border:1px solid #2a2e3a;border-radius:16px;background:#171a24;padding:13px;display:flex;align-items:center;gap:11px}
+.v3 .snd .play{width:40px;height:40px;flex:none;border-radius:12px;display:grid;place-items:center;background:#363051;border:1px solid #403858;color:#d4c8ff}
+.v3 .snd .play svg{width:17px;height:17px;margin-left:2px}
+.v3 .snd .mid{flex:1;min-width:0}
+.v3 .snd .mid .t{font-size:12px;font-weight:600}
+.v3 .snd .mid .track{height:3px;border-radius:3px;background:#3c3953;margin-top:7px}
+.v3 .snd .mid .track span{display:block;width:40%;height:100%;border-radius:3px;background:#b5a3f4}
+.v3 .snd .mini{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:9px;border:1px solid #363b48;background:#12141c;color:#aeb2c0}
+.v3 .snd .mini svg{width:16px;height:16px}
+
+/* ============ V4 — Segmented toolbar ============ */
+.v4 .card{border:1px solid #2a2e3a;border-radius:16px;background:#171a24;padding:14px}
+.v4 .card+.card{margin-top:11px}
+.v4 .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.v4 .top .ico{width:30px;height:30px;flex:none;border-radius:9px;display:grid;place-items:center;border:1px solid #363b48;background:#20242f;color:#b5a3f4}
+.v4 .top .ico svg{width:16px;height:16px}
+.v4 .top h3{flex:1;margin:0;font-size:13px;font-weight:650}
+.v4 .top .st{font-size:10.5px;color:#9293a2}
+.v4 .toolbar{display:flex;border:1px solid #363b48;border-radius:12px;overflow:hidden;background:#12141c}
+.v4 .toolbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 4px;border:0;background:transparent;color:#d7d7e1;font-size:10.5px;font-weight:550}
+.v4 .toolbar button+button{border-left:1px solid #23262f}
+.v4 .toolbar svg{width:16px;height:16px;color:#b5a3f4}
+.v4 .pvwrap{position:relative}
+.v4 .pvwrap img{width:100%;height:150px;object-fit:cover;border-radius:12px;border:1px solid #2a2e3a}
+.v4 .pvwrap .float{position:absolute;top:8px;right:8px;display:flex;gap:6px}
+.v4 .pvwrap .float button{width:32px;height:32px;display:grid;place-items:center;border-radius:9px;border:1px solid rgba(255,255,255,.2);background:rgba(16,18,26,.66);color:#fff;backdrop-filter:blur(4px)}
+.v4 .pvwrap .float button svg{width:15px;height:15px}
+.v4 .pvwrap .float button.rm{color:#ff9ba0}
+.v4 .snd-pv{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #2a2e3a;border-radius:12px;background:#12141c;margin-bottom:11px}
+.v4 .snd-pv .play{width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;background:#363051;border:1px solid #403858;color:#d4c8ff}
+.v4 .snd-pv .play svg{width:16px;height:16px;margin-left:2px}
+.v4 .snd-pv .wave{flex:1;display:flex;align-items:center;gap:2px;height:24px;min-width:0}
+.v4 .snd-pv .wave i{width:2px;border-radius:2px;background:#4a4668}
+.v4 .snd-pv .wave i.on{background:#b5a3f4}
+.v4 .snd-pv .tm{font-size:10.5px;color:#9293a2;flex:none}
+
+/* ============ V5 — File-manager list ============ */
+.v5 .list{border:1px solid #2a2e3a;border-radius:16px;background:#171a24;overflow:hidden}
+.v5 .li{display:flex;align-items:center;gap:12px;padding:12px 13px}
+.v5 .li+.li{border-top:1px solid #23262f}
+.v5 .li .lead{width:40px;height:40px;flex:none;border-radius:10px;display:grid;place-items:center;border:1px solid #363b48;background:#20242f;color:#b5a3f4;overflow:hidden}
+.v5 .li .lead img{width:100%;height:100%;object-fit:cover}
+.v5 .li .lead.empty{border-style:dashed;color:#6f7585}
+.v5 .li .mid{flex:1;min-width:0}
+.v5 .li .mid .t{font-size:13px;font-weight:600}
+.v5 .li .mid .s{font-size:11px;color:#9293a2;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v5 .li .mid .s.empty{color:#6f7585}
+.v5 .li .add{flex:none;display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border:1px solid #4a4668;border-radius:10px;background:#242539;color:#d9d3ff;font-size:11.5px;font-weight:600}
+.v5 .li .add svg{width:14px;height:14px}
+.v5 .li .kebab{flex:none;width:34px;height:34px;display:grid;place-items:center;border:1px solid #363b48;border-radius:9px;background:transparent;color:#aeb2c0}
+.v5 .li .kebab svg{width:16px;height:16px}
+.v5 .li .ok{flex:none;font-size:10px;font-weight:650;color:#98d1b7;padding:3px 8px;border:1px solid #2d4a3f;border-radius:20px;background:#17271f;margin-right:2px}
+
+.note{margin:16px 2px 0;padding:11px 13px;border:1px solid #23262f;border-radius:12px;background:#121420;font-size:11.5px;color:#9293a2}
+.note b{color:#cdd0da}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page-h">Media step — 5 UI concepts</h1>
+  <p class="page-sub">Each concept is shown both empty (no media) and with media. Tell me which you like, or mix parts.</p>
+
+  <!-- ===================== V1 ===================== -->
+  <section class="concept v1">
+    <div class="concept-h">
+      <span class="n"><b>1</b> Compact rows</span>
+      <h2>Slim one-line rows</h2>
+      <p>Each slot is a single short row: icon, label, and a small segmented action. Lowest height — least scrolling.</p>
+    </div>
+    <div class="states">
+      <div class="state-label"><span>Without media</span></div>
+      <div class="state">
+        <div class="row">
+          <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span>
+          <div class="mid"><div class="t">Image</div><div class="s">Optional</div></div>
+          <div class="seg"><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m-4 4 4-4 4 4M5 16v4h14v-4"/></svg>Upload</button><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10 13 4-4m-6 7-2 2a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0"/></svg>Link</button></div>
+        </div>
+        <div class="row">
+          <span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/></svg></span>
+          <div class="mid"><div class="t">Sound</div><div class="s">Optional</div></div>
+          <div class="seg"><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1"/></svg>Record</button><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m-4 4 4-4 4 4M5 16v4h14v-4"/></svg>Upload</button></div>
+        </div>
+      </div>
+      <div class="state-label"><span>With media</span></div>
+      <div class="state">
+        <div class="row">
+          <span class="tile"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/120px-Flag_of_Egypt.svg.png" alt=""></span>
+          <div class="mid"><div class="t">Image</div><div class="s">flag-egypt.png · tap to preview</div></div>
+          <button class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+        </div>
+        <div class="row">
+          <span class="tile ic-v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          <div class="mid"><div class="t">Sound · 0:32</div><div class="s">pronunciation.mp3</div></div>
+          <button class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== V2 ===================== -->
+  <section class="concept v2">
+    <div class="concept-h">
+      <span class="n"><b>2</b> Unified grid</span>
+      <h2>One button style everywhere</h2>
+      <p>Image, sound and video all use the same icon-over-label action grid. Very consistent and tap-friendly.</p>
+    </div>
+    <div class="states">
+      <div class="state-label"><span>Without media</span></div>
+      <div class="state">
+        <div class="card">
+          <div class="head"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span><h3>Image</h3><span class="pill">Not added</span></div>
+          <p class="hint">Optional — upload a file or paste a direct link.</p>
+          <div class="grid c2">
+            <button class="act primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m-4 4 4-4 4 4M5 16v4h14v-4"/></svg>Upload</button>
+            <button class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10 13 4-4m-6 7-2 2a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0"/></svg>Link</button>
+          </div>
+        </div>
+      </div>
+      <div class="state-label"><span>With media</span></div>
+      <div class="state">
+        <div class="card">
+          <div class="head"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span><h3>Image</h3><span class="pill ok">Added</span></div>
+          <div class="preview"><span class="pv"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/120px-Flag_of_Egypt.svg.png" alt=""></span><span class="nm"><b>flag-egypt.png</b><small>Tap to preview full size</small></span></div>
+          <div class="grid c5">
+            <button class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v3M18 3v3M3 8h18M5 10v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V10"/></svg>Edit</button>
+            <button class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v5h-5"/></svg>Change</button>
+            <button class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10 13 4-4m-6 7-2 2a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0"/></svg>Link</button>
+            <button class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Crop</button>
+            <button class="act rm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7"/></svg>Remove</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="head"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/></svg></span><h3>Sound</h3><span class="pill ok">Added</span></div>
+          <div class="preview"><button class="pv" style="background:#363051;border-color:#403858;color:#d4c8ff"><svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M8 5v14l11-7z"/></svg></button><span class="nm" style="flex:1"><div class="wave">
+            <i class="on" style="height:40%"></i><i class="on" style="height:70%"></i><i class="on" style="height:55%"></i><i class="on" style="height:85%"></i><i class="on" style="height:45%"></i><i style="height:65%"></i><i style="height:35%"></i><i style="height:75%"></i><i style="height:50%"></i><i style="height:60%"></i><i style="height:40%"></i><i style="height:80%"></i>
+          </div><small>pronunciation.mp3 · 0:32</small></span></div>
+          <div class="grid c5">
+            <button class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1"/></svg>Record</button>
+            <button class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m-4 4 4-4 4 4M5 16v4h14v-4"/></svg>Upload</button>
+            <button class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10 13 4-4m-6 7-2 2a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0"/></svg>Link</button>
+            <button class="act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="m8 8 12 12M8 16 20 4"/></svg>Trim</button>
+            <button class="act rm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7"/></svg>Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== V3 ===================== -->
+  <section class="concept v3">
+    <div class="concept-h">
+      <span class="n"><b>3</b> Visual tiles</span>
+      <h2>Drop tiles & rich previews</h2>
+      <p>Empty = one clear "Add" tile. Filled = big preview with a single ⋯ menu. Most modern & image-forward.</p>
+    </div>
+    <div class="states">
+      <div class="state-label"><span>Without media</span></div>
+      <div class="state">
+        <div class="drop">
+          <span class="big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span>
+          <button class="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Add image</button>
+          <p class="alt">or <a href="#">paste a link</a></p>
+        </div>
+      </div>
+      <div class="state-label"><span>With media</span></div>
+      <div class="state">
+        <div class="filled">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/320px-Flag_of_Egypt.svg.png" alt="">
+          <span class="tag">Image</span>
+          <div class="bar"><span class="nm">flag-egypt.png</span><button class="mini"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></div>
+        </div>
+        <div class="snd">
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          <div class="mid"><div class="t">pronunciation.mp3 · 0:32</div><div class="track"><span></span></div></div>
+          <button class="mini"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== V4 ===================== -->
+  <section class="concept v4">
+    <div class="concept-h">
+      <span class="n"><b>4</b> Toolbar</span>
+      <h2>Segmented add-bar</h2>
+      <p>One joined toolbar of choices when empty; floating edit/remove over the preview when filled. Tidy & balanced.</p>
+    </div>
+    <div class="states">
+      <div class="state-label"><span>Without media</span></div>
+      <div class="state">
+        <div class="card">
+          <div class="top"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span><h3>Image</h3><span class="st">Optional</span></div>
+          <div class="toolbar">
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m-4 4 4-4 4 4M5 16v4h14v-4"/></svg>Upload</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10 13 4-4m-6 7-2 2a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0"/></svg>Link</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="top"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/></svg></span><h3>Sound</h3><span class="st">Optional</span></div>
+          <div class="toolbar">
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1"/></svg>Record</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m-4 4 4-4 4 4M5 16v4h14v-4"/></svg>Upload</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10 13 4-4m-6 7-2 2a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0"/></svg>Link</button>
+          </div>
+        </div>
+      </div>
+      <div class="state-label"><span>With media</span></div>
+      <div class="state">
+        <div class="card">
+          <div class="top"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span><h3>Image</h3><span class="st">flag-egypt.png</span></div>
+          <div class="pvwrap">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/320px-Flag_of_Egypt.svg.png" alt="">
+            <div class="float"><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v3M18 3v3M3 8h18M5 10v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V10"/></svg></button><button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v5h-5"/></svg></button><button class="rm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7"/></svg></button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="top"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/></svg></span><h3>Sound</h3><span class="st">0:32 · mp3</span></div>
+          <div class="snd-pv"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><span class="wave"><i class="on" style="height:40%"></i><i class="on" style="height:70%"></i><i class="on" style="height:55%"></i><i class="on" style="height:85%"></i><i class="on" style="height:45%"></i><i style="height:65%"></i><i style="height:35%"></i><i style="height:75%"></i><i style="height:50%"></i><i style="height:60%"></i><i style="height:45%"></i><i style="height:70%"></i><i style="height:38%"></i><i style="height:82%"></i></span><span class="tm">0:12/0:32</span></div>
+          <div class="toolbar">
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1"/></svg>Re-record</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="m8 8 12 12M8 16 20 4"/></svg>Trim</button>
+            <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7"/></svg>Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== V5 ===================== -->
+  <section class="concept v5">
+    <div class="concept-h">
+      <span class="n"><b>5</b> Media list</span>
+      <h2>File-manager list</h2>
+      <p>All slots in one grouped list — leading thumbnail, name + status, trailing add/menu. Scales well as you add more.</p>
+    </div>
+    <div class="states">
+      <div class="state-label"><span>Without media</span></div>
+      <div class="state">
+        <div class="list">
+          <div class="li"><span class="lead empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></span><div class="mid"><div class="t">Image</div><div class="s empty">Not added · optional</div></div><button class="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Add</button></div>
+          <div class="li"><span class="lead empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10v4m4-7v10m4-14v18m4-14v10m4-7v4"/></svg></span><div class="mid"><div class="t">Sound</div><div class="s empty">Not added · optional</div></div><button class="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Add</button></div>
+          <div class="li"><span class="lead empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 8 6 4-6 4z"/></svg></span><div class="mid"><div class="t">Video</div><div class="s empty">Not added · optional</div></div><button class="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Add</button></div>
+        </div>
+      </div>
+      <div class="state-label"><span>With media</span></div>
+      <div class="state">
+        <div class="list">
+          <div class="li"><span class="lead"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/120px-Flag_of_Egypt.svg.png" alt=""></span><div class="mid"><div class="t">Image</div><div class="s">flag-egypt.png · tap to preview</div></div><span class="ok">Added</span><button class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>
+          <div class="li"><span class="lead ic-v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><div class="mid"><div class="t">Sound · 0:32</div><div class="s">pronunciation.mp3</div></div><span class="ok">Added</span><button class="kebab"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>
+          <div class="li"><span class="lead empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 8 6 4-6 4z"/></svg></span><div class="mid"><div class="t">Video</div><div class="s empty">Not added · optional</div></div><button class="add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Add</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="note"><b>How to use:</b> These are static mockups (buttons don't work). Tell me a concept number — or say e.g. "V3 for image, V2 for sound" — and I'll build it into the real editor for both Question and Answer media.</p>
+</div>
+</body>
+</html>
