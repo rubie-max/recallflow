@@ -37,16 +37,12 @@
 .editor-media-step .asset-state{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border:1px solid #4b333e;border-radius:99px;background:#2b2029;color:#ffb9bc;font-size:9px;font-weight:650}
 .editor-media-step .asset-state.is-empty{border-color:#353a49;background:#20232d;color:#a2a8ba}
 .editor-media-step .asset-state.is-ok{border-color:#2d4a3f;background:#1c2a24;color:#91d8bb}
-.editor-media-step .asset-actions{display:flex;align-items:center;gap:7px;flex-wrap:nowrap;margin-top:12px;padding-top:12px;border-top:1px solid #2a2e3a;width:100%;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.editor-media-step .asset-actions::-webkit-scrollbar{display:none}
-.editor-media-step .asset-actions.is-dual{overflow-x:visible;flex-wrap:nowrap}
-.editor-media-step .asset-actions.is-dual .media-action{flex:1 1 0;min-width:0;white-space:nowrap}
-.editor-media-step .asset-actions.is-multi{overflow-x:auto}
-.editor-media-step .asset-actions.is-multi .media-action{flex:0 0 auto;padding:0 8px;font-size:10px}
-.editor-media-step .media-action{min-height:36px;display:inline-flex;justify-content:center;align-items:center;gap:6px;border:1px solid #404656;background:transparent;color:#e6e8f0;border-radius:10px;padding:0 11px;font-family:inherit;font-size:10.5px;font-weight:600;cursor:pointer;flex:0 0 auto;white-space:nowrap}
+.editor-media-step .asset-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid #2a2e3a;width:100%;min-width:0}
+.editor-media-step .asset-actions.is-dual .media-action,.editor-media-step .asset-actions.is-multi .media-action{flex:1 1 0;min-width:0}
+.editor-media-step .media-action{min-height:36px;display:inline-flex;justify-content:center;align-items:center;gap:6px;border:1px solid #404656;background:transparent;color:#e6e8f0;border-radius:10px;padding:0 11px;font-family:inherit;font-size:10.5px;font-weight:600;cursor:pointer;flex:1 1 auto;min-width:0;white-space:nowrap}
 .editor-media-step .media-action:hover{background:#252932;border-color:#5b5578}
 .editor-media-step .media-action svg{width:14px;height:14px;color:#b5aaff;flex-shrink:0}
-.editor-media-step .media-action.is-remove{width:36px;padding:0;margin-left:0;color:#ffb0b2;flex:0 0 36px}
+.editor-media-step .media-action.is-remove{width:auto;padding:0 11px;margin-left:0;color:#ffb0b2;flex:0 0 auto}
 .editor-media-step .media-action.is-remove svg{color:inherit}
 .editor-media-step .media-action:disabled{opacity:.55;cursor:wait}
 .editor-media-step .asset-media-extra{display:block;width:100%;min-width:0}
@@ -110,7 +106,8 @@
  .editor-media-step .asset-thumb{width:48px;height:48px}
  .editor-media-step .answer-panel .asset-thumb{width:44px;height:44px}
  .editor-media-step .media-action{font-size:10px;padding:0 9px;min-height:35px}
- .editor-media-step .asset-actions.is-dual{gap:7px}
+ .editor-media-step .asset-actions{gap:6px}
+ .editor-media-step .media-action{min-height:38px;font-size:11px}
  .editor-media-step .asset.asset-sound-e{padding:13px}
  .editor-media-step .sound-e-action{font-size:9px}
 }
