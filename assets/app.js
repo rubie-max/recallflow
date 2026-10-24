@@ -17476,7 +17476,7 @@ const createLucideIcon = (iconName, iconNode) => {
  */
 
 
-const __iconNode$24 = [
+const __iconNode$25 = [
   [
     "path",
     {
@@ -17485,7 +17485,21 @@ const __iconNode$24 = [
     }
   ]
 ];
-const Activity = createLucideIcon("Activity", __iconNode$24);
+const Activity = createLucideIcon("Activity", __iconNode$25);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$24 = [
+  ["path", { d: "M12 5v14", key: "s699le" }],
+  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+];
+const ArrowDown = createLucideIcon("ArrowDown", __iconNode$24);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17496,10 +17510,12 @@ const Activity = createLucideIcon("Activity", __iconNode$24);
 
 
 const __iconNode$23 = [
-  ["path", { d: "M12 5v14", key: "s699le" }],
-  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
+  ["path", { d: "M4 7h16", key: "6tx8e3" }],
+  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
+  ["path", { d: "M20 17H4", key: "h6l3hr" }]
 ];
-const ArrowDown = createLucideIcon("ArrowDown", __iconNode$23);
+const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$23);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17510,12 +17526,11 @@ const ArrowDown = createLucideIcon("ArrowDown", __iconNode$23);
 
 
 const __iconNode$22 = [
-  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
-  ["path", { d: "M4 7h16", key: "6tx8e3" }],
-  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
-  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+  ["path", { d: "M3 19V5", key: "rwsyhb" }],
+  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
+  ["path", { d: "M7 12h14", key: "uoisry" }]
 ];
-const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$22);
+const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$22);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17526,11 +17541,10 @@ const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$22);
 
 
 const __iconNode$21 = [
-  ["path", { d: "M3 19V5", key: "rwsyhb" }],
-  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
-  ["path", { d: "M7 12h14", key: "uoisry" }]
+  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
+  ["path", { d: "M19 12H5", key: "x3x0zl" }]
 ];
-const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$21);
+const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$21);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17541,10 +17555,11 @@ const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$21);
 
 
 const __iconNode$20 = [
-  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
-  ["path", { d: "M19 12H5", key: "x3x0zl" }]
+  ["path", { d: "M17 12H3", key: "8awo09" }],
+  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
+  ["path", { d: "M21 5v14", key: "nzette" }]
 ];
-const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$20);
+const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$20);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17555,11 +17570,10 @@ const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$20);
 
 
 const __iconNode$1$ = [
-  ["path", { d: "M17 12H3", key: "8awo09" }],
-  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
-  ["path", { d: "M21 5v14", key: "nzette" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$1$);
+const ArrowRight = createLucideIcon("ArrowRight", __iconNode$1$);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17570,10 +17584,12 @@ const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$1$);
 
 
 const __iconNode$1_ = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
+  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
+  ["path", { d: "M17 20V4", key: "1ejh1v" }],
+  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
+  ["path", { d: "M7 4v16", key: "1glfcx" }]
 ];
-const ArrowRight = createLucideIcon("ArrowRight", __iconNode$1_);
+const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$1_);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17584,12 +17600,10 @@ const ArrowRight = createLucideIcon("ArrowRight", __iconNode$1_);
 
 
 const __iconNode$1Z = [
-  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
-  ["path", { d: "M17 20V4", key: "1ejh1v" }],
-  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
-  ["path", { d: "M7 4v16", key: "1glfcx" }]
+  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
+  ["path", { d: "M12 19V5", key: "x0mq9r" }]
 ];
-const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$1Z);
+const ArrowUp = createLucideIcon("ArrowUp", __iconNode$1Z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17600,10 +17614,14 @@ const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$1Z);
 
 
 const __iconNode$1Y = [
-  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
-  ["path", { d: "M12 19V5", key: "x0mq9r" }]
+  ["path", { d: "M2 10v3", key: "1fnikh" }],
+  ["path", { d: "M6 6v11", key: "11sgs0" }],
+  ["path", { d: "M10 3v18", key: "yhl04a" }],
+  ["path", { d: "M14 8v7", key: "3a1oy3" }],
+  ["path", { d: "M18 5v13", key: "123xd1" }],
+  ["path", { d: "M22 10v3", key: "154ddg" }]
 ];
-const ArrowUp = createLucideIcon("ArrowUp", __iconNode$1Y);
+const AudioLines = createLucideIcon("AudioLines", __iconNode$1Y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17614,14 +17632,16 @@ const ArrowUp = createLucideIcon("ArrowUp", __iconNode$1Y);
 
 
 const __iconNode$1X = [
-  ["path", { d: "M2 10v3", key: "1fnikh" }],
-  ["path", { d: "M6 6v11", key: "11sgs0" }],
-  ["path", { d: "M10 3v18", key: "yhl04a" }],
-  ["path", { d: "M14 8v7", key: "3a1oy3" }],
-  ["path", { d: "M18 5v13", key: "123xd1" }],
-  ["path", { d: "M22 10v3", key: "154ddg" }]
+  ["path", { d: "M12 7v14", key: "1akyts" }],
+  [
+    "path",
+    {
+      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+      key: "ruj8y"
+    }
+  ]
 ];
-const AudioLines = createLucideIcon("AudioLines", __iconNode$1X);
+const BookOpen = createLucideIcon("BookOpen", __iconNode$1X);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17632,16 +17652,9 @@ const AudioLines = createLucideIcon("AudioLines", __iconNode$1X);
 
 
 const __iconNode$1W = [
-  ["path", { d: "M12 7v14", key: "1akyts" }],
-  [
-    "path",
-    {
-      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
-      key: "ruj8y"
-    }
-  ]
+  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
 ];
-const BookOpen = createLucideIcon("BookOpen", __iconNode$1W);
+const Bookmark = createLucideIcon("Bookmark", __iconNode$1W);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17652,9 +17665,10 @@ const BookOpen = createLucideIcon("BookOpen", __iconNode$1W);
 
 
 const __iconNode$1V = [
-  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
+  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
+  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
 ];
-const Bookmark = createLucideIcon("Bookmark", __iconNode$1V);
+const Brackets = createLucideIcon("Brackets", __iconNode$1V);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17665,20 +17679,6 @@ const Bookmark = createLucideIcon("Bookmark", __iconNode$1V);
 
 
 const __iconNode$1U = [
-  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
-  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
-];
-const Brackets = createLucideIcon("Brackets", __iconNode$1U);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1T = [
   [
     "path",
     {
@@ -17701,7 +17701,25 @@ const __iconNode$1T = [
   ["path", { d: "M6 18a4 4 0 0 1-1.967-.516", key: "2e4loj" }],
   ["path", { d: "M19.967 17.484A4 4 0 0 1 18 18", key: "159ez6" }]
 ];
-const Brain = createLucideIcon("Brain", __iconNode$1T);
+const Brain = createLucideIcon("Brain", __iconNode$1U);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1T = [
+  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
+  ["path", { d: "M16 2v4", key: "4m81vk" }],
+  ["path", { d: "M8 2v4", key: "1cmpym" }],
+  ["path", { d: "M3 10h5", key: "r794hk" }],
+  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
+  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
+];
+const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1T);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17712,24 +17730,6 @@ const Brain = createLucideIcon("Brain", __iconNode$1T);
 
 
 const __iconNode$1S = [
-  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
-  ["path", { d: "M16 2v4", key: "4m81vk" }],
-  ["path", { d: "M8 2v4", key: "1cmpym" }],
-  ["path", { d: "M3 10h5", key: "r794hk" }],
-  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
-  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
-];
-const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1S);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1R = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -17741,7 +17741,27 @@ const __iconNode$1R = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1R);
+const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1S);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1R = [
+  [
+    "path",
+    {
+      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
+      key: "1tc9qg"
+    }
+  ],
+  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
+];
+const Camera = createLucideIcon("Camera", __iconNode$1R);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17752,31 +17772,11 @@ const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1R);
 
 
 const __iconNode$1Q = [
-  [
-    "path",
-    {
-      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
-      key: "1tc9qg"
-    }
-  ],
-  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
-];
-const Camera = createLucideIcon("Camera", __iconNode$1Q);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1P = [
   ["line", { x1: "12", x2: "12", y1: "20", y2: "10", key: "1vz5eb" }],
   ["line", { x1: "18", x2: "18", y1: "20", y2: "4", key: "cun8e5" }],
   ["line", { x1: "6", x2: "6", y1: "20", y2: "16", key: "hq0ia6" }]
 ];
-const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1P);
+const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1Q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17786,8 +17786,8 @@ const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasin
  */
 
 
-const __iconNode$1O = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("Check", __iconNode$1O);
+const __iconNode$1P = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("Check", __iconNode$1P);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17797,8 +17797,8 @@ const Check = createLucideIcon("Check", __iconNode$1O);
  */
 
 
-const __iconNode$1N = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1N);
+const __iconNode$1O = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1O);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17808,8 +17808,8 @@ const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1N);
  */
 
 
-const __iconNode$1M = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1M);
+const __iconNode$1N = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1N);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17819,8 +17819,23 @@ const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1M);
  */
 
 
-const __iconNode$1L = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1L);
+const __iconNode$1M = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1M);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1L = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1L);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17832,10 +17847,9 @@ const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1L);
 
 const __iconNode$1K = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1K);
+const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1K);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17847,9 +17861,9 @@ const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1K);
 
 const __iconNode$1J = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
 ];
-const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1J);
+const CircleDot = createLucideIcon("CircleDot", __iconNode$1J);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17861,9 +17875,10 @@ const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1J);
 
 const __iconNode$1I = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const CircleDot = createLucideIcon("CircleDot", __iconNode$1I);
+const CircleX = createLucideIcon("CircleX", __iconNode$1I);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17874,21 +17889,6 @@ const CircleDot = createLucideIcon("CircleDot", __iconNode$1I);
 
 
 const __iconNode$1H = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
-];
-const CircleX = createLucideIcon("CircleX", __iconNode$1H);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1G = [
   [
     "path",
     { d: "M15 2H9a1 1 0 0 0-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z", key: "1pp7kr" }
@@ -17902,7 +17902,25 @@ const __iconNode$1G = [
   ],
   ["path", { d: "m17 10 4 4-4 4", key: "vp2hj1" }]
 ];
-const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1G);
+const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1H);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1G = [
+  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
+  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
+  [
+    "path",
+    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
+  ]
+];
+const CloudOff = createLucideIcon("CloudOff", __iconNode$1G);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17913,14 +17931,11 @@ const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1G);
 
 
 const __iconNode$1F = [
-  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
-  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
-  [
-    "path",
-    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
-  ]
+  ["path", { d: "M12 13v8", key: "1l5pq0" }],
+  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
+  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
 ];
-const CloudOff = createLucideIcon("CloudOff", __iconNode$1F);
+const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1F);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17931,11 +17946,9 @@ const CloudOff = createLucideIcon("CloudOff", __iconNode$1F);
 
 
 const __iconNode$1E = [
-  ["path", { d: "M12 13v8", key: "1l5pq0" }],
-  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
-  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
+  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
 ];
-const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1E);
+const Cloud = createLucideIcon("Cloud", __iconNode$1E);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17946,9 +17959,10 @@ const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1E);
 
 
 const __iconNode$1D = [
-  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
 ];
-const Cloud = createLucideIcon("Cloud", __iconNode$1D);
+const Contrast = createLucideIcon("Contrast", __iconNode$1D);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17959,10 +17973,11 @@ const Cloud = createLucideIcon("Cloud", __iconNode$1D);
 
 
 const __iconNode$1C = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
+  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Contrast = createLucideIcon("Contrast", __iconNode$1C);
+const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1C);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17973,11 +17988,10 @@ const Contrast = createLucideIcon("Contrast", __iconNode$1C);
 
 
 const __iconNode$1B = [
-  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
   ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
   ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1B);
+const Copy = createLucideIcon("Copy", __iconNode$1B);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17988,10 +18002,10 @@ const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1B);
 
 
 const __iconNode$1A = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
+  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
 ];
-const Copy = createLucideIcon("Copy", __iconNode$1A);
+const Crop = createLucideIcon("Crop", __iconNode$1A);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18002,10 +18016,13 @@ const Copy = createLucideIcon("Copy", __iconNode$1A);
 
 
 const __iconNode$1z = [
-  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
-  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
+  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
+  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
+  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
 ];
-const Crop = createLucideIcon("Crop", __iconNode$1z);
+const Crosshair = createLucideIcon("Crosshair", __iconNode$1z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18016,13 +18033,11 @@ const Crop = createLucideIcon("Crop", __iconNode$1z);
 
 
 const __iconNode$1y = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
-  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
-  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
-  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
 ];
-const Crosshair = createLucideIcon("Crosshair", __iconNode$1y);
+const Database = createLucideIcon("Database", __iconNode$1y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18033,21 +18048,6 @@ const Crosshair = createLucideIcon("Crosshair", __iconNode$1y);
 
 
 const __iconNode$1x = [
-  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
-  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
-  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
-];
-const Database = createLucideIcon("Database", __iconNode$1x);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1w = [
   ["path", { d: "M13 4h3a2 2 0 0 1 2 2v14", key: "hrm0s9" }],
   ["path", { d: "M2 20h3", key: "1gaodv" }],
   ["path", { d: "M13 20h9", key: "s90cdi" }],
@@ -18060,7 +18060,22 @@ const __iconNode$1w = [
     }
   ]
 ];
-const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1w);
+const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1x);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1w = [
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
+  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+];
+const Download = createLucideIcon("Download", __iconNode$1w);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18071,11 +18086,15 @@ const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1w);
 
 
 const __iconNode$1v = [
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
-  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+  [
+    "path",
+    {
+      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
+      key: "c7niix"
+    }
+  ]
 ];
-const Download = createLucideIcon("Download", __iconNode$1v);
+const Droplet = createLucideIcon("Droplet", __iconNode$1v);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18086,15 +18105,11 @@ const Download = createLucideIcon("Download", __iconNode$1v);
 
 
 const __iconNode$1u = [
-  [
-    "path",
-    {
-      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
-      key: "c7niix"
-    }
-  ]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
+  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
 ];
-const Droplet = createLucideIcon("Droplet", __iconNode$1u);
+const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1u);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18105,11 +18120,16 @@ const Droplet = createLucideIcon("Droplet", __iconNode$1u);
 
 
 const __iconNode$1t = [
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
-  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
-  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
+  ["path", { d: "m15 15 6 6", key: "1s409w" }],
+  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
+  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
+  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
+  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
+  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
+  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
+  ["path", { d: "M9 9 3 3", key: "v551iv" }]
 ];
-const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1t);
+const Expand = createLucideIcon("Expand", __iconNode$1t);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18120,16 +18140,11 @@ const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1t);
 
 
 const __iconNode$1s = [
-  ["path", { d: "m15 15 6 6", key: "1s409w" }],
-  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
-  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
-  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
-  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
-  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
-  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
-  ["path", { d: "M9 9 3 3", key: "v551iv" }]
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
 ];
-const Expand = createLucideIcon("Expand", __iconNode$1s);
+const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1s);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18140,21 +18155,6 @@ const Expand = createLucideIcon("Expand", __iconNode$1s);
 
 
 const __iconNode$1r = [
-  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
-  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
-  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
-];
-const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1r);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1q = [
   [
     "path",
     {
@@ -18172,7 +18172,27 @@ const __iconNode$1q = [
   ],
   ["path", { d: "m2 2 20 20", key: "1ooewy" }]
 ];
-const EyeOff = createLucideIcon("EyeOff", __iconNode$1q);
+const EyeOff = createLucideIcon("EyeOff", __iconNode$1r);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1q = [
+  [
+    "path",
+    {
+      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
+      key: "1nclc0"
+    }
+  ],
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+];
+const Eye = createLucideIcon("Eye", __iconNode$1q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18183,16 +18203,10 @@ const EyeOff = createLucideIcon("EyeOff", __iconNode$1q);
 
 
 const __iconNode$1p = [
-  [
-    "path",
-    {
-      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
-      key: "1nclc0"
-    }
-  ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
+  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
 ];
-const Eye = createLucideIcon("Eye", __iconNode$1p);
+const FastForward = createLucideIcon("FastForward", __iconNode$1p);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18203,20 +18217,6 @@ const Eye = createLucideIcon("Eye", __iconNode$1p);
 
 
 const __iconNode$1o = [
-  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
-  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
-];
-const FastForward = createLucideIcon("FastForward", __iconNode$1o);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1n = [
   ["path", { d: "M10 12v-1", key: "v7bkov" }],
   ["path", { d: "M10 18v-2", key: "1cjy8d" }],
   ["path", { d: "M10 7V6", key: "dljcrl" }],
@@ -18227,7 +18227,7 @@ const __iconNode$1n = [
   ],
   ["circle", { cx: "10", cy: "20", r: "2", key: "1xzdoj" }]
 ];
-const FileArchive = createLucideIcon("FileArchive", __iconNode$1n);
+const FileArchive = createLucideIcon("FileArchive", __iconNode$1o);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18237,7 +18237,7 @@ const FileArchive = createLucideIcon("FileArchive", __iconNode$1n);
  */
 
 
-const __iconNode$1m = [
+const __iconNode$1n = [
   ["path", { d: "M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3", key: "rslqgf" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
   [
@@ -18248,7 +18248,23 @@ const __iconNode$1m = [
     }
   ]
 ];
-const FileAudio = createLucideIcon("FileAudio", __iconNode$1m);
+const FileAudio = createLucideIcon("FileAudio", __iconNode$1n);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1m = [
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  ["path", { d: "M12 18v-6", key: "17g6i2" }],
+  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+];
+const FileDown = createLucideIcon("FileDown", __iconNode$1m);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18261,10 +18277,16 @@ const FileAudio = createLucideIcon("FileAudio", __iconNode$1m);
 const __iconNode$1l = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 18v-6", key: "17g6i2" }],
-  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+  [
+    "path",
+    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
+  ],
+  [
+    "path",
+    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
+  ]
 ];
-const FileDown = createLucideIcon("FileDown", __iconNode$1l);
+const FileJson = createLucideIcon("FileJson", __iconNode$1l);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18277,16 +18299,12 @@ const FileDown = createLucideIcon("FileDown", __iconNode$1l);
 const __iconNode$1k = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  [
-    "path",
-    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
-  ],
-  [
-    "path",
-    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
-  ]
+  ["path", { d: "M8 13h2", key: "yr2amv" }],
+  ["path", { d: "M14 13h2", key: "un5t4a" }],
+  ["path", { d: "M8 17h2", key: "2yhykz" }],
+  ["path", { d: "M14 17h2", key: "10kma7" }]
 ];
-const FileJson = createLucideIcon("FileJson", __iconNode$1k);
+const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1k);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18299,12 +18317,11 @@ const FileJson = createLucideIcon("FileJson", __iconNode$1k);
 const __iconNode$1j = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M8 13h2", key: "yr2amv" }],
-  ["path", { d: "M14 13h2", key: "un5t4a" }],
-  ["path", { d: "M8 17h2", key: "2yhykz" }],
-  ["path", { d: "M14 17h2", key: "10kma7" }]
+  ["path", { d: "M10 9H8", key: "b1mrlr" }],
+  ["path", { d: "M16 13H8", key: "t4e002" }],
+  ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1j);
+const FileText = createLucideIcon("FileText", __iconNode$1j);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18317,11 +18334,10 @@ const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1j);
 const __iconNode$1i = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M10 9H8", key: "b1mrlr" }],
-  ["path", { d: "M16 13H8", key: "t4e002" }],
-  ["path", { d: "M16 17H8", key: "z1uh3a" }]
+  ["path", { d: "M12 12v6", key: "3ahymv" }],
+  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
 ];
-const FileText = createLucideIcon("FileText", __iconNode$1i);
+const FileUp = createLucideIcon("FileUp", __iconNode$1i);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18334,10 +18350,9 @@ const FileText = createLucideIcon("FileText", __iconNode$1i);
 const __iconNode$1h = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 12v6", key: "3ahymv" }],
-  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
+  ["path", { d: "m10 11 5 3-5 3v-6Z", key: "7ntvm4" }]
 ];
-const FileUp = createLucideIcon("FileUp", __iconNode$1h);
+const FileVideo = createLucideIcon("FileVideo", __iconNode$1h);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18348,11 +18363,16 @@ const FileUp = createLucideIcon("FileUp", __iconNode$1h);
 
 
 const __iconNode$1g = [
-  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
-  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "m10 11 5 3-5 3v-6Z", key: "7ntvm4" }]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M7 3v18", key: "bbkbws" }],
+  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
+  ["path", { d: "M3 12h18", key: "1i2n21" }],
+  ["path", { d: "M3 16.5h4", key: "1230mu" }],
+  ["path", { d: "M17 3v18", key: "in4fa5" }],
+  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
+  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
 ];
-const FileVideo = createLucideIcon("FileVideo", __iconNode$1g);
+const Film = createLucideIcon("Film", __iconNode$1g);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18363,16 +18383,15 @@ const FileVideo = createLucideIcon("FileVideo", __iconNode$1g);
 
 
 const __iconNode$1f = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
-  ["path", { d: "M7 3v18", key: "bbkbws" }],
-  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
-  ["path", { d: "M3 12h18", key: "1i2n21" }],
-  ["path", { d: "M3 16.5h4", key: "1230mu" }],
-  ["path", { d: "M17 3v18", key: "in4fa5" }],
-  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
-  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
+  [
+    "path",
+    {
+      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+      key: "96xj49"
+    }
+  ]
 ];
-const Film = createLucideIcon("Film", __iconNode$1f);
+const Flame = createLucideIcon("Flame", __iconNode$1f);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18383,15 +18402,14 @@ const Film = createLucideIcon("Film", __iconNode$1f);
 
 
 const __iconNode$1e = [
-  [
-    "path",
-    {
-      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
-      key: "96xj49"
-    }
-  ]
+  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
+  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "M12 14v2", key: "8jcxud" }],
+  ["path", { d: "M12 8v2", key: "1woqiv" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }]
 ];
-const Flame = createLucideIcon("Flame", __iconNode$1e);
+const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1e);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18402,14 +18420,14 @@ const Flame = createLucideIcon("Flame", __iconNode$1e);
 
 
 const __iconNode$1d = [
-  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
-  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
-  ["path", { d: "M12 20v2", key: "1lh1kg" }],
-  ["path", { d: "M12 14v2", key: "8jcxud" }],
-  ["path", { d: "M12 8v2", key: "1woqiv" }],
-  ["path", { d: "M12 2v2", key: "tus03m" }]
+  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
+  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
+  ["path", { d: "M4 12H2", key: "rhcxmi" }],
+  ["path", { d: "M10 12H8", key: "s88cx1" }],
+  ["path", { d: "M16 12h-2", key: "10asgb" }],
+  ["path", { d: "M22 12h-2", key: "14jgyd" }]
 ];
-const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1d);
+const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1d);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18420,14 +18438,11 @@ const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1d);
 
 
 const __iconNode$1c = [
-  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
-  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
-  ["path", { d: "M4 12H2", key: "rhcxmi" }],
-  ["path", { d: "M10 12H8", key: "s88cx1" }],
-  ["path", { d: "M16 12h-2", key: "10asgb" }],
-  ["path", { d: "M22 12h-2", key: "14jgyd" }]
+  ["path", { d: "M7 2h10", key: "nczekb" }],
+  ["path", { d: "M5 6h14", key: "u2x4p" }],
+  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
 ];
-const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1c);
+const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1c);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18438,11 +18453,14 @@ const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1c);
 
 
 const __iconNode$1b = [
-  ["path", { d: "M7 2h10", key: "nczekb" }],
-  ["path", { d: "M5 6h14", key: "u2x4p" }],
-  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
+  ["circle", { cx: "9", cy: "12", r: "1", key: "1vctgf" }],
+  ["circle", { cx: "9", cy: "5", r: "1", key: "hp0tcf" }],
+  ["circle", { cx: "9", cy: "19", r: "1", key: "fkjjf6" }],
+  ["circle", { cx: "15", cy: "12", r: "1", key: "1tmaij" }],
+  ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
+  ["circle", { cx: "15", cy: "19", r: "1", key: "f4zoj3" }]
 ];
-const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1b);
+const GripVertical = createLucideIcon("GripVertical", __iconNode$1b);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18453,14 +18471,12 @@ const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1b)
 
 
 const __iconNode$1a = [
-  ["circle", { cx: "9", cy: "12", r: "1", key: "1vctgf" }],
-  ["circle", { cx: "9", cy: "5", r: "1", key: "hp0tcf" }],
-  ["circle", { cx: "9", cy: "19", r: "1", key: "fkjjf6" }],
-  ["circle", { cx: "15", cy: "12", r: "1", key: "1tmaij" }],
-  ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
-  ["circle", { cx: "15", cy: "19", r: "1", key: "f4zoj3" }]
+  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
+  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
+  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
+  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
 ];
-const GripVertical = createLucideIcon("GripVertical", __iconNode$1a);
+const Hash = createLucideIcon("Hash", __iconNode$1a);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18471,12 +18487,11 @@ const GripVertical = createLucideIcon("GripVertical", __iconNode$1a);
 
 
 const __iconNode$19 = [
-  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
-  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
-  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
-  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
+  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
+  ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
+  ["path", { d: "M12 7v5l4 2", key: "1fdv2h" }]
 ];
-const Hash = createLucideIcon("Hash", __iconNode$19);
+const History = createLucideIcon("History", __iconNode$19);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18487,11 +18502,10 @@ const Hash = createLucideIcon("Hash", __iconNode$19);
 
 
 const __iconNode$18 = [
-  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
-  ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
-  ["path", { d: "M12 7v5l4 2", key: "1fdv2h" }]
+  ["path", { d: "m9 11-6 6v3h9l3-3", key: "1a3l36" }],
+  ["path", { d: "m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4", key: "14a9rk" }]
 ];
-const History = createLucideIcon("History", __iconNode$18);
+const Highlighter = createLucideIcon("Highlighter", __iconNode$18);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18502,10 +18516,16 @@ const History = createLucideIcon("History", __iconNode$18);
 
 
 const __iconNode$17 = [
-  ["path", { d: "m9 11-6 6v3h9l3-3", key: "1a3l36" }],
-  ["path", { d: "m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4", key: "14a9rk" }]
+  ["path", { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" }],
+  [
+    "path",
+    {
+      d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+      key: "1d0kgt"
+    }
+  ]
 ];
-const Highlighter = createLucideIcon("Highlighter", __iconNode$17);
+const House = createLucideIcon("House", __iconNode$17);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18516,16 +18536,13 @@ const Highlighter = createLucideIcon("Highlighter", __iconNode$17);
 
 
 const __iconNode$16 = [
-  ["path", { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" }],
-  [
-    "path",
-    {
-      d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-      key: "1d0kgt"
-    }
-  ]
+  ["path", { d: "M16 5h6", key: "1vod17" }],
+  ["path", { d: "M19 2v6", key: "4bpg5p" }],
+  ["path", { d: "M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5", key: "1ue2ih" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }]
 ];
-const House = createLucideIcon("House", __iconNode$16);
+const ImagePlus = createLucideIcon("ImagePlus", __iconNode$16);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18536,13 +18553,11 @@ const House = createLucideIcon("House", __iconNode$16);
 
 
 const __iconNode$15 = [
-  ["path", { d: "M16 5h6", key: "1vod17" }],
-  ["path", { d: "M19 2v6", key: "4bpg5p" }],
-  ["path", { d: "M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5", key: "1ue2ih" }],
-  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
-  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
 ];
-const ImagePlus = createLucideIcon("ImagePlus", __iconNode$15);
+const Image$1 = createLucideIcon("Image", __iconNode$15);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18553,11 +18568,11 @@ const ImagePlus = createLucideIcon("ImagePlus", __iconNode$15);
 
 
 const __iconNode$14 = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
-  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
-  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 16v-4", key: "1dtifu" }],
+  ["path", { d: "M12 8h.01", key: "e9boi3" }]
 ];
-const Image$1 = createLucideIcon("Image", __iconNode$14);
+const Info = createLucideIcon("Info", __iconNode$14);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18568,11 +18583,16 @@ const Image$1 = createLucideIcon("Image", __iconNode$14);
 
 
 const __iconNode$13 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 16v-4", key: "1dtifu" }],
-  ["path", { d: "M12 8h.01", key: "e9boi3" }]
+  [
+    "path",
+    {
+      d: "M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z",
+      key: "1s6t7t"
+    }
+  ],
+  ["circle", { cx: "16.5", cy: "7.5", r: ".5", fill: "currentColor", key: "w0ekpg" }]
 ];
-const Info = createLucideIcon("Info", __iconNode$13);
+const KeyRound = createLucideIcon("KeyRound", __iconNode$13);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18583,26 +18603,6 @@ const Info = createLucideIcon("Info", __iconNode$13);
 
 
 const __iconNode$12 = [
-  [
-    "path",
-    {
-      d: "M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z",
-      key: "1s6t7t"
-    }
-  ],
-  ["circle", { cx: "16.5", cy: "7.5", r: ".5", fill: "currentColor", key: "w0ekpg" }]
-];
-const KeyRound = createLucideIcon("KeyRound", __iconNode$12);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$11 = [
   [
     "path",
     {
@@ -18625,7 +18625,23 @@ const __iconNode$11 = [
     }
   ]
 ];
-const Layers = createLucideIcon("Layers", __iconNode$11);
+const Layers = createLucideIcon("Layers", __iconNode$12);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$11 = [
+  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
+  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
+  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
+  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
+];
+const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$11);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18636,12 +18652,12 @@ const Layers = createLucideIcon("Layers", __iconNode$11);
 
 
 const __iconNode$10 = [
-  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
-  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
-  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
-  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
+  ["rect", { width: "7", height: "7", x: "3", y: "3", rx: "1", key: "1g98yp" }],
+  ["rect", { width: "7", height: "7", x: "14", y: "3", rx: "1", key: "6d4xhi" }],
+  ["rect", { width: "7", height: "7", x: "14", y: "14", rx: "1", key: "nxv5o0" }],
+  ["rect", { width: "7", height: "7", x: "3", y: "14", rx: "1", key: "1bb6yr" }]
 ];
-const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$10);
+const LayoutGrid = createLucideIcon("LayoutGrid", __iconNode$10);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18652,12 +18668,12 @@ const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$10);
 
 
 const __iconNode$$ = [
-  ["rect", { width: "7", height: "7", x: "3", y: "3", rx: "1", key: "1g98yp" }],
-  ["rect", { width: "7", height: "7", x: "14", y: "3", rx: "1", key: "6d4xhi" }],
-  ["rect", { width: "7", height: "7", x: "14", y: "14", rx: "1", key: "nxv5o0" }],
-  ["rect", { width: "7", height: "7", x: "3", y: "14", rx: "1", key: "1bb6yr" }]
+  ["path", { d: "m16 6 4 14", key: "ji33uf" }],
+  ["path", { d: "M12 6v14", key: "1n7gus" }],
+  ["path", { d: "M8 8v12", key: "1gg7y9" }],
+  ["path", { d: "M4 4v16", key: "6qkkli" }]
 ];
-const LayoutGrid = createLucideIcon("LayoutGrid", __iconNode$$);
+const Library = createLucideIcon("Library", __iconNode$$);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18668,22 +18684,6 @@ const LayoutGrid = createLucideIcon("LayoutGrid", __iconNode$$);
 
 
 const __iconNode$_ = [
-  ["path", { d: "m16 6 4 14", key: "ji33uf" }],
-  ["path", { d: "M12 6v14", key: "1n7gus" }],
-  ["path", { d: "M8 8v12", key: "1gg7y9" }],
-  ["path", { d: "M4 4v16", key: "6qkkli" }]
-];
-const Library = createLucideIcon("Library", __iconNode$_);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$Z = [
   [
     "path",
     {
@@ -18694,7 +18694,22 @@ const __iconNode$Z = [
   ["path", { d: "M9 18h6", key: "x1upvd" }],
   ["path", { d: "M10 22h4", key: "ceow96" }]
 ];
-const Lightbulb = createLucideIcon("Lightbulb", __iconNode$Z);
+const Lightbulb = createLucideIcon("Lightbulb", __iconNode$_);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$Z = [
+  ["path", { d: "M9 17H7A5 5 0 0 1 7 7h2", key: "8i5ue5" }],
+  ["path", { d: "M15 7h2a5 5 0 1 1 0 10h-2", key: "1b9ql8" }],
+  ["line", { x1: "8", x2: "16", y1: "12", y2: "12", key: "1jonct" }]
+];
+const Link2 = createLucideIcon("Link2", __iconNode$Z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18705,11 +18720,13 @@ const Lightbulb = createLucideIcon("Lightbulb", __iconNode$Z);
 
 
 const __iconNode$Y = [
-  ["path", { d: "M9 17H7A5 5 0 0 1 7 7h2", key: "8i5ue5" }],
-  ["path", { d: "M15 7h2a5 5 0 1 1 0 10h-2", key: "1b9ql8" }],
-  ["line", { x1: "8", x2: "16", y1: "12", y2: "12", key: "1jonct" }]
+  ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
+  ["path", { d: "m3 7 2 2 4-4", key: "1obspn" }],
+  ["path", { d: "M13 6h8", key: "15sg57" }],
+  ["path", { d: "M13 12h8", key: "h98zly" }],
+  ["path", { d: "M13 18h8", key: "oe0vm4" }]
 ];
-const Link2 = createLucideIcon("Link2", __iconNode$Y);
+const ListChecks = createLucideIcon("ListChecks", __iconNode$Y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18720,13 +18737,14 @@ const Link2 = createLucideIcon("Link2", __iconNode$Y);
 
 
 const __iconNode$X = [
-  ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
-  ["path", { d: "m3 7 2 2 4-4", key: "1obspn" }],
-  ["path", { d: "M13 6h8", key: "15sg57" }],
-  ["path", { d: "M13 12h8", key: "h98zly" }],
-  ["path", { d: "M13 18h8", key: "oe0vm4" }]
+  ["path", { d: "M10 12h11", key: "6m4ad9" }],
+  ["path", { d: "M10 18h11", key: "11hvi2" }],
+  ["path", { d: "M10 6h11", key: "c7qv1k" }],
+  ["path", { d: "M4 10h2", key: "16xx2s" }],
+  ["path", { d: "M4 6h1v4", key: "cnovpq" }],
+  ["path", { d: "M6 18H4c0-1 2-2 2-3s-1-1.5-2-1", key: "m9a95d" }]
 ];
-const ListChecks = createLucideIcon("ListChecks", __iconNode$X);
+const ListOrdered = createLucideIcon("ListOrdered", __iconNode$X);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18737,31 +18755,13 @@ const ListChecks = createLucideIcon("ListChecks", __iconNode$X);
 
 
 const __iconNode$W = [
-  ["path", { d: "M10 12h11", key: "6m4ad9" }],
-  ["path", { d: "M10 18h11", key: "11hvi2" }],
-  ["path", { d: "M10 6h11", key: "c7qv1k" }],
-  ["path", { d: "M4 10h2", key: "16xx2s" }],
-  ["path", { d: "M4 6h1v4", key: "cnovpq" }],
-  ["path", { d: "M6 18H4c0-1 2-2 2-3s-1-1.5-2-1", key: "m9a95d" }]
-];
-const ListOrdered = createLucideIcon("ListOrdered", __iconNode$W);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$V = [
   ["rect", { x: "3", y: "5", width: "6", height: "6", rx: "1", key: "1defrl" }],
   ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
   ["path", { d: "M13 6h8", key: "15sg57" }],
   ["path", { d: "M13 12h8", key: "h98zly" }],
   ["path", { d: "M13 18h8", key: "oe0vm4" }]
 ];
-const ListTodo = createLucideIcon("ListTodo", __iconNode$V);
+const ListTodo = createLucideIcon("ListTodo", __iconNode$W);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18771,8 +18771,23 @@ const ListTodo = createLucideIcon("ListTodo", __iconNode$V);
  */
 
 
-const __iconNode$U = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("LoaderCircle", __iconNode$U);
+const __iconNode$V = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("LoaderCircle", __iconNode$V);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$U = [
+  ["circle", { cx: "12", cy: "16", r: "1", key: "1au0dj" }],
+  ["rect", { x: "3", y: "10", width: "18", height: "12", rx: "2", key: "6s8ecr" }],
+  ["path", { d: "M7 10V7a5 5 0 0 1 10 0v3", key: "1pqi11" }]
+];
+const LockKeyhole = createLucideIcon("LockKeyhole", __iconNode$U);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18783,11 +18798,10 @@ const LoaderCircle = createLucideIcon("LoaderCircle", __iconNode$U);
 
 
 const __iconNode$T = [
-  ["circle", { cx: "12", cy: "16", r: "1", key: "1au0dj" }],
-  ["rect", { x: "3", y: "10", width: "18", height: "12", rx: "2", key: "6s8ecr" }],
-  ["path", { d: "M7 10V7a5 5 0 0 1 10 0v3", key: "1pqi11" }]
+  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
+  ["path", { d: "M7 11V7a5 5 0 0 1 9.9-1", key: "1mm8w8" }]
 ];
-const LockKeyhole = createLucideIcon("LockKeyhole", __iconNode$T);
+const LockOpen = createLucideIcon("LockOpen", __iconNode$T);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18799,9 +18813,9 @@ const LockKeyhole = createLucideIcon("LockKeyhole", __iconNode$T);
 
 const __iconNode$S = [
   ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 9.9-1", key: "1mm8w8" }]
+  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
 ];
-const LockOpen = createLucideIcon("LockOpen", __iconNode$S);
+const Lock = createLucideIcon("Lock", __iconNode$S);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18812,10 +18826,11 @@ const LockOpen = createLucideIcon("LockOpen", __iconNode$S);
 
 
 const __iconNode$R = [
-  ["rect", { width: "18", height: "11", x: "3", y: "11", rx: "2", ry: "2", key: "1w4ew1" }],
-  ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }]
+  ["path", { d: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4", key: "u53s6r" }],
+  ["polyline", { points: "10 17 15 12 10 7", key: "1ail0h" }],
+  ["line", { x1: "15", x2: "3", y1: "12", y2: "12", key: "v6grx8" }]
 ];
-const Lock = createLucideIcon("Lock", __iconNode$R);
+const LogIn = createLucideIcon("LogIn", __iconNode$R);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18826,11 +18841,11 @@ const Lock = createLucideIcon("Lock", __iconNode$R);
 
 
 const __iconNode$Q = [
-  ["path", { d: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4", key: "u53s6r" }],
-  ["polyline", { points: "10 17 15 12 10 7", key: "1ail0h" }],
-  ["line", { x1: "15", x2: "3", y1: "12", y2: "12", key: "v6grx8" }]
+  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }],
+  ["polyline", { points: "16 17 21 12 16 7", key: "1gabdz" }],
+  ["line", { x1: "21", x2: "9", y1: "12", y2: "12", key: "1uyos4" }]
 ];
-const LogIn = createLucideIcon("LogIn", __iconNode$Q);
+const LogOut = createLucideIcon("LogOut", __iconNode$Q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18841,11 +18856,12 @@ const LogIn = createLucideIcon("LogIn", __iconNode$Q);
 
 
 const __iconNode$P = [
-  ["path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4", key: "1uf3rs" }],
-  ["polyline", { points: "16 17 21 12 16 7", key: "1gabdz" }],
-  ["line", { x1: "21", x2: "9", y1: "12", y2: "12", key: "1uyos4" }]
+  ["polyline", { points: "15 3 21 3 21 9", key: "mznyad" }],
+  ["polyline", { points: "9 21 3 21 3 15", key: "1avn1i" }],
+  ["line", { x1: "21", x2: "14", y1: "3", y2: "10", key: "ota7mn" }],
+  ["line", { x1: "3", x2: "10", y1: "21", y2: "14", key: "1atl0r" }]
 ];
-const LogOut = createLucideIcon("LogOut", __iconNode$P);
+const Maximize2 = createLucideIcon("Maximize2", __iconNode$P);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18856,27 +18872,11 @@ const LogOut = createLucideIcon("LogOut", __iconNode$P);
 
 
 const __iconNode$O = [
-  ["polyline", { points: "15 3 21 3 21 9", key: "mznyad" }],
-  ["polyline", { points: "9 21 3 21 3 15", key: "1avn1i" }],
-  ["line", { x1: "21", x2: "14", y1: "3", y2: "10", key: "ota7mn" }],
-  ["line", { x1: "3", x2: "10", y1: "21", y2: "14", key: "1atl0r" }]
-];
-const Maximize2 = createLucideIcon("Maximize2", __iconNode$O);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$N = [
   ["path", { d: "M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z", key: "131961" }],
   ["path", { d: "M19 10v2a7 7 0 0 1-14 0v-2", key: "1vc78b" }],
   ["line", { x1: "12", x2: "12", y1: "19", y2: "22", key: "x3vr5v" }]
 ];
-const Mic = createLucideIcon("Mic", __iconNode$N);
+const Mic = createLucideIcon("Mic", __iconNode$O);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18886,8 +18886,24 @@ const Mic = createLucideIcon("Mic", __iconNode$N);
  */
 
 
-const __iconNode$M = [["path", { d: "M5 12h14", key: "1ays0h" }]];
-const Minus = createLucideIcon("Minus", __iconNode$M);
+const __iconNode$N = [["path", { d: "M5 12h14", key: "1ays0h" }]];
+const Minus = createLucideIcon("Minus", __iconNode$N);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$M = [
+  ["path", { d: "M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8", key: "10dyio" }],
+  ["path", { d: "M10 19v-3.96 3.15", key: "1irgej" }],
+  ["path", { d: "M7 19h5", key: "qswx4l" }],
+  ["rect", { width: "6", height: "10", x: "16", y: "12", rx: "2", key: "1egngj" }]
+];
+const MonitorSmartphone = createLucideIcon("MonitorSmartphone", __iconNode$M);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18898,12 +18914,9 @@ const Minus = createLucideIcon("Minus", __iconNode$M);
 
 
 const __iconNode$L = [
-  ["path", { d: "M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8", key: "10dyio" }],
-  ["path", { d: "M10 19v-3.96 3.15", key: "1irgej" }],
-  ["path", { d: "M7 19h5", key: "qswx4l" }],
-  ["rect", { width: "6", height: "10", x: "16", y: "12", rx: "2", key: "1egngj" }]
+  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
 ];
-const MonitorSmartphone = createLucideIcon("MonitorSmartphone", __iconNode$L);
+const Moon = createLucideIcon("Moon", __iconNode$L);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18914,9 +18927,11 @@ const MonitorSmartphone = createLucideIcon("MonitorSmartphone", __iconNode$L);
 
 
 const __iconNode$K = [
-  ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }]
+  ["path", { d: "M9 18V5l12-2v13", key: "1jmyc2" }],
+  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
+  ["circle", { cx: "18", cy: "16", r: "3", key: "1hluhg" }]
 ];
-const Moon = createLucideIcon("Moon", __iconNode$K);
+const Music = createLucideIcon("Music", __iconNode$K);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18927,21 +18942,6 @@ const Moon = createLucideIcon("Moon", __iconNode$K);
 
 
 const __iconNode$J = [
-  ["path", { d: "M9 18V5l12-2v13", key: "1jmyc2" }],
-  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
-  ["circle", { cx: "18", cy: "16", r: "3", key: "1hluhg" }]
-];
-const Music = createLucideIcon("Music", __iconNode$J);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$I = [
   ["circle", { cx: "13.5", cy: "6.5", r: ".5", fill: "currentColor", key: "1okk4w" }],
   ["circle", { cx: "17.5", cy: "10.5", r: ".5", fill: "currentColor", key: "f64h9f" }],
   ["circle", { cx: "8.5", cy: "7.5", r: ".5", fill: "currentColor", key: "fotxhn" }],
@@ -18954,7 +18954,21 @@ const __iconNode$I = [
     }
   ]
 ];
-const Palette = createLucideIcon("Palette", __iconNode$I);
+const Palette = createLucideIcon("Palette", __iconNode$J);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$I = [
+  ["rect", { x: "14", y: "4", width: "4", height: "16", rx: "1", key: "zuxfzm" }],
+  ["rect", { x: "6", y: "4", width: "4", height: "16", rx: "1", key: "1okwgv" }]
+];
+const Pause = createLucideIcon("Pause", __iconNode$I);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18965,10 +18979,16 @@ const Palette = createLucideIcon("Palette", __iconNode$I);
 
 
 const __iconNode$H = [
-  ["rect", { x: "14", y: "4", width: "4", height: "16", rx: "1", key: "zuxfzm" }],
-  ["rect", { x: "6", y: "4", width: "4", height: "16", rx: "1", key: "1okwgv" }]
+  ["path", { d: "M12 20h9", key: "t2du7b" }],
+  [
+    "path",
+    {
+      d: "M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z",
+      key: "1ykcvy"
+    }
+  ]
 ];
-const Pause = createLucideIcon("Pause", __iconNode$H);
+const PenLine = createLucideIcon("PenLine", __iconNode$H);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18979,26 +18999,6 @@ const Pause = createLucideIcon("Pause", __iconNode$H);
 
 
 const __iconNode$G = [
-  ["path", { d: "M12 20h9", key: "t2du7b" }],
-  [
-    "path",
-    {
-      d: "M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z",
-      key: "1ykcvy"
-    }
-  ]
-];
-const PenLine = createLucideIcon("PenLine", __iconNode$G);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$F = [
   [
     "path",
     {
@@ -19008,7 +19008,7 @@ const __iconNode$F = [
   ],
   ["path", { d: "m15 5 4 4", key: "1mk7zo" }]
 ];
-const Pencil = createLucideIcon("Pencil", __iconNode$F);
+const Pencil = createLucideIcon("Pencil", __iconNode$G);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19018,8 +19018,22 @@ const Pencil = createLucideIcon("Pencil", __iconNode$F);
  */
 
 
-const __iconNode$E = [["polygon", { points: "6 3 20 12 6 21 6 3", key: "1oa8hb" }]];
-const Play = createLucideIcon("Play", __iconNode$E);
+const __iconNode$F = [["polygon", { points: "6 3 20 12 6 21 6 3", key: "1oa8hb" }]];
+const Play = createLucideIcon("Play", __iconNode$F);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$E = [
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "M12 5v14", key: "s699le" }]
+];
+const Plus = createLucideIcon("Plus", __iconNode$E);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19030,10 +19044,15 @@ const Play = createLucideIcon("Play", __iconNode$E);
 
 
 const __iconNode$D = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "M12 5v14", key: "s699le" }]
+  [
+    "path",
+    {
+      d: "M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z",
+      key: "w46dr5"
+    }
+  ]
 ];
-const Plus = createLucideIcon("Plus", __iconNode$D);
+const Puzzle = createLucideIcon("Puzzle", __iconNode$D);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19044,15 +19063,12 @@ const Plus = createLucideIcon("Plus", __iconNode$D);
 
 
 const __iconNode$C = [
-  [
-    "path",
-    {
-      d: "M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z",
-      key: "w46dr5"
-    }
-  ]
+  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
+  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
+  ["path", { d: "M8 16H3v5", key: "1cv678" }]
 ];
-const Puzzle = createLucideIcon("Puzzle", __iconNode$C);
+const RefreshCw = createLucideIcon("RefreshCw", __iconNode$C);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19063,12 +19079,12 @@ const Puzzle = createLucideIcon("Puzzle", __iconNode$C);
 
 
 const __iconNode$B = [
-  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
-  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
-  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
-  ["path", { d: "M8 16H3v5", key: "1cv678" }]
+  ["path", { d: "m17 2 4 4-4 4", key: "nntrym" }],
+  ["path", { d: "M3 11v-1a4 4 0 0 1 4-4h14", key: "84bu3i" }],
+  ["path", { d: "m7 22-4-4 4-4", key: "1wqhfi" }],
+  ["path", { d: "M21 13v1a4 4 0 0 1-4 4H3", key: "1rx37r" }]
 ];
-const RefreshCw = createLucideIcon("RefreshCw", __iconNode$B);
+const Repeat = createLucideIcon("Repeat", __iconNode$B);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19079,12 +19095,10 @@ const RefreshCw = createLucideIcon("RefreshCw", __iconNode$B);
 
 
 const __iconNode$A = [
-  ["path", { d: "m17 2 4 4-4 4", key: "nntrym" }],
-  ["path", { d: "M3 11v-1a4 4 0 0 1 4-4h14", key: "84bu3i" }],
-  ["path", { d: "m7 22-4-4 4-4", key: "1wqhfi" }],
-  ["path", { d: "M21 13v1a4 4 0 0 1-4 4H3", key: "1rx37r" }]
+  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
+  ["path", { d: "M3 3v5h5", key: "1xhq8a" }]
 ];
-const Repeat = createLucideIcon("Repeat", __iconNode$A);
+const RotateCcw = createLucideIcon("RotateCcw", __iconNode$A);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19095,10 +19109,10 @@ const Repeat = createLucideIcon("Repeat", __iconNode$A);
 
 
 const __iconNode$z = [
-  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
-  ["path", { d: "M3 3v5h5", key: "1xhq8a" }]
+  ["path", { d: "M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8", key: "1p45f6" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }]
 ];
-const RotateCcw = createLucideIcon("RotateCcw", __iconNode$z);
+const RotateCw = createLucideIcon("RotateCw", __iconNode$z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19109,20 +19123,6 @@ const RotateCcw = createLucideIcon("RotateCcw", __iconNode$z);
 
 
 const __iconNode$y = [
-  ["path", { d: "M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8", key: "1p45f6" }],
-  ["path", { d: "M21 3v5h-5", key: "1q7to0" }]
-];
-const RotateCw = createLucideIcon("RotateCw", __iconNode$y);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$x = [
   [
     "path",
     {
@@ -19133,7 +19133,7 @@ const __iconNode$x = [
   ["path", { d: "M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7", key: "1ydtos" }],
   ["path", { d: "M7 3v4a1 1 0 0 0 1 1h7", key: "t51u73" }]
 ];
-const Save = createLucideIcon("Save", __iconNode$x);
+const Save = createLucideIcon("Save", __iconNode$y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19143,7 +19143,7 @@ const Save = createLucideIcon("Save", __iconNode$x);
  */
 
 
-const __iconNode$w = [
+const __iconNode$x = [
   ["path", { d: "M3 7V5a2 2 0 0 1 2-2h2", key: "aa7l1z" }],
   ["path", { d: "M17 3h2a2 2 0 0 1 2 2v2", key: "4qcy5o" }],
   ["path", { d: "M21 17v2a2 2 0 0 1-2 2h-2", key: "6vwrx8" }],
@@ -19157,7 +19157,24 @@ const __iconNode$w = [
     }
   ]
 ];
-const ScanEye = createLucideIcon("ScanEye", __iconNode$w);
+const ScanEye = createLucideIcon("ScanEye", __iconNode$x);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$w = [
+  ["circle", { cx: "6", cy: "6", r: "3", key: "1lh9wr" }],
+  ["path", { d: "M8.12 8.12 12 12", key: "1alkpv" }],
+  ["path", { d: "M20 4 8.12 15.88", key: "xgtan2" }],
+  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
+  ["path", { d: "M14.8 14.8 20 20", key: "ptml3r" }]
+];
+const Scissors = createLucideIcon("Scissors", __iconNode$w);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19168,13 +19185,10 @@ const ScanEye = createLucideIcon("ScanEye", __iconNode$w);
 
 
 const __iconNode$v = [
-  ["circle", { cx: "6", cy: "6", r: "3", key: "1lh9wr" }],
-  ["path", { d: "M8.12 8.12 12 12", key: "1alkpv" }],
-  ["path", { d: "M20 4 8.12 15.88", key: "xgtan2" }],
-  ["circle", { cx: "6", cy: "18", r: "3", key: "fqmcym" }],
-  ["path", { d: "M14.8 14.8 20 20", key: "ptml3r" }]
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
+  ["path", { d: "m21 21-4.3-4.3", key: "1qie3q" }]
 ];
-const Scissors = createLucideIcon("Scissors", __iconNode$v);
+const Search = createLucideIcon("Search", __iconNode$v);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19185,10 +19199,16 @@ const Scissors = createLucideIcon("Scissors", __iconNode$v);
 
 
 const __iconNode$u = [
-  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
-  ["path", { d: "m21 21-4.3-4.3", key: "1qie3q" }]
+  [
+    "path",
+    {
+      d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z",
+      key: "1ffxy3"
+    }
+  ],
+  ["path", { d: "m21.854 2.147-10.94 10.939", key: "12cjpa" }]
 ];
-const Search = createLucideIcon("Search", __iconNode$u);
+const Send = createLucideIcon("Send", __iconNode$u);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19202,13 +19222,13 @@ const __iconNode$t = [
   [
     "path",
     {
-      d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z",
-      key: "1ffxy3"
+      d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
+      key: "1qme2f"
     }
   ],
-  ["path", { d: "m21.854 2.147-10.94 10.939", key: "12cjpa" }]
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
 ];
-const Send = createLucideIcon("Send", __iconNode$t);
+const Settings = createLucideIcon("Settings", __iconNode$t);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19222,13 +19242,14 @@ const __iconNode$s = [
   [
     "path",
     {
-      d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
-      key: "1qme2f"
+      d: "M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z",
+      key: "1bo67w"
     }
   ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ["rect", { x: "3", y: "14", width: "7", height: "7", rx: "1", key: "1bkyp8" }],
+  ["circle", { cx: "17.5", cy: "17.5", r: "3.5", key: "w3z12y" }]
 ];
-const Settings = createLucideIcon("Settings", __iconNode$s);
+const Shapes = createLucideIcon("Shapes", __iconNode$s);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19239,17 +19260,13 @@ const Settings = createLucideIcon("Settings", __iconNode$s);
 
 
 const __iconNode$r = [
-  [
-    "path",
-    {
-      d: "M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z",
-      key: "1bo67w"
-    }
-  ],
-  ["rect", { x: "3", y: "14", width: "7", height: "7", rx: "1", key: "1bkyp8" }],
-  ["circle", { cx: "17.5", cy: "17.5", r: "3.5", key: "w3z12y" }]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
+  ["line", { x1: "3", x2: "21", y1: "9", y2: "9", key: "1vqk6q" }],
+  ["line", { x1: "3", x2: "21", y1: "15", y2: "15", key: "o2sbyz" }],
+  ["line", { x1: "9", x2: "9", y1: "9", y2: "21", key: "1ib60c" }],
+  ["line", { x1: "15", x2: "15", y1: "9", y2: "21", key: "1n26ft" }]
 ];
-const Shapes = createLucideIcon("Shapes", __iconNode$r);
+const Sheet = createLucideIcon("Sheet", __iconNode$r);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19260,13 +19277,12 @@ const Shapes = createLucideIcon("Shapes", __iconNode$r);
 
 
 const __iconNode$q = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
-  ["line", { x1: "3", x2: "21", y1: "9", y2: "9", key: "1vqk6q" }],
-  ["line", { x1: "3", x2: "21", y1: "15", y2: "15", key: "o2sbyz" }],
-  ["line", { x1: "9", x2: "9", y1: "9", y2: "21", key: "1ib60c" }],
-  ["line", { x1: "15", x2: "15", y1: "9", y2: "21", key: "1n26ft" }]
+  ["path", { d: "m15 15 6 6m-6-6v4.8m0-4.8h4.8", key: "17vawe" }],
+  ["path", { d: "M9 19.8V15m0 0H4.2M9 15l-6 6", key: "chjx8e" }],
+  ["path", { d: "M15 4.2V9m0 0h4.8M15 9l6-6", key: "lav6yq" }],
+  ["path", { d: "M9 4.2V9m0 0H4.2M9 9 3 3", key: "1pxi2q" }]
 ];
-const Sheet = createLucideIcon("Sheet", __iconNode$q);
+const Shrink = createLucideIcon("Shrink", __iconNode$q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19277,12 +19293,13 @@ const Sheet = createLucideIcon("Sheet", __iconNode$q);
 
 
 const __iconNode$p = [
-  ["path", { d: "m15 15 6 6m-6-6v4.8m0-4.8h4.8", key: "17vawe" }],
-  ["path", { d: "M9 19.8V15m0 0H4.2M9 15l-6 6", key: "chjx8e" }],
-  ["path", { d: "M15 4.2V9m0 0h4.8M15 9l6-6", key: "lav6yq" }],
-  ["path", { d: "M9 4.2V9m0 0H4.2M9 9 3 3", key: "1pxi2q" }]
+  ["path", { d: "m18 14 4 4-4 4", key: "10pe0f" }],
+  ["path", { d: "m18 2 4 4-4 4", key: "pucp1d" }],
+  ["path", { d: "M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22", key: "1ailkh" }],
+  ["path", { d: "M2 6h1.972a4 4 0 0 1 3.6 2.2", key: "km57vx" }],
+  ["path", { d: "M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45", key: "os18l9" }]
 ];
-const Shrink = createLucideIcon("Shrink", __iconNode$p);
+const Shuffle = createLucideIcon("Shuffle", __iconNode$p);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19293,23 +19310,6 @@ const Shrink = createLucideIcon("Shrink", __iconNode$p);
 
 
 const __iconNode$o = [
-  ["path", { d: "m18 14 4 4-4 4", key: "10pe0f" }],
-  ["path", { d: "m18 2 4 4-4 4", key: "pucp1d" }],
-  ["path", { d: "M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22", key: "1ailkh" }],
-  ["path", { d: "M2 6h1.972a4 4 0 0 1 3.6 2.2", key: "km57vx" }],
-  ["path", { d: "M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45", key: "os18l9" }]
-];
-const Shuffle = createLucideIcon("Shuffle", __iconNode$o);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$n = [
   ["line", { x1: "21", x2: "14", y1: "4", y2: "4", key: "obuewd" }],
   ["line", { x1: "10", x2: "3", y1: "4", y2: "4", key: "1q6298" }],
   ["line", { x1: "21", x2: "12", y1: "12", y2: "12", key: "1iu8h1" }],
@@ -19320,7 +19320,21 @@ const __iconNode$n = [
   ["line", { x1: "8", x2: "8", y1: "10", y2: "14", key: "1i6ji0" }],
   ["line", { x1: "16", x2: "16", y1: "18", y2: "22", key: "1lctlv" }]
 ];
-const SlidersHorizontal = createLucideIcon("SlidersHorizontal", __iconNode$n);
+const SlidersHorizontal = createLucideIcon("SlidersHorizontal", __iconNode$o);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$n = [
+  ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
+  ["path", { d: "M12 18h.01", key: "mhygvu" }]
+];
+const Smartphone = createLucideIcon("Smartphone", __iconNode$n);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19331,20 +19345,6 @@ const SlidersHorizontal = createLucideIcon("SlidersHorizontal", __iconNode$n);
 
 
 const __iconNode$m = [
-  ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
-  ["path", { d: "M12 18h.01", key: "mhygvu" }]
-];
-const Smartphone = createLucideIcon("Smartphone", __iconNode$m);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$l = [
   [
     "path",
     {
@@ -19357,7 +19357,20 @@ const __iconNode$l = [
   ["path", { d: "M4 17v2", key: "vumght" }],
   ["path", { d: "M5 18H3", key: "zchphs" }]
 ];
-const Sparkles = createLucideIcon("Sparkles", __iconNode$l);
+const Sparkles = createLucideIcon("Sparkles", __iconNode$m);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$l = [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }]
+];
+const Square = createLucideIcon("Square", __iconNode$l);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19368,9 +19381,15 @@ const Sparkles = createLucideIcon("Sparkles", __iconNode$l);
 
 
 const __iconNode$k = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }]
+  [
+    "path",
+    {
+      d: "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z",
+      key: "r04s7s"
+    }
+  ]
 ];
-const Square = createLucideIcon("Square", __iconNode$k);
+const Star = createLucideIcon("Star", __iconNode$k);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -19381,25 +19400,6 @@ const Square = createLucideIcon("Square", __iconNode$k);
 
 
 const __iconNode$j = [
-  [
-    "path",
-    {
-      d: "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z",
-      key: "r04s7s"
-    }
-  ]
-];
-const Star = createLucideIcon("Star", __iconNode$j);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$i = [
   ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
   ["path", { d: "M12 2v2", key: "tus03m" }],
   ["path", { d: "M12 20v2", key: "1lh1kg" }],
@@ -19410,7 +19410,22 @@ const __iconNode$i = [
   ["path", { d: "m6.34 17.66-1.41 1.41", key: "1m8zz5" }],
   ["path", { d: "m19.07 4.93-1.41 1.41", key: "1shlcs" }]
 ];
-const Sun = createLucideIcon("Sun", __iconNode$i);
+const Sun = createLucideIcon("Sun", __iconNode$j);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$i = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["circle", { cx: "12", cy: "12", r: "6", key: "1vlfrh" }],
+  ["circle", { cx: "12", cy: "12", r: "2", key: "1c9p78" }]
+];
+const Target = createLucideIcon("Target", __iconNode$i);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -20907,7 +20922,7 @@ function openMistakes(reports,cleared=2){
   return [...open.values()].reverse().map(x=>x.result);
 }
 function weakIds(reports){const stats=new Map();for(const r of reports)for(const q of r.questions||[]){const s=stats.get(q.knowledge_id)||{total:0,wrong:0};s.total++;s.wrong+=!q.correct?1:0;stats.set(q.knowledge_id,s);}return new Set([...stats].filter(([,s])=>s.wrong&&s.wrong/s.total>=.3).map(([id])=>id));}
-function filterQuiz(bank,reports,controls,date=localDay()){const weak=weakIds(reports);const mistakes=new Set(reports.flatMap(r=>(r.questions||[]).filter(q=>!q.correct).map(q=>q.knowledge_id)));let q=bank.filter(x=>(!controls.subject||x.subject===controls.subject)&&(!controls.topic||x.topic===controls.topic)&&(!controls.types.length||itemTypes(x).some(t=>controls.types.includes(t)))&&(controls.focus==='all'||(controls.focus==='weak'?weak:mistakes).has(x.id))&&(controls.mode==='all'||!x.due||x.due<=date));if(controls.mode==='daily')q.sort((a,b)=>(a.due||'').localeCompare(b.due||''));if(controls.shuffle){q=[...q];for(let i=q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[q[i],q[j]]=[q[j],q[i]];}}return q.slice(0,controls.count||q.length);}
+function filterQuiz(bank,reports,controls,date=localDay()){const weak=weakIds(reports);const mistakes=new Set(openMistakes(reports).map(q=>q.knowledge_id));let q=bank.filter(x=>(!controls.subject||x.subject===controls.subject)&&(!controls.topic||x.topic===controls.topic)&&(!controls.types.length||itemTypes(x).some(t=>controls.types.includes(t)))&&(controls.focus==='all'||(controls.focus==='weak'?weak:mistakes).has(x.id))&&(controls.mode==='all'||!x.due||x.due<=date));if(controls.mode!=='all')q.sort((a,b)=>(a.due||'').localeCompare(b.due||''));if(controls.shuffle){q=[...q];for(let i=q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[q[i],q[j]]=[q[j],q[i]];}}return q.slice(0,controls.count||q.length);}
 function duplicateIds(bank){const groups=new Map();for(const x of bank){const key=(x.prompt?normalize(x.prompt):'image:'+String(x.image||'').slice(-80))+'|'+normalize(x.answer)+'|'+(x.type||'short_answer');groups.set(key,[...(groups.get(key)||[]),x.id]);}return new Set([...groups.values()].filter(a=>a.length>1).flat());}
 function analytics(reports){const rows=reports.flatMap(r=>r.questions||[]),groups={subject:Object.create(null),topic:Object.create(null),type:Object.create(null)};for(const q of rows)for(const key of Object.keys(groups)){const name=q[key]||'General',s=groups[key][name]||{total:0,correct:0,seconds:0};s.total++;s.correct+=q.correct?1:0;s.seconds+=Number(q.response_time_seconds)||0;groups[key][name]=s;}const mistakes=Object.create(null);for(const q of rows.filter(q=>!q.correct))mistakes[q.knowledge_id]={prompt:q.prompt,count:(mistakes[q.knowledge_id]?.count||0)+1};return {groups,mistakes:Object.values(mistakes).sort((a,b)=>b.count-a.count),trend:[...reports].reverse().slice(-12),total:rows.length};}
 function validateBackup(data,validate){if(data?.app!=='RecallFlow'||data.version!==1||!Array.isArray(data.questions)||!Array.isArray(data.reports)||!Array.isArray(data.streakDays)||!Number.isInteger(data.quizCount)||data.quizCount<0)throw new Error('Choose a complete RecallFlow version 1 backup.');const ids=new Set();const questions=data.questions.filter(q=>!String(q?.id).startsWith('example_')).map(q=>{if(typeof q.id!=='string'||!q.id||ids.has(q.id))throw new Error('Question IDs must be unique.');ids.add(q.id);return validate(q);});if(data.reports.some(r=>typeof r.id!=='string'||!Array.isArray(r.questions)||!Number.isFinite(r.accuracy)||r.questions.some(q=>typeof q.correct!=='boolean'||typeof q.prompt!=='string')))throw new Error('Invalid report data.');if(data.streakDays.some(d=>typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d)))throw new Error('Invalid streak dates.');const p=data.preferences;if(!p||!['light','dark','system'].includes(p.theme)||!['af_heart','af_bella','am_michael','am_fenrir','bf_emma'].includes(p.voice)||![.8,.9,1,1.1,1.2].includes(p.speed)||!p.quiz||!Number.isInteger(p.quiz.count)||p.quiz.count<0||p.quiz.count>1000||typeof p.quiz.shuffle!=='boolean')throw new Error('Invalid settings.');if(p.quizSetups!==undefined)validateSetups(p.quizSetups);return {...data,questions};}
@@ -29277,7 +29292,8 @@ function QuizBuilder({ items, reports, defaults, onStart, onClose }) {
     const initial = { mode: 'daily', count: defaults.count || 0, subject: '', topic: '', types: [], shuffle: defaults.shuffle, focus: 'all' };
     const [c, set] = reactExports.useState(initial), [setups, setSetups] = reactExports.useState(readSetups), [active, setActive] = reactExports.useState(''), [name, setName] = reactExports.useState(''), [status, setStatus] = reactExports.useState('');
     const saved = setups.find(p => p.id === active), dirty = !saved || name.trim() !== saved.name || JSON.stringify(c) !== JSON.stringify(saved.controls);
-    const q = filterQuiz(items, reports, c), field = (key, value) => { set({ ...c, [key]: value }); setStatus(''); };
+    const q = filterQuiz(items, reports, c), notDue = !q.length && c.mode !== 'all' ? filterQuiz(items, reports, { ...c, mode: 'all', count: 0 }).length : 0, field = (key, value) => { set({ ...c, [key]: value }); setStatus(''); };
+    const focusCount = (focus) => filterQuiz(items, reports, { ...c, focus, mode: 'all', count: 0, shuffle: false }).length;
     const subjects = [...new Set(items.map(x => x.subject))].sort(), topics = [...new Set(items.filter(x => !c.subject || x.subject === c.subject).map(x => x.topic))].sort();
     function load(p) { set({ ...p.controls, types: [...p.controls.types] }); setActive(p.id); setName(p.name); setStatus(`Loaded ${p.name}.`); }
     function save() { try {
@@ -29305,7 +29321,7 @@ function QuizBuilder({ items, reports, defaults, onStart, onClose }) {
                     React.createElement("small", null,
                         p.controls.count || 'All',
                         " questions \u00B7 ",
-                        p.controls.mode === 'all' ? 'All questions' : p.controls.mode === 'due' ? 'Due questions' : 'Daily',
+                        p.controls.mode === 'all' ? 'All questions' : 'Due now',
                         p.controls.subject ? ` · ${p.controls.subject}` : '')),
                 active === p.id && React.createElement(Check, { size: 16 })))) : React.createElement("p", { className: "quiz-preset-empty" }, "No saved setups yet. Choose your settings below and give them a name."),
             React.createElement("div", { className: "quiz-save-preset" },
@@ -29328,27 +29344,33 @@ function QuizBuilder({ items, reports, defaults, onStart, onClose }) {
                 React.createElement("div", null,
                     React.createElement("h2", null, "Questions"),
                     React.createElement("p", null, "Choose the size and content of this session."))),
+            React.createElement("p", { className: "quiz-config-label" }, "Quiz length"),
+            React.createElement("div", { className: "quiz-length-chips", role: "radiogroup", "aria-label": "Quiz length" },
+                [[0, 'All'], [5, '5'], [10, '10'], [20, '20']].map(([n, label]) => React.createElement("button", { key: n, type: "button", role: "radio", "aria-checked": c.count === n, onClick: () => field('count', n) }, label)),
+                React.createElement("label", { className: `quiz-length-custom${c.count && ![5, 10, 20].includes(c.count) ? ' is-on' : ''}` },
+                    React.createElement("span", null, "Other"),
+                    React.createElement("input", { type: "number", inputMode: "numeric", min: 1, max: 1000, "aria-label": "Custom question count", placeholder: "#", value: c.count && ![5, 10, 20].includes(c.count) ? c.count : '', onChange: e => field('count', Math.min(1000, Math.max(0, Math.round(Number(e.target.value) || 0)))) }))),
             React.createElement("div", { className: "quiz-config-grid" },
-                React.createElement("label", null,
-                    "Quiz length",
-                    React.createElement("select", { value: c.count ? 'custom' : 'all', onChange: e => field('count', e.target.value === 'all' ? 0 : Math.min(10, Math.max(1, items.length))) },
-                        React.createElement("option", { value: "all" }, "All matching questions"),
-                        React.createElement("option", { value: "custom" }, "Choose a number"))),
-                !!c.count && React.createElement("label", null,
-                    "Question count",
-                    React.createElement("input", { type: "number", min: 1, max: 1000, value: c.count, onChange: e => field('count', Math.min(1000, Math.max(1, Number(e.target.value) || 1))) })),
                 React.createElement("label", null,
                     "Subject",
                     React.createElement("select", { value: c.subject, onChange: e => { set({ ...c, subject: e.target.value, topic: '' }); setStatus(''); } },
                         React.createElement("option", { value: "" }, "All subjects"),
                         c.subject && !subjects.includes(c.subject) && React.createElement("option", null, c.subject),
-                        subjects.map(x => React.createElement("option", { key: x }, x)))),
+                        subjects.map(x => React.createElement("option", { key: x, value: x },
+                            x,
+                            " (",
+                            items.filter(i => i.subject === x).length,
+                            ")")))),
                 React.createElement("label", null,
                     "Topic",
                     React.createElement("select", { value: c.topic, onChange: e => field('topic', e.target.value) },
                         React.createElement("option", { value: "" }, "All topics"),
                         c.topic && !topics.includes(c.topic) && React.createElement("option", null, c.topic),
-                        topics.map(x => React.createElement("option", { key: x }, x))))),
+                        topics.map(x => React.createElement("option", { key: x, value: x },
+                            x,
+                            " (",
+                            items.filter(i => (!c.subject || i.subject === c.subject) && i.topic === x).length,
+                            ")"))))),
             React.createElement("details", { className: "quiz-type-options" },
                 React.createElement("summary", null,
                     "Question types ",
@@ -29363,14 +29385,20 @@ function QuizBuilder({ items, reports, defaults, onStart, onClose }) {
                 React.createElement("div", null,
                     React.createElement("h2", null, "Practice"),
                     React.createElement("p", null, "Choose what to review and how it appears."))),
-            React.createElement("div", { className: "quiz-mode-options", role: "group", "aria-label": "Review mode" }, [['daily', 'Daily'], ['due', 'Due'], ['all', 'All questions']].map(([id, label]) => React.createElement("button", { key: id, "aria-pressed": c.mode === id, onClick: () => field('mode', id) }, label))),
-            React.createElement("p", { className: "quiz-mode-help" }, c.mode === 'daily' ? 'Today’s due questions, with your chosen filters.' : c.mode === 'due' ? 'Questions ready for their next review.' : 'Practice regardless of the next review date.'),
+            React.createElement("div", { className: "quiz-mode-options", role: "group", "aria-label": "Review mode" }, [['daily', 'Due now'], ['all', 'All questions']].map(([id, label]) => React.createElement("button", { key: id, "aria-pressed": id === 'all' ? c.mode === 'all' : c.mode !== 'all', onClick: () => field('mode', id) }, label))),
+            React.createElement("p", { className: "quiz-mode-help" }, c.mode !== 'all' ? 'Questions that are ready for review today, oldest first.' : 'Every matching question, even ones not due yet.'),
             React.createElement("label", null,
                 "Practice focus",
                 React.createElement("select", { value: c.focus, onChange: e => field('focus', e.target.value) },
                     React.createElement("option", { value: "all" }, "Everything"),
-                    React.createElement("option", { value: "weak" }, "Weak questions"),
-                    React.createElement("option", { value: "mistakes" }, "Previous mistakes"))),
+                    React.createElement("option", { value: "weak" },
+                        "Weak questions (",
+                        focusCount('weak'),
+                        ")"),
+                    React.createElement("option", { value: "mistakes" },
+                        "Open mistakes (",
+                        focusCount('mistakes'),
+                        ")"))),
             React.createElement("label", { className: "quiz-shuffle-toggle" },
                 React.createElement("span", null,
                     React.createElement("strong", null, "Shuffle question order"),
@@ -29382,7 +29410,8 @@ function QuizBuilder({ items, reports, defaults, onStart, onClose }) {
                     q.length,
                     " ",
                     q.length === 1 ? 'question' : 'questions'),
-                React.createElement("p", null, q.length ? 'Ready with your current choices.' : 'Nothing matches. Change the filters or review mode.')),
+                React.createElement("p", null, q.length ? 'Ready with your current choices.' : notDue ? `${notDue} match but aren’t due yet.` : 'Nothing matches. Loosen the filters.'),
+                !q.length && notDue > 0 && React.createElement("button", { type: "button", className: "quiz-config-fix", onClick: () => field('mode', 'all') }, "Include them")),
             React.createElement(Button, { disabled: !q.length, onClick: () => onStart(filterQuiz(items, reports, c), c.mode, c.types) }, "Start quiz")));
 }
 // Steps can be dragged with a mouse right away; on touch screens a short press (or the grip) starts the drag so the page still scrolls.
@@ -30171,7 +30200,7 @@ function BackupPassword() {
                     saving ? 'Saving…' : 'Save password'),
                 React.createElement(Button, { type: "button", variant: "outline", disabled: saving, onClick: () => { reset(); setOpen(false); } }, "Cancel"))));
 }
-function ago(ms) { if (!ms)
+function ago$1(ms) { if (!ms)
     return 'Not synced yet'; const s = Math.round((Date.now() - ms) / 1000); if (s < 45)
     return 'Synced just now'; if (s < 3600)
     return `Synced ${Math.round(s / 60)} min ago`; if (s < 86400)
@@ -30179,7 +30208,7 @@ function ago(ms) { if (!ms)
 function AccountSettings() {
     const [status, setStatus] = reactExports.useState(syncStatus), [, tick] = reactExports.useState(0), [confirm, setConfirm] = reactExports.useState(false), user = session()?.user || '';
     reactExports.useEffect(() => { const on = () => setStatus(syncStatus()); window.addEventListener('recallflow:sync-status', on); const t = setInterval(() => tick(n => n + 1), 30000); return () => { window.removeEventListener('recallflow:sync-status', on); clearInterval(t); }; }, []);
-    const label = status.state === 'syncing' ? 'Syncing…' : status.state === 'offline' ? 'Offline · changes will sync when you reconnect' : status.state === 'error' ? 'Sync problem' : ago(status.lastSynced);
+    const label = status.state === 'syncing' ? 'Syncing…' : status.state === 'offline' ? 'Offline · changes will sync when you reconnect' : status.state === 'error' ? 'Sync problem' : ago$1(status.lastSynced);
     const Icon = status.state === 'offline' || status.state === 'error' ? CloudOff : status.state === 'syncing' ? RefreshCw : CircleCheck;
     return React.createElement(Panel, { icon: Cloud, title: `Signed in as ${user}`, detail: "Questions, pictures, reports and settings sync across your devices." },
         React.createElement("div", { className: "sync-status", "data-state": status.state },
@@ -30259,7 +30288,7 @@ function SettingsPage({ items, reports, quizCount, streakDays, theme, onTheme, o
     const summaries = { profile: prefs.name || 'Your name', account: 'Sync and log out', appearance: 'Theme, text size, motion', voice: 'Device voice or Kokoro, speed', quiz: 'Questions, countdown, sound effects', data: 'Import, export, backup, reset', app: 'Install, offline, about' };
     const quizLength = quizPreferences().count, speechEngine = localStorage.getItem('recallflow_speech_engine') === 'kokoro' ? 'Kokoro AI voice' : 'Device voice', speed = Number(localStorage.getItem(speechEngine === 'Device voice' ? 'recallflow_system_rate' : 'recallflow_kokoro_speed') || 1);
     const live = {
-        account: sync.state === 'syncing' ? 'Syncing…' : sync.state === 'offline' ? 'Offline' : sync.state === 'error' ? 'Sync problem' : ago(sync.lastSynced),
+        account: sync.state === 'syncing' ? 'Syncing…' : sync.state === 'offline' ? 'Offline' : sync.state === 'error' ? 'Sync problem' : ago$1(sync.lastSynced),
         appearance: `${{ light: 'Light', dark: 'Dark', system: 'System' }[theme] || 'Theme'} · ${(textSizes.find((t) => t[0] === prefs.textSize) || [, 'Default'])[1]} text`,
         voice: `${speechEngine} · ${speed.toFixed(1)}×`,
         quiz: `${quizLength ? `${quizLength} questions` : 'All due'} · sounds ${prefs.soundEffects === 'off' ? 'off' : prefs.soundEffects === 'custom' ? 'custom' : 'on'}`,
@@ -30691,7 +30720,7 @@ function ExportPanel({ items, selectedIds, onDone }) {
                     chosen.length,
                     " ",
                     chosen.length === 1 ? 'question' : 'questions'),
-                React.createElement("small", null, preparing ? 'Preparing pictures…' : chosen.length ? `${meta.label} · ${size(new Blob([output]).size)}` : 'Nothing to export')),
+                React.createElement("small", null, preparing ? 'Preparing pictures…' : chosen.length ? `${meta.ext.toUpperCase()} file · ${size(new Blob([output]).size)}` : 'Nothing to export')),
             React.createElement("div", { className: "transfer-footer-actions" },
                 React.createElement(Button, { variant: "outline", disabled: !chosen.length || preparing, onClick: copy },
                     React.createElement(Copy, { size: 16 }),
@@ -30965,6 +30994,206 @@ function TransferPage({ items, selectedIds, initial = 'import', onImport, onBack
             React.createElement(Icon, { size: 17 }),
             label))),
         tab === 'import' ? React.createElement(ImportPanel, { items: items, onImport: onImport, onBack: onBack }) : React.createElement(ExportPanel, { items: items, selectedIds: selectedIds }));
+}
+
+const REPORT_RANGES=[[7,'7 days'],[30,'30 days'],[90,'90 days'],[0,'All time']];
+const MASTERY_LEVELS=[['new','New','Not studied yet'],['learning','Learning','Next review within a week'],['familiar','Familiar','Next review in 1–4 weeks'],['mastered','Mastered','Next review a month or more away']];
+
+function shiftDay(day,n){const d=new Date(day+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+const reportDay=r=>localDay(new Date(r.date));
+
+// The last `days` calendar days up to today; offset 1 is the period just before that. 0 days means all history.
+function reportsInRange(reports,days,today=localDay(),offset=0){
+  if(!days)return offset?[]:reports;
+  const end=shiftDay(today,-days*offset),start=shiftDay(end,-(days-1));
+  return reports.filter(r=>{const d=reportDay(r);return d>=start&&d<=end;});
+}
+
+function summarize(reports){
+  const answers=reports.reduce((n,r)=>n+(r.total||0),0),correct=reports.reduce((n,r)=>n+(r.correct||0),0),seconds=reports.reduce((n,r)=>n+(Number(r.duration_seconds)||0),0);
+  const first=reports.filter(r=>r.mode!=='retry_mistakes'),firstAnswers=first.reduce((n,r)=>n+(r.total||0),0),firstCorrect=first.reduce((n,r)=>n+(r.correct||0),0);
+  return {quizzes:reports.length,retakes:reports.length-first.length,answers,correct,missed:answers-correct,accuracy:answers?Math.round(correct/answers*100):null,firstTryAccuracy:firstAnswers?Math.round(firstCorrect/firstAnswers*100):null,seconds,perAnswer:answers?seconds/answers:null,days:new Set(reports.map(reportDay)).size};
+}
+
+// One entry per calendar day; with a fixed range, days without a quiz are included with no accuracy.
+function dailySeries(reports,days,today=localDay()){
+  const byDay=new Map();
+  for(const r of reports){const day=reportDay(r),s=byDay.get(day)||{day,answers:0,correct:0,quizzes:0,seconds:0};s.answers+=r.total||0;s.correct+=r.correct||0;s.quizzes++;s.seconds+=Number(r.duration_seconds)||0;byDay.set(day,s);}
+  const empty=day=>({day,answers:0,correct:0,quizzes:0,seconds:0});
+  const list=days?Array.from({length:days},(_,i)=>byDay.get(shiftDay(today,i-days+1))||empty(shiftDay(today,i-days+1))):[...byDay.values()].sort((a,b)=>a.day<b.day?-1:1);
+  return list.map(s=>({...s,accuracy:s.answers?Math.round(s.correct/s.answers*100):null}));
+}
+
+function masteryLevel(item){if(!item.lastReviewed)return 'new';const interval=item.interval||0;return interval>=30?'mastered':interval>=7?'familiar':'learning';}
+function mastery(items){const counts={new:0,learning:0,familiar:0,mastered:0};for(const item of items)counts[masteryLevel(item)]++;return counts;}
+
+// Studied questions coming due over the next `days` days; anything overdue is counted in today.
+function dueForecast(items,days=7,today=localDay()){
+  const out=Array.from({length:days},(_,i)=>({day:shiftDay(today,i),count:0}));let overdue=0,unstudied=0;
+  for(const item of items){
+    if(!item.lastReviewed&&!item.due){unstudied++;continue;}
+    const due=item.due||today;if(due<today)overdue++;
+    const index=due<=today?0:Math.round((Date.parse(due+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/86400000);
+    if(index<days)out[index].count++;
+  }
+  return {days:out,overdue,unstudied};
+}
+
+function questionStats(reports){
+  const stats=new Map();
+  for(const r of [...reports].reverse())for(const q of r.questions||[]){
+    const s=stats.get(q.knowledge_id)||{id:q.knowledge_id,prompt:q.prompt,subject:q.subject,topic:q.topic,attempts:0,correct:0,seconds:0,lastCorrect:false};
+    s.attempts++;s.correct+=q.correct?1:0;s.seconds+=Number(q.response_time_seconds)||0;s.lastCorrect=!!q.correct;s.prompt=q.prompt||s.prompt;stats.set(q.knowledge_id,s);
+  }
+  return [...stats.values()].map(s=>({...s,accuracy:Math.round(s.correct/s.attempts*100),avgSeconds:s.seconds/s.attempts}));
+}
+function hardestQuestions(stats,limit=6){return stats.filter(s=>s.attempts>=2&&s.correct<s.attempts).sort((a,b)=>a.accuracy-b.accuracy||b.attempts-a.attempts).slice(0,limit);}
+function slowestQuestions(stats,limit=5){return stats.filter(s=>s.avgSeconds>0).sort((a,b)=>b.avgSeconds-a.avgSeconds).slice(0,limit);}
+
+// Spreadsheet apps treat cells starting with these characters as formulas.
+const csvCell=value=>{let s=String(value??'');if(/^[=+\-@\t\r]/.test(s))s="'"+s;return /[",\r\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};
+function reportsCsv(reports){
+  const rows=[['Date','Time','Kind','Subject','Topic','Question type','Question','Your answer','Correct answer','Result','Seconds']];
+  for(const r of [...reports].reverse()){const d=new Date(r.date),time=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;for(const q of r.questions||[])rows.push([localDay(d),time,r.mode==='retry_mistakes'?'Retake':'Quiz',q.subject,q.topic,typeLabel(q.type),q.prompt,q.user_answer,q.correct_answer,q.correct?'Correct':'Missed',q.response_time_seconds]);}
+  return rows.map(row=>row.map(csvCell).join(',')).join('\r\n');
+}
+
+function formatDuration(seconds){seconds=Math.round(seconds||0);if(seconds<60)return `${seconds}s`;const minutes=Math.round(seconds/60);return minutes<60?`${minutes}m`:`${Math.floor(minutes/60)}h ${minutes%60}m`;}
+
+const weekday$1 = (day) => new Date(day + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'narrow', timeZone: 'UTC' });
+const level = (pct) => pct == null ? 'none' : pct >= 80 ? 'good' : pct >= 50 ? 'ok' : 'low';
+function ago(iso) { const m = Math.round((Date.now() - Date.parse(iso)) / 60000); if (m < 1)
+    return 'just now'; if (m < 60)
+    return `${m} min ago`; const h = Math.round(m / 60); if (h < 24)
+    return `${h} h ago`; const d = Math.round(h / 24); return d === 1 ? 'yesterday' : `${d} days ago`; }
+function HomeInsights({ items, reports, forecast, memory, mistakes, onPracticeMistakes, onPracticeSubject, onOpenReport, onAdd, onImport }) {
+    const week = reactExports.useMemo(() => summarize(reportsInRange(reports, 7)), [reports]);
+    const before = reactExports.useMemo(() => summarize(reportsInRange(reports, 7, undefined, 1)), [reports]);
+    const days = reactExports.useMemo(() => dailySeries(reportsInRange(reports, 7), 7), [reports]);
+    const weakest = reactExports.useMemo(() => {
+        const groups = analytics(reportsInRange(reports, 30)).groups.subject;
+        return Object.entries(groups).filter(([, s]) => s.total >= 4).map(([name, s]) => ({ name, pct: Math.round(s.correct / s.total * 100) })).filter(s => s.pct < 80).sort((a, b) => a.pct - b.pct)[0];
+    }, [reports]);
+    const last = reports[0];
+    const maxAnswers = Math.max(1, ...days.map(d => d.answers));
+    const change = week.accuracy != null && before.accuracy != null ? week.accuracy - before.accuracy : null;
+    const studied = items.length - (memory.new || 0);
+    const tomorrow = forecast.days[1]?.count || 0, later = forecast.days.slice(1).reduce((n, d) => n + d.count, 0);
+    if (!items.length)
+        return React.createElement("section", { className: "hx-empty" },
+            React.createElement("h2", null, "Build your question bank"),
+            React.createElement("p", null, "Add questions yourself or bring in a list you already have. Your first quiz is one tap away after that."),
+            React.createElement("div", { className: "hx-actions" },
+                React.createElement("button", { type: "button", onClick: onAdd },
+                    React.createElement(Plus, { size: 17 }),
+                    "New question"),
+                React.createElement("button", { type: "button", onClick: onImport },
+                    React.createElement(FileUp, { size: 17 }),
+                    "Import")));
+    return React.createElement("div", { className: "hx" },
+        React.createElement("button", { type: "button", className: "hx-card hx-week", onClick: () => onOpenReport('progress'), "aria-label": `This week: ${week.accuracy ?? 0}% correct. Open progress report` },
+            React.createElement("div", { className: "hx-head" },
+                React.createElement("span", { className: "hx-title" }, "This week"),
+                last && React.createElement("span", { className: "hx-last", "data-level": level(last.accuracy) },
+                    "Last quiz ",
+                    last.accuracy,
+                    "% \u00B7 ",
+                    ago(last.date))),
+            week.quizzes ? React.createElement(React.Fragment, null,
+                React.createElement("div", { className: "hx-week-main" },
+                    React.createElement("div", { className: "hx-big" },
+                        React.createElement("strong", { "data-level": level(week.accuracy) },
+                            week.accuracy,
+                            "%"),
+                        React.createElement("span", null, "correct")),
+                    change != null && React.createElement("span", { className: "hx-change", "data-dir": change > 0 ? 'up' : change < 0 ? 'down' : 'flat' },
+                        change > 0 ? React.createElement(TrendingUp, { size: 14 }) : change < 0 ? React.createElement(TrendingDown, { size: 14 }) : React.createElement(Minus, { size: 14 }),
+                        change > 0 ? `+${change}` : change,
+                        " vs last week")),
+                React.createElement("div", { className: "hx-bars", "aria-hidden": "true" }, days.map(d => React.createElement("div", { key: d.day, className: "hx-bar", "data-level": level(d.accuracy), "data-today": d === days[days.length - 1] || undefined },
+                    React.createElement("i", { style: { height: `${d.answers ? Math.max(14, d.answers / maxAnswers * 100) : 6}%` } }),
+                    React.createElement("span", null, weekday$1(d.day))))),
+                React.createElement("div", { className: "hx-foot" },
+                    React.createElement("span", null,
+                        React.createElement("b", null, week.quizzes),
+                        " ",
+                        week.quizzes === 1 ? 'quiz' : 'quizzes'),
+                    React.createElement("span", null,
+                        React.createElement("b", null, week.answers),
+                        " answers"),
+                    React.createElement("span", null,
+                        React.createElement("b", null, formatDuration(week.seconds)),
+                        " studied"))) : React.createElement("p", { className: "hx-muted" }, "No quizzes in the last 7 days yet. Start today\u2019s quiz and your week will fill in here.")),
+        React.createElement("button", { type: "button", className: "hx-card hx-plan", onClick: () => onOpenReport('memory'), "aria-label": "Coming up and memory strength. Open memory report" },
+            React.createElement("div", { className: "hx-head" },
+                React.createElement("span", { className: "hx-title" },
+                    React.createElement(CalendarClock, { size: 16 }),
+                    "Coming up"),
+                React.createElement(ArrowRight, { size: 16, className: "hx-go" })),
+            React.createElement("div", { className: "hx-plan-grid" },
+                React.createElement("div", null,
+                    React.createElement("strong", null, forecast.days[0]?.count || 0),
+                    React.createElement("span", null, "Due today")),
+                React.createElement("div", null,
+                    React.createElement("strong", null, tomorrow),
+                    React.createElement("span", null, "Tomorrow")),
+                React.createElement("div", null,
+                    React.createElement("strong", null, later),
+                    React.createElement("span", null, "Next 7 days"))),
+            React.createElement("div", { className: "hx-memory", role: "img", "aria-label": MASTERY_LEVELS.map(([id, label]) => `${memory[id] || 0} ${label}`).join(', ') }, MASTERY_LEVELS.map(([id]) => memory[id] ? React.createElement("i", { key: id, "data-level": id, style: { flexGrow: memory[id] } }) : null)),
+            React.createElement("div", { className: "hx-legend" }, MASTERY_LEVELS.map(([id, label]) => React.createElement("span", { key: id, "data-level": id },
+                React.createElement("i", null),
+                label,
+                " ",
+                memory[id] || 0))),
+            React.createElement("p", { className: "hx-muted" },
+                studied,
+                " of ",
+                items.length,
+                " questions studied",
+                memory.mastered ? ` · ${memory.mastered} mastered` : '')),
+        (mistakes.length > 0 || weakest) && React.createElement("section", { className: "hx-card hx-focus" },
+            React.createElement("div", { className: "hx-head" },
+                React.createElement("span", { className: "hx-title" },
+                    React.createElement(Target, { size: 16 }),
+                    "Needs practice")),
+            mistakes.length > 0 && React.createElement("div", { className: "hx-focus-row" },
+                React.createElement("div", null,
+                    React.createElement("strong", null,
+                        mistakes.length,
+                        " ",
+                        mistakes.length === 1 ? 'question' : 'questions',
+                        " to revisit"),
+                    React.createElement("small", null, "Each one clears after two right answers in a row.")),
+                React.createElement("button", { type: "button", className: "hx-pill", onClick: onPracticeMistakes },
+                    React.createElement(Play, { size: 13, fill: "currentColor" }),
+                    "Practice")),
+            weakest && React.createElement("div", { className: "hx-focus-row" },
+                React.createElement("div", null,
+                    React.createElement("strong", null,
+                        weakest.name,
+                        " \u00B7 ",
+                        weakest.pct,
+                        "%"),
+                    React.createElement("small", null, "Your weakest subject this month.")),
+                React.createElement("button", { type: "button", className: "hx-pill is-soft", onClick: () => onPracticeSubject(weakest.name) },
+                    React.createElement(Play, { size: 13, fill: "currentColor" }),
+                    "Drill")),
+            mistakes.length > 0 && React.createElement("button", { type: "button", className: "hx-link", onClick: () => onOpenReport('mistakes') },
+                "See all mistakes ",
+                React.createElement(ArrowRight, { size: 14 }))),
+        !mistakes.length && !weakest && week.quizzes > 0 && React.createElement("section", { className: "hx-card hx-great" },
+            React.createElement(Trophy, { size: 20 }),
+            React.createElement("div", null,
+                React.createElement("strong", null, "Nothing to fix right now"),
+                React.createElement("small", null, "No open mistakes and every subject is above 80%."))),
+        React.createElement("div", { className: "hx-actions" },
+            React.createElement("button", { type: "button", onClick: onAdd },
+                React.createElement(Plus, { size: 17 }),
+                "New question"),
+            React.createElement("button", { type: "button", onClick: onImport },
+                React.createElement(FileUp, { size: 17 }),
+                "Import")));
 }
 
 // Answer areas for the newer question types. Each keeps its own answer and reports it through onGrade.
@@ -31794,70 +32023,6 @@ function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTit
     return className ? React.createElement("div", { className: `quiz-media-group ${className}` }, parts) : parts;
 }
 
-const REPORT_RANGES=[[7,'7 days'],[30,'30 days'],[90,'90 days'],[0,'All time']];
-const MASTERY_LEVELS=[['new','New','Not studied yet'],['learning','Learning','Next review within a week'],['familiar','Familiar','Next review in 1–4 weeks'],['mastered','Mastered','Next review a month or more away']];
-
-function shiftDay(day,n){const d=new Date(day+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
-const reportDay=r=>localDay(new Date(r.date));
-
-// The last `days` calendar days up to today; offset 1 is the period just before that. 0 days means all history.
-function reportsInRange(reports,days,today=localDay(),offset=0){
-  if(!days)return offset?[]:reports;
-  const end=shiftDay(today,-days*offset),start=shiftDay(end,-(days-1));
-  return reports.filter(r=>{const d=reportDay(r);return d>=start&&d<=end;});
-}
-
-function summarize(reports){
-  const answers=reports.reduce((n,r)=>n+(r.total||0),0),correct=reports.reduce((n,r)=>n+(r.correct||0),0),seconds=reports.reduce((n,r)=>n+(Number(r.duration_seconds)||0),0);
-  const first=reports.filter(r=>r.mode!=='retry_mistakes'),firstAnswers=first.reduce((n,r)=>n+(r.total||0),0),firstCorrect=first.reduce((n,r)=>n+(r.correct||0),0);
-  return {quizzes:reports.length,retakes:reports.length-first.length,answers,correct,missed:answers-correct,accuracy:answers?Math.round(correct/answers*100):null,firstTryAccuracy:firstAnswers?Math.round(firstCorrect/firstAnswers*100):null,seconds,perAnswer:answers?seconds/answers:null,days:new Set(reports.map(reportDay)).size};
-}
-
-// One entry per calendar day; with a fixed range, days without a quiz are included with no accuracy.
-function dailySeries(reports,days,today=localDay()){
-  const byDay=new Map();
-  for(const r of reports){const day=reportDay(r),s=byDay.get(day)||{day,answers:0,correct:0,quizzes:0,seconds:0};s.answers+=r.total||0;s.correct+=r.correct||0;s.quizzes++;s.seconds+=Number(r.duration_seconds)||0;byDay.set(day,s);}
-  const empty=day=>({day,answers:0,correct:0,quizzes:0,seconds:0});
-  const list=days?Array.from({length:days},(_,i)=>byDay.get(shiftDay(today,i-days+1))||empty(shiftDay(today,i-days+1))):[...byDay.values()].sort((a,b)=>a.day<b.day?-1:1);
-  return list.map(s=>({...s,accuracy:s.answers?Math.round(s.correct/s.answers*100):null}));
-}
-
-function masteryLevel(item){if(!item.lastReviewed)return 'new';const interval=item.interval||0;return interval>=30?'mastered':interval>=7?'familiar':'learning';}
-function mastery(items){const counts={new:0,learning:0,familiar:0,mastered:0};for(const item of items)counts[masteryLevel(item)]++;return counts;}
-
-// Studied questions coming due over the next `days` days; anything overdue is counted in today.
-function dueForecast(items,days=7,today=localDay()){
-  const out=Array.from({length:days},(_,i)=>({day:shiftDay(today,i),count:0}));let overdue=0,unstudied=0;
-  for(const item of items){
-    if(!item.lastReviewed&&!item.due){unstudied++;continue;}
-    const due=item.due||today;if(due<today)overdue++;
-    const index=due<=today?0:Math.round((Date.parse(due+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/86400000);
-    if(index<days)out[index].count++;
-  }
-  return {days:out,overdue,unstudied};
-}
-
-function questionStats(reports){
-  const stats=new Map();
-  for(const r of [...reports].reverse())for(const q of r.questions||[]){
-    const s=stats.get(q.knowledge_id)||{id:q.knowledge_id,prompt:q.prompt,subject:q.subject,topic:q.topic,attempts:0,correct:0,seconds:0,lastCorrect:false};
-    s.attempts++;s.correct+=q.correct?1:0;s.seconds+=Number(q.response_time_seconds)||0;s.lastCorrect=!!q.correct;s.prompt=q.prompt||s.prompt;stats.set(q.knowledge_id,s);
-  }
-  return [...stats.values()].map(s=>({...s,accuracy:Math.round(s.correct/s.attempts*100),avgSeconds:s.seconds/s.attempts}));
-}
-function hardestQuestions(stats,limit=6){return stats.filter(s=>s.attempts>=2&&s.correct<s.attempts).sort((a,b)=>a.accuracy-b.accuracy||b.attempts-a.attempts).slice(0,limit);}
-function slowestQuestions(stats,limit=5){return stats.filter(s=>s.avgSeconds>0).sort((a,b)=>b.avgSeconds-a.avgSeconds).slice(0,limit);}
-
-// Spreadsheet apps treat cells starting with these characters as formulas.
-const csvCell=value=>{let s=String(value??'');if(/^[=+\-@\t\r]/.test(s))s="'"+s;return /[",\r\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};
-function reportsCsv(reports){
-  const rows=[['Date','Time','Kind','Subject','Topic','Question type','Question','Your answer','Correct answer','Result','Seconds']];
-  for(const r of [...reports].reverse()){const d=new Date(r.date),time=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;for(const q of r.questions||[])rows.push([localDay(d),time,r.mode==='retry_mistakes'?'Retake':'Quiz',q.subject,q.topic,typeLabel(q.type),q.prompt,q.user_answer,q.correct_answer,q.correct?'Correct':'Missed',q.response_time_seconds]);}
-  return rows.map(row=>row.map(csvCell).join(',')).join('\r\n');
-}
-
-function formatDuration(seconds){seconds=Math.round(seconds||0);if(seconds<60)return `${seconds}s`;const minutes=Math.round(seconds/60);return minutes<60?`${minutes}m`:`${Math.floor(minutes/60)}h ${minutes%60}m`;}
-
 const shortDate = (day) => new Date(day + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const weekday = (day) => new Date(day + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' });
 const periodName = (days) => days === 7 ? 'last week' : `previous ${days} days`;
@@ -31903,11 +32068,13 @@ function OverviewStats({ now, before, days, mastered, total }) {
             React.createElement("div", null,
                 React.createElement("span", null, "Quizzes"),
                 React.createElement("strong", null, now.quizzes),
-                React.createElement(Delta, { now: now.quizzes, before: prev ? prev.quizzes : days ? 0 : null, days: days })),
+                prev || !days ? React.createElement(Delta, { now: now.quizzes, before: prev?.quizzes ?? null, days: days }) : React.createElement("small", { className: "rx-note" },
+                    "None in the ",
+                    periodName(days))),
             React.createElement("div", null,
                 React.createElement("span", null, "Study time"),
                 React.createElement("strong", null, formatDuration(now.seconds)),
-                React.createElement(Delta, { now: now.seconds, before: prev ? prev.seconds : days ? 0 : null, days: days, format: formatDuration })),
+                React.createElement(Delta, { now: now.seconds, before: prev?.seconds ?? null, days: days, format: formatDuration })),
             React.createElement("div", null,
                 React.createElement("span", null, "Per question"),
                 React.createElement("strong", null, now.perAnswer == null ? '—' : `${now.perAnswer.toFixed(1)}s`),
@@ -33426,7 +33593,7 @@ function ReportHistoryCard({ report: r, index: i, openId, setOpenId, items, retr
                 React.createElement("span", null, r.mode === "retry_mistakes" ? "RETRY" : i === 0 ? "LATEST" : "QUIZ"),
                 React.createElement("strong", null, new Date(r.date).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })),
                 React.createElement("small", null, new Date(r.date).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }))),
-            React.createElement("div", { className: styles$1.reportScore },
+            React.createElement("div", { className: `${styles$1.reportScore} rx-score`, "data-level": r.accuracy >= 80 ? "good" : r.accuracy >= 50 ? "ok" : "low" },
                 React.createElement("strong", null,
                     r.accuracy,
                     "%"),
@@ -34475,7 +34642,8 @@ function IndexPage() {
                     React.createElement("div", null,
                         React.createElement(BookOpen, { size: 20 }),
                         React.createElement("strong", null, items.length),
-                        React.createElement("span", null, "Questions")))),
+                        React.createElement("span", null, "Questions"))),
+                React.createElement(HomeInsights, { items: items, reports: reportHistory, forecast: forecast, memory: memoryCounts, mistakes: missedQuestions, onPracticeMistakes: () => retryMistakes([...missedQuestions]), onPracticeSubject: name => practiceGroup("subject", name), onOpenReport: view => { setReportView(view); setTab("results"); window.scrollTo({ top: 0 }); }, onAdd: () => openAdd(), onImport: () => openTransfer("import") })),
             tab === "library" && React.createElement("section", { className: "question-library qb" },
                 React.createElement("div", { className: "qb-head" },
                     React.createElement("div", null,
@@ -34746,7 +34914,7 @@ function IndexPage() {
                                 React.createElement(CopyCheck, null),
                                 " Find duplicates")),
                         React.createElement("button", { className: "question-tools-cancel", onClick: () => setShowQuestionTools(false) }, "Cancel")))),
-            tab === "results" && React.createElement("section", { className: styles$1.reportsPage },
+            tab === "results" && React.createElement("section", { className: `${styles$1.reportsPage} rx-page` },
                 React.createElement("div", { className: styles$1.pageTitle },
                     React.createElement("div", null,
                         React.createElement("h1", null, "Reports"))),

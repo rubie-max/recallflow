@@ -28,8 +28,8 @@ export function OverviewStats({now,before,days,mastered,total}:{now:Summary;befo
   return <section className="rx-overview" aria-label="Summary">
     <div className="rx-lead"><span>ACCURACY</span><strong>{now.accuracy??0}%</strong><small>{now.answers} {now.answers===1?'answer':'answers'} in {now.quizzes} {now.quizzes===1?'quiz':'quizzes'}{days?` · last ${days} days`:''}</small><Delta now={now.accuracy} before={prev?.accuracy??null} days={days} unit=" pts"/></div>
     <div className="rx-tiles">
-      <div><span>Quizzes</span><strong>{now.quizzes}</strong><Delta now={now.quizzes} before={prev?prev.quizzes:days?0:null} days={days}/></div>
-      <div><span>Study time</span><strong>{formatDuration(now.seconds)}</strong><Delta now={now.seconds} before={prev?prev.seconds:days?0:null} days={days} format={formatDuration}/></div>
+      <div><span>Quizzes</span><strong>{now.quizzes}</strong>{prev||!days?<Delta now={now.quizzes} before={prev?.quizzes??null} days={days}/>:<small className="rx-note">None in the {periodName(days)}</small>}</div>
+      <div><span>Study time</span><strong>{formatDuration(now.seconds)}</strong><Delta now={now.seconds} before={prev?.seconds??null} days={days} format={formatDuration}/></div>
       <div><span>Per question</span><strong>{now.perAnswer==null?'—':`${now.perAnswer.toFixed(1)}s`}</strong><Delta now={now.perAnswer==null?null:Math.round(now.perAnswer*10)/10} before={prev?.perAnswer==null?null:Math.round(prev.perAnswer*10)/10} days={days} lowerIsBetter format={n=>n.toFixed(1)} unit="s"/></div>
       <div><span>First-try accuracy</span><strong>{now.firstTryAccuracy==null?'—':`${now.firstTryAccuracy}%`}</strong><small className="rx-note">{now.retakes?`Leaves out ${now.retakes} ${now.retakes===1?'retake':'retakes'}`:'Daily and custom quizzes'}</small></div>
       <div><span>Days studied</span><strong>{now.days}{days?<small> / {days}</small>:null}</strong><small className="rx-note">{days?`${Math.round(now.days/days*100)}% of days`:'Days with a quiz'}</small></div>
