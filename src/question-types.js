@@ -1,5 +1,5 @@
 import {textGrade,normalize} from './learning-core.js';
-import {MAX_VARIANTS,itemTypes,pickVariant} from './question-variants.js';
+import {MAX_VARIANTS,itemTypes,pickVariant,cleanMedia} from './question-variants.js';
 
 export function driveFileId(url){const s=String(url||'');const m=s.match(/\/file\/d\/([\w-]{20,})/)||s.match(/[?&]id=([\w-]{20,})/)||s.match(/\/d\/([\w-]{20,})/);return m?m[1]:'';}
 export function isDriveLink(url){return /^https:\/\/(drive|docs)\.google\.com\//i.test(String(url||''))&&!!driveFileId(url);}
@@ -82,6 +82,25 @@ export function toggleMark(passage,index){return passageTokens(passage).map(t=>t
 
 // Tap the picture: x and y are fractions of the picture, r is a fraction of its width, aspect is height / width.
 export function hotspotHit(spot,given){return !!spot&&!!given&&Number.isFinite(given.x)&&Number.isFinite(given.y)&&Math.hypot(given.x-spot.x,(given.y-spot.y)*spot.aspect)<=spot.r;}
+// Places marked on the picture, each {label,x,y,r,aspect}. Older questions have a single unnamed hotspot.
+export function tapSpots(item){
+  if(Array.isArray(item?.spots)&&item.spots.length)return item.spots;
+  return item?.hotspot?[{...item.hotspot,label:item.answer&&item.answer!=='The marked spot'?String(item.answer):''}]:[];
+}
+// "find": the learner taps each named place (given = one point per spot). "name": the learner names each pin (given = one label per spot).
+export function tapResults(item,given){
+  const spots=tapSpots(item),list=Array.isArray(given)?given:[given];
+  return spots.map((s,i)=>item.tapMode==='name'?!!s.label&&normalize(String(list[i]??''))===normalize(s.label):hotspotHit(s,list[i]));
+}
+// Sounds and videos on answer items, keyed like optionImages: {audio?,audioEdit?,video?,videoEdit?}.
+export function optionMediaSafe(x){
+  if(x===undefined||x===null)return true;
+  if(typeof x!=='object'||Array.isArray(x))return false;
+  return Object.values(x).every(m=>m&&typeof m==='object'&&(m.audio===undefined||(audioSafe(m.audio)&&!isDriveLink(m.audio)))&&(m.video===undefined||(videoSafe(m.video)&&!isDriveLink(m.video)))&&mediaEditSafe(m.audioEdit)&&mediaEditSafe(m.videoEdit));
+}
+// A blank answer may list other accepted answers after a |, e.g. "colour|color".
+export function blankRight(item,answer,given){return listAlternatives(answer).some(a=>textGrade({answer:a,fuzzy:item.fuzzy},given)!=='wrong');}
+export const isMultiBlank=item=>item?.type==='cloze'||(item?.type==='fill_blank'&&(item.blanks?.length||0)>1);
 
 // Sounds are stored inside the question, so they sync and back up with it; keep each clip small.
 export const MAX_AUDIO_CHARS=700000;
@@ -125,13 +144,13 @@ function validateExtra(type,input,prompt,answer){
   }
   if(type==='categorize'){
     const groups=Array.isArray(input.groups)?input.groups.map(g=>({name:trimmed(g?.name),items:Array.isArray(g?.items)?g.items.map(trimmed).filter(Boolean):[]})):[];
-    if(groups.length<2||groups.length>4)throw new Error('Use two to four groups.');
+    if(groups.length<2||groups.length>6)throw new Error('Use two to six groups.');
     if(groups.some(g=>!g.name))throw new Error('Give every group a name.');
     if(new Set(groups.map(g=>normalize(g.name))).size!==groups.length)throw new Error('Each group needs a different name.');
     if(groups.some(g=>!g.items.length))throw new Error('Add at least one item to every group.');
     const all=groups.flatMap(g=>g.items);
     if(new Set(all).size!==all.length)throw new Error('Each item can only be in one group.');
-    if(all.length>24)throw new Error('Use up to 24 items in total.');
+    if(all.length>30)throw new Error('Use up to 30 items in total.');
     return {fields:{groups},answer:groups.map(g=>`${g.name}: ${g.items.join(', ')}`).join('; ')};
   }
   if(type==='highlight'){
@@ -143,11 +162,20 @@ function validateExtra(type,input,prompt,answer){
     return {fields:{passage},answer:marked.map(w=>w.word).join(', ')};
   }
   if(type==='image_tap'){
-    if(!input.image)throw new Error('Add a question picture, then tap it to mark the right spot.');
-    const h=input.hotspot,n=['x','y','r','aspect'].map(k=>Number(h?.[k]));
-    if(!n.every(Number.isFinite)||n[0]<0||n[0]>1||n[1]<0||n[1]>1||n[2]<=0||n[2]>.5||n[3]<=0)throw new Error('Tap the picture to mark the right spot.');
-    const round=v=>Math.round(v*10000)/10000;
-    return {fields:{hotspot:{x:round(n[0]),y:round(n[1]),r:round(n[2]),aspect:round(n[3])}},answer:answer||'The marked spot'};
+    if(!input.image)throw new Error('Add a picture or map, then tap it to mark the places.');
+    const raw=Array.isArray(input.spots)&&input.spots.length?input.spots:input.hotspot?[{...input.hotspot,label:answer==='The marked spot'?'':answer}]:[];
+    if(!raw.length)throw new Error('Tap the picture to mark at least one place.');
+    if(raw.length>30)throw new Error('Mark up to 30 places.');
+    const round=v=>Math.round(v*10000)/10000,mode=input.tapMode==='name'?'name':'find';
+    const spots=raw.map(s=>{
+      const n=['x','y','r','aspect'].map(k=>Number(s?.[k]));
+      if(!n.every(Number.isFinite)||n[0]<0||n[0]>1||n[1]<0||n[1]>1||n[2]<=0||n[2]>.5||n[3]<=0)throw new Error('One of the marked places is not on the picture. Tap it again.');
+      return {label:trimmed(s.label).slice(0,60),x:round(n[0]),y:round(n[1]),r:round(n[2]),aspect:round(n[3])};
+    });
+    if((spots.length>1||mode==='name')&&spots.some(s=>!s.label))throw new Error(mode==='name'?'Name every place you marked.':'Name every place, so learners know what to find.');
+    if(new Set(spots.map(s=>normalize(s.label))).size!==spots.length&&spots.length>1)throw new Error('Each place needs a different name.');
+    if(mode==='name'&&spots.length<2)throw new Error('Mark at least two places so learners can choose names.');
+    return {fields:{spots,tapMode:mode==='name'?'name':undefined,hotspot:undefined},answer:spots.map(s=>s.label).filter(Boolean).join('; ')||answer||'The marked spot'};
   }
   if(type==='slider'){
     const min=numericValue(input.sliderMin??''),max=numericValue(input.sliderMax??''),step=numericValue(input.sliderStep??1),value=numericValue(answer),tolerance=numericValue(input.numericTolerance??0);
@@ -167,8 +195,9 @@ if(type==='true_false'){if(!/^(true|false)$/i.test(answer))throw new Error('Choo
 if(type==='numeric'){if(numericValue(answer)===null)throw new Error('Use a finite number for the correct answer.');numericTolerance=numericValue(input.numericTolerance??0);if(numericTolerance===null||numericTolerance<0)throw new Error('Numeric tolerance must be zero or a positive number.');}
 if(type==='matching'){if(!Array.isArray(input.pairs)||input.pairs.length<2||input.pairs.some(p=>typeof p.left!=='string'||typeof p.right!=='string'||!p.left.trim()||!p.right.trim())||new Set(input.pairs.map(p=>p.left)).size!==input.pairs.length||new Set(input.pairs.map(p=>p.right)).size!==input.pairs.length)throw new Error('Add at least two unique matching pairs.');answer=input.pairs.map(p=>p.left+' → '+p.right).join('; ');}
 if(type==='ordering'){if(!Array.isArray(input.sequence)||input.sequence.length<2||input.sequence.some(x=>typeof x!=='string'||!x.trim())||new Set(input.sequence).size!==input.sequence.length)throw new Error('Add at least two different sequence steps.');answer=input.sequence.join(' → ');}
-if(['cloze','fill_blank_options'].includes(type)){if(!Array.isArray(input.blanks)||!input.blanks.length||input.blanks.some(x=>typeof x!=='string'||!x.trim())||(input.prompt.match(/_{2,}/g)||[]).length!==input.blanks.length)throw new Error('Use one ___ marker for each blank answer.');answer=input.blanks.join('; ');}
-if(type==='fill_blank_options'){if(!Array.isArray(input.options)||input.options.length<2||input.options.some(x=>typeof x!=='string'||!x.trim()))throw new Error('Add at least two word-bank options.');options=input.options.map(x=>x.trim());if(new Set(options).size!==options.length||input.blanks.some(x=>!options.includes(x)))throw new Error('Use unique options and include every blank answer in the word bank.');}
+const multiBlank=type==='fill_blank'&&(prompt.match(/_{2,}/g)||[]).length>1;
+if(['cloze','fill_blank_options'].includes(type)||multiBlank){if(!Array.isArray(input.blanks)||!input.blanks.length||input.blanks.some(x=>typeof x!=='string'||!x.trim())||(input.prompt.match(/_{2,}/g)||[]).length!==input.blanks.length)throw new Error(multiBlank?'Write an answer for every blank.':'Use one ___ marker for each blank answer.');answer=input.blanks.map(x=>multiBlank||type==='cloze'?listAlternatives(x)[0]:x).join('; ');}
+if(type==='fill_blank_options'){if(!Array.isArray(input.options)||input.options.some(x=>typeof x!=='string'||!x.trim()))throw new Error('Add the word-bank words.');if(input.options.length<2)throw new Error('Add at least one extra word, so learners have a choice.');options=input.options.map(x=>x.trim());if(new Set(options).size!==options.length||input.blanks.some(x=>!options.includes(x)))throw new Error('Use unique options and include every blank answer in the word bank.');}
 const extra=extraTypes.includes(type)?validateExtra(type,input,prompt,answer):null;if(extra)answer=extra.answer;
 const mediaNameSafe=x=>x===undefined||x===null||(typeof x==='string'&&x.trim().length>0&&x.trim().length<=120);
 if(input.audioName!==undefined&&!mediaNameSafe(input.audioName))throw new Error('Sound file name is invalid.');
@@ -182,9 +211,12 @@ if(input.answerAudio&&isDriveLink(input.answerAudio))throw new Error(DRIVE_SHARE
 if(input.video&&isDriveLink(input.video))throw new Error(DRIVE_SHARE_REJECT);
 if(input.answerVideo&&isDriveLink(input.answerVideo))throw new Error(DRIVE_SHARE_REJECT);
 for(const [editKey,mediaKey] of [['audioEdit','audio'],['videoEdit','video'],['answerAudioEdit','answerAudio'],['answerVideoEdit','answerVideo']])if(input[editKey]!==undefined&&(!input[mediaKey]||!mediaEditSafe(input[editKey])))throw new Error('Clip edit settings are invalid.');
-if(input.image&&!imageSafe(input.image))throw new Error('Use a PNG, JPEG or WebP image under 2 MB, or an https image link.');if(input.answerImage&&!imageSafe(input.answerImage))throw new Error('Use a PNG, JPEG or WebP answer image under 2 MB, or an https image link.');if(input.optionImages&&(typeof input.optionImages!=='object'||Object.values(input.optionImages).some(x=>!imageSafe(x))))throw new Error('Invalid image choices.');
+if(input.image&&!imageSafe(input.image))throw new Error('Use a PNG, JPEG or WebP image under 2 MB, or an https image link.');if(input.answerImage&&!imageSafe(input.answerImage))throw new Error('Use a PNG, JPEG or WebP answer image under 2 MB, or an https image link.');if(input.optionImages&&(typeof input.optionImages!=='object'||Object.values(input.optionImages).some(x=>!imageSafe(x))))throw new Error('Invalid image choices.');if(!optionMediaSafe(input.optionMedia))throw new Error('An answer sound or video is too large or not a direct file link.');
 if(input.acceptedAnswers&&(!Array.isArray(input.acceptedAnswers)||input.acceptedAnswers.some(a=>typeof a!=='string'||!a.trim())))throw new Error('Alternative answers must be non-empty text.');if(input.tags&&(!Array.isArray(input.tags)||input.tags.some(a=>typeof a!=='string')))throw new Error('Tags must be text.');if(!answer&&!(type==='flashcard'&&(input.answerImage||input.answerVideo||input.answerAudio)))throw new Error(type==='flashcard'?'Add an answer, a back image, video or sound first.':'Add a correct answer first.');
 const result={...input,type,prompt,answer,options,correctAnswers,numericTolerance,...(extra?.fields||{})};
+if(type==='fill_blank'&&!multiBlank)delete result.blanks;
+if(result.optionMedia!==undefined){const media=cleanMedia(result.optionMedia);if(media)result.optionMedia=media;else delete result.optionMedia;}
+if(result.hotspot===undefined)delete result.hotspot;if(result.tapMode===undefined)delete result.tapMode;
 if(input.variants!==undefined){if(!Array.isArray(input.variants)||input.variants.length>MAX_VARIANTS)throw new Error(`Use up to ${MAX_VARIANTS} extra question types.`);result.variants=input.variants.map((variant,i)=>{try{return pickVariant(validateQuestion({...pickVariant(variant||{}),prompt:variant?.prompt||input.prompt,image:input.image}));}catch(error){throw new Error(`${typeLabel(variant?.type)} (type ${i+2}): ${error.message}`);}});if(!result.variants.length)delete result.variants;}
 const types=itemTypes(result);if(new Set(types).size!==types.length)throw new Error('Each question type can only be used once on the same question.');
 if(result.typeMode!==undefined&&!['random','primary'].includes(result.typeMode))delete result.typeMode;
@@ -196,7 +228,8 @@ export function gradeQuestion(item,given){
 if(item.type==='list_recall')return listMatches(item,given).filter(i=>i>=0).length>=Math.max(1,listNeed(item));
 if(item.type==='categorize'){const placed=given&&typeof given==='object'?given:{};return (item.groups||[]).length>0&&item.groups.every(g=>g.items.every(x=>placed[x]===g.name));}
 if(item.type==='highlight'){const want=passageWords(item.passage).filter(w=>w.marked).map(w=>w.index),got=new Set(Array.isArray(given)?given:[]);return want.length>0&&want.length===got.size&&want.every(i=>got.has(i));}
-if(item.type==='image_tap')return hotspotHit(item.hotspot,given);
+if(item.type==='image_tap'){const r=tapResults(item,given);return r.length>0&&r.every(Boolean);}
+if(isMultiBlank(item))return Array.isArray(given)&&given.length===item.blanks.length&&item.blanks.every((a,i)=>blankRight(item,a,given[i]));
 if(item.type==='slider')return gradeQuestion({...item,type:'numeric'},given);
 if(item.type==='fill_blank_options')return Array.isArray(given)&&given.length===item.blanks.length&&item.blanks.every((a,i)=>given[i]===a);if(item.type==='matching')return Array.isArray(given)&&given.length===item.pairs.length&&item.pairs.every((p,i)=>given[i]===p.right);if(item.type==='ordering')return Array.isArray(given)&&JSON.stringify(given)===JSON.stringify(item.sequence);if(item.type==='cloze')return Array.isArray(given)&&given.length===item.blanks.length&&item.blanks.every((a,i)=>textGrade({answer:a,fuzzy:item.fuzzy},given[i])!=='wrong');if(item.type==='multi_select'){const expected=new Set(item.correctAnswers||[]),actual=new Set(Array.isArray(given)?given:[]);return expected.size>0&&expected.size===actual.size&&[...expected].every(value=>actual.has(value));}if(item.type==='numeric'){const value=numericValue(given),expected=numericValue(item.answer),tolerance=Number(item.numericTolerance||0);return value!==null&&expected!==null&&Number.isFinite(tolerance)&&tolerance>=0&&Math.abs(value-expected)<=tolerance+Number.EPSILON*Math.max(1,Math.abs(value),Math.abs(expected))*4;}if(['single_choice','true_false'].includes(item.type))return String(given).trim()===item.answer;return textGrade(item,given)!=='wrong';}
 export function answerText(item){
@@ -204,6 +237,8 @@ export function answerText(item){
   if(item.type==='multi_select'&&item.correctAnswers?.length)return item.correctAnswers.join('; ');
   if(item.type==='slider'&&String(item.answer??'').trim())return `${item.answer}${item.unit?' '+item.unit:''}${Number(item.numericTolerance)>0?` (± ${item.numericTolerance})`:''}`;
   if(item.type==='list_recall'&&item.listItems?.length){const names=item.listItems.map(x=>listAlternatives(x)[0]).join('; ');return listNeed(item)<item.listItems.length?`Any ${listNeed(item)} of: ${names}`:names;}
+  if(item.type==='fill_blank_options'&&item.blanks?.length)return item.blanks.join('; ');
+  if(isMultiBlank(item)&&item.blanks?.length)return item.blanks.map(x=>listAlternatives(x)[0]).join('; ');
   if(String(item.answer??'').trim())return String(item.answer);
   if(item.blanks?.length)return item.blanks.join('; ');
   if(item.pairs?.length)return item.pairs.map(p=>`${p.left} → ${p.right}`).join('; ');
@@ -215,7 +250,13 @@ export function describeAnswer(item,given){
   if(item.type==='list_recall')return (Array.isArray(given)?given:[]).map(x=>String(x).trim()).filter(Boolean).join('; ');
   if(item.type==='categorize'){const placed=given&&typeof given==='object'?given:{};return (item.groups||[]).map(g=>`${g.name}: ${Object.keys(placed).filter(k=>placed[k]===g.name).join(', ')||'—'}`).join('; ');}
   if(item.type==='highlight'){const picked=new Set(Array.isArray(given)?given:[]);return passageWords(item.passage).filter(w=>picked.has(w.index)).map(w=>w.word).join(', ');}
-  if(item.type==='image_tap')return given?(hotspotHit(item.hotspot,given)?'Tapped the right spot':'Tapped outside the spot'):'';
+  if(item.type==='image_tap'){
+    if(!given)return '';
+    const spots=tapSpots(item),r=tapResults(item,given);
+    if(item.tapMode==='name')return (Array.isArray(given)?given:[]).map((x,i)=>`${i+1}: ${x||'—'}`).join('; ');
+    if(spots.length===1)return r[0]?'Tapped the right spot':'Tapped outside the spot';
+    return `Found ${r.filter(Boolean).length} of ${spots.length}${r.some(x=>!x)?` · missed ${spots.filter((_,i)=>!r[i]).map(s=>s.label).join(', ')}`:''}`;
+  }
   if(item.type==='slider')return given===undefined||given===null||given===''?'':`${given}${item.unit?' '+item.unit:''}`;
   return Array.isArray(given)?given.join('; '):String(given??'');
 }

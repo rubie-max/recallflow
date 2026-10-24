@@ -30,16 +30,25 @@ export function prepareExport(items,{images=true,audio=false,video=false,progres
     if(!images)out=stripEmbeddedImages(out);
     if(!audio){for(const k of ['audio','answerAudio'])if(isEmbeddedAudio(out[k]))delete out[k];}
     if(!video){for(const k of ['video','answerVideo'])if(isEmbeddedVideo(out[k]))delete out[k];}
+    if(!audio||!video){out=stripItemMedia(out,!audio,!video);out.variants=out.variants?.map(v=>stripItemMedia(v,!audio,!video));if(!out.variants)delete out.variants;}
     if(!progress)for(const key of progressKeys)delete out[key];
     return out;
   });
 }
+function stripItemMedia(item,audio,video){
+  if(!item.optionMedia)return item;
+  const media=Object.fromEntries(Object.entries(item.optionMedia).map(([k,m])=>{const e={...m};if(audio&&isEmbeddedAudio(e.audio)){delete e.audio;delete e.audioEdit;}if(video&&isEmbeddedVideo(e.video)){delete e.video;delete e.videoEdit;}return [k,e];}).filter(([,e])=>e.audio||e.video));
+  const out={...item};
+  if(Object.keys(media).length)out.optionMedia=media;else delete out.optionMedia;
+  return out;
+}
+const itemMediaHas=(x,test,key)=>[x,...(x?.variants||[])].some(v=>Object.values(v?.optionMedia||{}).some(m=>test(m?.[key])));
 
 export function embeddedAudioCount(items){
-  return items.filter(x=>isEmbeddedAudio(x?.audio)||isEmbeddedAudio(x?.answerAudio)).length;
+  return items.filter(x=>isEmbeddedAudio(x?.audio)||isEmbeddedAudio(x?.answerAudio)||itemMediaHas(x,isEmbeddedAudio,'audio')).length;
 }
 export function embeddedVideoCount(items){
-  return items.filter(x=>isEmbeddedVideo(x?.video)||isEmbeddedVideo(x?.answerVideo)).length;
+  return items.filter(x=>isEmbeddedVideo(x?.video)||isEmbeddedVideo(x?.answerVideo)||itemMediaHas(x,isEmbeddedVideo,'video')).length;
 }
 
 export const aiImportPrompt=`You are preparing questions for RecallFlow (a quiz app). Reply with ONE JSON object only — no markdown fences, no commentary.

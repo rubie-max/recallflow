@@ -18,7 +18,7 @@ const sort=validateQuestion({type:'categorize',prompt:'Sort.',groups:[{name:'Fru
 assert.equal(gradeQuestion(sort,{Apple:'Fruit',Pear:'Fruit',Carrot:'Veg'}),true);
 assert.equal(gradeQuestion(sort,{Apple:'Veg',Pear:'Fruit',Carrot:'Veg'}),false);
 assert.equal(describeAnswer(sort,{Apple:'Veg',Pear:'Fruit',Carrot:'Veg'}),'Fruit: Pear; Veg: Apple, Carrot');
-assert.throws(()=>validateQuestion({type:'categorize',prompt:'x',groups:[{name:'A',items:['1']}]}),/two to four/);
+assert.throws(()=>validateQuestion({type:'categorize',prompt:'x',groups:[{name:'A',items:['1']}]}),/two to six/);
 assert.throws(()=>validateQuestion({type:'categorize',prompt:'x',groups:[{name:'A',items:['1']},{name:'B',items:['1']}]}),/one group/);
 
 let passage='The cat sat on the mat and slept.';passage=toggleMark(toggleMark(passage,2),7);
@@ -34,15 +34,46 @@ const tap=validateQuestion({type:'image_tap',prompt:'Tap the sun.',image:'https:
 assert.equal(tap.answer,'The marked spot');
 assert.equal(gradeQuestion(tap,{x:.55,y:.55}),true);assert.equal(gradeQuestion(tap,{x:.5,y:.8}),false);assert.equal(gradeQuestion(tap,null),false);
 assert.throws(()=>validateQuestion({type:'image_tap',prompt:'x',hotspot:{x:.5,y:.5,r:.1,aspect:1}}),/picture/);
+assert.equal(tap.hotspot,undefined,'an old single hotspot is saved as a spot');assert.equal(tap.spots.length,1);
+const map={type:'image_tap',prompt:'Find these states.',image:'https://example.com/us.png',spots:[{label:'Texas',x:.45,y:.75,r:.08,aspect:.6},{label:'Ohio',x:.72,y:.4,r:.05,aspect:.6}]};
+const find=validateQuestion(map);
+assert.equal(find.answer,'Texas; Ohio');assert.equal(find.tapMode,undefined);
+assert.equal(gradeQuestion(find,[{x:.46,y:.76},{x:.72,y:.41}]),true);
+assert.equal(gradeQuestion(find,[{x:.46,y:.76},{x:.2,y:.2}]),false);
+assert.match(describeAnswer(find,[{x:.46,y:.76},{x:.2,y:.2}]),/Found 1 of 2 · missed Ohio/);
+const named=validateQuestion({...map,tapMode:'name'});
+assert.equal(gradeQuestion(named,['texas','Ohio']),true);assert.equal(gradeQuestion(named,['Ohio','Texas']),false);
+assert.throws(()=>validateQuestion({...map,spots:[{...map.spots[0],label:''},map.spots[1]]}),/Name every place/);
+assert.throws(()=>validateQuestion({...map,spots:[map.spots[0],{...map.spots[1],label:'texas'}]}),/different name/);
+assert.throws(()=>validateQuestion({...map,tapMode:'name',spots:[map.spots[0]]}),/at least two/);
+
+const blanks=validateQuestion(specFromDraft({...emptyDraft('fill_blank','___ is the capital of ___.'),structured:'Paris\nFrance|French Republic'}));
+assert.deepEqual(blanks.blanks,['Paris','France|French Republic']);assert.equal(blanks.answer,'Paris; France');
+assert.equal(gradeQuestion(blanks,['paris','French Republic']),true);assert.equal(gradeQuestion(blanks,['Paris','Spain']),false);
+assert.equal(validateQuestion({type:'fill_blank',prompt:'Sky is ___.',answer:'blue',blanks:['x']}).blanks,undefined,'one blank keeps the plain answer');
+assert.throws(()=>validateQuestion(specFromDraft({...emptyDraft('fill_blank','___ and ___'),structured:'A'})),/every blank/);
+assert.equal(draftFromSpec(blanks).answer,'');
+
+const bank=validateQuestion(specFromDraft({...emptyDraft('fill_blank_options','The ___ sat.'),structured:'cat',options:'dog\nhat'}));
+assert.deepEqual(bank.options,['cat','dog','hat'],'blank answers join the word bank');
+assert.equal(draftFromSpec(bank).options,'dog\nhat','the editor shows only the extra words');
+assert.throws(()=>validateQuestion(specFromDraft({...emptyDraft('fill_blank_options','The ___ sat.'),structured:'cat'})),/extra word/);
+
+const sound='data:audio/webm;base64,AAAA';
+const withMedia=validateQuestion(specFromDraft({...emptyDraft('single_choice','Which is a cat?'),options:'Cat\nDog',answer:'Cat',optionMedia:{Cat:{audio:sound},Dog:{},Gone:{audio:sound}}}));
+assert.deepEqual(withMedia.optionMedia,{Cat:{audio:sound}},'only current items with media are kept');
+assert.throws(()=>validateQuestion({type:'single_choice',prompt:'x',options:['A','B'],answer:'A',optionMedia:{A:{audio:'javascript:x'}}}),/answer sound or video/);
+const sortMedia=specFromDraft({...emptyDraft('categorize','Sort.'),groups:[{name:'Fruit',items:'Apple'},{name:'Veg',items:'Carrot'}],optionImages:{Apple:'https://example.com/a.png',Pear:'https://example.com/p.png'}});
+assert.deepEqual(sortMedia.optionImages,{Apple:'https://example.com/a.png'},'group items can have pictures');
 
 const slider=validateQuestion(specFromDraft({...emptyDraft('slider','When did WW2 end?'),sliderMin:'1900',sliderMax:'2000',answer:'1945',numericTolerance:'2',unit:'AD'}));
 assert.equal(slider.sliderMin,1900);assert.equal(gradeQuestion(slider,1947),true);assert.equal(gradeQuestion(slider,1948),false);
 assert.equal(answerText(slider),'1945 AD (± 2)');
 assert.throws(()=>validateQuestion({type:'slider',prompt:'x',sliderMin:'0',sliderMax:'10',answer:'11'}),/between/);
 
-for(const item of [list,anyTwo,sort,words,tap,slider]){
+for(const item of [list,anyTwo,sort,words,tap,find,named,blanks,bank,withMedia,slider]){
   const again=validateQuestion({...specFromDraft(draftFromSpec(item)),image:item.image});
-  for(const key of ['type','answer','listItems','listCount','groups','passage','hotspot','sliderMin','sliderMax','sliderStep','numericTolerance','unit'])assert.deepEqual(again[key],item[key],`${item.type} keeps ${key} through the editor`);
+  for(const key of ['type','answer','options','blanks','optionMedia','listItems','listCount','groups','passage','spots','tapMode','sliderMin','sliderMax','sliderStep','numericTolerance','unit'])assert.deepEqual(again[key],item[key],`${item.type} keeps ${key} through the editor`);
 }
 
 const mixed=validateQuestion({type:'short_answer',prompt:'Capital of France?',answer:'Paris',variants:[{type:'list_recall',prompt:'Name two French cities.',listItems:['Paris','Lyon','Nice'],listCount:2}]});

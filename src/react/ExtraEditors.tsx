@@ -1,8 +1,8 @@
-import React,{useRef} from 'react';
+import React,{useRef,useState} from 'react';
 import {Plus,Trash2,Crosshair} from 'lucide-react';
 import {passageTokens,toggleMark} from '../question-types.js';
 import {emptyGroups} from '../question-variants.js';
-import {TapTarget} from './ExtraAnswers';
+import {TapCanvas} from './ExtraAnswers';
 
 // Editor fields for the newer question types. d is the draft of the type being edited.
 const rowsOf=(text:any,min=0)=>{const rows=String(text||'').split('\n');while(rows.length<min)rows.push('');return rows;};
@@ -17,17 +17,23 @@ export function ListRecallEditor({d,field}:any){
  </div>;
 }
 
-export function CategorizeEditor({d,field}:any){
+export function CategorizeEditor({d,field,mediaButton,onRename}:any){
  const groups:any[]=d.groups?.length?d.groups:emptyGroups(),set=(next:any[])=>field('groups',next);
  const change=(i:number,key:string,value:string)=>set(groups.map((g,j)=>j===i?{...g,[key]:value}:g));
+ const total=groups.reduce((n,g)=>n+rowsOf(g.items).filter(x=>x.trim()).length,0);
+ function item(i:number,k:number,value:string){const rows=rowsOf(groups[i].items,1),old=rows[k]||'';rows[k]=value;change(i,'items',rows.join('\n'));onRename?.(old,value);}
  return <div className="editor-groups">
-  <p className="editor-list-label">Groups<small>Two to four groups. The quiz mixes all the items together for sorting.</small></p>
-  {groups.map((g,i)=><div className="editor-group-card" key={i}>
-   <div className="editor-group-head"><span className="editor-row-number">{i+1}</span><input aria-label={`Group ${i+1} name`} value={g.name} placeholder={['e.g. Fruit','e.g. Vegetable','Group 3','Group 4'][i]} onChange={e=>change(i,'name',e.target.value)}/><button type="button" aria-label={`Remove group ${i+1}`} disabled={groups.length<=2} onClick={()=>set(groups.filter((_,j)=>j!==i))}><Trash2 size={15}/></button></div>
-   <textarea aria-label={`Items in group ${i+1}`} value={g.items} placeholder={[`Apple\nBanana`,`Carrot\nPotato`][i]||'One item per line'} onChange={e=>change(i,'items',e.target.value)}/>
-   <small>One item per line · {rowsOf(g.items).filter(x=>x.trim()).length} added</small>
-  </div>)}
-  {groups.length<4&&<button type="button" className="editor-text-button" onClick={()=>set([...groups,{name:'',items:''}])}><Plus size={15}/>Add group</button>}
+  <p className="editor-list-label">Groups<small>Two to six groups, up to 30 items. The quiz mixes every item together for learners to sort.</small></p>
+  {groups.map((g,i)=>{const rows=rowsOf(g.items,1);return <div className="editor-group-card" key={i}>
+   <div className="editor-group-head"><span className="editor-row-number">{i+1}</span><input aria-label={`Group ${i+1} name`} value={g.name} placeholder={['e.g. Fruit','e.g. Vegetable','Group 3','Group 4','Group 5','Group 6'][i]} onChange={e=>change(i,'name',e.target.value)}/><button type="button" aria-label={`Remove group ${i+1}`} disabled={groups.length<=2} onClick={()=>set(groups.filter((_,j)=>j!==i))}><Trash2 size={15}/></button></div>
+   <div className="editor-group-items">{rows.map((x,k)=><div className="editor-group-item" key={k}>
+    <input aria-label={`Group ${i+1} item ${k+1}`} value={x} placeholder={k===0?(['e.g. Apple','e.g. Carrot'][i]||'Item'):'Another item'} onChange={e=>item(i,k,e.target.value)} onKeyDown={e=>{if(e.key==='Enter'){e.preventDefault();if(x.trim()&&total<30){change(i,'items',[...rows.slice(0,k+1),'',...rows.slice(k+1)].join('\n'));setTimeout(()=>((e.target as HTMLElement).closest('.editor-group-items')?.querySelectorAll('input')[k+1] as HTMLInputElement|undefined)?.focus());}}}}/>
+    {mediaButton?.(x,`item ${k+1} in group ${i+1}`)}
+    <button type="button" aria-label={`Remove item ${k+1} from group ${i+1}`} disabled={rows.length<=1} onClick={()=>change(i,'items',rows.filter((_,j)=>j!==k).join('\n'))}><Trash2 size={14}/></button>
+   </div>)}</div>
+   <button type="button" className="editor-text-button" disabled={total>=30} onClick={()=>change(i,'items',[...rows,''].join('\n'))}><Plus size={14}/>Add item</button>
+  </div>;})}
+  {groups.length<6&&<button type="button" className="editor-text-button" onClick={()=>set([...groups,{name:'',items:''}])}><Plus size={15}/>Add group</button>}
  </div>;
 }
 
@@ -40,16 +46,47 @@ export function HighlightEditor({d,field}:any){
  </div>;
 }
 
+// Tap the picture: tap empty space to add a place, drag a place to move it, and name each one.
 export function ImageTapEditor({d,field,image}:any){
- const board=useRef<HTMLDivElement>(null),spot=d.hotspot;
+ const board=useRef<HTMLDivElement>(null),press=useRef<any>(null),label=useRef<HTMLInputElement>(null);
+ const spots:any[]=d.spots||[],mode=d.tapMode==='name'?'name':'find';
+ const [sel,setSel]=useState<number>(spots.length?0:-1),[zoomed,setZoomed]=useState(false);
  const ratio=()=>{const img=board.current?.querySelector('img');return img&&img.naturalWidth?img.naturalHeight/img.naturalWidth:1;};
- if(!image)return <p className="editor-tap-empty"><Crosshair size={18}/>Add the question picture above, then tap it here to mark the right spot.</p>;
- function place(e:React.MouseEvent){const r=board.current!.getBoundingClientRect();const c=(v:number)=>Math.min(1,Math.max(0,v));field('hotspot',{x:c((e.clientX-r.left)/r.width),y:c((e.clientY-r.top)/r.height),r:spot?.r||.08,aspect:ratio()});}
+ const set=(next:any[])=>field('spots',next);
+ const at=(e:React.PointerEvent)=>{const r=board.current!.getBoundingClientRect(),c=(v:number)=>Math.min(1,Math.max(0,v));return {x:c((e.clientX-r.left)/r.width),y:c((e.clientY-r.top)/r.height)};};
+ if(!image)return <p className="editor-tap-empty"><Crosshair size={18}/>Add the picture or map in the Media step, then mark the places here.</p>;
+ function down(e:React.PointerEvent){
+  if(e.button>0)return;
+  const hit=(e.target as Element).closest('[data-spot]') as HTMLElement|null;
+  if(hit){const i=Number(hit.dataset.spot);setSel(i);press.current={i,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};try{board.current!.setPointerCapture(e.pointerId);}catch{}e.preventDefault();return;}
+  press.current={add:true,id:e.pointerId,sx:e.clientX,sy:e.clientY};
+ }
+ function move(e:React.PointerEvent){
+  const p=press.current;if(!p||p.add||p.id!==e.pointerId)return;
+  if(!p.moved&&Math.hypot(e.clientX-p.sx,e.clientY-p.sy)<4)return;p.moved=true;
+  const xy=at(e);set(spots.map((s,j)=>j===p.i?{...s,...xy}:s));
+ }
+ function up(e:React.PointerEvent){
+  const p=press.current;press.current=null;if(!p||p.id!==e.pointerId||!p.add||Math.hypot(e.clientX-p.sx,e.clientY-p.sy)>8||spots.length>=30)return;
+  const r=spots[sel]?.r||spots[spots.length-1]?.r||.06;
+  set([...spots,{label:'',...at(e),r,aspect:ratio()}]);setSel(spots.length);setTimeout(()=>label.current?.focus({preventScroll:true}),30);
+ }
+ const cur=spots[sel],change=(patch:any)=>set(spots.map((s,j)=>j===sel?{...s,...patch}:s));
  return <div className="editor-tap">
-  <p className="editor-list-label">Right spot<small>{spot?'Tap the picture again to move it.':'Tap the picture where the answer is.'}</small></p>
-  <div className="tap-board is-editor" ref={board} onClick={place}><img src={image} alt="Question picture" draggable={false} onLoad={()=>{if(spot&&Math.abs(spot.aspect-ratio())>.001)field('hotspot',{...spot,aspect:ratio()});}}/>{spot&&<TapTarget spot={spot}/>}</div>
-  {spot&&<label className="editor-tap-size">Target size<input type="range" min="0.03" max="0.25" step="0.01" value={spot.r} onChange={e=>field('hotspot',{...spot,r:Number(e.target.value)})}/></label>}
-  <label>What is at this spot?<small className="editor-optional">Optional — shown after checking</small><input value={d.answer||''} onChange={e=>field('answer',e.target.value)} placeholder="e.g. The heart"/></label>
+  <div className="editor-tap-mode" role="radiogroup" aria-label="How learners answer">
+   <button type="button" role="radio" aria-checked={mode==='find'} onClick={()=>field('tapMode',undefined)}><b>Find the place</b><small>We name it, they tap it on the picture</small></button>
+   <button type="button" role="radio" aria-checked={mode==='name'} onClick={()=>field('tapMode','name')}><b>Name the place</b><small>Pins are shown, they pick each name</small></button>
+  </div>
+  <p className="editor-list-label">Places · {spots.length}<small>{spots.length?'Tap empty space to add another place. Drag a ring to move it.':'Tap the picture to mark the first place, e.g. a state or country on a map.'}</small></p>
+  <TapCanvas image={image} alt="Question picture" boardRef={board} zoomed={zoomed} onZoom={()=>setZoomed(z=>!z)} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={()=>{press.current=null;}}>
+   {spots.map((s,i)=><span key={i} data-spot={i} className="tap-edit-spot" data-selected={sel===i||undefined} style={{left:`${s.x*100}%`,top:`${s.y*100}%`,width:`${s.r*200}%`,height:`${s.r*200/s.aspect}%`}}><b>{i+1}</b>{s.label&&<em>{s.label}</em>}</span>)}
+  </TapCanvas>
+  {cur&&<div className="editor-tap-spot">
+   <div className="editor-tap-spot-row"><span className="editor-row-number">{sel+1}</span><input ref={label} aria-label={`Name of place ${sel+1}`} value={cur.label||''} maxLength={60} placeholder={spots.length>1||mode==='name'?'Name this place, e.g. Texas':'Name (optional), e.g. The heart'} onChange={e=>change({label:e.target.value})}/><button type="button" aria-label={`Remove place ${sel+1}`} onClick={()=>{set(spots.filter((_,j)=>j!==sel));setSel(Math.min(sel,spots.length-2));}}><Trash2 size={15}/></button></div>
+   <label className="editor-tap-size">Target size<input type="range" min="0.015" max="0.25" step="0.005" value={cur.r} onChange={e=>change({r:Number(e.target.value)})}/></label>
+  </div>}
+  {spots.length>1&&<div className="editor-tap-list" role="group" aria-label="Marked places">{spots.map((s,i)=><button type="button" key={i} aria-pressed={sel===i} data-missing={!s.label||undefined} onClick={()=>setSel(i)}><b>{i+1}</b>{s.label||'Unnamed'}</button>)}</div>}
+  <img hidden src={image} alt="" onLoad={e=>{const img=e.currentTarget,r=img.naturalWidth?img.naturalHeight/img.naturalWidth:1;if(spots.some(s=>Math.abs(s.aspect-r)>.001))set(spots.map(s=>({...s,aspect:r})));}}/>
  </div>;
 }
 

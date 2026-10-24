@@ -20312,9 +20312,9 @@ function VoicePreview({ voice, speed }) {
 
 // A question can be asked as several types. The primary type lives on the item itself
 // (so older banks keep working); extra types live in item.variants.
-const variantFields=['type','prompt','answer','options','correctAnswers','numericTolerance','acceptedAnswers','fuzzy','optionImages','pairs','sequence','blanks','listItems','listCount','groups','passage','hotspot','sliderMin','sliderMax','sliderStep','unit'];
+const variantFields=['type','prompt','answer','options','correctAnswers','numericTolerance','acceptedAnswers','fuzzy','optionImages','optionMedia','pairs','sequence','blanks','listItems','listCount','groups','passage','hotspot','spots','tapMode','sliderMin','sliderMax','sliderStep','unit'];
 // Editor draft fields that belong to one type (the rest, like images and tags, are shared).
-const draftTypeFields=['type','prompt','answer','options','numericTolerance','structured','accepted','fuzzy','optionImages','listCount','groups','passage','hotspot','sliderMin','sliderMax','sliderStep','unit'];
+const draftTypeFields=['type','prompt','answer','options','numericTolerance','structured','accepted','fuzzy','optionImages','optionMedia','listCount','groups','passage','spots','tapMode','sliderMin','sliderMax','sliderStep','unit'];
 const MAX_VARIANTS=15;
 
 function itemTypes(item){return [item.type||'short_answer',...(item.variants||[]).map(v=>v.type||'short_answer')];}
@@ -20347,12 +20347,19 @@ function retakeVariant(item,missedType,random=Math.random){
 
 const lines=text=>String(text||'').split('\n').map(x=>x.trim()).filter(Boolean);
 const emptyGroups=()=>[{name:'',items:''},{name:'',items:''}];
-function emptyDraft(type='short_answer',prompt=''){return {type,prompt,answer:type==='true_false'?'True':'',options:'',numericTolerance:'0',structured:'',accepted:'',fuzzy:true,optionImages:{},...(type==='categorize'?{groups:emptyGroups()}:{}),...(type==='slider'?{sliderMin:'0',sliderMax:'100',sliderStep:'1'}:{})};}
+function emptyDraft(type='short_answer',prompt=''){return {type,prompt,answer:type==='true_false'?'True':'',options:'',numericTolerance:'0',structured:'',accepted:'',fuzzy:true,optionImages:{},optionMedia:{},...(type==='categorize'?{groups:emptyGroups()}:{}),...(type==='slider'?{sliderMin:'0',sliderMax:'100',sliderStep:'1'}:{})};}
 
+// Places on a Tap the picture question; older questions stored one hotspot, named by the answer.
+function draftSpots(item){
+  if(Array.isArray(item.spots)&&item.spots.length)return item.spots.map(s=>({...s}));
+  return item.hotspot?[{...item.hotspot,label:item.answer&&item.answer!=='The marked spot'?String(item.answer):''}]:[];
+}
 function draftFromSpec(item){
   const type=item.type||'short_answer';
-  return {type,prompt:item.prompt||'',answer:type==='multi_select'?(item.correctAnswers||[]).join('\n'):['list_recall','categorize','highlight'].includes(type)||(type==='image_tap'&&item.answer==='The marked spot')?'':String(item.answer??''),options:(item.options||[]).join('\n'),numericTolerance:String(item.numericTolerance??0),structured:type==='matching'?(item.pairs||[]).map(p=>p.left+'|'+p.right).join('\n'):type==='ordering'?(item.sequence||[]).join('\n'):type==='list_recall'?(item.listItems||[]).join('\n'):(item.blanks||[]).join('\n'),accepted:(item.acceptedAnswers||[]).join('\n'),fuzzy:item.fuzzy,optionImages:item.optionImages||{},
-    listCount:item.listCount?String(item.listCount):'',groups:item.groups?.length?item.groups.map(g=>({name:g.name,items:(g.items||[]).join('\n')})):undefined,passage:item.passage||'',hotspot:item.hotspot,
+  // Word-bank answers are added to the bank on save, so the editor lists only the extra words.
+  const options=type==='fill_blank_options'?(item.options||[]).filter(x=>!(item.blanks||[]).includes(x)):(item.options||[]);
+  return {type,prompt:item.prompt||'',answer:type==='multi_select'?(item.correctAnswers||[]).join('\n'):['list_recall','categorize','highlight','image_tap'].includes(type)||(type==='fill_blank'&&item.blanks?.length>1)?'':String(item.answer??''),options:options.join('\n'),numericTolerance:String(item.numericTolerance??0),structured:type==='matching'?(item.pairs||[]).map(p=>p.left+'|'+p.right).join('\n'):type==='ordering'?(item.sequence||[]).join('\n'):type==='list_recall'?(item.listItems||[]).join('\n'):(item.blanks||[]).join('\n'),accepted:(item.acceptedAnswers||[]).join('\n'),fuzzy:item.fuzzy,optionImages:item.optionImages||{},optionMedia:item.optionMedia||{},
+    listCount:item.listCount?String(item.listCount):'',groups:item.groups?.length?item.groups.map(g=>({name:g.name,items:(g.items||[]).join('\n')})):undefined,passage:item.passage||'',spots:type==='image_tap'?draftSpots(item):undefined,tapMode:item.tapMode,
     sliderMin:item.sliderMin===undefined?undefined:String(item.sliderMin),sliderMax:item.sliderMax===undefined?undefined:String(item.sliderMax),sliderStep:item.sliderStep===undefined?undefined:String(item.sliderStep),unit:item.unit||''};
 }
 
@@ -20360,21 +20367,40 @@ function draftFromSpec(item){
 const pictureLabel=index=>`Picture ${index}`;
 function isPictureLabel(text){return /^Picture (\d+|[A-Z])$/.test(String(text||'').trim());}
 
-const imageTypes=['single_choice','multi_select','fill_blank_options','matching','ordering'];
+const imageTypes=['single_choice','multi_select','fill_blank_options','matching','ordering','categorize'];
 
-// optionImages is keyed by the text of a choice, word-bank word, matching side or ordering step.
+// optionImages and optionMedia are keyed by the text of a choice, word-bank word, matching side, ordering step or group item.
 function imageKeys(item){
   if(item.type==='matching')return (item.pairs||[]).flatMap(p=>[p.left,p.right]);
   if(item.type==='ordering')return item.sequence||[];
+  if(item.type==='categorize')return (item.groups||[]).flatMap(g=>g.items||[]);
   return item.options||[];
+}
+const blankCount=prompt=>(String(prompt||'').match(/_{2,}/g)||[]).length;
+// Keeps only entries that have a sound or video (and, when keys are given, belong to a current item).
+function cleanMedia(x,keys){
+  const out={};
+  for(const [k,m] of Object.entries(x||{})){
+    const key=k.trim();
+    if(!m||(keys&&!keys.includes(key)))continue;
+    const entry={};
+    if(m.audio){entry.audio=m.audio;if(m.audioEdit)entry.audioEdit=m.audioEdit;}
+    if(m.video){entry.video=m.video;if(m.videoEdit)entry.videoEdit=m.videoEdit;}
+    if(entry.audio||entry.video)out[key]=entry;
+  }
+  return Object.keys(out).length?out:undefined;
 }
 
 function specFromDraft(d){
-  const type=d.type||'short_answer',options=lines(d.options);
+  const type=d.type||'short_answer',blanks=lines(d.structured);
+  const options=type==='fill_blank_options'?[...new Set([...blanks,...lines(d.options)])]:lines(d.options);
   const pairs=type==='matching'?String(d.structured||'').split('\n').filter(x=>x.trim()).map(line=>{const [left,...rest]=line.split('|');return {left:left?.trim(),right:rest.join('|').trim()};}):undefined;
   const sequence=type==='ordering'?lines(d.structured):undefined;
-  const keys=imageKeys({type,options,pairs,sequence});
-  return {type,prompt:d.prompt,answer:d.answer,
+  const groups=type==='categorize'?(d.groups||[]).map(g=>({name:String(g?.name||'').trim(),items:lines(g?.items)})).filter(g=>g.name||g.items.length):undefined;
+  const keys=imageKeys({type,options,pairs,sequence,groups});
+  const multiBlank=type==='fill_blank'&&blankCount(d.prompt)>1;
+  return {type,prompt:d.prompt,answer:multiBlank?blanks.join('; '):d.answer,
+    optionMedia:imageTypes.includes(type)?cleanMedia(d.optionMedia,keys):undefined,
     options:['single_choice','multi_select','fill_blank_options'].includes(type)?options:undefined,
     correctAnswers:type==='multi_select'?lines(d.answer):undefined,
     numericTolerance:d.numericTolerance,
@@ -20382,12 +20408,13 @@ function specFromDraft(d){
     fuzzy:d.fuzzy!==false,
     optionImages:imageTypes.includes(type)?Object.fromEntries(Object.entries(d.optionImages||{}).map(([key,value])=>[key.trim(),value]).filter(([key,value])=>value&&keys.includes(key))):undefined,
     pairs,sequence,
-    blanks:['cloze','fill_blank_options'].includes(type)?lines(d.structured):undefined,
+    blanks:['cloze','fill_blank_options'].includes(type)||multiBlank?blanks:undefined,
     listItems:type==='list_recall'?lines(d.structured):undefined,
     listCount:type==='list_recall'&&String(d.listCount||'').trim()?Number(d.listCount):undefined,
-    groups:type==='categorize'?(d.groups||[]).map(g=>({name:String(g?.name||'').trim(),items:lines(g?.items)})).filter(g=>g.name||g.items.length):undefined,
+    groups,
     passage:type==='highlight'?String(d.passage||''):undefined,
-    hotspot:type==='image_tap'?d.hotspot:undefined,
+    spots:type==='image_tap'?(d.spots||(d.hotspot?[{...d.hotspot,label:d.answer||''}]:[])):undefined,
+    tapMode:type==='image_tap'&&d.tapMode==='name'?'name':undefined,
     sliderMin:type==='slider'?d.sliderMin??'0':undefined,sliderMax:type==='slider'?d.sliderMax??'100':undefined,sliderStep:type==='slider'?d.sliderStep??'1':undefined,
     unit:type==='slider'?String(d.unit||'').trim()||undefined:undefined};
 }
@@ -20873,7 +20900,7 @@ function restoreBackup(data){const entries={recallflow_bank_v2:data.questions,re
 
 const EVENT$1 = 'recallflow-zoom';
 const MIN = 1, MAX = 5;
-const clamp$6 = (v, a, b) => Math.min(b, Math.max(a, v));
+const clamp$7 = (v, a, b) => Math.min(b, Math.max(a, v));
 function openZoom(src, alt = '') { if (src)
     window.dispatchEvent(new CustomEvent(EVENT$1, { detail: { src, alt } })); }
 function ImageViewer({ src, alt = '', onClose }) {
@@ -20889,10 +20916,10 @@ function ImageViewer({ src, alt = '', onClose }) {
         zoomBy(1 / 1.4);
     else if (e.key === '0')
         setView({ s: 1, x: 0, y: 0 }); }; window.addEventListener('keydown', key, true); const overflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; closeBtn.current?.focus(); return () => { window.removeEventListener('keydown', key, true); document.body.style.overflow = overflow; }; }, []);
-    function limit(v) { const r = stage.current?.getBoundingClientRect(), s = clamp$6(v.s, MIN, MAX); if (!r || s === 1)
-        return { s, x: 0, y: 0 }; const mx = r.width * (s - 1) / 2, my = r.height * (s - 1) / 2; return { s, x: clamp$6(v.x, -mx, mx), y: clamp$6(v.y, -my, my) }; }
+    function limit(v) { const r = stage.current?.getBoundingClientRect(), s = clamp$7(v.s, MIN, MAX); if (!r || s === 1)
+        return { s, x: 0, y: 0 }; const mx = r.width * (s - 1) / 2, my = r.height * (s - 1) / 2; return { s, x: clamp$7(v.x, -mx, mx), y: clamp$7(v.y, -my, my) }; }
     // Zoom keeping the point under (cx,cy) fixed; coordinates are relative to the stage centre.
-    function zoomAt(factor, cx = 0, cy = 0) { setView(v => { const s = clamp$6(v.s * factor, MIN, MAX), k = s / v.s; return limit({ s, x: cx - (cx - v.x) * k, y: cy - (cy - v.y) * k }); }); }
+    function zoomAt(factor, cx = 0, cy = 0) { setView(v => { const s = clamp$7(v.s * factor, MIN, MAX), k = s / v.s; return limit({ s, x: cx - (cx - v.x) * k, y: cy - (cy - v.y) * k }); }); }
     function zoomBy(factor) { zoomAt(factor); }
     function local(e) { const r = stage.current.getBoundingClientRect(); return { x: e.clientX - r.left - r.width / 2, y: e.clientY - r.top - r.height / 2 }; }
     function down(e) { try {
@@ -20907,7 +20934,7 @@ function ImageViewer({ src, alt = '', onClose }) {
     function move(e) { if (!pointers.current.has(e.pointerId))
         return; pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY }); const g = gesture.current; if (!g)
         return; const pts = [...pointers.current.values()]; if (g.type === 'pinch' && pts.length === 2) {
-        const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), mid = local({ clientX: (pts[0].x + pts[1].x) / 2, clientY: (pts[0].y + pts[1].y) / 2 }), s = clamp$6(g.view.s * d / g.d, MIN, MAX), k = s / g.view.s;
+        const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y), mid = local({ clientX: (pts[0].x + pts[1].x) / 2, clientY: (pts[0].y + pts[1].y) / 2 }), s = clamp$7(g.view.s * d / g.d, MIN, MAX), k = s / g.view.s;
         setView(limit({ s, x: mid.x - (mid.x - g.view.x) * k, y: mid.y - (mid.y - g.view.y) * k }));
     }
     else if (g.type === 'pan') {
@@ -20969,136 +20996,7 @@ function ZoomableImage({ src, alt = '', className = '', imgClassName, label = 'E
         React.createElement(ZoomButton, { src: src, alt: alt, label: label }));
 }
 
-function ItemMedia({ item, text }) { const src = item.optionImages?.[text]; return src ? React.createElement("img", { className: "item-media", src: src, alt: "", draggable: false }) : null; }
-function ItemText({ item, text, className }) { return isPictureLabel(text) && item.optionImages?.[text] ? React.createElement("span", { className: "visually-hidden" }, text) : React.createElement("span", { className: className }, text); }
-function ItemZoom({ item, text }) { const src = item.optionImages?.[text]; return src ? React.createElement(ZoomButton, { src: src, alt: text, label: `Enlarge picture for ${text}` }) : null; }
-const PAIR_COLOURS = ['#2ec4a6', '#facc15', '#f06595', '#38bdf8', '#a3e635', '#f97316'];
-function MatchingAnswer({ item, value, onChange, disabled, onGrade }) {
-    const [active, setActive] = reactExports.useState(null), [message, setMessage] = reactExports.useState(''), [lines, setLines] = reactExports.useState([]);
-    const board = reactExports.useRef(null), values = item.pairs.map((_, i) => value[i] || ''), rights = React.useMemo(() => seededShuffle(item.pairs, item.id + (item.shuffleSeed || '')), [item]);
-    reactExports.useEffect(() => { const el = board.current; if (!el)
-        return; function measure() { const area = el.getBoundingClientRect(); setLines(values.flatMap((v, i) => { if (!v)
-        return []; const a = el.querySelector(`[data-left="${i}"]`)?.getBoundingClientRect(), j = rights.findIndex(p => p.right === v), b = el.querySelector(`[data-right="${j}"]`)?.getBoundingClientRect(); return a && b ? [{ i, x1: a.right - area.left, y1: a.top + a.height / 2 - area.top, x2: b.left - area.left, y2: b.top + b.height / 2 - area.top }] : []; })); } measure(); const observer = new ResizeObserver(measure); observer.observe(el); return () => observer.disconnect(); }, [item, value]);
-    const drag = reactExports.useRef(null), skipClick = reactExports.useRef(false), [draw, setDraw] = reactExports.useState(null);
-    function link(left, right) { onChange(values.map((v, i) => i === left ? right : v === right ? '' : v)); setActive(null); setMessage(''); }
-    function connect(right) { if (skipClick.current)
-        return; if (active === null) {
-        const owner = values.indexOf(right);
-        if (owner >= 0)
-            setActive(owner);
-        else
-            setMessage('Tap a word on the left first.');
-        return;
-    } link(active, right); }
-    function anchor(el, side) { const area = board.current.getBoundingClientRect(), r = el.getBoundingClientRect(); return { x: (side === 'left' ? r.right : r.left) - area.left, y: r.top + r.height / 2 - area.top }; }
-    function hitAt(x, y, side) { const el = document.elementFromPoint(x, y)?.closest(`[data-${side}]`); return el && board.current?.contains(el) ? el : null; }
-    function down(e) { if (disabled || (e.pointerType === 'mouse' && e.button !== 0))
-        return; const el = e.target.closest('[data-left],[data-right]'); if (!el)
-        return; const side = el.hasAttribute('data-left') ? 'left' : 'right'; drag.current = { side, other: side === 'left' ? 'right' : 'left', index: Number(el.dataset[side]), sx: e.clientX, sy: e.clientY, id: e.pointerId, moved: false, start: anchor(el, side) }; }
-    function move(e) { const d = drag.current; if (!d || d.id !== e.pointerId)
-        return; if (!d.moved) {
-        if (Math.hypot(e.clientX - d.sx, e.clientY - d.sy) < 8)
-            return;
-        d.moved = true;
-        try {
-            board.current.setPointerCapture(e.pointerId);
-        }
-        catch { }
-        setActive(null);
-        setMessage('');
-    } const area = board.current.getBoundingClientRect(), hit = hitAt(e.clientX, e.clientY, d.other); setDraw({ from: d.start, to: hit ? anchor(hit, d.other) : { x: e.clientX - area.left, y: e.clientY - area.top }, side: d.side, index: d.index, hover: hit ? Number(hit.dataset[d.other]) : null }); }
-    function up(e) { const d = drag.current; if (!d || d.id !== e.pointerId)
-        return; drag.current = null; setDraw(null); if (!d.moved)
-        return; skipClick.current = true; setTimeout(() => { skipClick.current = false; }); const hit = hitAt(e.clientX, e.clientY, d.other); if (!hit)
-        return; const j = Number(hit.dataset[d.other]); d.side === 'left' ? link(d.index, rights[j].right) : link(j, rights[d.index].right); }
-    function cancel() { drag.current = null; setDraw(null); }
-    const curve = (a, b) => `M ${a.x} ${a.y} C ${(a.x + b.x) / 2} ${a.y}, ${(a.x + b.x) / 2} ${b.y}, ${b.x} ${b.y}`;
-    const drawing = (side, i) => draw && ((draw.side === side && draw.index === i) || (draw.side !== side && draw.hover === i)) ? 'true' : undefined;
-    const state = (i) => disabled ? (values[i] === item.pairs[i].right ? 'correct' : 'wrong') : active === i ? 'active' : values[i] ? 'paired' : 'idle';
-    const tint = (i) => values[i] ? { '--pair': PAIR_COLOURS[i % PAIR_COLOURS.length] } : undefined;
-    return React.createElement("div", { className: "structured-answer matching-answer" },
-        React.createElement("p", { className: "split-answer-help" }, disabled ? 'Your matches' : 'Draw a line from each item to its match, or tap one and then the other.'),
-        React.createElement("div", { className: "matching-board", ref: board, "data-drawing": draw ? 'true' : undefined, onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: cancel, onLostPointerCapture: e => { if (e.target === e.currentTarget && drag.current?.id === e.pointerId)
-                cancel(); } },
-            React.createElement("svg", { className: "match-connections", "aria-hidden": "true" }, lines.filter(l => !draw || (draw.side === 'left' ? draw.index !== l.i : values[l.i] !== rights[draw.index].right)).map(l => React.createElement("path", { key: l.i, "data-state": state(l.i), style: tint(l.i), d: curve({ x: l.x1, y: l.y1 }, { x: l.x2, y: l.y2 }) }))),
-            draw && React.createElement("svg", { className: "match-drawing", "aria-hidden": "true" },
-                React.createElement("path", { d: curve(draw.from, draw.to) }),
-                React.createElement("circle", { cx: draw.from.x, cy: draw.from.y, r: "5" }),
-                React.createElement("circle", { cx: draw.to.x, cy: draw.to.y, r: draw.hover === null ? 7 : 5 })),
-            React.createElement("div", { className: "match-column", "aria-label": "Items to match" }, item.pairs.map((p, i) => React.createElement("div", { className: "media-slot", key: p.left },
-                React.createElement("button", { "data-left": i, "data-state": state(i), style: tint(i), "data-drawing": drawing('left', i), "aria-label": `Select ${p.left}`, "aria-pressed": active === i, disabled: disabled, onClick: () => { if (skipClick.current)
-                        return; setActive(i); setMessage(''); } },
-                    React.createElement(ItemMedia, { item: item, text: p.left }),
-                    React.createElement(ItemText, { item: item, text: p.left }),
-                    values[i] && React.createElement("b", null, i + 1)),
-                React.createElement(ItemZoom, { item: item, text: p.left })))),
-            React.createElement("div", { className: "match-column", "aria-label": "Possible matches" }, rights.map((p, j) => { const owner = values.indexOf(p.right); return React.createElement("div", { className: "media-slot", key: p.right },
-                React.createElement("button", { "data-right": j, "data-state": owner < 0 ? 'idle' : state(owner), style: owner < 0 ? undefined : tint(owner), "data-drawing": drawing('right', j), "aria-label": `Match with ${p.right}`, "aria-pressed": owner >= 0, disabled: disabled, onClick: () => connect(p.right) },
-                    owner >= 0 && React.createElement("b", null, owner + 1),
-                    React.createElement(ItemMedia, { item: item, text: p.right }),
-                    React.createElement(ItemText, { item: item, text: p.right })),
-                React.createElement(ItemZoom, { item: item, text: p.right })); }))),
-        React.createElement("div", { className: "matching-tools" },
-            React.createElement("p", { role: "status" }, message || `${values.filter(Boolean).length} of ${values.length} pairs connected`),
-            !disabled && React.createElement("button", { onClick: () => { onChange([]); setActive(null); setMessage(''); } }, "Reset matches")),
-        !disabled && React.createElement(Button, { disabled: values.some(x => !x), onClick: () => onGrade(values) }, "Check matches"));
-}
-function InlineBlankAnswer({ item, value, onChange, disabled, onGrade }) {
-    const multi = item.type === 'cloze', values = multi ? item.blanks.map((_, i) => value[i] || '') : [value || ''];
-    const parts = item.prompt.split(/_{2,}/g), complete = values.every(v => v.trim());
-    function field(index) { const i = multi ? index : 0; return React.createElement("input", { key: 'blank-' + index, "aria-label": `Blank ${index + 1}`, autoComplete: "off", spellCheck: false, value: values[i], disabled: disabled, placeholder: "", "data-state": disabled ? (textGrade({ answer: multi ? item.blanks[i] : item.answer, acceptedAnswers: multi ? [] : item.acceptedAnswers, fuzzy: item.fuzzy }, values[i]) === 'wrong' ? 'wrong' : 'correct') : 'idle', onChange: e => { if (multi) {
-            const next = [...values];
-            next[i] = e.target.value;
-            onChange(next);
-        }
-        else
-            onChange(e.target.value); }, onKeyDown: e => { if (e.key === 'Enter' && complete && !disabled)
-            onGrade(multi ? values : values[0]); } }); }
-    return React.createElement("div", { className: "inline-blank-answer" },
-        React.createElement("p", { className: "blank-sentence" }, parts.length > 1 ? parts.map((part, i) => React.createElement(React.Fragment, { key: i },
-            part,
-            i < parts.length - 1 && field(i))) : React.createElement(React.Fragment, null,
-            item.prompt,
-            " ",
-            field(0))),
-        React.createElement("p", { className: "split-answer-help" },
-            "Type directly into ",
-            multi ? 'each gap' : 'the gap',
-            " to complete the sentence."),
-        !disabled && React.createElement(Button, { className: "split-submit", disabled: !complete, onClick: () => onGrade(multi ? values : values[0]) },
-            "Check ",
-            multi ? 'answers' : 'answer'));
-}
-function WordBankAnswer({ item, value, onChange, disabled, onGrade }) {
-    const [active, setActive] = reactExports.useState(0), values = item.blanks.map((_, i) => value[i] || ''), parts = item.prompt.split(/_{2,}/g);
-    function choose(option) { const next = [...values]; next[active] = option; onChange(next); const empty = next.findIndex((v, i) => !v && i > active); const first = next.findIndex(v => !v); setActive(empty >= 0 ? empty : first >= 0 ? first : active); }
-    return React.createElement("div", { className: "inline-blank-answer word-bank-answer" },
-        React.createElement("p", { className: "blank-sentence" }, parts.map((part, i) => React.createElement(React.Fragment, { key: i },
-            part,
-            i < parts.length - 1 && React.createElement("button", { className: "word-bank-gap", "aria-label": `Blank ${i + 1}: ${values[i] || 'empty'}${!disabled && active === i && values[i] ? ', tap to clear' : ''}`, "aria-pressed": active === i, disabled: disabled, "data-filled": !!values[i] || undefined, "data-state": disabled ? (values[i] === item.blanks[i] ? 'correct' : 'wrong') : active === i ? 'active' : 'idle', onClick: () => { if (active === i && values[i]) {
-                    const next = [...values];
-                    next[i] = '';
-                    onChange(next);
-                }
-                else
-                    setActive(i); } }, disabled && values[i] !== item.blanks[i] ? React.createElement(React.Fragment, null,
-                React.createElement("s", null, values[i] || '—'),
-                " ",
-                React.createElement("b", null, item.blanks[i])) : values[i] || React.createElement("span", { className: "word-bank-blank", "aria-hidden": "true" }))))),
-        React.createElement("div", { className: "word-bank-options", role: "group", "aria-label": "Word bank" }, item.options.map(option => React.createElement("span", { className: "media-slot", key: option },
-            React.createElement("button", { "aria-label": `Option ${option}${values.includes(option) ? ', used' : ''}`, "data-used": values.includes(option) || undefined, disabled: disabled, onClick: () => choose(option) },
-                React.createElement(ItemMedia, { item: item, text: option }),
-                React.createElement(ItemText, { item: item, text: option })),
-            React.createElement(ItemZoom, { item: item, text: option })))),
-        !disabled && React.createElement("div", { className: "word-bank-tools" },
-            React.createElement("span", { role: "status" },
-                values.filter(Boolean).length,
-                " of ",
-                values.length,
-                " gaps filled"),
-            React.createElement("button", { disabled: !values[active], onClick: () => { const next = [...values]; next[active] = ''; onChange(next); } }, "Clear selected gap")),
-        !disabled && React.createElement(Button, { className: "split-submit", disabled: values.some(x => !x), onClick: () => onGrade(values) }, "Check answers"));
-}
+var reactDomExports = requireReactDom();
 
 function driveFileId(url){const s=String(url||'');const m=s.match(/\/file\/d\/([\w-]{20,})/)||s.match(/[?&]id=([\w-]{20,})/)||s.match(/\/d\/([\w-]{20,})/);return m?m[1]:'';}
 function isDriveLink(url){return /^https:\/\/(drive|docs)\.google\.com\//i.test(String(url||''))&&!!driveFileId(url);}
@@ -21177,6 +21075,25 @@ function toggleMark(passage,index){return passageTokens(passage).map(t=>t.word&&
 
 // Tap the picture: x and y are fractions of the picture, r is a fraction of its width, aspect is height / width.
 function hotspotHit(spot,given){return !!spot&&!!given&&Number.isFinite(given.x)&&Number.isFinite(given.y)&&Math.hypot(given.x-spot.x,(given.y-spot.y)*spot.aspect)<=spot.r;}
+// Places marked on the picture, each {label,x,y,r,aspect}. Older questions have a single unnamed hotspot.
+function tapSpots(item){
+  if(Array.isArray(item?.spots)&&item.spots.length)return item.spots;
+  return item?.hotspot?[{...item.hotspot,label:item.answer&&item.answer!=='The marked spot'?String(item.answer):''}]:[];
+}
+// "find": the learner taps each named place (given = one point per spot). "name": the learner names each pin (given = one label per spot).
+function tapResults(item,given){
+  const spots=tapSpots(item),list=Array.isArray(given)?given:[given];
+  return spots.map((s,i)=>item.tapMode==='name'?!!s.label&&normalize(String(list[i]??''))===normalize(s.label):hotspotHit(s,list[i]));
+}
+// Sounds and videos on answer items, keyed like optionImages: {audio?,audioEdit?,video?,videoEdit?}.
+function optionMediaSafe(x){
+  if(x===undefined||x===null)return true;
+  if(typeof x!=='object'||Array.isArray(x))return false;
+  return Object.values(x).every(m=>m&&typeof m==='object'&&(m.audio===undefined||(audioSafe(m.audio)&&!isDriveLink(m.audio)))&&(m.video===undefined||(videoSafe(m.video)&&!isDriveLink(m.video)))&&mediaEditSafe(m.audioEdit)&&mediaEditSafe(m.videoEdit));
+}
+// A blank answer may list other accepted answers after a |, e.g. "colour|color".
+function blankRight(item,answer,given){return listAlternatives(answer).some(a=>textGrade({answer:a,fuzzy:item.fuzzy},given)!=='wrong');}
+const isMultiBlank=item=>item?.type==='cloze'||(item?.type==='fill_blank'&&(item.blanks?.length||0)>1);
 
 // Sounds are stored inside the question, so they sync and back up with it; keep each clip small.
 const MAX_AUDIO_CHARS=700000;
@@ -21220,13 +21137,13 @@ function validateExtra(type,input,prompt,answer){
   }
   if(type==='categorize'){
     const groups=Array.isArray(input.groups)?input.groups.map(g=>({name:trimmed(g?.name),items:Array.isArray(g?.items)?g.items.map(trimmed).filter(Boolean):[]})):[];
-    if(groups.length<2||groups.length>4)throw new Error('Use two to four groups.');
+    if(groups.length<2||groups.length>6)throw new Error('Use two to six groups.');
     if(groups.some(g=>!g.name))throw new Error('Give every group a name.');
     if(new Set(groups.map(g=>normalize(g.name))).size!==groups.length)throw new Error('Each group needs a different name.');
     if(groups.some(g=>!g.items.length))throw new Error('Add at least one item to every group.');
     const all=groups.flatMap(g=>g.items);
     if(new Set(all).size!==all.length)throw new Error('Each item can only be in one group.');
-    if(all.length>24)throw new Error('Use up to 24 items in total.');
+    if(all.length>30)throw new Error('Use up to 30 items in total.');
     return {fields:{groups},answer:groups.map(g=>`${g.name}: ${g.items.join(', ')}`).join('; ')};
   }
   if(type==='highlight'){
@@ -21238,11 +21155,20 @@ function validateExtra(type,input,prompt,answer){
     return {fields:{passage},answer:marked.map(w=>w.word).join(', ')};
   }
   if(type==='image_tap'){
-    if(!input.image)throw new Error('Add a question picture, then tap it to mark the right spot.');
-    const h=input.hotspot,n=['x','y','r','aspect'].map(k=>Number(h?.[k]));
-    if(!n.every(Number.isFinite)||n[0]<0||n[0]>1||n[1]<0||n[1]>1||n[2]<=0||n[2]>.5||n[3]<=0)throw new Error('Tap the picture to mark the right spot.');
-    const round=v=>Math.round(v*10000)/10000;
-    return {fields:{hotspot:{x:round(n[0]),y:round(n[1]),r:round(n[2]),aspect:round(n[3])}},answer:answer||'The marked spot'};
+    if(!input.image)throw new Error('Add a picture or map, then tap it to mark the places.');
+    const raw=Array.isArray(input.spots)&&input.spots.length?input.spots:input.hotspot?[{...input.hotspot,label:answer==='The marked spot'?'':answer}]:[];
+    if(!raw.length)throw new Error('Tap the picture to mark at least one place.');
+    if(raw.length>30)throw new Error('Mark up to 30 places.');
+    const round=v=>Math.round(v*10000)/10000,mode=input.tapMode==='name'?'name':'find';
+    const spots=raw.map(s=>{
+      const n=['x','y','r','aspect'].map(k=>Number(s?.[k]));
+      if(!n.every(Number.isFinite)||n[0]<0||n[0]>1||n[1]<0||n[1]>1||n[2]<=0||n[2]>.5||n[3]<=0)throw new Error('One of the marked places is not on the picture. Tap it again.');
+      return {label:trimmed(s.label).slice(0,60),x:round(n[0]),y:round(n[1]),r:round(n[2]),aspect:round(n[3])};
+    });
+    if((spots.length>1||mode==='name')&&spots.some(s=>!s.label))throw new Error(mode==='name'?'Name every place you marked.':'Name every place, so learners know what to find.');
+    if(new Set(spots.map(s=>normalize(s.label))).size!==spots.length&&spots.length>1)throw new Error('Each place needs a different name.');
+    if(mode==='name'&&spots.length<2)throw new Error('Mark at least two places so learners can choose names.');
+    return {fields:{spots,tapMode:mode==='name'?'name':undefined,hotspot:undefined},answer:spots.map(s=>s.label).filter(Boolean).join('; ')||answer||'The marked spot'};
   }
   if(type==='slider'){
     const min=numericValue(input.sliderMin??''),max=numericValue(input.sliderMax??''),step=numericValue(input.sliderStep??1),value=numericValue(answer),tolerance=numericValue(input.numericTolerance??0);
@@ -21262,8 +21188,9 @@ if(type==='true_false'){if(!/^(true|false)$/i.test(answer))throw new Error('Choo
 if(type==='numeric'){if(numericValue(answer)===null)throw new Error('Use a finite number for the correct answer.');numericTolerance=numericValue(input.numericTolerance??0);if(numericTolerance===null||numericTolerance<0)throw new Error('Numeric tolerance must be zero or a positive number.');}
 if(type==='matching'){if(!Array.isArray(input.pairs)||input.pairs.length<2||input.pairs.some(p=>typeof p.left!=='string'||typeof p.right!=='string'||!p.left.trim()||!p.right.trim())||new Set(input.pairs.map(p=>p.left)).size!==input.pairs.length||new Set(input.pairs.map(p=>p.right)).size!==input.pairs.length)throw new Error('Add at least two unique matching pairs.');answer=input.pairs.map(p=>p.left+' → '+p.right).join('; ');}
 if(type==='ordering'){if(!Array.isArray(input.sequence)||input.sequence.length<2||input.sequence.some(x=>typeof x!=='string'||!x.trim())||new Set(input.sequence).size!==input.sequence.length)throw new Error('Add at least two different sequence steps.');answer=input.sequence.join(' → ');}
-if(['cloze','fill_blank_options'].includes(type)){if(!Array.isArray(input.blanks)||!input.blanks.length||input.blanks.some(x=>typeof x!=='string'||!x.trim())||(input.prompt.match(/_{2,}/g)||[]).length!==input.blanks.length)throw new Error('Use one ___ marker for each blank answer.');answer=input.blanks.join('; ');}
-if(type==='fill_blank_options'){if(!Array.isArray(input.options)||input.options.length<2||input.options.some(x=>typeof x!=='string'||!x.trim()))throw new Error('Add at least two word-bank options.');options=input.options.map(x=>x.trim());if(new Set(options).size!==options.length||input.blanks.some(x=>!options.includes(x)))throw new Error('Use unique options and include every blank answer in the word bank.');}
+const multiBlank=type==='fill_blank'&&(prompt.match(/_{2,}/g)||[]).length>1;
+if(['cloze','fill_blank_options'].includes(type)||multiBlank){if(!Array.isArray(input.blanks)||!input.blanks.length||input.blanks.some(x=>typeof x!=='string'||!x.trim())||(input.prompt.match(/_{2,}/g)||[]).length!==input.blanks.length)throw new Error(multiBlank?'Write an answer for every blank.':'Use one ___ marker for each blank answer.');answer=input.blanks.map(x=>multiBlank||type==='cloze'?listAlternatives(x)[0]:x).join('; ');}
+if(type==='fill_blank_options'){if(!Array.isArray(input.options)||input.options.some(x=>typeof x!=='string'||!x.trim()))throw new Error('Add the word-bank words.');if(input.options.length<2)throw new Error('Add at least one extra word, so learners have a choice.');options=input.options.map(x=>x.trim());if(new Set(options).size!==options.length||input.blanks.some(x=>!options.includes(x)))throw new Error('Use unique options and include every blank answer in the word bank.');}
 const extra=extraTypes.includes(type)?validateExtra(type,input,prompt,answer):null;if(extra)answer=extra.answer;
 const mediaNameSafe=x=>x===undefined||x===null||(typeof x==='string'&&x.trim().length>0&&x.trim().length<=120);
 if(input.audioName!==undefined&&!mediaNameSafe(input.audioName))throw new Error('Sound file name is invalid.');
@@ -21277,9 +21204,12 @@ if(input.answerAudio&&isDriveLink(input.answerAudio))throw new Error(DRIVE_SHARE
 if(input.video&&isDriveLink(input.video))throw new Error(DRIVE_SHARE_REJECT);
 if(input.answerVideo&&isDriveLink(input.answerVideo))throw new Error(DRIVE_SHARE_REJECT);
 for(const [editKey,mediaKey] of [['audioEdit','audio'],['videoEdit','video'],['answerAudioEdit','answerAudio'],['answerVideoEdit','answerVideo']])if(input[editKey]!==undefined&&(!input[mediaKey]||!mediaEditSafe(input[editKey])))throw new Error('Clip edit settings are invalid.');
-if(input.image&&!imageSafe(input.image))throw new Error('Use a PNG, JPEG or WebP image under 2 MB, or an https image link.');if(input.answerImage&&!imageSafe(input.answerImage))throw new Error('Use a PNG, JPEG or WebP answer image under 2 MB, or an https image link.');if(input.optionImages&&(typeof input.optionImages!=='object'||Object.values(input.optionImages).some(x=>!imageSafe(x))))throw new Error('Invalid image choices.');
+if(input.image&&!imageSafe(input.image))throw new Error('Use a PNG, JPEG or WebP image under 2 MB, or an https image link.');if(input.answerImage&&!imageSafe(input.answerImage))throw new Error('Use a PNG, JPEG or WebP answer image under 2 MB, or an https image link.');if(input.optionImages&&(typeof input.optionImages!=='object'||Object.values(input.optionImages).some(x=>!imageSafe(x))))throw new Error('Invalid image choices.');if(!optionMediaSafe(input.optionMedia))throw new Error('An answer sound or video is too large or not a direct file link.');
 if(input.acceptedAnswers&&(!Array.isArray(input.acceptedAnswers)||input.acceptedAnswers.some(a=>typeof a!=='string'||!a.trim())))throw new Error('Alternative answers must be non-empty text.');if(input.tags&&(!Array.isArray(input.tags)||input.tags.some(a=>typeof a!=='string')))throw new Error('Tags must be text.');if(!answer&&!(type==='flashcard'&&(input.answerImage||input.answerVideo||input.answerAudio)))throw new Error(type==='flashcard'?'Add an answer, a back image, video or sound first.':'Add a correct answer first.');
 const result={...input,type,prompt,answer,options,correctAnswers,numericTolerance,...(extra?.fields||{})};
+if(type==='fill_blank'&&!multiBlank)delete result.blanks;
+if(result.optionMedia!==undefined){const media=cleanMedia(result.optionMedia);if(media)result.optionMedia=media;else delete result.optionMedia;}
+if(result.hotspot===undefined)delete result.hotspot;if(result.tapMode===undefined)delete result.tapMode;
 if(input.variants!==undefined){if(!Array.isArray(input.variants)||input.variants.length>MAX_VARIANTS)throw new Error(`Use up to ${MAX_VARIANTS} extra question types.`);result.variants=input.variants.map((variant,i)=>{try{return pickVariant(validateQuestion({...pickVariant(variant||{}),prompt:variant?.prompt||input.prompt,image:input.image}));}catch(error){throw new Error(`${typeLabel(variant?.type)} (type ${i+2}): ${error.message}`);}});if(!result.variants.length)delete result.variants;}
 const types=itemTypes(result);if(new Set(types).size!==types.length)throw new Error('Each question type can only be used once on the same question.');
 if(result.typeMode!==undefined&&!['random','primary'].includes(result.typeMode))delete result.typeMode;
@@ -21291,7 +21221,8 @@ function gradeQuestion(item,given){
 if(item.type==='list_recall')return listMatches(item,given).filter(i=>i>=0).length>=Math.max(1,listNeed(item));
 if(item.type==='categorize'){const placed=given&&typeof given==='object'?given:{};return (item.groups||[]).length>0&&item.groups.every(g=>g.items.every(x=>placed[x]===g.name));}
 if(item.type==='highlight'){const want=passageWords(item.passage).filter(w=>w.marked).map(w=>w.index),got=new Set(Array.isArray(given)?given:[]);return want.length>0&&want.length===got.size&&want.every(i=>got.has(i));}
-if(item.type==='image_tap')return hotspotHit(item.hotspot,given);
+if(item.type==='image_tap'){const r=tapResults(item,given);return r.length>0&&r.every(Boolean);}
+if(isMultiBlank(item))return Array.isArray(given)&&given.length===item.blanks.length&&item.blanks.every((a,i)=>blankRight(item,a,given[i]));
 if(item.type==='slider')return gradeQuestion({...item,type:'numeric'},given);
 if(item.type==='fill_blank_options')return Array.isArray(given)&&given.length===item.blanks.length&&item.blanks.every((a,i)=>given[i]===a);if(item.type==='matching')return Array.isArray(given)&&given.length===item.pairs.length&&item.pairs.every((p,i)=>given[i]===p.right);if(item.type==='ordering')return Array.isArray(given)&&JSON.stringify(given)===JSON.stringify(item.sequence);if(item.type==='cloze')return Array.isArray(given)&&given.length===item.blanks.length&&item.blanks.every((a,i)=>textGrade({answer:a,fuzzy:item.fuzzy},given[i])!=='wrong');if(item.type==='multi_select'){const expected=new Set(item.correctAnswers||[]),actual=new Set(Array.isArray(given)?given:[]);return expected.size>0&&expected.size===actual.size&&[...expected].every(value=>actual.has(value));}if(item.type==='numeric'){const value=numericValue(given),expected=numericValue(item.answer),tolerance=Number(item.numericTolerance||0);return value!==null&&expected!==null&&Number.isFinite(tolerance)&&tolerance>=0&&Math.abs(value-expected)<=tolerance+Number.EPSILON*Math.max(1,Math.abs(value),Math.abs(expected))*4;}if(['single_choice','true_false'].includes(item.type))return String(given).trim()===item.answer;return textGrade(item,given)!=='wrong';}
 function answerText(item){
@@ -21299,6 +21230,8 @@ function answerText(item){
   if(item.type==='multi_select'&&item.correctAnswers?.length)return item.correctAnswers.join('; ');
   if(item.type==='slider'&&String(item.answer??'').trim())return `${item.answer}${item.unit?' '+item.unit:''}${Number(item.numericTolerance)>0?` (± ${item.numericTolerance})`:''}`;
   if(item.type==='list_recall'&&item.listItems?.length){const names=item.listItems.map(x=>listAlternatives(x)[0]).join('; ');return listNeed(item)<item.listItems.length?`Any ${listNeed(item)} of: ${names}`:names;}
+  if(item.type==='fill_blank_options'&&item.blanks?.length)return item.blanks.join('; ');
+  if(isMultiBlank(item)&&item.blanks?.length)return item.blanks.map(x=>listAlternatives(x)[0]).join('; ');
   if(String(item.answer??'').trim())return String(item.answer);
   if(item.blanks?.length)return item.blanks.join('; ');
   if(item.pairs?.length)return item.pairs.map(p=>`${p.left} → ${p.right}`).join('; ');
@@ -21310,11 +21243,1904 @@ function describeAnswer(item,given){
   if(item.type==='list_recall')return (Array.isArray(given)?given:[]).map(x=>String(x).trim()).filter(Boolean).join('; ');
   if(item.type==='categorize'){const placed=given&&typeof given==='object'?given:{};return (item.groups||[]).map(g=>`${g.name}: ${Object.keys(placed).filter(k=>placed[k]===g.name).join(', ')||'—'}`).join('; ');}
   if(item.type==='highlight'){const picked=new Set(Array.isArray(given)?given:[]);return passageWords(item.passage).filter(w=>picked.has(w.index)).map(w=>w.word).join(', ');}
-  if(item.type==='image_tap')return given?(hotspotHit(item.hotspot,given)?'Tapped the right spot':'Tapped outside the spot'):'';
+  if(item.type==='image_tap'){
+    if(!given)return '';
+    const spots=tapSpots(item),r=tapResults(item,given);
+    if(item.tapMode==='name')return (Array.isArray(given)?given:[]).map((x,i)=>`${i+1}: ${x||'—'}`).join('; ');
+    if(spots.length===1)return r[0]?'Tapped the right spot':'Tapped outside the spot';
+    return `Found ${r.filter(Boolean).length} of ${spots.length}${r.some(x=>!x)?` · missed ${spots.filter((_,i)=>!r[i]).map(s=>s.label).join(', ')}`:''}`;
+  }
   if(item.type==='slider')return given===undefined||given===null||given===''?'':`${given}${item.unit?' '+item.unit:''}`;
   return Array.isArray(given)?given.join('; '):String(given??'');
 }
 function missedItems(attempts,bank){const ids=new Set(attempts.filter(attempt=>!attempt.correct).map(attempt=>attempt.knowledge_id));return bank.filter(item=>ids.has(item.id));}
+
+const MIN_LEN = 0.1;
+const clamp$6 = (v, a, b) => Math.min(Math.max(v, Math.min(a, b)), Math.max(a, b));
+const num = (v, fb) => typeof v === 'number' && Number.isFinite(v) ? v : fb;
+const fmtTime = (s) => { s = Math.max(0, num(s, 0)); return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`; };
+const fmtFine = (s) => `${fmtTime(s)}.${Math.floor((Math.max(0, num(s, 0)) % 1) * 10)}`;
+const isEmbeddedMedia = (src) => /^(data|blob):/i.test(src || '');
+const playbackSrc = (src) => isEmbeddedMedia(src) ? src : resolveMediaPlaybackSrc(src);
+const AC = () => (window.AudioContext || window.webkitAudioContext);
+function defaultEdit$1(duration) { const d = Math.max(0, num(duration, 0)); return { trimStart: 0, trimEnd: d, muted: false, volume: 1, fadeIn: 0, fadeOut: 0, gain: 1 }; }
+function normalizeEdit(edit, duration) {
+    const d = Math.max(0, num(duration, 0));
+    if (!d || !edit)
+        return { ...defaultEdit$1(d), frame: edit?.frame };
+    const trimStart = clamp$6(num(edit.trimStart, 0), 0, Math.max(0, d - MIN_LEN));
+    const trimEnd = clamp$6(num(edit.trimEnd, d), Math.min(d, trimStart + MIN_LEN), d);
+    const len = Math.max(MIN_LEN, trimEnd - trimStart);
+    return { trimStart, trimEnd, muted: !!edit.muted, volume: clamp$6(num(edit.volume, 1), 0, 1), fadeIn: clamp$6(num(edit.fadeIn, 0), 0, len / 2), fadeOut: clamp$6(num(edit.fadeOut, 0), 0, len / 2), gain: clamp$6(num(edit.gain, 1), 0.25, 4), frame: edit.frame };
+}
+function editIsDefault(edit, duration) {
+    const n = normalizeEdit(edit, duration);
+    return !n.frame && !n.muted && n.volume === 1 && n.gain === 1 && n.fadeIn === 0 && n.fadeOut === 0 && n.trimStart <= 0.01 && Math.abs(n.trimEnd - duration) <= 0.05;
+}
+function levelAt(e, t) {
+    if (e.muted)
+        return 0;
+    let a = 1;
+    if (e.fadeIn && e.fadeIn > 0)
+        a = Math.min(a, (t - e.trimStart) / e.fadeIn);
+    if (e.fadeOut && e.fadeOut > 0)
+        a = Math.min(a, (e.trimEnd - t) / e.fadeOut);
+    return clamp$6(a, 0, 1) * num(e.volume, 1) * num(e.gain, 1);
+}
+/* ───────────────────────── 4:3 frame (same model as ImageEditor) ───────────────────────── */
+const FRAME_W = 1200, FRAME_H = 900;
+const fitK$1 = (w, h) => Math.min(FRAME_W / w, FRAME_H / h);
+const fillK$1 = (w, h) => Math.max(FRAME_W / w, FRAME_H / h);
+const maxK$1 = (w, h) => fillK$1(w, h) * 4;
+const centredFrame = (k, extra) => ({ k, x: FRAME_W / 2, y: FRAME_H / 2, ...extra });
+function limitFrame(f, w, h) {
+    const k = clamp$6(num(f.k, 1), fitK$1(w, h), maxK$1(w, h)), sw = w * k, sh = h * k;
+    return { k, x: clamp$6(num(f.x, FRAME_W / 2), sw / 2, FRAME_W - sw / 2), y: clamp$6(num(f.y, FRAME_H / 2), sh / 2, FRAME_H - sh / 2), fx: !!f.fx || undefined, fy: !!f.fy || undefined };
+}
+function frameFor(edit, w, h) {
+    if (!w || !h)
+        return centredFrame(1);
+    const f = edit?.frame;
+    return f && Number.isFinite(f.k) ? limitFrame(f, w, h) : centredFrame(fitK$1(w, h));
+}
+function frameIsDefault(f, w, h) { return !f.fx && !f.fy && Math.abs(f.k - fitK$1(w, h)) < 1e-6 && Math.abs(f.x - FRAME_W / 2) < 0.5 && Math.abs(f.y - FRAME_H / 2) < 0.5; }
+const zoomAround$1 = (f, k, ox, oy) => { const r = k / f.k; return { ...f, k, x: ox - (ox - f.x) * r, y: oy - (oy - f.y) * r }; };
+/** CSS placement of a <video> inside a 4:3 box, in percentages — no measuring needed. */
+function frameStyle(f, w, h) {
+    if (!w || !h)
+        return { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' };
+    const sw = w * f.k, sh = h * f.k;
+    return { position: 'absolute', left: `${(f.x - sw / 2) / FRAME_W * 100}%`, top: `${(f.y - sh / 2) / FRAME_H * 100}%`, width: `${sw / FRAME_W * 100}%`, height: `${sh / FRAME_H * 100}%`, maxWidth: 'none', maxHeight: 'none', transform: `scale(${f.fx ? -1 : 1},${f.fy ? -1 : 1})` };
+}
+function useVideoDims(ref, src) {
+    const [dims, setDims] = reactExports.useState({ w: 0, h: 0 });
+    reactExports.useEffect(() => {
+        let cancelled = false;
+        const read = () => {
+            if (cancelled)
+                return;
+            const v = ref.current;
+            if (v && v.videoWidth && v.videoHeight)
+                setDims({ w: v.videoWidth, h: v.videoHeight });
+        };
+        const v = ref.current;
+        if (v) {
+            v.addEventListener('loadedmetadata', read);
+            v.addEventListener('loadeddata', read);
+            v.addEventListener('canplay', read);
+        }
+        read();
+        const poll = window.setInterval(read, 200);
+        const stop = window.setTimeout(() => window.clearInterval(poll), 15000);
+        return () => {
+            cancelled = true;
+            window.clearInterval(poll);
+            window.clearTimeout(stop);
+            if (v) {
+                v.removeEventListener('loadedmetadata', read);
+                v.removeEventListener('loadeddata', read);
+                v.removeEventListener('canplay', read);
+            }
+        };
+    }, [src, ref]);
+    return dims;
+}
+function useBackdrop(video, canvas, src, playing) {
+    reactExports.useEffect(() => {
+        const v = video.current, c = canvas.current;
+        if (!v || !c)
+            return;
+        c.width = 32;
+        c.height = 24;
+        const g = c.getContext('2d');
+        if (!g)
+            return;
+        const draw = () => { if (v.readyState < 2 || !v.videoWidth)
+            return; const k = Math.max(32 / v.videoWidth, 24 / v.videoHeight), w = v.videoWidth * k, h = v.videoHeight * k; try {
+            g.drawImage(v, (32 - w) / 2, (24 - h) / 2, w, h);
+        }
+        catch { } };
+        let raf = 0, last = 0;
+        const loop = (t) => { if (t - last > 120) {
+            draw();
+            last = t;
+        } raf = requestAnimationFrame(loop); };
+        v.addEventListener('loadeddata', draw);
+        v.addEventListener('seeked', draw);
+        draw();
+        if (playing)
+            raf = requestAnimationFrame(loop);
+        return () => { cancelAnimationFrame(raf); v.removeEventListener('loadeddata', draw); v.removeEventListener('seeked', draw); };
+    }, [src, playing, video, canvas]);
+}
+/** A 4:3 box with a blurred backdrop and the video placed by `frame`. Used by the player and the editor. */
+const VideoFrame = React.forwardRef(function VideoFrame({ src, frame, dims, playing, className = '', preload = 'metadata', onClick, children }, ref) {
+    const inner = reactExports.useRef(null), canvas = reactExports.useRef(null);
+    const setRef = reactExports.useCallback((el) => { inner.current = el; if (typeof ref === 'function')
+        ref(el);
+    else if (ref)
+        ref.current = el; }, [ref]);
+    useBackdrop(inner, canvas, src, playing);
+    return React.createElement("div", { className: `vf ${className}`.trim(), onClick: onClick },
+        React.createElement("canvas", { ref: canvas, className: "vf-backdrop", "aria-hidden": "true" }),
+        React.createElement("video", { key: src, ref: setRef, src: playbackSrc(src), playsInline: true, preload: preload, style: frameStyle(frame, dims.w, dims.h) }),
+        children);
+});
+/* ───────────────────────── duration & probing ───────────────────────── */
+function readDuration(el) {
+    const d = saneDuration(el.duration);
+    if (d)
+        return d;
+    try {
+        const s = el.seekable;
+        if (s.length)
+            return saneDuration(s.end(s.length - 1));
+    }
+    catch { }
+    return 0;
+}
+function isLocalMediaSrc(src) { return /^(data|blob):/i.test(src || ''); }
+function probeHost() {
+    let host = document.getElementById('rf-probe-host');
+    if (!host) {
+        host = document.createElement('div');
+        host.id = 'rf-probe-host';
+        host.style.cssText = 'position:fixed;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden';
+        document.body.appendChild(host);
+    }
+    return host;
+}
+function resolveMediaDuration(el, timeoutMs = 15000) {
+    return new Promise(resolve => {
+        let done = false, fixing = false;
+        const local = isLocalMediaSrc(el.currentSrc || el.src);
+        const evs = ['loadedmetadata', 'durationchange', 'loadeddata', 'canplay'];
+        const finish = (d) => { if (done)
+            return; done = true; window.clearTimeout(timer); window.clearTimeout(seekTimer); evs.forEach(ev => el.removeEventListener(ev, check)); el.removeEventListener('error', onErr); resolve(d); };
+        let seekTimer = 0;
+        const check = () => {
+            const d = readDuration(el);
+            if (d) {
+                finish(d);
+                return;
+            }
+            if (!local && el.readyState >= 1 && !fixing && !Number.isFinite(el.duration)) {
+                fixing = true;
+                const back = () => { el.removeEventListener('seeked', back); window.clearTimeout(seekTimer); const d2 = readDuration(el); try {
+                    el.currentTime = 0;
+                }
+                catch { } if (d2)
+                    finish(d2);
+                else
+                    fixing = false; };
+                el.addEventListener('seeked', back);
+                seekTimer = window.setTimeout(() => { el.removeEventListener('seeked', back); fixing = false; }, 4000);
+                try {
+                    el.currentTime = 1e101;
+                }
+                catch {
+                    el.removeEventListener('seeked', back);
+                    window.clearTimeout(seekTimer);
+                    fixing = false;
+                }
+            }
+        };
+        const onErr = () => finish(0);
+        const timer = window.setTimeout(() => finish(readDuration(el)), timeoutMs);
+        evs.forEach(ev => el.addEventListener(ev, check));
+        el.addEventListener('error', onErr);
+        check();
+    });
+}
+function seekElement(el, t) {
+    return new Promise(resolve => { let timer = 0; const done = () => { el.removeEventListener('seeked', done); window.clearTimeout(timer); resolve(); }; el.addEventListener('seeked', done); timer = window.setTimeout(done, 3000); try {
+        el.currentTime = t;
+    }
+    catch {
+        done();
+    } });
+}
+/** Quick open check for uploads and links. Local blobs use metadata-only + a short timeout. */
+function probeMediaSrc(src, kind, timeoutMs) {
+    const local = isLocalMediaSrc(src);
+    const ms = timeoutMs ?? (local ? 4500 : 12000);
+    return new Promise(resolve => {
+        const el = document.createElement(kind);
+        el.preload = 'metadata';
+        el.muted = true;
+        el.playsInline = true;
+        const host = probeHost();
+        host.appendChild(el);
+        let settled = false;
+        const finish = (ok, duration) => {
+            if (settled)
+                return;
+            settled = true;
+            try {
+                el.pause();
+            }
+            catch { }
+            el.removeAttribute('src');
+            try {
+                el.load();
+            }
+            catch { }
+            el.remove();
+            resolve({ ok, duration });
+        };
+        el.addEventListener('error', () => finish(false, 0), { once: true });
+        el.src = playbackSrc(src);
+        try {
+            el.load();
+        }
+        catch { }
+        void resolveMediaDuration(el, ms).then(d => {
+            const ok = !el.error && (d > 0 || (local ? el.readyState >= 1 : el.readyState >= 2));
+            finish(ok, d);
+        });
+    });
+}
+/* ───────────────────────── decoding, peaks, rendering ───────────────────────── */
+async function decodeAudioFromSrc(src) {
+    const res = await fetch(playbackSrc(src), isEmbeddedMedia(src) ? undefined : { mode: 'cors' });
+    if (!res.ok)
+        throw new Error('Could not fetch this clip.');
+    const ab = await res.arrayBuffer();
+    const Ctx = AC();
+    if (!Ctx)
+        throw new Error('Web Audio is not available in this browser.');
+    const ctx = new Ctx();
+    try {
+        return await ctx.decodeAudioData(ab);
+    }
+    finally {
+        ctx.close().catch(() => { });
+    }
+}
+function computePeaks(buf, bars) {
+    const n = buf.length, block = Math.max(1, Math.floor(n / bars)), chs = buf.numberOfChannels, peaks = new Array(bars).fill(0);
+    let peak = 0;
+    for (let c = 0; c < chs; c++) {
+        const d = buf.getChannelData(c);
+        for (let i = 0; i < bars; i++) {
+            const s = i * block, e = Math.min(n, s + block);
+            let m = 0;
+            for (let j = s; j < e; j++) {
+                const v = d[j] < 0 ? -d[j] : d[j];
+                if (v > m)
+                    m = v;
+            }
+            if (m > peaks[i])
+                peaks[i] = m;
+            if (m > peak)
+                peak = m;
+        }
+    }
+    return { peaks: peaks.map(v => peak ? v / peak : 0), duration: buf.duration, peak, channels: chs, sampleRate: buf.sampleRate };
+}
+const peakCache = new Map();
+const cacheKey = (src, bars) => `${bars}:${src.length}:${src.slice(0, 96)}:${src.slice(-96)}`;
+function decodePeaks(src, bars = 240) {
+    const key = cacheKey(src, bars);
+    const hit = peakCache.get(key);
+    if (hit)
+        return hit;
+    const p = decodeAudioFromSrc(src).then(b => computePeaks(b, bars)).catch(() => null);
+    peakCache.set(key, p);
+    if (peakCache.size > 16)
+        peakCache.delete(peakCache.keys().next().value);
+    return p;
+}
+function peakWithin(p, from, to) {
+    const n = p.peaks.length, a = clamp$6(Math.floor(from * n), 0, n - 1), b = clamp$6(Math.ceil(to * n), a + 1, n);
+    let m = 0;
+    for (let i = a; i < b; i++)
+        if (p.peaks[i] > m)
+            m = p.peaks[i];
+    return m * p.peak;
+}
+async function renderEditedAudio(src, edit, opts = {}) {
+    const buf = await decodeAudioFromSrc(src);
+    const e = normalizeEdit(edit, buf.duration), len = Math.max(MIN_LEN, e.trimEnd - e.trimStart);
+    const sr = opts.sampleRate || buf.sampleRate, chs = opts.mono ? 1 : buf.numberOfChannels;
+    const Off = (window.OfflineAudioContext || window.webkitOfflineAudioContext);
+    const off = new Off(chs, Math.ceil(len * sr), sr);
+    const s = off.createBufferSource();
+    s.buffer = buf;
+    const g = off.createGain();
+    const base = e.muted ? 0 : e.volume * e.gain;
+    g.gain.setValueAtTime(e.fadeIn > 0 ? 0 : base, 0);
+    if (e.fadeIn > 0)
+        g.gain.linearRampToValueAtTime(base, e.fadeIn);
+    if (e.fadeOut > 0) {
+        g.gain.setValueAtTime(base, Math.max(e.fadeIn, len - e.fadeOut));
+        g.gain.linearRampToValueAtTime(0, len);
+    }
+    s.connect(g).connect(off.destination);
+    s.start(0, e.trimStart, len);
+    return off.startRendering();
+}
+function audioBufferToWav(buf) {
+    const chs = buf.numberOfChannels, sr = buf.sampleRate, n = buf.length, bytes = 44 + n * chs * 2;
+    const ab = new ArrayBuffer(bytes), dv = new DataView(ab);
+    const str = (o, s) => { for (let i = 0; i < s.length; i++)
+        dv.setUint8(o + i, s.charCodeAt(i)); };
+    str(0, 'RIFF');
+    dv.setUint32(4, bytes - 8, true);
+    str(8, 'WAVE');
+    str(12, 'fmt ');
+    dv.setUint32(16, 16, true);
+    dv.setUint16(20, 1, true);
+    dv.setUint16(22, chs, true);
+    dv.setUint32(24, sr, true);
+    dv.setUint32(28, sr * chs * 2, true);
+    dv.setUint16(32, chs * 2, true);
+    dv.setUint16(34, 16, true);
+    str(36, 'data');
+    dv.setUint32(40, n * chs * 2, true);
+    const data = Array.from({ length: chs }, (_, c) => buf.getChannelData(c));
+    let o = 44;
+    for (let i = 0; i < n; i++)
+        for (let c = 0; c < chs; c++) {
+            const v = clamp$6(data[c][i], -1, 1);
+            dv.setInt16(o, v < 0 ? v * 0x8000 : v * 0x7fff, true);
+            o += 2;
+        }
+    return new Blob([ab], { type: 'audio/wav' });
+}
+async function encodeAudioBuffer(buf, { bitrate = 48000, onProgress, signal } = {}) {
+    if (typeof MediaRecorder === 'undefined')
+        throw new Error('This browser cannot compress audio.');
+    const Ctx = AC();
+    if (!Ctx)
+        throw new Error('Web Audio is not available in this browser.');
+    const ctx = new Ctx();
+    try {
+        await ctx.resume().catch(() => { });
+        if (ctx.state !== 'running')
+            throw new Error('Audio is blocked until you interact with the page. Tap anywhere, then try again.');
+        const dest = ctx.createMediaStreamDestination(), s = ctx.createBufferSource();
+        s.buffer = buf;
+        s.connect(dest);
+        const mime = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
+        const rec = new MediaRecorder(dest.stream, { ...(mime ? { mimeType: mime } : {}), audioBitsPerSecond: bitrate });
+        const chunks = [];
+        rec.ondataavailable = e => { if (e.data.size)
+            chunks.push(e.data); };
+        const done = new Promise(res => { rec.onstop = () => res(new Blob(chunks, { type: rec.mimeType || mime || 'audio/webm' })); });
+        const t0 = ctx.currentTime;
+        let aborted = false;
+        const tick = window.setInterval(() => onProgress?.(clamp$6((ctx.currentTime - t0) / buf.duration, 0, 0.99)), 200);
+        const stop = () => { window.clearInterval(tick); if (rec.state !== 'inactive')
+            rec.stop(); };
+        s.onended = stop;
+        signal?.addEventListener('abort', () => { aborted = true; try {
+            s.stop();
+        }
+        catch { } stop(); }, { once: true });
+        rec.start(250);
+        s.start();
+        const blob = await done;
+        if (aborted)
+            throw new Error('Cancelled.');
+        onProgress?.(1);
+        return blob;
+    }
+    finally {
+        ctx.close().catch(() => { });
+    }
+}
+async function exportTrimmedAudio(src, edit, opts = {}) {
+    return encodeAudioBuffer(await renderEditedAudio(src, edit), { bitrate: 64000, ...opts });
+}
+async function exportTrimmedWav(src, edit) { return audioBufferToWav(await renderEditedAudio(src, edit)); }
+function paintVideoFrame(g, v, f, W, H, tmp) {
+    const s = W / FRAME_W, vw = v.videoWidth, vh = v.videoHeight, w = vw * f.k * s, h = vh * f.k * s;
+    const k = Math.max(32 / vw, 24 / vh);
+    tmp.getContext('2d').drawImage(v, (32 - vw * k) / 2, (24 - vh * k) / 2, vw * k, vh * k);
+    g.save();
+    if ('filter' in g)
+        g.filter = 'blur(8px)';
+    g.drawImage(tmp, -W * 0.06, -H * 0.06, W * 1.12, H * 1.12);
+    g.restore();
+    g.fillStyle = 'rgba(0,0,0,.15)';
+    g.fillRect(0, 0, W, H);
+    g.save();
+    g.translate(f.x * s, f.y * s);
+    g.scale(f.fx ? -1 : 1, f.fy ? -1 : 1);
+    g.drawImage(v, -w / 2, -h / 2, w, h);
+    g.restore();
+}
+/** Real video export: selection + fades + volume + 4:3 crop frame → WebM via canvas.captureStream. Real time; uploaded clips only. */
+async function exportTrimmedVideo(src, edit, opts = {}) {
+    if (typeof MediaRecorder === 'undefined')
+        throw new Error('This browser cannot export video.');
+    if (!isEmbeddedMedia(src))
+        throw new Error('Exporting an edited video needs an uploaded clip.');
+    const v = document.createElement('video');
+    v.src = playbackSrc(src);
+    v.playsInline = true;
+    v.preload = 'auto';
+    v.muted = false;
+    v.style.cssText = 'position:fixed;left:-9999px;width:2px;height:2px;opacity:0;pointer-events:none';
+    document.body.appendChild(v);
+    let ctx = null;
+    try {
+        const d = await resolveMediaDuration(v);
+        if (!d)
+            throw new Error('Could not read this video.');
+        await new Promise((res, rej) => { if (v.readyState >= 2)
+            return res(); v.addEventListener('loadeddata', () => res(), { once: true }); v.addEventListener('error', () => rej(new Error('Could not read this video.')), { once: true }); });
+        const e = normalizeEdit(edit, d), len = Math.max(MIN_LEN, e.trimEnd - e.trimStart), f = frameFor(edit, v.videoWidth, v.videoHeight);
+        const W = 960, H = 720, canvas = document.createElement('canvas');
+        canvas.width = W;
+        canvas.height = H;
+        const c2 = canvas.getContext('2d');
+        if (!c2)
+            throw new Error('Canvas is not available.');
+        const tmp = document.createElement('canvas');
+        tmp.width = 32;
+        tmp.height = 24;
+        const stream = canvas.captureStream(30);
+        let gain = null;
+        const Ctx = AC();
+        if (!e.muted && Ctx) {
+            ctx = new Ctx();
+            await ctx.resume().catch(() => { });
+            const node = ctx.createMediaElementSource(v);
+            gain = ctx.createGain();
+            const dest = ctx.createMediaStreamDestination();
+            node.connect(gain).connect(dest);
+            dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
+        }
+        else
+            v.muted = true;
+        const mime = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
+        const rec = new MediaRecorder(stream, { ...(mime ? { mimeType: mime } : {}), videoBitsPerSecond: 2500000 });
+        const chunks = [];
+        rec.ondataavailable = ev => { if (ev.data.size)
+            chunks.push(ev.data); };
+        const stopped = new Promise(res => { rec.onstop = () => res(new Blob(chunks, { type: rec.mimeType || mime || 'video/webm' })); });
+        await seekElement(v, e.trimStart);
+        paintVideoFrame(c2, v, f, W, H, tmp);
+        rec.start(500);
+        let raf = 0, aborted = false;
+        const finish = () => { cancelAnimationFrame(raf); v.pause(); if (rec.state !== 'inactive')
+            rec.stop(); };
+        const draw = () => {
+            const t = v.currentTime;
+            paintVideoFrame(c2, v, f, W, H, tmp);
+            if (gain && ctx)
+                gain.gain.setTargetAtTime(levelAt(e, t), ctx.currentTime, 0.01);
+            opts.onProgress?.(clamp$6((t - e.trimStart) / len, 0, 1));
+            if (t >= e.trimEnd - 0.02 || v.ended) {
+                finish();
+                return;
+            }
+            raf = requestAnimationFrame(draw);
+        };
+        opts.signal?.addEventListener('abort', () => { aborted = true; finish(); }, { once: true });
+        await v.play();
+        raf = requestAnimationFrame(draw);
+        const blob = await stopped;
+        if (aborted)
+            throw new Error('Cancelled.');
+        return blob;
+    }
+    finally {
+        v.pause();
+        v.removeAttribute('src');
+        v.load();
+        v.remove();
+        ctx?.close().catch(() => { });
+    }
+}
+function saveBlob(blob, name) {
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+async function downloadOriginal(src, name) {
+    try {
+        const blob = await (await fetch(playbackSrc(src), isEmbeddedMedia(src) ? undefined : { mode: 'cors' })).blob();
+        saveBlob(blob, name);
+    }
+    catch {
+        window.open(src, '_blank', 'noopener');
+    }
+}
+const extFor = (mime, kind) => /mp4/.test(mime) ? (kind === 'audio' ? 'm4a' : 'mp4') : /ogg/.test(mime) ? 'ogg' : /wav/.test(mime) ? 'wav' : 'webm';
+function useClipPlayback(ref, src, edit, opts = {}) {
+    const [duration, setDuration] = reactExports.useState(0), [at, setAt] = reactExports.useState(0), [playing, setPlaying] = reactExports.useState(false), [failed, setFailed] = reactExports.useState(false), [ready, setReady] = reactExports.useState(false);
+    const graph = reactExports.useRef(null);
+    const clip = normalizeEdit(edit, duration);
+    const clipRef = reactExports.useRef(clip);
+    clipRef.current = clip;
+    const durRef = reactExports.useRef(duration);
+    durRef.current = duration;
+    const loopRef = reactExports.useRef(!!opts.loop);
+    loopRef.current = !!opts.loop;
+    const embedded = isEmbeddedMedia(src);
+    const embeddedRef = reactExports.useRef(embedded);
+    embeddedRef.current = embedded;
+    const wantAnalyser = reactExports.useRef(!!opts.analyser);
+    reactExports.useEffect(() => {
+        let cancelled = false;
+        const pollId = window.setInterval(() => {
+            if (cancelled)
+                return;
+            const e = ref.current;
+            if (!e)
+                return;
+            const d = readDuration(e);
+            if (d > 0)
+                setDuration(prev => Math.abs(prev - d) < 0.05 ? prev : d);
+            if (e.readyState >= 2)
+                setReady(true);
+            if (e.error)
+                setFailed(true);
+        }, 200);
+        const stop = window.setTimeout(() => window.clearInterval(pollId), 25000);
+        const el = ref.current;
+        setAt(0);
+        setPlaying(false);
+        setFailed(false);
+        setReady(false);
+        setDuration(opts.durationHint || 0);
+        if (!el) {
+            return () => { cancelled = true; window.clearInterval(pollId); window.clearTimeout(stop); };
+        }
+        const onErr = () => { if (!cancelled && el.error)
+            setFailed(true); };
+        const onReady = () => { if (!cancelled)
+            setReady(true); };
+        el.addEventListener('error', onErr);
+        el.addEventListener('loadeddata', onReady);
+        if (el.readyState >= 2)
+            setReady(true);
+        void resolveMediaDuration(el, embedded ? 8000 : 20000).then(d => {
+            if (cancelled)
+                return;
+            if (d > 0) {
+                setDuration(d);
+                return;
+            }
+            const ready = el.readyState >= 1 && !el.error;
+            if (ready) {
+                const fallback = opts.durationHint || 120;
+                setDuration(prev => prev > 0 ? prev : fallback);
+            }
+            else
+                setFailed(true);
+        });
+        if (embedded && el instanceof HTMLAudioElement) {
+            const run = () => { void decodePeaks(src, 160).then(m => { if (!cancelled && m?.duration)
+                setDuration(prev => prev || m.duration); }); };
+            if (typeof requestIdleCallback !== 'undefined')
+                requestIdleCallback(run, { timeout: 2500 });
+            else
+                window.setTimeout(run, 120);
+        }
+        return () => {
+            cancelled = true;
+            el.removeEventListener('error', onErr);
+            el.removeEventListener('loadeddata', onReady);
+            window.clearInterval(pollId);
+            window.clearTimeout(stop);
+            el.pause();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [src]);
+    reactExports.useEffect(() => { if (opts.durationHint)
+        setDuration(p => p || opts.durationHint); }, [opts.durationHint]);
+    reactExports.useEffect(() => () => { graph.current?.ctx.close().catch(() => { }); graph.current = null; }, []);
+    const ensureGraph = reactExports.useCallback(() => {
+        const el = ref.current;
+        if (!el || !embeddedRef.current)
+            return null;
+        if (graph.current && graph.current.el !== el) {
+            graph.current.ctx.close().catch(() => { });
+            graph.current = null;
+        }
+        if (graph.current)
+            return graph.current;
+        try {
+            const Ctx = AC();
+            if (!Ctx)
+                return null;
+            const ctx = new Ctx(), node = ctx.createMediaElementSource(el), gain = ctx.createGain();
+            let analyser;
+            if (wantAnalyser.current) {
+                analyser = ctx.createAnalyser();
+                analyser.fftSize = 128;
+                analyser.smoothingTimeConstant = 0.7;
+            }
+            node.connect(gain);
+            if (analyser) {
+                gain.connect(analyser);
+                analyser.connect(ctx.destination);
+            }
+            else
+                gain.connect(ctx.destination);
+            el.volume = 1;
+            el.muted = false;
+            graph.current = { el, ctx, gain, analyser };
+        }
+        catch {
+            graph.current = null;
+        }
+        return graph.current;
+    }, [ref]);
+    const applyLevel = reactExports.useCallback((t) => {
+        const el = ref.current;
+        if (!el)
+            return;
+        const c = clipRef.current, lvl = levelAt(c, t), g = graph.current;
+        if (g && g.el === el) {
+            g.gain.gain.setTargetAtTime(lvl, g.ctx.currentTime, 0.015);
+            el.muted = false;
+            el.volume = 1;
+        }
+        else {
+            el.muted = c.muted;
+            try {
+                el.volume = clamp$6(lvl, 0, 1);
+            }
+            catch { }
+        }
+    }, [ref]);
+    reactExports.useEffect(() => { const el = ref.current; if (el)
+        applyLevel(el.currentTime); }, [clip.muted, clip.volume, clip.gain, clip.fadeIn, clip.fadeOut, clip.trimStart, clip.trimEnd, applyLevel, ref]);
+    reactExports.useEffect(() => {
+        let cancelled = false, raf = 0, last = -1, bound = null, pollId = 0, stopId = 0;
+        const visAt = (t) => { const c = clipRef.current; return clamp$6(t, c.trimStart, c.trimEnd); };
+        const step = () => {
+            if (cancelled || !bound)
+                return;
+            const el = bound, c = clipRef.current;
+            let t = el.currentTime;
+            if (durRef.current && t < c.trimStart - 0.01) {
+                try {
+                    el.currentTime = c.trimStart;
+                    t = c.trimStart;
+                }
+                catch { }
+            }
+            applyLevel(t);
+            setPlaying(!el.paused);
+            const vis = visAt(t);
+            if (!el.paused || Math.abs(vis - last) > 0.03) {
+                last = vis;
+                setAt(vis);
+            }
+            if (durRef.current && t >= c.trimEnd - 0.03) {
+                if (loopRef.current) {
+                    el.currentTime = c.trimStart;
+                    last = c.trimStart;
+                    setAt(c.trimStart);
+                }
+                else {
+                    el.pause();
+                    el.currentTime = c.trimStart;
+                    setAt(c.trimStart);
+                    setPlaying(false);
+                    return;
+                }
+            }
+            if (!el.paused)
+                raf = requestAnimationFrame(step);
+        };
+        const onPlay = () => { if (cancelled || !bound)
+            return; const c = clipRef.current, e = bound; if (durRef.current && e.currentTime < c.trimStart - 0.01)
+            try {
+                e.currentTime = c.trimStart;
+            }
+            catch { } setPlaying(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(step); };
+        const onPause = () => { if (cancelled)
+            return; setPlaying(false); cancelAnimationFrame(raf); if (bound) {
+            const v = visAt(bound.currentTime);
+            last = v;
+            setAt(v);
+        } };
+        const onEnded = () => { if (cancelled || !bound)
+            return; setPlaying(false); cancelAnimationFrame(raf); const c = clipRef.current; bound.currentTime = c.trimStart; last = c.trimStart; setAt(c.trimStart); };
+        const onTime = () => { if (cancelled || !bound || !bound.paused)
+            return; const v = visAt(bound.currentTime); last = v; setAt(v); };
+        const detach = () => {
+            if (!bound)
+                return;
+            const el = bound;
+            bound = null;
+            cancelAnimationFrame(raf);
+            el.removeEventListener('play', onPlay);
+            el.removeEventListener('pause', onPause);
+            el.removeEventListener('ended', onEnded);
+            el.removeEventListener('timeupdate', onTime);
+        };
+        const attach = () => {
+            const el = ref.current;
+            if (!el || el === bound)
+                return !!el;
+            detach();
+            bound = el;
+            el.addEventListener('play', onPlay);
+            el.addEventListener('pause', onPause);
+            el.addEventListener('ended', onEnded);
+            el.addEventListener('timeupdate', onTime);
+            if (!el.paused)
+                onPlay();
+            else {
+                const v = visAt(el.currentTime);
+                last = v;
+                setAt(v);
+            }
+            return true;
+        };
+        if (!attach())
+            pollId = window.setInterval(() => { if (attach())
+                window.clearInterval(pollId); }, 150);
+        stopId = window.setTimeout(() => window.clearInterval(pollId), 30000);
+        return () => {
+            cancelled = true;
+            window.clearInterval(pollId);
+            window.clearTimeout(stopId);
+            detach();
+        };
+    }, [src, applyLevel, ref]);
+    const seek = reactExports.useCallback((t, free = false) => {
+        const el = ref.current;
+        if (!el)
+            return;
+        const c = clipRef.current, d = durRef.current;
+        const next = d ? (free ? clamp$6(t, 0, d) : clamp$6(t, c.trimStart, c.trimEnd)) : Math.max(0, t);
+        try {
+            el.currentTime = next;
+        }
+        catch { }
+        setAt(next);
+        applyLevel(next);
+    }, [applyLevel, ref]);
+    const play = reactExports.useCallback(() => {
+        const el = ref.current;
+        if (!el)
+            return;
+        const c = clipRef.current, d = durRef.current;
+        setFailed(false);
+        if (d && (el.currentTime < c.trimStart - 0.01 || el.currentTime >= c.trimEnd - 0.05)) {
+            try {
+                el.currentTime = c.trimStart;
+            }
+            catch { }
+        }
+        const g = ensureGraph();
+        applyLevel(el.currentTime);
+        const p = el.play();
+        if (g && g.ctx.state !== 'running')
+            void g.ctx.resume().catch(() => { });
+        if (p && typeof p.catch === 'function')
+            p.catch((e) => { if (e?.name !== 'AbortError' && e?.name !== 'NotAllowedError')
+                setFailed(true); });
+    }, [applyLevel, ensureGraph, ref]);
+    const pause = reactExports.useCallback(() => { ref.current?.pause(); }, [ref]);
+    const toggle = reactExports.useCallback(() => { const el = ref.current; if (!el)
+        return; if (el.paused)
+        play();
+    else
+        el.pause(); }, [play, ref]);
+    const levels = reactExports.useCallback((bars) => {
+        const g = graph.current;
+        if (!g?.analyser)
+            return null;
+        const data = g.data || (g.data = new Uint8Array(g.analyser.frequencyBinCount));
+        g.analyser.getByteFrequencyData(data);
+        const step = Math.max(1, Math.floor(data.length / bars));
+        return Array.from({ length: bars }, (_, i) => { let s = 0; for (let j = 0; j < step; j++)
+            s += data[i * step + j] || 0; return s / step / 255; });
+    }, []);
+    return { duration, at, playing, failed, ready, clip, seek, play, pause, toggle, levels };
+}
+/* ───────────────────────── timeline strip (waveform / filmstrip) ───────────────────────── */
+async function extractFrames(src, duration, count, height, signal, onFrame) {
+    const v = document.createElement('video');
+    v.src = playbackSrc(src);
+    v.muted = true;
+    v.playsInline = true;
+    v.preload = 'auto';
+    try {
+        await new Promise((res, rej) => { const t = window.setTimeout(() => rej(new Error('timeout')), 15000); v.addEventListener('loadeddata', () => { window.clearTimeout(t); res(); }, { once: true }); v.addEventListener('error', () => { window.clearTimeout(t); rej(new Error('error')); }, { once: true }); });
+        const ratio = v.videoWidth && v.videoHeight ? v.videoWidth / v.videoHeight : 16 / 9, w = Math.max(8, Math.round(height * ratio));
+        for (let i = 0; i < count && !signal.aborted; i++) {
+            await seekElement(v, Math.min(Math.max(0, duration - 0.05), (i + 0.5) / count * duration));
+            if (signal.aborted)
+                break;
+            const c = document.createElement('canvas');
+            c.width = w;
+            c.height = height;
+            c.getContext('2d')?.drawImage(v, 0, 0, w, height);
+            onFrame(c);
+        }
+    }
+    catch { }
+    finally {
+        v.removeAttribute('src');
+        v.load();
+    }
+}
+function useStrip(canvas, src, kind, duration, peaks) {
+    const frames = reactExports.useRef([]);
+    const drawRef = reactExports.useRef(() => { });
+    drawRef.current = () => {
+        const c = canvas.current;
+        if (!c)
+            return;
+        const dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
+        if (!w || !h)
+            return;
+        const W = Math.round(w * dpr), H = Math.round(h * dpr);
+        if (c.width !== W || c.height !== H) {
+            c.width = W;
+            c.height = H;
+        }
+        const g = c.getContext('2d');
+        if (!g)
+            return;
+        g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        g.clearRect(0, 0, w, h);
+        const fr = frames.current;
+        if (fr.length) {
+            const fw = w / fr.length;
+            fr.forEach((f, i) => g.drawImage(f, i * fw, 0, fw + 0.5, h));
+        }
+        if (peaks && peaks.length) {
+            const n = peaks.length, bw = w / n, video = kind === 'video', mid = video ? h * 0.78 : h / 2, amp = video ? h * 0.2 : h * 0.46;
+            g.fillStyle = '#a99cff';
+            g.globalAlpha = video ? 0.85 : 1;
+            for (let i = 0; i < n; i++) {
+                const bh = Math.max(1, peaks[i] * amp);
+                g.fillRect(i * bw + bw * 0.2, mid - bh, Math.max(1, bw * 0.6), bh * 2);
+            }
+            g.globalAlpha = 1;
+        }
+    };
+    reactExports.useEffect(() => {
+        frames.current = [];
+        drawRef.current();
+        if (kind !== 'video' || !duration)
+            return;
+        const ac = new AbortController();
+        void extractFrames(src, duration, 10, 56, ac.signal, f => { frames.current = [...frames.current, f]; drawRef.current(); });
+        return () => ac.abort();
+    }, [src, kind, duration]);
+    reactExports.useEffect(() => {
+        drawRef.current();
+        const c = canvas.current;
+        if (!c || typeof ResizeObserver === 'undefined')
+            return;
+        const ro = new ResizeObserver(() => drawRef.current());
+        ro.observe(c);
+        return () => ro.disconnect();
+    }, [peaks, kind, canvas]);
+}
+/** Big waveform for the audio stage: dim outside the selection, playhead on top. */
+function useWaveStage(canvas, peaks, duration, start, end, at) {
+    reactExports.useEffect(() => {
+        const c = canvas.current;
+        if (!c)
+            return;
+        const dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
+        if (!w || !h)
+            return;
+        const W = Math.round(w * dpr), H = Math.round(h * dpr);
+        if (c.width !== W || c.height !== H) {
+            c.width = W;
+            c.height = H;
+        }
+        const g = c.getContext('2d');
+        if (!g)
+            return;
+        g.setTransform(dpr, 0, 0, dpr, 0, 0);
+        g.clearRect(0, 0, w, h);
+        const p = peaks && peaks.length ? peaks : Array.from({ length: 120 }, (_, i) => 0.2 + 0.1 * Math.abs(Math.sin(i * 0.7)));
+        const n = p.length, bw = w / n, mid = h / 2, amp = h * 0.42, a = duration ? start / duration : 0, b = duration ? end / duration : 1;
+        for (let i = 0; i < n; i++) {
+            const f = (i + 0.5) / n;
+            g.fillStyle = f >= a && f <= b ? '#b5aaff' : '#4c4870';
+            const bh = Math.max(1.5, p[i] * amp);
+            g.fillRect(i * bw + bw * 0.2, mid - bh, Math.max(1, bw * 0.6), bh * 2);
+        }
+        if (duration) {
+            const t = clamp$6(at, start, end), x = clamp$6(t / duration, 0, 1) * w;
+            g.fillStyle = '#fff';
+            g.fillRect(x - 1, 0, 2, h);
+        }
+    }, [canvas, peaks, duration, start, end, at]);
+}
+const bubbleStyle = (pct) => pct < 9 ? { left: 0, transform: 'none' } : pct > 91 ? { right: 0, left: 'auto', transform: 'none' } : { left: `${pct}%`, transform: 'translateX(-50%)' };
+function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplace, saveMode = 'edits', maxSeconds, fileName, durationHint }) {
+    const media = reactExports.useRef(null);
+    const stageEl = reactExports.useRef(null), frameEl = reactExports.useRef(null), strip = reactExports.useRef(null), waveStage = reactExports.useRef(null), root = reactExports.useRef(null);
+    const [edit, setEdit] = reactExports.useState(initial);
+    const [tab, setTab] = reactExports.useState(kind === 'video' ? 'crop' : 'trim');
+    const [loop, setLoop] = reactExports.useState(false), [dragging, setDragging] = reactExports.useState(null), [menu, setMenu] = reactExports.useState(false), [moving, setMoving] = reactExports.useState(false), [slow, setSlow] = reactExports.useState(false);
+    const [size, setSize] = reactExports.useState({ w: 0, h: 0 });
+    const [job, setJob] = reactExports.useState(null);
+    const jobAbort = reactExports.useRef(null);
+    const [note, setNote] = reactExports.useState(null);
+    const [peaksInfo, setPeaksInfo] = reactExports.useState(undefined);
+    const pb = useClipPlayback(media, src, edit, { loop, durationHint });
+    const { duration, at, playing, failed } = pb;
+    const dims = useVideoDims(media, kind === 'video' ? src : '');
+    const e = normalizeEdit(edit, duration);
+    const frame = frameFor(edit, dims.w, dims.h);
+    const embedded = isEmbeddedMedia(src), drive = !embedded && (!!driveFileId(src) || isDriveLink(src));
+    const len = Math.max(0, e.trimEnd - e.trimStart), tooLong = !!maxSeconds && len > maxSeconds + 0.5;
+    const canBake = kind === 'audio' && embedded && !!onReplace, bakeMode = saveMode === 'bake' && canBake;
+    const canRender = !!peaksInfo, canExportVideo = embedded && typeof MediaRecorder !== 'undefined';
+    const stem = (fileName || kind).replace(/\.[a-z0-9]+$/i, '') || 'clip';
+    const ratio = kind === 'video' ? FRAME_W / FRAME_H : 2;
+    useStrip(strip, src, kind, duration, peaksInfo?.peaks ?? null);
+    useWaveStage(waveStage, kind === 'audio' ? (peaksInfo?.peaks ?? null) : null, duration, e.trimStart, e.trimEnd, at);
+    reactExports.useEffect(() => {
+        let c = false;
+        setPeaksInfo(undefined);
+        if (kind === 'video') {
+            setPeaksInfo(null);
+            return () => { c = true; };
+        }
+        const run = () => { void decodePeaks(src, 160).then(p => { if (!c)
+            setPeaksInfo(p); }); };
+        if (typeof requestIdleCallback !== 'undefined') {
+            const id = requestIdleCallback(run, { timeout: 3000 });
+            return () => { c = true; cancelIdleCallback(id); };
+        }
+        const t = window.setTimeout(run, 150);
+        return () => { c = true; window.clearTimeout(t); };
+    }, [src, kind]);
+    reactExports.useEffect(() => { setSlow(false); if (duration || failed || durationHint)
+        return; const t = window.setTimeout(() => setSlow(true), 5000); return () => window.clearTimeout(t); }, [duration, failed, durationHint, src]);
+    reactExports.useEffect(() => { const el = stageEl.current; if (!el)
+        return; const measure = () => { const b = el.getBoundingClientRect(), aw = Math.max(0, b.width - 24), ah = Math.max(0, b.height - 24), w = Math.min(aw, ah * ratio); setSize({ w: Math.floor(w), h: Math.floor(w / ratio) }); }; measure(); const o = new ResizeObserver(measure); o.observe(el); return () => o.disconnect(); }, [ratio]);
+    reactExports.useEffect(() => { if (!note)
+        return; const t = window.setTimeout(() => setNote(null), 5000); return () => window.clearTimeout(t); }, [note]);
+    const cancelRef = reactExports.useRef(() => { });
+    cancelRef.current = () => { jobAbort.current?.abort(); onCancel(); };
+    reactExports.useEffect(() => {
+        const prev = document.activeElement, ov = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        root.current?.focus({ preventScroll: true });
+        try {
+            history.pushState({ rfClipEditor: true }, '');
+        }
+        catch { }
+        const onPop = () => cancelRef.current();
+        window.addEventListener('popstate', onPop);
+        return () => { window.removeEventListener('popstate', onPop); if (history.state?.rfClipEditor) {
+            try {
+                history.back();
+            }
+            catch { }
+        } document.body.style.overflow = ov; prev?.focus?.(); };
+    }, []);
+    const flash = (text, k = 'info') => setNote({ text, kind: k });
+    /* edits */
+    const patch = (p, sound = false) => { setEdit(prev => ({ ...normalizeEdit(prev, duration), ...p })); if (sound)
+        playPreset('tick'); };
+    const setStart = (t) => patch({ trimStart: clamp$6(t, 0, e.trimEnd - MIN_LEN) }, true);
+    const setEnd = (t) => patch({ trimEnd: clamp$6(t, e.trimStart + MIN_LEN, duration) }, true);
+    const setFrame = (f) => { if (!dims.w)
+        return; patch({ frame: limitFrame(f, dims.w, dims.h) }); };
+    function normalize() {
+        if (!peaksInfo || !duration)
+            return;
+        const pk = peakWithin(peaksInfo, e.trimStart / duration, e.trimEnd / duration);
+        if (!pk) {
+            flash('This selection is silent.');
+            return;
+        }
+        const g = Math.round(clamp$6(0.9 / pk, 0.25, 4) * 100) / 100;
+        patch({ gain: g, volume: 1, muted: false });
+        flash(g > 1.02 ? `Boosted ${g.toFixed(1)}×` : g < 0.98 ? `Lowered to ${g.toFixed(1)}×` : 'Already at a good level.');
+    }
+    const resetTab = () => {
+        if (tab === 'crop')
+            patch({ frame: undefined });
+        else if (tab === 'trim')
+            patch({ trimStart: 0, trimEnd: duration });
+        else if (tab === 'sound')
+            patch({ muted: false, volume: 1, gain: 1 });
+        else
+            patch({ fadeIn: 0, fadeOut: 0 });
+    };
+    const tabIsDefault = tab === 'crop' ? (!dims.w || frameIsDefault(frame, dims.w, dims.h)) : tab === 'trim' ? (e.trimStart <= 0.01 && Math.abs(e.trimEnd - duration) <= 0.05) : tab === 'sound' ? (!e.muted && e.volume === 1 && e.gain === 1) : (e.fadeIn === 0 && e.fadeOut === 0);
+    /* timeline interaction */
+    const stripBox = reactExports.useRef(null), drag = reactExports.useRef(null);
+    const tAt = (x) => { const r = stripBox.current?.getBoundingClientRect(); if (!r || !duration)
+        return 0; return clamp$6((x - r.left) / r.width, 0, 1) * duration; };
+    function tlDown(k, ev) {
+        if (!duration || (ev.button && ev.button !== 0))
+            return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        try {
+            ev.currentTarget.setPointerCapture(ev.pointerId);
+        }
+        catch { }
+        const t0 = tAt(ev.clientX);
+        drag.current = { kind: k, x0: ev.clientX, base: e, t0, moved: false };
+        setDragging(k);
+        if (k === 'seek' || k === 'move')
+            pb.seek(t0, true);
+        else {
+            pb.pause();
+            pb.seek(k === 'start' ? e.trimStart : e.trimEnd, true);
+        }
+    }
+    function tlMove(ev) {
+        const d = drag.current;
+        if (!d)
+            return;
+        const t = tAt(ev.clientX);
+        if (Math.abs(ev.clientX - d.x0) > 5)
+            d.moved = true;
+        if (d.kind === 'seek') {
+            pb.seek(t, true);
+            return;
+        }
+        const span = d.base.trimEnd - d.base.trimStart, full = duration - span < 0.05;
+        if (d.kind === 'move' && (full || !d.moved)) {
+            pb.seek(t, true);
+            if (full)
+                return;
+        }
+        let next;
+        if (d.kind === 'start')
+            next = { ...d.base, trimStart: Math.min(t, d.base.trimEnd - MIN_LEN) };
+        else if (d.kind === 'end')
+            next = { ...d.base, trimEnd: Math.max(t, d.base.trimStart + MIN_LEN) };
+        else {
+            const w = stripBox.current?.getBoundingClientRect().width || 1, dt = (ev.clientX - d.x0) / w * duration, l = d.base.trimEnd - d.base.trimStart, s = clamp$6(d.base.trimStart + dt, 0, duration - l);
+            next = { ...d.base, trimStart: s, trimEnd: s + l };
+        }
+        const n = normalizeEdit(next, duration);
+        setEdit(n);
+        pb.seek(d.kind === 'end' ? n.trimEnd : n.trimStart, true);
+    }
+    function tlUp(ev) {
+        const d = drag.current;
+        if (!d)
+            return;
+        if ((d.kind === 'move' || d.kind === 'seek') && !d.moved)
+            pb.seek(d.t0, true);
+        drag.current = null;
+        setDragging(null);
+        try {
+            ev.target.releasePointerCapture(ev.pointerId);
+        }
+        catch { }
+        if (d.kind !== 'seek' && d.moved)
+            playPreset('tick');
+    }
+    function handleKey(which, ev) {
+        const step = ev.shiftKey ? 1 : 0.1, dir = ev.key === 'ArrowLeft' || ev.key === 'ArrowDown' ? -1 : ev.key === 'ArrowRight' || ev.key === 'ArrowUp' ? 1 : 0;
+        if (!dir)
+            return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (which === 'start')
+            setStart(e.trimStart + dir * step);
+        else
+            setEnd(e.trimEnd + dir * step);
+    }
+    /* crop gesture (same maths as ImageEditor) */
+    const pointers = reactExports.useRef(new Map()), gesture = reactExports.useRef(null), movedRef = reactExports.useRef(false);
+    const toOutput = (cx, cy) => { const b = frameEl.current.getBoundingClientRect(); return { x: (cx - b.left) * FRAME_W / b.width, y: (cy - b.top) * FRAME_H / b.height }; };
+    function startGesture() { const pts = [...pointers.current.values()]; if (!pts.length) {
+        gesture.current = null;
+        return;
+    } const x = pts.reduce((s, p) => s + p.x, 0) / pts.length, y = pts.reduce((s, p) => s + p.y, 0) / pts.length; gesture.current = { f: frame, x, y, dist: pts.length > 1 ? Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) : 0 }; }
+    function cropDown(ev) { if (tab !== 'crop' || !dims.w)
+        return; ev.preventDefault(); try {
+        ev.currentTarget.setPointerCapture(ev.pointerId);
+    }
+    catch { } pointers.current.set(ev.pointerId, { x: ev.clientX, y: ev.clientY }); movedRef.current = false; startGesture(); setMoving(true); }
+    function cropMove(ev) {
+        const g = gesture.current;
+        if (!g || !dims.w || !pointers.current.has(ev.pointerId))
+            return;
+        pointers.current.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+        const pts = [...pointers.current.values()], b = frameEl.current.getBoundingClientRect(), scale = FRAME_W / b.width;
+        const mx = pts.reduce((s, p) => s + p.x, 0) / pts.length, my = pts.reduce((s, p) => s + p.y, 0) / pts.length;
+        if (Math.abs(mx - g.x) + Math.abs(my - g.y) > 3)
+            movedRef.current = true;
+        let next = { ...g.f, x: g.f.x + (mx - g.x) * scale, y: g.f.y + (my - g.y) * scale };
+        if (pts.length > 1 && g.dist) {
+            const k = clamp$6(g.f.k * Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) / g.dist, fitK$1(dims.w, dims.h), maxK$1(dims.w, dims.h)), o = toOutput(mx, my);
+            next = zoomAround$1(next, k, o.x, o.y);
+        }
+        setFrame(next);
+    }
+    function cropUp(ev) { pointers.current.delete(ev.pointerId); startGesture(); if (!pointers.current.size) {
+        setMoving(false);
+        if (!movedRef.current)
+            pb.toggle();
+    } }
+    function wheel(ev) { if (tab !== 'crop' || !dims.w)
+        return; const o = toOutput(ev.clientX, ev.clientY); setFrame(zoomAround$1(frame, clamp$6(frame.k * Math.exp(-ev.deltaY * .0015), fitK$1(dims.w, dims.h), maxK$1(dims.w, dims.h)), o.x, o.y)); }
+    const zoomTo = (k) => { if (!dims.w)
+        return; setFrame(zoomAround$1(frame, clamp$6(k, fitK$1(dims.w, dims.h), maxK$1(dims.w, dims.h)), FRAME_W / 2, FRAME_H / 2)); };
+    const lo = dims.w ? fitK$1(dims.w, dims.h) : 1, hi = dims.w ? maxK$1(dims.w, dims.h) : 1, level = dims.w && hi > lo ? Math.log(frame.k / lo) / Math.log(hi / lo) : 0;
+    const mode = dims.w ? (Math.abs(frame.k - lo) < 1e-6 ? 'fit' : Math.abs(frame.k - fillK$1(dims.w, dims.h)) < 1e-6 ? 'fill' : '') : '';
+    function onKey(ev) {
+        const tag = ev.target.tagName;
+        if (ev.key === 'Escape') {
+            ev.preventDefault();
+            cancel();
+            return;
+        }
+        if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA')
+            return;
+        if (ev.key === ' ' && tag !== 'BUTTON') {
+            ev.preventDefault();
+            pb.toggle();
+        }
+        else if (ev.key === 'ArrowLeft' && tab !== 'crop') {
+            ev.preventDefault();
+            pb.seek(at - (ev.shiftKey ? 5 : 1), true);
+        }
+        else if (ev.key === 'ArrowRight' && tab !== 'crop') {
+            ev.preventDefault();
+            pb.seek(at + (ev.shiftKey ? 5 : 1), true);
+        }
+        else if (ev.key.toLowerCase() === 'i' && duration)
+            setStart(at);
+        else if (ev.key.toLowerCase() === 'o' && duration)
+            setEnd(at);
+        else if (ev.key.toLowerCase() === 'l')
+            setLoop(v => !v);
+    }
+    /* jobs */
+    async function run(label, fn) {
+        if (job)
+            return;
+        const ac = new AbortController();
+        jobAbort.current = ac;
+        setJob({ label, progress: 0 });
+        pb.pause();
+        setMenu(false);
+        try {
+            await fn(ac.signal, p => setJob(j => j && { ...j, progress: p }));
+        }
+        catch (err) {
+            if (!ac.signal.aborted)
+                flash(err?.message || 'That did not work.', 'error');
+        }
+        finally {
+            setJob(null);
+            jobAbort.current = null;
+        }
+    }
+    const exportWav = () => run('Rendering…', async () => { saveBlob(await exportTrimmedWav(src, e), `${stem}-edited.wav`); flash('WAV saved.'); });
+    const exportWebm = () => run('Compressing…', async (signal, progress) => { const blob = await exportTrimmedAudio(src, e, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'audio')}`); flash('Edited clip saved.'); });
+    const exportVideo = () => run('Exporting video… keep this tab visible', async (signal, progress) => { const blob = await exportTrimmedVideo(src, edit, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'video')}`); flash('Edited video saved.'); });
+    const bake = () => {
+        if (!onReplace)
+            return;
+        if (tooLong) {
+            flash(`Keep the selection under ${fmtTime(maxSeconds)}.`, 'error');
+            return;
+        }
+        void run('Compressing…', async (signal, progress) => {
+            const buf = await renderEditedAudio(src, e, { mono: true, sampleRate: 24000 });
+            const blob = await encodeAudioBuffer(buf, { bitrate: 40000, onProgress: progress, signal });
+            await onReplace(await blobToDataUrl(blob), buf.duration);
+            playPreset('go');
+        });
+    };
+    function done() {
+        if (job)
+            return;
+        if (bakeMode) {
+            bake();
+            return;
+        }
+        playPreset('go');
+        const out = { ...e };
+        if (!out.frame || !dims.w || frameIsDefault(frameFor(out, dims.w, dims.h), dims.w, dims.h))
+            delete out.frame;
+        else
+            out.frame = frameFor(out, dims.w, dims.h);
+        onSave(editIsDefault(out, duration) ? undefined : out);
+    }
+    function cancel() { jobAbort.current?.abort(); onCancel(); }
+    /* render */
+    const left = duration ? e.trimStart / duration * 100 : 0, right = duration ? e.trimEnd / duration * 100 : 100;
+    const showStartBubble = dragging === 'start' || dragging === 'move' || e.trimStart > 0.05, showEndBubble = dragging === 'end' || dragging === 'move' || (duration > 0 && e.trimEnd < duration - 0.05);
+    const vol = Math.round((e.muted ? 0 : e.volume) * 100), maxFade = Math.max(0.1, Math.min(10, len / 2));
+    const selFmt = len < 10 ? fmtFine : fmtTime;
+    const tabs = [...(kind === 'video' ? [{ id: 'crop', label: 'Crop', icon: React.createElement(Crop, { size: 14 }) }] : []), { id: 'trim', label: 'Trim', icon: React.createElement(Scissors, { size: 14 }) }, { id: 'sound', label: 'Sound', icon: React.createElement(Volume2, { size: 14 }) }, { id: 'fades', label: 'Fades', icon: React.createElement(AudioLines, { size: 14 }) }];
+    const hint = job ? '' : bakeMode ? `Pick up to ${fmtTime(maxSeconds || 60)} — only the selection is kept` : tab === 'crop' ? 'Drag to move · pinch or slide to zoom · tap to play' : tab === 'trim' ? (dragging ? `Release to set ${dragging === 'start' ? 'the start' : dragging === 'end' ? 'the end' : 'the selection'}` : 'Press the timeline to move the playhead · drag the handles to trim') : tab === 'sound' ? (e.gain !== 1 ? `${e.gain > 1 ? 'Boosted' : 'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports` : 'Volume applies when the question plays') : 'Fades are shown on the timeline';
+    const sq = (icon, label, onClick, o = {}) => React.createElement("button", { type: "button", disabled: o.disabled, "aria-pressed": o.on, "aria-label": o.aria, onClick: onClick },
+        icon,
+        React.createElement("span", null, label));
+    return reactDomExports.createPortal(React.createElement("div", { ref: root, className: "me", role: "dialog", "aria-modal": "true", "aria-labelledby": "me-title", "data-kind": kind, tabIndex: -1, onKeyDown: onKey },
+        React.createElement("header", { className: "me-head" },
+            React.createElement("button", { type: "button", "aria-label": "Cancel", onClick: cancel },
+                React.createElement(X, { size: 20 })),
+            React.createElement("h2", { id: "me-title" },
+                kind === 'video' ? React.createElement(Crop, { size: 17 }) : React.createElement(AudioLines, { size: 17 }),
+                title),
+            React.createElement("button", { type: "button", className: "me-done", disabled: !!job || (bakeMode && (!duration || tooLong)), onClick: done },
+                job ? React.createElement(LoaderCircle, { size: 16, className: "speech-spinner" }) : bakeMode ? React.createElement(Save, { size: 16 }) : React.createElement(Check, { size: 16 }),
+                bakeMode ? 'Use clip' : 'Done')),
+        React.createElement("div", { className: "me-stage", ref: stageEl }, size.w > 0 && React.createElement("div", { ref: frameEl, className: `me-frame${moving ? ' is-moving' : ''}${tab === 'crop' ? ' is-crop' : ''}`, style: { width: size.w, height: size.h }, role: "application", "aria-label": kind === 'video' ? 'Video frame. Drag to move, pinch or use the slider to zoom' : 'Waveform', onPointerDown: kind === 'video' ? cropDown : undefined, onPointerMove: kind === 'video' ? cropMove : undefined, onPointerUp: kind === 'video' ? cropUp : undefined, onPointerCancel: kind === 'video' ? cropUp : undefined, onWheel: kind === 'video' ? wheel : undefined, onDoubleClick: () => { if (tab === 'crop' && dims.w)
+                setFrame(centredFrame(mode === 'fill' ? lo : fillK$1(dims.w, dims.h))); } },
+            kind === 'video'
+                ? React.createElement(VideoFrame, { ref: media, src: src, frame: frame, dims: dims, playing: playing, preload: embedded ? 'auto' : 'metadata' }, tab === 'crop' && React.createElement("span", { className: "me-grid", "aria-hidden": "true" }))
+                : React.createElement(React.Fragment, null,
+                    React.createElement("audio", { key: src, ref: media, src: playbackSrc(src), preload: embedded ? 'auto' : 'metadata', hidden: true }),
+                    React.createElement("canvas", { ref: waveStage, className: "me-wave", onClick: pb.toggle, "aria-hidden": "true" })),
+            !playing && duration > 0 && !failed && React.createElement("button", { type: "button", className: "me-playbig", "aria-label": "Play selection", onClick: ev => { ev.stopPropagation(); pb.play(); }, onPointerDown: ev => ev.stopPropagation() },
+                React.createElement(Play, { size: 22, fill: "currentColor" })),
+            playing && React.createElement("button", { type: "button", className: "me-playbig is-pause", "aria-label": "Pause", onClick: ev => { ev.stopPropagation(); pb.pause(); }, onPointerDown: ev => ev.stopPropagation() },
+                React.createElement(Pause, { size: 20, fill: "currentColor" })),
+            duration > 0 && React.createElement("span", { className: "me-badge" },
+                selFmt(clamp$6(at - e.trimStart, 0, len)),
+                " / ",
+                selFmt(len)),
+            !duration && !failed && React.createElement("div", { className: "me-state" },
+                React.createElement(LoaderCircle, { size: 22, className: "speech-spinner" }),
+                React.createElement("span", null, slow ? 'Still loading — large file or slow link…' : 'Loading clip…')),
+            failed && React.createElement("div", { className: "me-state is-error" },
+                React.createElement(CircleAlert, { size: 20 }),
+                React.createElement("span", null,
+                    "This clip could not be loaded.",
+                    drive ? ' Google Drive links need "Anyone with the link" sharing — or upload the file instead.' : ''),
+                !embedded && React.createElement("a", { href: src, target: "_blank", rel: "noreferrer" },
+                    React.createElement(ExternalLink, { size: 14 }),
+                    "Open link")))),
+        React.createElement("div", { className: "me-tools" },
+            tab === 'crop' && React.createElement(React.Fragment, null,
+                React.createElement("div", { className: "me-zoom" },
+                    React.createElement("button", { type: "button", "aria-label": "Zoom out", disabled: !dims.w || frame.k <= lo + 1e-6, onClick: () => zoomTo(frame.k / 1.25) },
+                        React.createElement(ZoomOut, { size: 18 })),
+                    React.createElement("input", { type: "range", min: 0, max: 1000, step: 1, "aria-label": "Zoom", disabled: !dims.w || hi <= lo, value: Math.round(level * 1000), onChange: ev => zoomTo(lo * Math.exp(Number(ev.target.value) / 1000 * Math.log(hi / lo))) }),
+                    React.createElement("button", { type: "button", "aria-label": "Zoom in", disabled: !dims.w || frame.k >= hi - 1e-6, onClick: () => zoomTo(frame.k * 1.25) },
+                        React.createElement(ZoomIn, { size: 18 }))),
+                React.createElement("div", { className: "me-pills", role: "radiogroup", "aria-label": "Video size" },
+                    React.createElement("button", { type: "button", role: "radio", "aria-checked": mode === 'fit', disabled: !dims.w, onClick: () => setFrame(centredFrame(lo, { fx: frame.fx, fy: frame.fy })) },
+                        React.createElement(Shrink, { size: 15 }),
+                        "Whole video"),
+                    React.createElement("button", { type: "button", role: "radio", "aria-checked": mode === 'fill', disabled: !dims.w, onClick: () => dims.w && setFrame(centredFrame(fillK$1(dims.w, dims.h), { fx: frame.fx, fy: frame.fy })) },
+                        React.createElement(Expand, { size: 15 }),
+                        "Fill frame"))),
+            tab === 'trim' && React.createElement("div", { className: "me-timeline" },
+                React.createElement("div", { ref: stripBox, className: `me-strip${dragging ? ' is-dragging' : ''}${!duration && !failed ? ' is-loading' : ''}`, onPointerMove: tlMove, onPointerUp: tlUp, onPointerCancel: tlUp },
+                    React.createElement("canvas", { ref: strip, className: "me-strip-canvas", "aria-hidden": "true" }),
+                    duration > 0 && React.createElement(React.Fragment, null,
+                        React.createElement("div", { className: "me-track", onPointerDown: ev => tlDown('seek', ev) }),
+                        React.createElement("span", { className: "me-cut", style: { left: 0, width: `${left}%` } }),
+                        React.createElement("span", { className: "me-cut", style: { left: `${right}%`, right: 0 } }),
+                        React.createElement("div", { className: "me-range", style: { left: `${left}%`, width: `${right - left}%` }, onPointerDown: ev => tlDown('move', ev) },
+                            e.fadeIn > 0 && React.createElement("span", { className: "me-fade is-in", style: { width: `${e.fadeIn / len * 100}%` } }),
+                            e.fadeOut > 0 && React.createElement("span", { className: "me-fade is-out", style: { width: `${e.fadeOut / len * 100}%` } })),
+                        React.createElement("button", { type: "button", className: "me-playhead", style: { left: `${clamp$6(Math.max(e.trimStart, Math.min(at, e.trimEnd)) / duration * 100, 0, 100)}%` }, "aria-label": "Playhead. Drag to seek", onPointerDown: ev => tlDown('seek', ev) }),
+                        React.createElement("button", { type: "button", className: `me-handle${dragging === 'start' ? ' is-active' : ''}`, style: { left: `${left}%` }, "aria-label": `Trim start ${fmtFine(e.trimStart)}. Arrow keys adjust`, onKeyDown: ev => handleKey('start', ev), onPointerDown: ev => tlDown('start', ev) }),
+                        React.createElement("button", { type: "button", className: `me-handle${dragging === 'end' ? ' is-active' : ''}`, style: { left: `${right}%` }, "aria-label": `Trim end ${fmtFine(e.trimEnd)}. Arrow keys adjust`, onKeyDown: ev => handleKey('end', ev), onPointerDown: ev => tlDown('end', ev) }),
+                        showStartBubble && React.createElement("b", { className: `me-bubble${dragging === 'start' ? ' is-active' : ''}`, style: { ...bubbleStyle(left), ...(showEndBubble && right - left < 14 ? { bottom: 'calc(100% + 26px)' } : {}) } }, fmtFine(e.trimStart)),
+                        showEndBubble && React.createElement("b", { className: `me-bubble${dragging === 'end' ? ' is-active' : ''}`, style: bubbleStyle(right) }, fmtFine(e.trimEnd)))),
+                React.createElement("div", { className: "me-ruler", "aria-hidden": "true" },
+                    React.createElement("span", null, "0:00"),
+                    React.createElement("span", null, duration ? (duration < 10 ? fmtFine(duration) : fmtTime(duration)) : '–:––'))),
+            tab === 'sound' && React.createElement("div", { className: "me-row" },
+                React.createElement("button", { type: "button", className: "me-mute", "aria-pressed": e.muted, "aria-label": e.muted ? 'Unmute' : 'Mute', onClick: () => patch({ muted: !e.muted }) }, e.muted || vol === 0 ? React.createElement(VolumeX, { size: 18 }) : React.createElement(Volume2, { size: 18 })),
+                React.createElement("input", { type: "range", min: 0, max: 100, step: 5, value: vol, "aria-label": "Volume", onChange: ev => patch({ volume: Number(ev.target.value) / 100, muted: false }) }),
+                React.createElement("span", { className: "me-val" },
+                    vol,
+                    "%")),
+            tab === 'fades' && React.createElement(React.Fragment, null,
+                React.createElement("label", { className: "me-row" },
+                    React.createElement("span", { className: "me-lab" }, "In"),
+                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: e.fadeIn, disabled: !duration, "aria-label": "Fade in", onChange: ev => patch({ fadeIn: Number(ev.target.value) }) }),
+                    React.createElement("span", { className: "me-val" },
+                        e.fadeIn.toFixed(1),
+                        " s")),
+                React.createElement("label", { className: "me-row" },
+                    React.createElement("span", { className: "me-lab" }, "Out"),
+                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: e.fadeOut, disabled: !duration, "aria-label": "Fade out", onChange: ev => patch({ fadeOut: Number(ev.target.value) }) }),
+                    React.createElement("span", { className: "me-val" },
+                        e.fadeOut.toFixed(1),
+                        " s"))),
+            React.createElement("div", { className: "me-pills is-tabs", role: "tablist" }, tabs.map(t => React.createElement("button", { key: t.id, type: "button", role: "tab", "aria-selected": tab === t.id, onClick: () => { setTab(t.id); setMenu(false); } },
+                t.icon,
+                t.label))),
+            menu ? React.createElement("div", { className: "me-menu", role: "menu" },
+                React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(false); void downloadOriginal(src, `${stem}.${kind === 'audio' ? 'webm' : 'mp4'}`); } },
+                    kind === 'audio' ? React.createElement(FileAudio, { size: 16 }) : React.createElement(FileVideo, { size: 16 }),
+                    React.createElement("span", null, "Original file")),
+                kind === 'audio' ? React.createElement(React.Fragment, null,
+                    React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: exportWav },
+                        React.createElement(Download, { size: 16 }),
+                        React.createElement("span", null,
+                            "Edited clip \u00B7 WAV ",
+                            React.createElement("small", null, "instant, larger file"))),
+                    React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: exportWebm },
+                        React.createElement(Download, { size: 16 }),
+                        React.createElement("span", null,
+                            "Edited clip \u00B7 compressed ",
+                            React.createElement("small", null,
+                                "takes about ",
+                                fmtTime(len)))),
+                    canBake && !bakeMode && React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: bake },
+                        React.createElement(Save, { size: 16 }),
+                        React.createElement("span", null,
+                            "Save as new clip in this question ",
+                            React.createElement("small", null, "smaller file, edits become permanent")))) : React.createElement("button", { type: "button", role: "menuitem", disabled: !canExportVideo || !duration, onClick: exportVideo },
+                    React.createElement(Download, { size: 16 }),
+                    React.createElement("span", null,
+                        "Edited clip \u00B7 WebM ",
+                        React.createElement("small", null, canExportVideo ? `re-encodes in real time (~${fmtTime(len)})` : 'uploaded videos only'))),
+                React.createElement("button", { type: "button", role: "menuitem", className: "is-close", onClick: () => setMenu(false) },
+                    React.createElement(ArrowLeft, { size: 16 }),
+                    React.createElement("span", null, "Back")))
+                : React.createElement("div", { className: "me-actions" },
+                    tab === 'crop' && React.createElement(React.Fragment, null,
+                        sq(React.createElement(FlipHorizontal2, { size: 18 }), 'Mirror', () => setFrame({ ...frame, fx: !frame.fx }), { disabled: !dims.w, on: !!frame.fx }),
+                        sq(React.createElement(FlipVertical2, { size: 18 }), 'Flip', () => setFrame({ ...frame, fy: !frame.fy }), { disabled: !dims.w, on: !!frame.fy })),
+                    tab === 'trim' && React.createElement(React.Fragment, null,
+                        sq(React.createElement(ArrowLeftToLine, { size: 18 }), 'Start', () => setStart(at), { disabled: !duration, aria: 'Set start here' }),
+                        sq(React.createElement(ArrowRightToLine, { size: 18 }), 'End', () => setEnd(at), { disabled: !duration, aria: 'Set end here' }),
+                        sq(React.createElement(Repeat, { size: 18 }), 'Loop', () => setLoop(v => !v), { on: loop }),
+                        sq(React.createElement(Download, { size: 18 }), 'Export', () => setMenu(true), { disabled: !!job })),
+                    tab === 'sound' && React.createElement(React.Fragment, null,
+                        sq(React.createElement(WandSparkles, { size: 18 }), 'Normalize', normalize, { disabled: !canRender || !duration }),
+                        e.gain !== 1 && sq(React.createElement(Undo2, { size: 18 }), 'No boost', () => patch({ gain: 1 }))),
+                    sq(React.createElement(Undo2, { size: 18 }), 'Reset', resetTab, { disabled: tabIsDefault, aria: `Reset ${tab}` })),
+            job && React.createElement("div", { className: "me-job", role: "status", "aria-live": "polite" },
+                React.createElement("div", { className: "me-jobbar" },
+                    React.createElement("i", { style: { width: `${Math.round(job.progress * 100)}%` } })),
+                React.createElement("span", null,
+                    job.label,
+                    " ",
+                    Math.round(job.progress * 100),
+                    "%"),
+                React.createElement("button", { type: "button", onClick: () => jobAbort.current?.abort() }, "Cancel")),
+            note && React.createElement("p", { className: `me-note is-${note.kind}`, role: "status" }, note.text),
+            !note && peaksInfo === null && tab === 'sound' && React.createElement("p", { className: "me-note" }, embedded ? 'This file could not be analysed, so normalize and export are off.' : 'Normalize and export need an uploaded clip.'),
+            hint && React.createElement("small", { className: "me-hint" }, hint))), document.body);
+}
+
+const ERROR_EVENT = 'recallflow:media-error';
+function pushMediaLinkError(message) { if (message)
+    window.dispatchEvent(new CustomEvent(ERROR_EVENT, { detail: message })); }
+function DriveShareLegacyNotice({ kind = 'media' }) {
+    const what = kind === 'sound' ? 'Sound' : kind === 'video' ? 'Video' : 'Media';
+    return React.createElement("p", { className: "media-drive-legacy", role: "status" },
+        React.createElement("strong", null,
+            what,
+            " needs updating."),
+        " ",
+        DRIVE_SHARE_LEGACY_HINT);
+}
+function bandTitle(label) { const t = label.replace(/\s*link$/i, '').trim() || 'Media'; return /^add\s/i.test(t) ? t : `Add ${t.toLowerCase()} link`; }
+function linkHint(label) {
+    const l = label.toLowerCase();
+    if (l.includes('image') || l.includes('picture'))
+        return 'Paste a direct image link (PNG, JPEG, WebP, GIF).';
+    if (l.includes('video'))
+        return 'Paste a direct video link (MP4 or WebM).';
+    return 'Paste a direct audio link (MP3, WAV, OGG).';
+}
+function bandIcon(label) { const l = label.toLowerCase(); return l.includes('image') || l.includes('picture') ? Image$1 : l.includes('video') ? Film : Link2; }
+function liveHint(url) {
+    const u = url.trim();
+    if (!u)
+        return '';
+    if (driveFileId(u) || isDriveLink(u))
+        return 'This link won’t play. Use a direct file link.';
+    if (/^http:\/\//i.test(u))
+        return 'Links must start with https://';
+    if (!/^https:\/\//i.test(u))
+        return 'That does not look like a link yet.';
+    return '';
+}
+function MediaLinkForm({ id, label, placeholder = 'https://…', submitLabel = 'Add', initialUrl = '', autoFocus = false, resolve = resolveMediaLink, onSubmit, onCancel, onClearError }) {
+    const [url, setUrl] = reactExports.useState(initialUrl), [busy, setBusy] = reactExports.useState(false), [error, setError] = reactExports.useState('');
+    const Icon = bandIcon(label), hint = liveHint(url), canPaste = typeof navigator !== 'undefined' && !!navigator.clipboard?.readText;
+    reactExports.useEffect(() => { setUrl(initialUrl); }, [initialUrl]);
+    reactExports.useEffect(() => { const on = (e) => setError(String(e.detail || '')); window.addEventListener(ERROR_EVENT, on); return () => window.removeEventListener(ERROR_EVENT, on); }, []);
+    reactExports.useEffect(() => { const ov = document.body.style.overflow; document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ov; }; }, []);
+    const clearInput = () => { if (busy)
+        return; setUrl(''); setError(''); onClearError?.(); };
+    const submit = async () => { if (!url.trim() || busy || hint)
+        return; setBusy(true); setError(''); onClearError?.(); try {
+        await onSubmit(resolve(url.trim()));
+    }
+    catch (e) {
+        const msg = e?.message || 'That link could not be added.';
+        setError(msg);
+        pushMediaLinkError(msg);
+    }
+    finally {
+        setBusy(false);
+    } };
+    const cancel = () => { if (busy)
+        return; setUrl(''); setError(''); onClearError?.(); onCancel(); };
+    const paste = async () => { try {
+        const t = (await navigator.clipboard.readText()).trim();
+        if (t) {
+            setUrl(t);
+            setError('');
+        }
+    }
+    catch {
+        setError('Clipboard access was blocked — paste with Ctrl/Cmd+V instead.');
+    } };
+    const titleId = `${id || 'media-link'}-title`;
+    return reactDomExports.createPortal(React.createElement("div", { className: "media-link-layer", onMouseDown: e => { if (e.target === e.currentTarget)
+            cancel(); } },
+        React.createElement("section", { className: "media-link-dialog", role: "dialog", "aria-modal": "true", "aria-labelledby": titleId, id: id },
+            React.createElement("div", { className: "media-link-band" },
+                React.createElement(Icon, { size: 18, "aria-hidden": "true" }),
+                React.createElement("h3", { id: titleId }, bandTitle(label)),
+                React.createElement("button", { type: "button", className: "media-link-close", "aria-label": "Close", disabled: busy, onClick: cancel },
+                    React.createElement(X, { size: 18 }))),
+            React.createElement("div", { className: "media-link-body" },
+                React.createElement("p", { className: "media-link-hint" }, linkHint(label)),
+                React.createElement("div", { className: "media-link-input-wrap" },
+                    React.createElement("input", { type: "url", inputMode: "url", autoFocus: autoFocus, "aria-label": label, "aria-invalid": !!error || !!hint, placeholder: placeholder, value: url, disabled: busy, onChange: e => { setUrl(e.target.value); setError(''); onClearError?.(); }, onKeyDown: e => { if (e.key === 'Enter') {
+                            e.preventDefault();
+                            void submit();
+                        } if (e.key === 'Escape') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            cancel();
+                        } } }),
+                    url.trim() ? React.createElement("button", { type: "button", className: "media-link-input-clear", "aria-label": "Clear link", disabled: busy, onClick: clearInput },
+                        React.createElement(X, { size: 16 }))
+                        : canPaste && React.createElement("button", { type: "button", className: "media-link-input-paste", "aria-label": "Paste from clipboard", disabled: busy, onClick: () => void paste() },
+                            React.createElement(ClipboardPaste, { size: 16 }))),
+                hint && !error && React.createElement("p", { className: "media-link-live", role: "status" },
+                    React.createElement(CircleAlert, { size: 14, "aria-hidden": "true" }),
+                    React.createElement("span", null, hint)),
+                error && React.createElement("p", { className: "media-link-error", role: "alert" },
+                    React.createElement(CircleAlert, { size: 15, "aria-hidden": "true" }),
+                    React.createElement("span", null, error)),
+                React.createElement("footer", null,
+                    React.createElement("button", { type: "button", className: "media-link-cancel", disabled: busy, onClick: cancel }, "Cancel"),
+                    React.createElement("button", { type: "button", className: "media-link-add", disabled: !url.trim() || busy || !!hint, onClick: () => void submit() }, busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : submitLabel))))), document.body);
+}
+
+const clamp$5 = (v, a, b) => Math.min(b, Math.max(a, v));
+/** Quiz/preview player: 4:3 frame with blurred backdrop, crop/trim/fades applied, tap to play, drag the bar to seek. */
+function VideoPlayer({ src, className = '', label = 'Play video', edit }) {
+    const video = reactExports.useRef(null), bar = reactExports.useRef(null);
+    const pb = useClipPlayback(video, src, edit);
+    const dims = useVideoDims(video, src);
+    if (isDriveLink(src))
+        return React.createElement("div", { className: `vp ${className}`.trim() },
+            React.createElement(DriveShareLegacyNotice, { kind: "video" }));
+    const clip = pb.clip, sel = Math.max(0, clip.trimEnd - clip.trimStart), known = pb.duration > 0, f = sel < 10 ? fmtFine : fmtTime;
+    const played = known ? clamp$5((pb.at - clip.trimStart) / Math.max(0.1, sel), 0, 1) : 0;
+    const edited = known && !editIsDefault(edit, pb.duration);
+    const seekAt = (x) => { const r = bar.current?.getBoundingClientRect(); if (!r || !known)
+        return; pb.seek(clip.trimStart + clamp$5((x - r.left) / r.width, 0, 1) * sel); };
+    return React.createElement("div", { className: `vp ${className}`.trim(), "data-failed": pb.failed || undefined, "data-playing": pb.playing || undefined },
+        React.createElement(VideoFrame, { ref: video, src: src, frame: frameFor(edit, dims.w, dims.h), dims: dims, playing: pb.playing, onClick: pb.toggle },
+            React.createElement("button", { type: "button", className: "vp-play", "aria-label": pb.playing ? 'Pause' : label, onClick: ev => { ev.stopPropagation(); pb.toggle(); } }, pb.playing ? React.createElement(Pause, { size: 20, fill: "currentColor" }) : React.createElement(Play, { size: 22, fill: "currentColor" })),
+            known && React.createElement("span", { className: "vp-badge" },
+                f(clamp$5(pb.at - clip.trimStart, 0, sel)),
+                " / ",
+                f(sel),
+                edited && React.createElement(Crop, { size: 11 })),
+            React.createElement("div", { ref: bar, className: "vp-bar", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(played * 100), tabIndex: known ? 0 : -1, onClick: ev => ev.stopPropagation(), onPointerDown: ev => { ev.stopPropagation(); if (!known)
+                    return; ev.preventDefault(); try {
+                    ev.currentTarget.setPointerCapture(ev.pointerId);
+                }
+                catch { } seekAt(ev.clientX); }, onPointerMove: ev => { if (ev.buttons & 1)
+                    seekAt(ev.clientX); }, onKeyDown: ev => { if (ev.key === 'ArrowLeft') {
+                    ev.preventDefault();
+                    pb.seek(pb.at - 1);
+                }
+                else if (ev.key === 'ArrowRight') {
+                    ev.preventDefault();
+                    pb.seek(pb.at + 1);
+                }
+                else if (ev.key === ' ') {
+                    ev.preventDefault();
+                    pb.toggle();
+                } } },
+                React.createElement("i", { style: { width: `${played * 100}%` } }))),
+        pb.failed && React.createElement("p", { className: "vp-fallback" },
+            "This video could not play.",
+            !isEmbeddedMedia(src) && React.createElement(React.Fragment, null,
+                " ",
+                React.createElement("a", { href: src, target: "_blank", rel: "noreferrer" }, "Open the link"),
+                " to check it.")));
+}
+function VideoField({ video, edit, onEditChange, onChange, onError, onClearError, title = 'Question video', hint = 'Prefer a short upload — large files fill browser storage quickly.', assetLayout, emptyHint, linkLabel = 'Add link', uploadEmptyLabel = 'Upload video' }) {
+    const [busy, setBusy] = reactExports.useState(null), [linking, setLinking] = reactExports.useState(false), [clipOpen, setClipOpen] = reactExports.useState(false), [dragOver, setDragOver] = reactExports.useState(false), [meta, setMeta] = reactExports.useState(null);
+    const input = reactExports.useRef(null);
+    const drive = !!video && isDriveLink(video), linked = !!video?.startsWith('https://');
+    reactExports.useEffect(() => { if (!video) {
+        setLinking(false);
+        setMeta(null);
+    } }, [video]);
+    function applyLink(url) {
+        onError('');
+        const resolved = resolveMediaLink(url.trim());
+        if (!resolved) {
+            onChange(undefined);
+            return true;
+        }
+        if (driveFileId(url) || isDriveLink(resolved)) {
+            pushMediaLinkError(DRIVE_SHARE_REJECT);
+            return false;
+        }
+        if (!/^https:\/\//i.test(resolved) || !videoSafe(resolved)) {
+            pushMediaLinkError('Use an https link to a video file (MP4 or WebM), or upload a small video.');
+            return false;
+        }
+        onEditChange?.(undefined);
+        onChange(resolved);
+        setMeta(null);
+        return true;
+    }
+    async function upload(file) {
+        if (!file || busy)
+            return;
+        onError('');
+        const typed = typedMediaFile(file, 'video');
+        if (!typed) {
+            onError('Choose a video file (MP4, WebM or MOV).');
+            return;
+        }
+        const blob = typed instanceof File ? typed : new File([typed], file.name || 'video.mp4', { type: typed.type });
+        if (dataUrlLength(blob.size, blob.type) > MAX_VIDEO_CHARS) {
+            onError(`Video is ${formatBytes(blob.size)}. Limit is about ${formatBytes(maxBytesForChars(MAX_VIDEO_CHARS))}. Trim it, or add a link.`);
+            return;
+        }
+        setBusy({ label: 'Adding video…' });
+        try {
+            const url = URL.createObjectURL(blob);
+            const [probe, data] = await Promise.all([
+                probeMediaSrc(url, 'video', 5000),
+                blobToDataUrl(blob, p => setBusy({ label: 'Adding video…', progress: p })),
+            ]);
+            URL.revokeObjectURL(url);
+            const ok = probe.ok || blob.size > 0;
+            if (!ok)
+                throw new Error('This video could not be opened in your browser. MP4 (H.264) plays everywhere.');
+            if (!videoSafe(data))
+                throw new Error('This video could not be saved.');
+            onEditChange?.(undefined);
+            onChange(data);
+            setMeta({ duration: probe.duration || 0, size: blob.size });
+            setClipOpen(true);
+        }
+        catch (err) {
+            onError(err?.message || 'This video could not be added.');
+        }
+        finally {
+            setBusy(null);
+        }
+    }
+    const badge = !video ? { text: 'Not added', cls: 'is-empty' } : drive ? { text: 'Needs attention', cls: 'is-warn' } : { text: 'Added', cls: 'is-ok' };
+    const caption = busy ? busy.label : video ? (drive ? 'This link needs attention' : linked ? 'Linked video · plays in the quiz' : [meta && fmtTime(meta.duration), meta && formatBytes(meta.size), edit ? 'edited' : null].filter(Boolean).join(' · ') || 'Tap to preview') : (emptyHint || hint);
+    const openLink = () => { onClearError?.(); setLinking(v => !v); };
+    const pickFile = () => { setLinking(false); input.current?.click(); };
+    const drop = {
+        onDragOver: (ev) => { if (ev.dataTransfer.types.includes('Files')) {
+            ev.preventDefault();
+            setDragOver(true);
+        } },
+        onDragLeave: () => setDragOver(false),
+        onDrop: (ev) => { ev.preventDefault(); setDragOver(false); void upload(ev.dataTransfer.files?.[0]); },
+    };
+    const body = busy
+        ? React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
+            React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
+                React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
+            React.createElement("div", { className: "mf-progress-row" },
+                React.createElement("span", null,
+                    busy.label,
+                    busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : '')))
+        : video ? (drive ? React.createElement(DriveShareLegacyNotice, { kind: "video" }) : React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` })) : null;
+    const actions = !busy && (video
+        ? React.createElement("div", { className: "mf-actions" },
+            !drive && React.createElement("button", { type: "button", className: "mf-action is-primary", "aria-label": `Edit ${title.toLowerCase()}`, onClick: () => setClipOpen(true) },
+                React.createElement(Scissors, { size: 14 }),
+                "Edit"),
+            React.createElement("button", { type: "button", className: "mf-action", "aria-label": "Replace video file", onClick: pickFile },
+                React.createElement(RefreshCw, { size: 14 }),
+                "Replace"),
+            React.createElement("button", { type: "button", className: "mf-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, onClick: openLink },
+                React.createElement(Link2, { size: 14 }),
+                linkLabel),
+            React.createElement("button", { type: "button", className: "mf-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
+                React.createElement(Trash2, { size: 14 })))
+        : React.createElement("div", { className: "mf-actions is-empty" },
+            React.createElement("button", { type: "button", className: "mf-action", onClick: pickFile },
+                React.createElement(Upload, { size: 14 }),
+                uploadEmptyLabel),
+            React.createElement("button", { type: "button", className: "mf-action", "aria-expanded": linking, onClick: openLink },
+                React.createElement(Link2, { size: 14 }),
+                linkLabel)));
+    const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, accept: "video/*,.mp4,.webm,.mov,.m4v", onChange: ev => { const f = ev.currentTarget.files?.[0]; ev.currentTarget.value = ''; void upload(f); } });
+    const linkForm = linking && React.createElement(MediaLinkForm, { autoFocus: true, label: `${title} link`, placeholder: "https://\u2026/clip.mp4", submitLabel: "Add", initialUrl: linked && !drive ? video : '', onClearError: onClearError, onCancel: () => setLinking(false), onSubmit: url => { if (applyLink(url))
+            setLinking(false); } });
+    const clip = clipOpen && video && !drive && React.createElement(MediaClipEditor, { kind: "video", title: "Adjust video", src: video, initial: edit, durationHint: meta?.duration, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
+    return React.createElement("article", { className: `mf mf-video${video ? ' has-media' : ''}${assetLayout ? ' is-asset' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
+        React.createElement("header", { className: "mf-head" },
+            React.createElement("span", { className: "mf-ico", "aria-hidden": "true" },
+                React.createElement(Film, { size: 18 })),
+            React.createElement("div", { className: "mf-headmain" },
+                React.createElement("div", { className: "mf-titlerow" },
+                    React.createElement("strong", null, title),
+                    React.createElement("span", { className: `mf-badge ${badge.cls}` }, badge.text)),
+                React.createElement("small", { className: "mf-caption" }, caption))),
+        body,
+        actions,
+        fileInput,
+        linkForm,
+        clip);
+}
+
+// Sounds and videos attached to one answer item (a choice, word, pair side, step or group item).
+const itemMediaOf = (item, text) => item?.optionMedia?.[String(text ?? '').trim()] || null;
+let stopPlaying = null;
+const clamp$4 = (v) => Math.min(1, Math.max(0, v));
+const halt = (e) => { e.stopPropagation(); };
+function ItemSound({ src, edit, label = 'Play sound' }) {
+    const audio = reactExports.useRef(null), pb = useClipPlayback(audio, src, edit), pause = reactExports.useRef(pb.pause);
+    pause.current = pb.pause;
+    const mine = reactExports.useRef(() => pause.current());
+    reactExports.useEffect(() => () => { if (stopPlaying === mine.current)
+        stopPlaying = null; }, []);
+    const sel = Math.max(.1, pb.clip.trimEnd - pb.clip.trimStart), p = pb.duration > 0 ? clamp$4((pb.at - pb.clip.trimStart) / sel) : 0;
+    function toggle(e) { e.preventDefault(); e.stopPropagation(); if (!pb.playing) {
+        if (stopPlaying && stopPlaying !== mine.current)
+            stopPlaying();
+        stopPlaying = mine.current;
+    } pb.toggle(); }
+    return React.createElement("button", { type: "button", className: "im-sound", "data-playing": pb.playing || undefined, "data-failed": pb.failed || undefined, "aria-label": pb.playing ? 'Pause sound' : label, title: pb.failed ? 'This sound could not play' : label, style: { ['--p']: p }, onClick: toggle, onPointerDown: halt },
+        pb.playing ? React.createElement(Pause, { size: 13, fill: "currentColor" }) : React.createElement(Volume2, { size: 14 }),
+        React.createElement("audio", { ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
+}
+function VideoLightbox({ src, edit, title, onClose }) {
+    reactExports.useEffect(() => { const key = (e) => { if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+    } }; document.addEventListener('keydown', key); const overflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; return () => { document.removeEventListener('keydown', key); document.body.style.overflow = overflow; }; }, []);
+    return reactDomExports.createPortal(React.createElement("div", { className: "im-video-layer", role: "dialog", "aria-modal": "true", "aria-label": title, onPointerDown: e => { if (e.target === e.currentTarget)
+            onClose(); }, onClick: halt },
+        React.createElement("div", { className: "im-video-box" },
+            React.createElement("header", null,
+                React.createElement("span", null, title),
+                React.createElement("button", { type: "button", "aria-label": "Close video", onClick: onClose },
+                    React.createElement(X, { size: 18 }))),
+            React.createElement(VideoPlayer, { src: src, edit: edit, className: "im-video-player", label: `Play ${title}` }))), document.body);
+}
+function ItemVideo({ src, edit, label }) {
+    const [open, setOpen] = reactExports.useState(false);
+    return React.createElement(React.Fragment, null,
+        React.createElement("button", { type: "button", className: "im-video", "aria-label": `Watch video for ${label}`, title: "Watch video", onPointerDown: halt, onClick: e => { e.preventDefault(); e.stopPropagation(); setOpen(true); } },
+            React.createElement(Film, { size: 13 })),
+        open && React.createElement(VideoLightbox, { src: src, edit: edit, title: label, onClose: () => setOpen(false) }));
+}
+/** Small play buttons for an item's sound and video. Clicks stay here, so they never pick or drag the item. */
+function ItemExtras({ item, text, className = '' }) {
+    const m = itemMediaOf(item, text);
+    if (!m || (!m.audio && !m.video))
+        return null;
+    return React.createElement("span", { className: `im-extras ${className}`.trim(), onClick: halt, onPointerDown: halt, onKeyDown: halt },
+        m.audio && React.createElement(ItemSound, { src: m.audio, edit: m.audioEdit, label: `Play sound for ${text}` }),
+        m.video && React.createElement(ItemVideo, { src: m.video, edit: m.videoEdit, label: text }));
+}
+/** Editor: one compact button per answer row. Shows what is attached and opens the media sheet. */
+function ItemMediaButton({ label, image, media, disabled, onOpen }) {
+    const sound = !!media?.audio, video = !!media?.video, count = [image, sound, video].filter(Boolean).length;
+    return React.createElement("button", { type: "button", className: "im-button", "data-has": count || undefined, disabled: disabled, "aria-label": count ? `Media for ${label}: ${[image && 'picture', sound && 'sound', video && 'video'].filter(Boolean).join(', ')}` : `Add picture, sound or video for ${label}`, title: disabled ? 'Type the answer first' : 'Picture, sound or video', onClick: onOpen },
+        image ? React.createElement("img", { src: image, alt: "" }) : React.createElement(ImagePlus, { size: 16 }),
+        (sound || video) && React.createElement("span", { className: "im-button-dots", "aria-hidden": "true" },
+            sound && React.createElement("i", null,
+                React.createElement(Volume2, { size: 9 })),
+            video && React.createElement("i", null,
+                React.createElement(Film, { size: 9 }))));
+}
+/** Bottom sheet on phones, dialog on wider screens. */
+function ItemMediaSheet({ title, hint, onClose, children }) {
+    const panel = reactExports.useRef(null);
+    reactExports.useEffect(() => {
+        const back = document.activeElement, overflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        panel.current?.focus();
+        const key = (e) => { if (e.key === 'Escape' && !document.querySelector('.me,.image-editor,.media-link-layer,.image-viewer')) {
+            e.preventDefault();
+            onClose();
+        } };
+        document.addEventListener('keydown', key);
+        return () => { document.removeEventListener('keydown', key); document.body.style.overflow = overflow; back?.focus?.(); };
+    }, []);
+    return reactDomExports.createPortal(React.createElement("div", { className: "im-sheet-layer", onPointerDown: e => { if (e.target === e.currentTarget)
+            onClose(); } },
+        React.createElement("div", { className: "im-sheet", ref: panel, tabIndex: -1, role: "dialog", "aria-modal": "true", "aria-label": title },
+            React.createElement("div", { className: "type-sheet-handle", "aria-hidden": "true" }),
+            React.createElement("div", { className: "im-sheet-head" },
+                React.createElement("div", null,
+                    React.createElement("h3", null, title),
+                    hint && React.createElement("p", null, hint)),
+                React.createElement("button", { type: "button", className: "type-sheet-close", "aria-label": "Close", onClick: onClose },
+                    React.createElement(X, { size: 18 }))),
+            React.createElement("div", { className: "im-sheet-body asset-list editor-media-step" }, children),
+            React.createElement("div", { className: "im-sheet-foot" },
+                React.createElement("button", { type: "button", className: "im-sheet-done", onClick: onClose },
+                    React.createElement(Check, { size: 16 }),
+                    "Done")))), document.body);
+}
+
+function ItemMedia({ item, text }) { const src = item.optionImages?.[text]; return src ? React.createElement("img", { className: "item-media", src: src, alt: "", draggable: false }) : null; }
+function ItemText({ item, text, className }) { return isPictureLabel(text) && (item.optionImages?.[text] || itemMediaOf(item, text)) ? React.createElement("span", { className: "visually-hidden" }, text) : React.createElement("span", { className: className }, text); }
+function ItemZoom({ item, text }) { const src = item.optionImages?.[text]; return React.createElement(React.Fragment, null,
+    src && React.createElement(ZoomButton, { src: src, alt: text, label: `Enlarge picture for ${text}` }),
+    React.createElement(ItemExtras, { item: item, text: text, className: src ? 'has-zoom' : '' })); }
+const PAIR_COLOURS = ['#2ec4a6', '#facc15', '#f06595', '#38bdf8', '#a3e635', '#f97316'];
+function MatchingAnswer({ item, value, onChange, disabled, onGrade }) {
+    const [active, setActive] = reactExports.useState(null), [message, setMessage] = reactExports.useState(''), [lines, setLines] = reactExports.useState([]);
+    const board = reactExports.useRef(null), values = item.pairs.map((_, i) => value[i] || ''), rights = React.useMemo(() => seededShuffle(item.pairs, item.id + (item.shuffleSeed || '')), [item]);
+    reactExports.useEffect(() => { const el = board.current; if (!el)
+        return; function measure() { const area = el.getBoundingClientRect(); setLines(values.flatMap((v, i) => { if (!v)
+        return []; const a = el.querySelector(`[data-left="${i}"]`)?.getBoundingClientRect(), j = rights.findIndex(p => p.right === v), b = el.querySelector(`[data-right="${j}"]`)?.getBoundingClientRect(); return a && b ? [{ i, x1: a.right - area.left, y1: a.top + a.height / 2 - area.top, x2: b.left - area.left, y2: b.top + b.height / 2 - area.top }] : []; })); } measure(); const observer = new ResizeObserver(measure); observer.observe(el); return () => observer.disconnect(); }, [item, value]);
+    const drag = reactExports.useRef(null), skipClick = reactExports.useRef(false), [draw, setDraw] = reactExports.useState(null);
+    function link(left, right) { onChange(values.map((v, i) => i === left ? right : v === right ? '' : v)); setActive(null); setMessage(''); }
+    function connect(right) { if (skipClick.current)
+        return; if (active === null) {
+        const owner = values.indexOf(right);
+        if (owner >= 0)
+            setActive(owner);
+        else
+            setMessage('Tap a word on the left first.');
+        return;
+    } link(active, right); }
+    function anchor(el, side) { const area = board.current.getBoundingClientRect(), r = el.getBoundingClientRect(); return { x: (side === 'left' ? r.right : r.left) - area.left, y: r.top + r.height / 2 - area.top }; }
+    function hitAt(x, y, side) { const el = document.elementFromPoint(x, y)?.closest(`[data-${side}]`); return el && board.current?.contains(el) ? el : null; }
+    function down(e) { if (disabled || (e.pointerType === 'mouse' && e.button !== 0))
+        return; const el = e.target.closest('[data-left],[data-right]'); if (!el)
+        return; const side = el.hasAttribute('data-left') ? 'left' : 'right'; drag.current = { side, other: side === 'left' ? 'right' : 'left', index: Number(el.dataset[side]), sx: e.clientX, sy: e.clientY, id: e.pointerId, moved: false, start: anchor(el, side) }; }
+    function move(e) { const d = drag.current; if (!d || d.id !== e.pointerId)
+        return; if (!d.moved) {
+        if (Math.hypot(e.clientX - d.sx, e.clientY - d.sy) < 8)
+            return;
+        d.moved = true;
+        try {
+            board.current.setPointerCapture(e.pointerId);
+        }
+        catch { }
+        setActive(null);
+        setMessage('');
+    } const area = board.current.getBoundingClientRect(), hit = hitAt(e.clientX, e.clientY, d.other); setDraw({ from: d.start, to: hit ? anchor(hit, d.other) : { x: e.clientX - area.left, y: e.clientY - area.top }, side: d.side, index: d.index, hover: hit ? Number(hit.dataset[d.other]) : null }); }
+    function up(e) { const d = drag.current; if (!d || d.id !== e.pointerId)
+        return; drag.current = null; setDraw(null); if (!d.moved)
+        return; skipClick.current = true; setTimeout(() => { skipClick.current = false; }); const hit = hitAt(e.clientX, e.clientY, d.other); if (!hit)
+        return; const j = Number(hit.dataset[d.other]); d.side === 'left' ? link(d.index, rights[j].right) : link(j, rights[d.index].right); }
+    function cancel() { drag.current = null; setDraw(null); }
+    const curve = (a, b) => `M ${a.x} ${a.y} C ${(a.x + b.x) / 2} ${a.y}, ${(a.x + b.x) / 2} ${b.y}, ${b.x} ${b.y}`;
+    const drawing = (side, i) => draw && ((draw.side === side && draw.index === i) || (draw.side !== side && draw.hover === i)) ? 'true' : undefined;
+    const state = (i) => disabled ? (values[i] === item.pairs[i].right ? 'correct' : 'wrong') : active === i ? 'active' : values[i] ? 'paired' : 'idle';
+    const tint = (i) => values[i] ? { '--pair': PAIR_COLOURS[i % PAIR_COLOURS.length] } : undefined;
+    return React.createElement("div", { className: "structured-answer matching-answer" },
+        React.createElement("p", { className: "split-answer-help" }, disabled ? 'Your matches' : 'Draw a line from each item to its match, or tap one and then the other.'),
+        React.createElement("div", { className: "matching-board", ref: board, "data-drawing": draw ? 'true' : undefined, onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: cancel, onLostPointerCapture: e => { if (e.target === e.currentTarget && drag.current?.id === e.pointerId)
+                cancel(); } },
+            React.createElement("svg", { className: "match-connections", "aria-hidden": "true" }, lines.filter(l => !draw || (draw.side === 'left' ? draw.index !== l.i : values[l.i] !== rights[draw.index].right)).map(l => React.createElement("path", { key: l.i, "data-state": state(l.i), style: tint(l.i), d: curve({ x: l.x1, y: l.y1 }, { x: l.x2, y: l.y2 }) }))),
+            draw && React.createElement("svg", { className: "match-drawing", "aria-hidden": "true" },
+                React.createElement("path", { d: curve(draw.from, draw.to) }),
+                React.createElement("circle", { cx: draw.from.x, cy: draw.from.y, r: "5" }),
+                React.createElement("circle", { cx: draw.to.x, cy: draw.to.y, r: draw.hover === null ? 7 : 5 })),
+            React.createElement("div", { className: "match-column", "aria-label": "Items to match" }, item.pairs.map((p, i) => React.createElement("div", { className: "media-slot", key: p.left },
+                React.createElement("button", { "data-left": i, "data-state": state(i), style: tint(i), "data-drawing": drawing('left', i), "aria-label": `Select ${p.left}`, "aria-pressed": active === i, disabled: disabled, onClick: () => { if (skipClick.current)
+                        return; setActive(i); setMessage(''); } },
+                    React.createElement(ItemMedia, { item: item, text: p.left }),
+                    React.createElement(ItemText, { item: item, text: p.left }),
+                    values[i] && React.createElement("b", null, i + 1)),
+                React.createElement(ItemZoom, { item: item, text: p.left })))),
+            React.createElement("div", { className: "match-column", "aria-label": "Possible matches" }, rights.map((p, j) => { const owner = values.indexOf(p.right); return React.createElement("div", { className: "media-slot", key: p.right },
+                React.createElement("button", { "data-right": j, "data-state": owner < 0 ? 'idle' : state(owner), style: owner < 0 ? undefined : tint(owner), "data-drawing": drawing('right', j), "aria-label": `Match with ${p.right}`, "aria-pressed": owner >= 0, disabled: disabled, onClick: () => connect(p.right) },
+                    owner >= 0 && React.createElement("b", null, owner + 1),
+                    React.createElement(ItemMedia, { item: item, text: p.right }),
+                    React.createElement(ItemText, { item: item, text: p.right })),
+                React.createElement(ItemZoom, { item: item, text: p.right })); }))),
+        React.createElement("div", { className: "matching-tools" },
+            React.createElement("p", { role: "status" }, message || `${values.filter(Boolean).length} of ${values.length} pairs connected`),
+            !disabled && React.createElement("button", { onClick: () => { onChange([]); setActive(null); setMessage(''); } }, "Reset matches")),
+        !disabled && React.createElement(Button, { disabled: values.some(x => !x), onClick: () => onGrade(values) }, "Check matches"));
+}
+function InlineBlankAnswer({ item, value, onChange, disabled, onGrade }) {
+    const multi = isMultiBlank(item), values = multi ? item.blanks.map((_, i) => (Array.isArray(value) ? value[i] : '') || '') : [typeof value === 'string' ? value : ''];
+    const parts = item.prompt.split(/_{2,}/g), complete = values.every(v => v.trim());
+    const inputs = reactExports.useRef([]);
+    function field(index) { const i = multi ? index : 0; const right = multi ? blankRight(item, item.blanks[i], values[i]) : textGrade({ answer: item.answer, acceptedAnswers: item.acceptedAnswers, fuzzy: item.fuzzy }, values[i]) !== 'wrong'; return React.createElement("input", { key: 'blank-' + index, ref: el => { inputs.current[index] = el; }, "aria-label": `Blank ${index + 1}`, autoComplete: "off", spellCheck: false, enterKeyHint: multi && index < values.length - 1 ? 'next' : 'done', style: { ['--chars']: Math.max(4, Math.min(18, (values[i] || '').length + 1)) }, value: values[i], disabled: disabled, placeholder: multi ? String(index + 1) : '', "data-state": disabled ? (right ? 'correct' : 'wrong') : 'idle', onChange: e => { if (multi) {
+            const next = [...values];
+            next[i] = e.target.value;
+            onChange(next);
+        }
+        else
+            onChange(e.target.value); }, onKeyDown: e => { if (e.key !== 'Enter' || disabled)
+            return; e.preventDefault(); const next = multi ? inputs.current.slice(index + 1).find(el => el && !el.value.trim()) : null; if (next)
+            next.focus();
+        else if (complete)
+            onGrade(multi ? values : values[0]); } }); }
+    const answers = multi && disabled ? item.blanks.map((b, i) => blankRight(item, b, values[i]) ? null : { i, b: b.split('|')[0].trim() }).filter(Boolean) : [];
+    return React.createElement("div", { className: "inline-blank-answer" },
+        React.createElement("p", { className: "blank-sentence" }, parts.length > 1 ? parts.map((part, i) => React.createElement(React.Fragment, { key: i },
+            part,
+            i < parts.length - 1 && field(i))) : React.createElement(React.Fragment, null,
+            item.prompt,
+            " ",
+            field(0))),
+        answers.length > 0 && React.createElement("p", { className: "blank-fixes" },
+            React.createElement("small", null, "Correct"),
+            answers.map((a) => React.createElement("span", { key: a.i },
+                React.createElement("b", null, a.i + 1),
+                a.b))),
+        !disabled && React.createElement("p", { className: "split-answer-help" }, multi ? `${values.filter(v => v.trim()).length} of ${values.length} filled · press Enter to jump to the next gap` : 'Type directly into the gap to complete the sentence.'),
+        !disabled && React.createElement(Button, { className: "split-submit", disabled: !complete, onClick: () => onGrade(multi ? values : values[0]) },
+            "Check ",
+            multi ? 'answers' : 'answer'));
+}
+function WordBankAnswer({ item, value, onChange, disabled, onGrade }) {
+    const [active, setActive] = reactExports.useState(0), values = item.blanks.map((_, i) => value[i] || ''), parts = item.prompt.split(/_{2,}/g);
+    function choose(option) { const next = [...values]; next[active] = option; onChange(next); const empty = next.findIndex((v, i) => !v && i > active); const first = next.findIndex(v => !v); setActive(empty >= 0 ? empty : first >= 0 ? first : active); }
+    return React.createElement("div", { className: "inline-blank-answer word-bank-answer" },
+        React.createElement("p", { className: "blank-sentence" }, parts.map((part, i) => React.createElement(React.Fragment, { key: i },
+            part,
+            i < parts.length - 1 && React.createElement("button", { className: "word-bank-gap", "aria-label": `Blank ${i + 1}: ${values[i] || 'empty'}${!disabled && active === i && values[i] ? ', tap to clear' : ''}`, "aria-pressed": active === i, disabled: disabled, "data-filled": !!values[i] || undefined, "data-state": disabled ? (values[i] === item.blanks[i] ? 'correct' : 'wrong') : active === i ? 'active' : 'idle', onClick: () => { if (active === i && values[i]) {
+                    const next = [...values];
+                    next[i] = '';
+                    onChange(next);
+                }
+                else
+                    setActive(i); } }, disabled && values[i] !== item.blanks[i] ? React.createElement(React.Fragment, null,
+                React.createElement("s", null, values[i] || '—'),
+                " ",
+                React.createElement("b", null, item.blanks[i])) : values[i] || React.createElement("span", { className: "word-bank-blank", "aria-hidden": "true" }))))),
+        React.createElement("div", { className: "word-bank-options", role: "group", "aria-label": "Word bank" }, item.options.map(option => React.createElement("span", { className: "media-slot", key: option },
+            React.createElement("button", { "aria-label": `Option ${option}${values.includes(option) ? ', used' : ''}`, "data-used": values.includes(option) || undefined, disabled: disabled, onClick: () => choose(option) },
+                React.createElement(ItemMedia, { item: item, text: option }),
+                React.createElement(ItemText, { item: item, text: option })),
+            React.createElement(ItemZoom, { item: item, text: option })))),
+        !disabled && React.createElement("div", { className: "word-bank-tools" },
+            React.createElement("span", { role: "status" },
+                values.filter(Boolean).length,
+                " of ",
+                values.length,
+                " gaps filled"),
+            React.createElement("button", { disabled: !values[active], onClick: () => { const next = [...values]; next[active] = ''; onChange(next); } }, "Clear selected gap")),
+        !disabled && React.createElement(Button, { className: "split-submit", disabled: values.some(x => !x), onClick: () => onGrade(values) }, "Check answers"));
+}
 
 /*
  Copyright (c) 2022 Gildas Lormeau. All rights reserved.
@@ -27734,7 +29560,7 @@ function OfflineSettings() { const [ready, setReady] = reactExports.useState(fal
 const profilePhotoKey='recallflow_profile_photo';
 const EVENT='recallflow:profile-photo',VALID=/^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+/=]+$/,SIZE=256,MAX_BYTES=25*1048576,MAX_SIDE=1600;
 const MIN_ZOOM=1,MAX_ZOOM=5;
-const defaultEdit$1=()=>({zoom:1,x:0,y:0,rotate:0,flip:false,brightness:1,contrast:1,saturation:1});
+const defaultEdit=()=>({zoom:1,x:0,y:0,rotate:0,flip:false,brightness:1,contrast:1,saturation:1});
 
 function profilePhoto(){try{const v=localStorage.getItem(profilePhotoKey)||'';return VALID.test(v)?v:'';}catch{return '';}}
 function saveProfilePhoto(url){
@@ -27773,17 +29599,17 @@ function photoLayout(w,h,edit){
   const turned=edit.rotate%180!==0,rw=turned?h:w,rh=turned?w:h,scale=edit.zoom/Math.min(rw,rh);
   return {scale,maxX:Math.max(0,(rw*scale-1)/2),maxY:Math.max(0,(rh*scale-1)/2)};
 }
-const clamp$5=(v,lo,hi)=>Math.min(hi,Math.max(lo,v))+0;
+const clamp$3=(v,lo,hi)=>Math.min(hi,Math.max(lo,v))+0;
 function clampEdit(w,h,edit){
-  const zoom=clamp$5(edit.zoom,MIN_ZOOM,MAX_ZOOM),{maxX,maxY}=photoLayout(w,h,{...edit,zoom});
-  return {...edit,zoom,x:clamp$5(edit.x,-maxX,maxX),y:clamp$5(edit.y,-maxY,maxY)};
+  const zoom=clamp$3(edit.zoom,MIN_ZOOM,MAX_ZOOM),{maxX,maxY}=photoLayout(w,h,{...edit,zoom});
+  return {...edit,zoom,x:clamp$3(edit.x,-maxX,maxX),y:clamp$3(edit.y,-maxY,maxY)};
 }
 
 // Same maths as CSS brightness() contrast() saturate(), applied in that order.
 function adjustPixels(data,{brightness:b=1,contrast:c=1,saturation:s=1}){
   if(b===1&&c===1&&s===1)return;
   const m=[.213+.787*s,.715-.715*s,.072-.072*s,.213-.213*s,.715+.285*s,.072-.072*s,.213-.213*s,.715-.715*s,.072+.928*s];
-  const step=v=>clamp$5((clamp$5(v*b,0,255)-127.5)*c+127.5,0,255);
+  const step=v=>clamp$3((clamp$3(v*b,0,255)-127.5)*c+127.5,0,255);
   for(let i=0;i<data.length;i+=4){
     const r=step(data[i]),g=step(data[i+1]),bl=step(data[i+2]);
     data[i]=m[0]*r+m[1]*g+m[2]*bl;data[i+1]=m[3]*r+m[4]*g+m[5]*bl;data[i+2]=m[6]*r+m[7]*g+m[8]*bl;
@@ -27813,10 +29639,10 @@ function useProfilePhoto() {
 const ADJUST = [['brightness', 'Brightness', Sun], ['contrast', 'Contrast', Contrast], ['saturation', 'Saturation', Droplet]];
 function PhotoEditor({ image, onCancel, onSave }) {
     const dialog = reactExports.useRef(null), stage = reactExports.useRef(null), canvas = reactExports.useRef(null);
-    const [edit, setEditRaw] = reactExports.useState(defaultEdit$1), [tab, setTab] = reactExports.useState('crop'), [side, setSide] = reactExports.useState(0), [saving, setSaving] = reactExports.useState(false);
+    const [edit, setEditRaw] = reactExports.useState(defaultEdit), [tab, setTab] = reactExports.useState('crop'), [side, setSide] = reactExports.useState(0), [saving, setSaving] = reactExports.useState(false);
     const pointers = reactExports.useRef(new Map()), pinch = reactExports.useRef(0);
     const setEdit = (fn) => setEditRaw(e => clampEdit(image.width, image.height, fn(e)));
-    const changed = JSON.stringify(edit) !== JSON.stringify(defaultEdit$1());
+    const changed = JSON.stringify(edit) !== JSON.stringify(defaultEdit());
     reactExports.useEffect(() => { const focus = document.activeElement; dialog.current?.showModal(); return () => { dialog.current?.close(); focus?.focus(); }; }, []);
     reactExports.useLayoutEffect(() => { const el = stage.current; if (!el)
         return; const ro = new ResizeObserver(() => setSide(el.clientWidth)); ro.observe(el); setSide(el.clientWidth); return () => ro.disconnect(); }, []);
@@ -27910,7 +29736,7 @@ function PhotoEditor({ image, onCancel, onSave }) {
                     Math.round((edit[k] - 1) * 100))),
             React.createElement("input", { type: "range", min: .5, max: 1.5, step: .01, value: edit[k], onChange: e => { const v = Number(e.target.value); setEdit(x => ({ ...x, [k]: Math.abs(v - 1) < .02 ? 1 : v })); }, onDoubleClick: () => setEdit(x => ({ ...x, [k]: 1 })) })))),
         React.createElement("footer", { className: "photo-editor-actions" },
-            React.createElement("button", { type: "button", className: "photo-editor-reset", onClick: () => setEditRaw(defaultEdit$1()), disabled: !changed },
+            React.createElement("button", { type: "button", className: "photo-editor-reset", onClick: () => setEditRaw(defaultEdit()), disabled: !changed },
                 React.createElement(Undo2, { size: 16 }),
                 "Reset"),
             React.createElement("span", null),
@@ -28490,16 +30316,25 @@ function prepareExport(items,{images=true,audio=false,video=false,progress=true}
     if(!images)out=stripEmbeddedImages(out);
     if(!audio){for(const k of ['audio','answerAudio'])if(isEmbeddedAudio(out[k]))delete out[k];}
     if(!video){for(const k of ['video','answerVideo'])if(isEmbeddedVideo(out[k]))delete out[k];}
+    if(!audio||!video){out=stripItemMedia(out,!audio,!video);out.variants=out.variants?.map(v=>stripItemMedia(v,!audio,!video));if(!out.variants)delete out.variants;}
     if(!progress)for(const key of progressKeys)delete out[key];
     return out;
   });
 }
+function stripItemMedia(item,audio,video){
+  if(!item.optionMedia)return item;
+  const media=Object.fromEntries(Object.entries(item.optionMedia).map(([k,m])=>{const e={...m};if(audio&&isEmbeddedAudio(e.audio)){delete e.audio;delete e.audioEdit;}if(video&&isEmbeddedVideo(e.video)){delete e.video;delete e.videoEdit;}return [k,e];}).filter(([,e])=>e.audio||e.video));
+  const out={...item};
+  if(Object.keys(media).length)out.optionMedia=media;else delete out.optionMedia;
+  return out;
+}
+const itemMediaHas=(x,test,key)=>[x,...(x?.variants||[])].some(v=>Object.values(v?.optionMedia||{}).some(m=>test(m?.[key])));
 
 function embeddedAudioCount(items){
-  return items.filter(x=>isEmbeddedAudio(x?.audio)||isEmbeddedAudio(x?.answerAudio)).length;
+  return items.filter(x=>isEmbeddedAudio(x?.audio)||isEmbeddedAudio(x?.answerAudio)||itemMediaHas(x,isEmbeddedAudio,'audio')).length;
 }
 function embeddedVideoCount(items){
-  return items.filter(x=>isEmbeddedVideo(x?.video)||isEmbeddedVideo(x?.answerVideo)).length;
+  return items.filter(x=>isEmbeddedVideo(x?.video)||isEmbeddedVideo(x?.answerVideo)||itemMediaHas(x,isEmbeddedVideo,'video')).length;
 }
 
 const aiImportPrompt=`You are preparing questions for RecallFlow (a quiz app). Reply with ONE JSON object only — no markdown fences, no commentary.
@@ -29068,7 +30903,7 @@ function TransferPage({ items, selectedIds, initial = 'import', onImport, onBack
 }
 
 // Answer areas for the newer question types. Each keeps its own answer and reports it through onGrade.
-const clamp$4 = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
+const clamp$2 = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
 function ListRecallAnswer({ item, disabled, onGrade }) {
     const total = item.listItems?.length || 0, need = Math.max(1, listNeed(item));
     const [values, setValues] = reactExports.useState(() => Array(need).fill('')), fields = reactExports.useRef([]);
@@ -29095,43 +30930,104 @@ function ListRecallAnswer({ item, disabled, onGrade }) {
                 React.createElement("div", { className: "list-answer-others" }, others.map((x) => React.createElement("span", { key: x }, x))))),
         !disabled && React.createElement(Button, { className: "split-submit", disabled: !filled, onClick: () => onGrade(values) }, "Check answers"));
 }
+// Sort into groups: drag an item onto a group, or tap the item and then the group.
 function CategorizeAnswer({ item, disabled, onGrade }) {
     const groups = item.groups || [];
     const all = reactExports.useMemo(() => seededShuffle(groups.flatMap(g => g.items), String(item.id || item.prompt) + '|sort'), [item]);
     const [placed, setPlaced] = reactExports.useState({}), [active, setActive] = reactExports.useState(null), [note, setNote] = reactExports.useState('');
+    const [drag, setDrag] = reactExports.useState(null), press = reactExports.useRef(null), skipClick = reactExports.useRef(false);
     const home = (x) => groups.find(g => g.items.includes(x))?.name, pool = all.filter(x => !placed[x]);
+    const pictured = all.some(x => item.optionImages?.[x]);
+    function put(x, name) { setPlaced(p => { const n = { ...p }; if (name)
+        n[x] = name;
+    else
+        delete n[x]; return n; }); setNote(''); }
     function pick(x) { if (disabled)
-        return; setActive(a => a === x ? null : x); setNote(''); }
+        return; setActive(x); setNote(''); }
     function drop(name) {
         if (disabled)
             return;
         if (!active) {
-            setNote('Tap an item first, then the group it belongs to.');
+            setNote('Pick an item first: drag it here, or tap it and then this group.');
             return;
         }
-        setPlaced(p => ({ ...p, [active]: name }));
-        setNote('');
+        put(active, name);
         setActive(pool.find(x => x !== active) ?? null);
     }
-    function putBack(x) { setPlaced(p => { const n = { ...p }; delete n[x]; return n; }); setActive(x); }
-    return React.createElement("div", { className: "extra-answer sort-answer" },
-        React.createElement("p", { className: "split-answer-help" }, disabled ? 'Your groups' : 'Tap an item, then tap the group it belongs to.'),
-        !disabled && React.createElement("div", { className: "sort-pool", role: "group", "aria-label": "Items to sort" }, pool.length ? pool.map(x => React.createElement("button", { type: "button", key: x, className: "sort-chip", "aria-pressed": active === x, onClick: () => pick(x) }, x)) : React.createElement("span", { className: "sort-pool-done" }, "All sorted. Tap an item to move it.")),
+    const zoneAt = (x, y) => document.elementFromPoint(x, y)?.closest('[data-zone]')?.dataset.zone ?? null;
+    function down(x, e) { if (disabled || (e.pointerType === 'mouse' && e.button !== 0))
+        return; press.current = { x, sx: e.clientX, sy: e.clientY, id: e.pointerId, moved: false, el: e.currentTarget }; }
+    function move(e) {
+        const p = press.current;
+        if (!p || p.id !== e.pointerId)
+            return;
+        if (!p.moved) {
+            if (Math.hypot(e.clientX - p.sx, e.clientY - p.sy) < 7)
+                return;
+            p.moved = true;
+            try {
+                p.el.setPointerCapture(e.pointerId);
+            }
+            catch { }
+            setActive(null);
+            setNote('');
+            try {
+                navigator.vibrate?.(8);
+            }
+            catch { }
+        }
+        setDrag({ x: p.x, px: e.clientX, py: e.clientY, over: zoneAt(e.clientX, e.clientY) });
+    }
+    function up(e) {
+        const p = press.current;
+        press.current = null;
+        setDrag(null);
+        if (!p || p.id !== e.pointerId || !p.moved)
+            return;
+        skipClick.current = true;
+        setTimeout(() => { skipClick.current = false; });
+        const zone = zoneAt(e.clientX, e.clientY);
+        if (zone === '__pool')
+            put(p.x, null);
+        else if (zone)
+            put(p.x, zone);
+    }
+    function chip(x, state) {
+        const img = item.optionImages?.[x];
+        return React.createElement("span", { className: "sort-item media-slot", key: x, "data-picture": img ? '' : undefined },
+            React.createElement("button", { type: "button", className: "sort-chip", "aria-pressed": active === x, "data-state": state, "data-lifted": drag?.x === x || undefined, disabled: disabled, "aria-label": placed[x] && !disabled ? `${x}, in ${placed[x]}. Tap to pick it up again.` : undefined, onPointerDown: e => down(x, e), onPointerMove: move, onPointerUp: up, onPointerCancel: () => { press.current = null; setDrag(null); }, onClick: () => { if (skipClick.current)
+                    return; if (placed[x] && active === x) {
+                    put(x, null);
+                    return;
+                } pick(x); } },
+                img && React.createElement("img", { className: "sort-chip-img", src: img, alt: "", draggable: false }),
+                React.createElement(ItemText, { item: item, text: x, className: "sort-chip-text" }),
+                state === 'wrong' && React.createElement("small", null,
+                    "\u2192 ",
+                    home(x))),
+            React.createElement(ItemExtras, { item: item, text: x }));
+    }
+    const ghostImg = drag ? item.optionImages?.[drag.x] : null;
+    return React.createElement("div", { className: "extra-answer sort-answer", "data-pictured": pictured || undefined, "data-dragging": drag ? '' : undefined },
+        React.createElement("p", { className: "split-answer-help" }, disabled ? 'Your groups' : 'Drag each item into its group, or tap an item and then a group.'),
+        !disabled && React.createElement("div", { className: "sort-pool", role: "group", "aria-label": "Items to sort", "data-zone": "__pool", "data-over": drag?.over === '__pool' || undefined }, pool.length ? pool.map(x => chip(x)) : React.createElement("span", { className: "sort-pool-done" }, "All sorted. Drag or tap an item to move it.")),
         React.createElement("div", { className: "sort-groups", "data-count": groups.length }, groups.map(g => {
             const here = all.filter(x => placed[x] === g.name);
-            return React.createElement("section", { key: g.name, className: "sort-group", "data-ready": !disabled && !!active || undefined, onClick: e => { if (!e.target.closest('.sort-chip'))
+            return React.createElement("section", { key: g.name, className: "sort-group", "data-zone": g.name, "data-over": drag?.over === g.name || undefined, "data-ready": !disabled && !!active || undefined, onClick: e => { if (!e.target.closest('.sort-item'))
                     drop(g.name); } },
                 React.createElement("button", { type: "button", className: "sort-group-head", disabled: disabled, "aria-label": active ? `Put ${active} in ${g.name}` : g.name },
                     React.createElement("span", null, g.name),
-                    !disabled && active && React.createElement(Plus, { size: 16, "aria-hidden": "true" })),
+                    disabled ? React.createElement("small", null,
+                        here.filter(x => home(x) === g.name).length,
+                        "/",
+                        g.items.length) : active ? React.createElement(Plus, { size: 16, "aria-hidden": "true" }) : React.createElement("small", null, here.length)),
                 React.createElement("div", { className: "sort-group-items" },
-                    here.map(x => { const right = home(x) === g.name; return React.createElement("button", { type: "button", key: x, className: "sort-chip", "aria-pressed": active === x, "data-state": disabled ? (right ? 'correct' : 'wrong') : undefined, disabled: disabled, onClick: () => active === x ? putBack(x) : pick(x) },
-                        x,
-                        disabled && !right && React.createElement("small", null,
-                            "\u2192 ",
-                            home(x))); }),
-                    !here.length && React.createElement("span", { className: "sort-empty" }, disabled ? 'Nothing here' : 'Tap to place')));
+                    here.map(x => chip(x, disabled ? (home(x) === g.name ? 'correct' : 'wrong') : undefined)),
+                    !here.length && React.createElement("span", { className: "sort-empty" }, disabled ? 'Nothing here' : 'Drop here')));
         })),
+        drag && reactDomExports.createPortal(React.createElement("div", { className: "sort-ghost", style: { left: drag.px, top: drag.py }, "aria-hidden": "true" },
+            ghostImg && React.createElement("img", { src: ghostImg, alt: "" }),
+            React.createElement("span", null, isPictureLabel(drag.x) && ghostImg ? '' : drag.x)), document.body),
         note && React.createElement("p", { className: "extra-note", role: "status" }, note),
         !disabled && React.createElement("div", { className: "extra-tools" },
             React.createElement("span", { role: "status" },
@@ -29164,44 +31060,107 @@ function HighlightAnswer({ item, disabled, onGrade }) {
             React.createElement("button", { type: "button", disabled: !picked.length, onClick: () => setPicked([]) }, "Clear")),
         !disabled && React.createElement(Button, { className: "split-submit", disabled: !picked.length, onClick: () => onGrade(picked) }, "Check words"));
 }
-function TapTarget({ spot }) { return React.createElement("span", { className: "tap-target", "aria-hidden": "true", style: { left: `${spot.x * 100}%`, top: `${spot.y * 100}%`, width: `${spot.r * 200}%`, height: `${spot.r * 200 / spot.aspect}%` } }); }
+function TapTarget({ spot, state, label }) { return React.createElement("span", { className: "tap-target", "data-state": state, "aria-hidden": "true", style: { left: `${spot.x * 100}%`, top: `${spot.y * 100}%`, width: `${spot.r * 200}%`, height: `${spot.r * 200 / spot.aspect}%` } }, label && React.createElement("em", null, label)); }
+/** The picture sized to its own shape, so spot positions match the image. Zoom makes small places easier to hit on phones. */
+function TapCanvas({ image, alt, boardRef, zoomed, onZoom, children, locked, ...rest }) {
+    return React.createElement("div", { className: "tap-frame", "data-zoomed": zoomed || undefined },
+        React.createElement("div", { className: "tap-scroll" },
+            React.createElement("div", { className: "tap-board is-map", ref: boardRef, "data-locked": locked || undefined, style: zoomed ? { width: '200%' } : undefined, ...rest },
+                React.createElement("img", { src: image, alt: alt, draggable: false }),
+                children)),
+        React.createElement("button", { type: "button", className: "tap-zoom", "aria-pressed": !!zoomed, onClick: onZoom },
+            zoomed ? React.createElement(ZoomOut, { size: 15 }) : React.createElement(ZoomIn, { size: 15 }),
+            zoomed ? 'Zoom out' : 'Zoom in'));
+}
 function ImageTapAnswer({ item, disabled, onGrade }) {
-    const [spot, setSpot] = reactExports.useState(null), board = reactExports.useRef(null);
-    const hit = disabled && hotspotHit(item.hotspot, spot);
-    function place(e) { if (disabled)
-        return; const r = board.current.getBoundingClientRect(); setSpot({ x: clamp$4((e.clientX - r.left) / r.width), y: clamp$4((e.clientY - r.top) / r.height) }); }
+    const spots = tapSpots(item), mode = item.tapMode === 'name' ? 'name' : 'find', single = mode === 'find' && spots.length === 1;
+    const order = reactExports.useMemo(() => single ? [0] : seededShuffle(spots.map((_, i) => i), String(item.id || item.prompt) + '|tap'), [item]);
+    const bank = reactExports.useMemo(() => seededShuffle(spots.map(s => s.label), String(item.id || item.prompt) + '|names'), [item]);
+    const [pins, setPins] = reactExports.useState(() => spots.map(() => null)), [names, setNames] = reactExports.useState(() => spots.map(() => ''));
+    const [cur, setCur] = reactExports.useState(order[0] ?? 0), [zoomed, setZoomed] = reactExports.useState(false), board = reactExports.useRef(null);
+    const given = mode === 'name' ? names : pins, results = disabled ? tapResults(item, given) : [], right = results.filter(Boolean).length;
+    const done = mode === 'name' ? names.filter(Boolean).length : pins.filter(Boolean).length;
+    const nextOpen = (list, from) => { const at = order.indexOf(from); for (let k = 1; k <= order.length; k++) {
+        const i = order[(at + k) % order.length];
+        if (!list[i])
+            return i;
+    } return from; };
+    function place(e) {
+        if (disabled || mode === 'name')
+            return;
+        const r = board.current.getBoundingClientRect();
+        const next = pins.map((p, i) => i === cur ? { x: clamp$2((e.clientX - r.left) / r.width), y: clamp$2((e.clientY - r.top) / r.height) } : p);
+        setPins(next);
+        if (!single)
+            setCur(nextOpen(next, cur));
+    }
     function key(e) {
-        if (disabled)
+        if (disabled || mode === 'name')
             return;
         const moves = { ArrowLeft: [-0.02, 0], ArrowRight: [.02, 0], ArrowUp: [0, -0.02], ArrowDown: [0, .02] };
         if (moves[e.key]) {
             e.preventDefault();
-            setSpot(s => ({ x: clamp$4((s?.x ?? .5) + moves[e.key][0]), y: clamp$4((s?.y ?? .5) + moves[e.key][1]) }));
+            setPins(ps => ps.map((p, i) => i === cur ? { x: clamp$2((p?.x ?? .5) + moves[e.key][0]), y: clamp$2((p?.y ?? .5) + moves[e.key][1]) } : p));
         }
-        else if ((e.key === 'Enter' || e.key === ' ') && !spot) {
+        else if ((e.key === 'Enter' || e.key === ' ') && !pins[cur]) {
             e.preventDefault();
-            setSpot({ x: .5, y: .5 });
+            setPins(ps => ps.map((p, i) => i === cur ? { x: .5, y: .5 } : p));
         }
     }
-    return React.createElement("div", { className: "extra-answer tap-answer" },
-        !disabled && React.createElement("p", { className: "split-answer-help" }, spot ? 'Tap again to move your pin, then check.' : 'Tap the right place on the picture.'),
-        React.createElement("div", { className: "tap-board", ref: board, "data-locked": disabled || undefined, role: "button", tabIndex: disabled ? -1 : 0, "aria-label": "Picture. Tap to place your pin; arrow keys move it.", onClick: place, onKeyDown: key },
-            React.createElement("img", { src: item.image, alt: item.imageAlt || 'Question picture', draggable: false }),
-            disabled && item.hotspot && React.createElement(TapTarget, { spot: item.hotspot }),
-            spot && React.createElement("span", { className: "tap-pin", "data-state": disabled ? (hit ? 'correct' : 'wrong') : undefined, style: { left: `${spot.x * 100}%`, top: `${spot.y * 100}%` }, "aria-hidden": "true" })),
-        disabled && React.createElement("div", { className: "tap-result", "data-state": hit ? 'correct' : 'wrong', role: "status" },
-            hit ? React.createElement(Check, { size: 18 }) : React.createElement(X, { size: 18 }),
+    function nameIt(label) {
+        if (disabled)
+            return;
+        const next = names.map((n, i) => i === cur ? label : n === label ? '' : n);
+        setNames(next);
+        setCur(nextOpen(next, cur));
+    }
+    const ask = spots[cur]?.label;
+    return React.createElement("div", { className: "extra-answer tap-answer", "data-mode": mode },
+        !disabled && (single ? React.createElement("p", { className: "split-answer-help" }, pins[0] ? 'Tap again to move your pin, then check.' : 'Tap the right place on the picture.')
+            : mode === 'find' ? React.createElement("p", { className: "tap-ask", role: "status" },
+                React.createElement("span", null, "Tap"),
+                React.createElement("b", null, ask),
+                React.createElement("small", null,
+                    done,
+                    " of ",
+                    spots.length,
+                    " placed"))
+                : React.createElement("p", { className: "tap-ask", role: "status" },
+                    React.createElement("span", null, "Name pin"),
+                    React.createElement("b", { className: "tap-ask-num" }, cur + 1),
+                    React.createElement("small", null,
+                        done,
+                        " of ",
+                        spots.length,
+                        " named"))),
+        React.createElement(TapCanvas, { image: item.image, alt: item.imageAlt || 'Question picture', boardRef: board, zoomed: zoomed, onZoom: () => setZoomed(z => !z), locked: disabled || mode === 'name', role: mode === 'find' ? 'button' : undefined, tabIndex: disabled || mode === 'name' ? -1 : 0, "aria-label": mode === 'find' ? `Picture. Tap to place your pin${ask && !single ? ` for ${ask}` : ''}; arrow keys move it.` : 'Picture with numbered pins', onClick: place, onKeyDown: key },
+            disabled && spots.map((s, i) => React.createElement(TapTarget, { key: 't' + i, spot: s, state: results[i] ? 'correct' : 'wrong', label: !single || mode === 'name' ? s.label : undefined })),
+            mode === 'find' && pins.map((p, i) => p && React.createElement("span", { key: 'p' + i, className: "tap-pin", "data-current": !disabled && !single && i === cur || undefined, "data-state": disabled ? (results[i] ? 'correct' : 'wrong') : undefined, style: { left: `${p.x * 100}%`, top: `${p.y * 100}%` }, "aria-hidden": "true" }, !single && !(disabled && results[i]) && React.createElement("em", null, spots[i].label))),
+            mode === 'name' && spots.map((s, i) => React.createElement("button", { type: "button", key: 'n' + i, className: "tap-marker", "aria-pressed": !disabled && cur === i, "data-state": disabled ? (results[i] ? 'correct' : 'wrong') : names[i] ? 'named' : undefined, disabled: disabled, "aria-label": `Pin ${i + 1}${names[i] ? `: ${names[i]}` : ''}`, style: { left: `${s.x * 100}%`, top: `${s.y * 100}%` }, onClick: e => { e.stopPropagation(); setCur(i); } },
+                React.createElement("span", null, i + 1),
+                (names[i] || disabled) && React.createElement("em", null, disabled && !results[i] ? React.createElement(React.Fragment, null,
+                    React.createElement("s", null, names[i] || '—'),
+                    " ",
+                    s.label) : names[i])))),
+        !disabled && !single && mode === 'find' && React.createElement("div", { className: "tap-queue", role: "group", "aria-label": "Places to find" }, order.map(i => React.createElement("button", { type: "button", key: i, "aria-pressed": cur === i, "data-done": !!pins[i] || undefined, onClick: () => setCur(i) },
+            pins[i] && React.createElement(Check, { size: 13, "aria-hidden": "true" }),
+            spots[i].label))),
+        !disabled && mode === 'name' && React.createElement("div", { className: "tap-bank", role: "group", "aria-label": "Names" }, bank.map(label => { const at = names.indexOf(label); return React.createElement("button", { type: "button", key: label, "data-used": at >= 0 || undefined, "aria-label": `${label}${at >= 0 ? `, on pin ${at + 1}` : ''}`, onClick: () => nameIt(label) },
+            at >= 0 && React.createElement("b", null, at + 1),
+            label); })),
+        disabled && React.createElement("div", { className: "tap-result", "data-state": right === spots.length ? 'correct' : 'wrong', role: "status" },
+            right === spots.length ? React.createElement(Check, { size: 18 }) : React.createElement(X, { size: 18 }),
             React.createElement("div", null,
-                React.createElement("strong", null, hit ? 'You found it' : 'Not quite'),
-                React.createElement("span", null, hit ? 'Right on the spot.' : 'The ringed spot is the right place.'))),
-        !disabled && React.createElement(Button, { className: "split-submit", disabled: !spot, onClick: () => onGrade(spot) }, "Check"));
+                React.createElement("strong", null, single ? (right ? 'You found it' : 'Not quite') : right === spots.length ? (mode === 'name' ? 'All named' : 'All found') : `${right} of ${spots.length} right`),
+                React.createElement("span", null, single ? (right ? 'Right on the spot.' : 'The ringed spot is the right place.') : right === spots.length ? 'Every place is right.' : 'Green rings are right, red ones were missed.'))),
+        !disabled && React.createElement(Button, { className: "split-submit", disabled: done < spots.length, onClick: () => onGrade(given) }, "Check"));
 }
 function SliderAnswer({ item, disabled, onGrade }) {
     const min = Number(item.sliderMin ?? 0), max = Number(item.sliderMax ?? 100), step = Number(item.sliderStep) || 1;
-    const decimals = Math.min(6, (String(step).split('.')[1] || '').length), snap = (v) => Number(clamp$4(min + Math.round((v - min) / step) * step, min, max).toFixed(decimals));
+    const decimals = Math.min(6, (String(step).split('.')[1] || '').length), snap = (v) => Number(clamp$2(min + Math.round((v - min) / step) * step, min, max).toFixed(decimals));
     const [value, setValue] = reactExports.useState(null), shown = value ?? snap((min + max) / 2);
     const answer = Number(item.answer), tolerance = Number(item.numericTolerance) || 0, span = max - min || 1;
-    const pct = (v) => clamp$4((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    const pct = (v) => clamp$2((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
     const right = disabled && value !== null && Math.abs(value - answer) <= tolerance + 1e-9;
     const unit = item.unit ? React.createElement("small", null, item.unit) : null;
     return React.createElement("div", { className: "extra-answer slider-answer" },
@@ -29235,1494 +31194,13 @@ function ExtraAnswer(props) {
     if (type === 'highlight')
         return React.createElement(HighlightAnswer, { ...props });
     if (type === 'image_tap')
-        return props.item.image ? React.createElement(ImageTapAnswer, { ...props }) : React.createElement("p", { className: "extra-note" }, "Add a question picture to use this type.");
+        return props.item.image && tapSpots(props.item).length ? React.createElement(ImageTapAnswer, { ...props }) : React.createElement("p", { className: "extra-note" }, props.item.image ? 'Mark at least one place on the picture.' : 'Add a question picture to use this type.');
     if (type === 'slider')
         return React.createElement(SliderAnswer, { ...props });
     return null;
 }
 
-var reactDomExports = requireReactDom();
-
-const ERROR_EVENT = 'recallflow:media-error';
-function pushMediaLinkError(message) { if (message)
-    window.dispatchEvent(new CustomEvent(ERROR_EVENT, { detail: message })); }
-function DriveShareLegacyNotice({ kind = 'media' }) {
-    const what = kind === 'sound' ? 'Sound' : kind === 'video' ? 'Video' : 'Media';
-    return React.createElement("p", { className: "media-drive-legacy", role: "status" },
-        React.createElement("strong", null,
-            what,
-            " needs updating."),
-        " ",
-        DRIVE_SHARE_LEGACY_HINT);
-}
-function bandTitle(label) { const t = label.replace(/\s*link$/i, '').trim() || 'Media'; return /^add\s/i.test(t) ? t : `Add ${t.toLowerCase()} link`; }
-function linkHint(label) {
-    const l = label.toLowerCase();
-    if (l.includes('image') || l.includes('picture'))
-        return 'Paste a direct image link (PNG, JPEG, WebP, GIF).';
-    if (l.includes('video'))
-        return 'Paste a direct video link (MP4 or WebM).';
-    return 'Paste a direct audio link (MP3, WAV, OGG).';
-}
-function bandIcon(label) { const l = label.toLowerCase(); return l.includes('image') || l.includes('picture') ? Image$1 : l.includes('video') ? Film : Link2; }
-function liveHint(url) {
-    const u = url.trim();
-    if (!u)
-        return '';
-    if (driveFileId(u) || isDriveLink(u))
-        return 'This link won’t play. Use a direct file link.';
-    if (/^http:\/\//i.test(u))
-        return 'Links must start with https://';
-    if (!/^https:\/\//i.test(u))
-        return 'That does not look like a link yet.';
-    return '';
-}
-function MediaLinkForm({ id, label, placeholder = 'https://…', submitLabel = 'Add', initialUrl = '', autoFocus = false, resolve = resolveMediaLink, onSubmit, onCancel, onClearError }) {
-    const [url, setUrl] = reactExports.useState(initialUrl), [busy, setBusy] = reactExports.useState(false), [error, setError] = reactExports.useState('');
-    const Icon = bandIcon(label), hint = liveHint(url), canPaste = typeof navigator !== 'undefined' && !!navigator.clipboard?.readText;
-    reactExports.useEffect(() => { setUrl(initialUrl); }, [initialUrl]);
-    reactExports.useEffect(() => { const on = (e) => setError(String(e.detail || '')); window.addEventListener(ERROR_EVENT, on); return () => window.removeEventListener(ERROR_EVENT, on); }, []);
-    reactExports.useEffect(() => { const ov = document.body.style.overflow; document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ov; }; }, []);
-    const clearInput = () => { if (busy)
-        return; setUrl(''); setError(''); onClearError?.(); };
-    const submit = async () => { if (!url.trim() || busy || hint)
-        return; setBusy(true); setError(''); onClearError?.(); try {
-        await onSubmit(resolve(url.trim()));
-    }
-    catch (e) {
-        const msg = e?.message || 'That link could not be added.';
-        setError(msg);
-        pushMediaLinkError(msg);
-    }
-    finally {
-        setBusy(false);
-    } };
-    const cancel = () => { if (busy)
-        return; setUrl(''); setError(''); onClearError?.(); onCancel(); };
-    const paste = async () => { try {
-        const t = (await navigator.clipboard.readText()).trim();
-        if (t) {
-            setUrl(t);
-            setError('');
-        }
-    }
-    catch {
-        setError('Clipboard access was blocked — paste with Ctrl/Cmd+V instead.');
-    } };
-    const titleId = `${id || 'media-link'}-title`;
-    return reactDomExports.createPortal(React.createElement("div", { className: "media-link-layer", onMouseDown: e => { if (e.target === e.currentTarget)
-            cancel(); } },
-        React.createElement("section", { className: "media-link-dialog", role: "dialog", "aria-modal": "true", "aria-labelledby": titleId, id: id },
-            React.createElement("div", { className: "media-link-band" },
-                React.createElement(Icon, { size: 18, "aria-hidden": "true" }),
-                React.createElement("h3", { id: titleId }, bandTitle(label)),
-                React.createElement("button", { type: "button", className: "media-link-close", "aria-label": "Close", disabled: busy, onClick: cancel },
-                    React.createElement(X, { size: 18 }))),
-            React.createElement("div", { className: "media-link-body" },
-                React.createElement("p", { className: "media-link-hint" }, linkHint(label)),
-                React.createElement("div", { className: "media-link-input-wrap" },
-                    React.createElement("input", { type: "url", inputMode: "url", autoFocus: autoFocus, "aria-label": label, "aria-invalid": !!error || !!hint, placeholder: placeholder, value: url, disabled: busy, onChange: e => { setUrl(e.target.value); setError(''); onClearError?.(); }, onKeyDown: e => { if (e.key === 'Enter') {
-                            e.preventDefault();
-                            void submit();
-                        } if (e.key === 'Escape') {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            cancel();
-                        } } }),
-                    url.trim() ? React.createElement("button", { type: "button", className: "media-link-input-clear", "aria-label": "Clear link", disabled: busy, onClick: clearInput },
-                        React.createElement(X, { size: 16 }))
-                        : canPaste && React.createElement("button", { type: "button", className: "media-link-input-paste", "aria-label": "Paste from clipboard", disabled: busy, onClick: () => void paste() },
-                            React.createElement(ClipboardPaste, { size: 16 }))),
-                hint && !error && React.createElement("p", { className: "media-link-live", role: "status" },
-                    React.createElement(CircleAlert, { size: 14, "aria-hidden": "true" }),
-                    React.createElement("span", null, hint)),
-                error && React.createElement("p", { className: "media-link-error", role: "alert" },
-                    React.createElement(CircleAlert, { size: 15, "aria-hidden": "true" }),
-                    React.createElement("span", null, error)),
-                React.createElement("footer", null,
-                    React.createElement("button", { type: "button", className: "media-link-cancel", disabled: busy, onClick: cancel }, "Cancel"),
-                    React.createElement("button", { type: "button", className: "media-link-add", disabled: !url.trim() || busy || !!hint, onClick: () => void submit() }, busy ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : submitLabel))))), document.body);
-}
-
-const MIN_LEN = 0.1;
-const clamp$3 = (v, a, b) => Math.min(Math.max(v, Math.min(a, b)), Math.max(a, b));
-const num = (v, fb) => typeof v === 'number' && Number.isFinite(v) ? v : fb;
-const fmtTime = (s) => { s = Math.max(0, num(s, 0)); return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`; };
-const fmtFine = (s) => `${fmtTime(s)}.${Math.floor((Math.max(0, num(s, 0)) % 1) * 10)}`;
-const isEmbeddedMedia = (src) => /^(data|blob):/i.test(src || '');
-const playbackSrc = (src) => isEmbeddedMedia(src) ? src : resolveMediaPlaybackSrc(src);
-const AC = () => (window.AudioContext || window.webkitAudioContext);
-function defaultEdit(duration) { const d = Math.max(0, num(duration, 0)); return { trimStart: 0, trimEnd: d, muted: false, volume: 1, fadeIn: 0, fadeOut: 0, gain: 1 }; }
-function normalizeEdit(edit, duration) {
-    const d = Math.max(0, num(duration, 0));
-    if (!d || !edit)
-        return { ...defaultEdit(d), frame: edit?.frame };
-    const trimStart = clamp$3(num(edit.trimStart, 0), 0, Math.max(0, d - MIN_LEN));
-    const trimEnd = clamp$3(num(edit.trimEnd, d), Math.min(d, trimStart + MIN_LEN), d);
-    const len = Math.max(MIN_LEN, trimEnd - trimStart);
-    return { trimStart, trimEnd, muted: !!edit.muted, volume: clamp$3(num(edit.volume, 1), 0, 1), fadeIn: clamp$3(num(edit.fadeIn, 0), 0, len / 2), fadeOut: clamp$3(num(edit.fadeOut, 0), 0, len / 2), gain: clamp$3(num(edit.gain, 1), 0.25, 4), frame: edit.frame };
-}
-function editIsDefault(edit, duration) {
-    const n = normalizeEdit(edit, duration);
-    return !n.frame && !n.muted && n.volume === 1 && n.gain === 1 && n.fadeIn === 0 && n.fadeOut === 0 && n.trimStart <= 0.01 && Math.abs(n.trimEnd - duration) <= 0.05;
-}
-function levelAt(e, t) {
-    if (e.muted)
-        return 0;
-    let a = 1;
-    if (e.fadeIn && e.fadeIn > 0)
-        a = Math.min(a, (t - e.trimStart) / e.fadeIn);
-    if (e.fadeOut && e.fadeOut > 0)
-        a = Math.min(a, (e.trimEnd - t) / e.fadeOut);
-    return clamp$3(a, 0, 1) * num(e.volume, 1) * num(e.gain, 1);
-}
-/* ───────────────────────── 4:3 frame (same model as ImageEditor) ───────────────────────── */
-const FRAME_W = 1200, FRAME_H = 900;
-const fitK$1 = (w, h) => Math.min(FRAME_W / w, FRAME_H / h);
-const fillK$1 = (w, h) => Math.max(FRAME_W / w, FRAME_H / h);
-const maxK$1 = (w, h) => fillK$1(w, h) * 4;
-const centredFrame = (k, extra) => ({ k, x: FRAME_W / 2, y: FRAME_H / 2, ...extra });
-function limitFrame(f, w, h) {
-    const k = clamp$3(num(f.k, 1), fitK$1(w, h), maxK$1(w, h)), sw = w * k, sh = h * k;
-    return { k, x: clamp$3(num(f.x, FRAME_W / 2), sw / 2, FRAME_W - sw / 2), y: clamp$3(num(f.y, FRAME_H / 2), sh / 2, FRAME_H - sh / 2), fx: !!f.fx || undefined, fy: !!f.fy || undefined };
-}
-function frameFor(edit, w, h) {
-    if (!w || !h)
-        return centredFrame(1);
-    const f = edit?.frame;
-    return f && Number.isFinite(f.k) ? limitFrame(f, w, h) : centredFrame(fitK$1(w, h));
-}
-function frameIsDefault(f, w, h) { return !f.fx && !f.fy && Math.abs(f.k - fitK$1(w, h)) < 1e-6 && Math.abs(f.x - FRAME_W / 2) < 0.5 && Math.abs(f.y - FRAME_H / 2) < 0.5; }
-const zoomAround$1 = (f, k, ox, oy) => { const r = k / f.k; return { ...f, k, x: ox - (ox - f.x) * r, y: oy - (oy - f.y) * r }; };
-/** CSS placement of a <video> inside a 4:3 box, in percentages — no measuring needed. */
-function frameStyle(f, w, h) {
-    if (!w || !h)
-        return { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' };
-    const sw = w * f.k, sh = h * f.k;
-    return { position: 'absolute', left: `${(f.x - sw / 2) / FRAME_W * 100}%`, top: `${(f.y - sh / 2) / FRAME_H * 100}%`, width: `${sw / FRAME_W * 100}%`, height: `${sh / FRAME_H * 100}%`, maxWidth: 'none', maxHeight: 'none', transform: `scale(${f.fx ? -1 : 1},${f.fy ? -1 : 1})` };
-}
-function useVideoDims(ref, src) {
-    const [dims, setDims] = reactExports.useState({ w: 0, h: 0 });
-    reactExports.useEffect(() => {
-        let cancelled = false;
-        const read = () => {
-            if (cancelled)
-                return;
-            const v = ref.current;
-            if (v && v.videoWidth && v.videoHeight)
-                setDims({ w: v.videoWidth, h: v.videoHeight });
-        };
-        const v = ref.current;
-        if (v) {
-            v.addEventListener('loadedmetadata', read);
-            v.addEventListener('loadeddata', read);
-            v.addEventListener('canplay', read);
-        }
-        read();
-        const poll = window.setInterval(read, 200);
-        const stop = window.setTimeout(() => window.clearInterval(poll), 15000);
-        return () => {
-            cancelled = true;
-            window.clearInterval(poll);
-            window.clearTimeout(stop);
-            if (v) {
-                v.removeEventListener('loadedmetadata', read);
-                v.removeEventListener('loadeddata', read);
-                v.removeEventListener('canplay', read);
-            }
-        };
-    }, [src, ref]);
-    return dims;
-}
-function useBackdrop(video, canvas, src, playing) {
-    reactExports.useEffect(() => {
-        const v = video.current, c = canvas.current;
-        if (!v || !c)
-            return;
-        c.width = 32;
-        c.height = 24;
-        const g = c.getContext('2d');
-        if (!g)
-            return;
-        const draw = () => { if (v.readyState < 2 || !v.videoWidth)
-            return; const k = Math.max(32 / v.videoWidth, 24 / v.videoHeight), w = v.videoWidth * k, h = v.videoHeight * k; try {
-            g.drawImage(v, (32 - w) / 2, (24 - h) / 2, w, h);
-        }
-        catch { } };
-        let raf = 0, last = 0;
-        const loop = (t) => { if (t - last > 120) {
-            draw();
-            last = t;
-        } raf = requestAnimationFrame(loop); };
-        v.addEventListener('loadeddata', draw);
-        v.addEventListener('seeked', draw);
-        draw();
-        if (playing)
-            raf = requestAnimationFrame(loop);
-        return () => { cancelAnimationFrame(raf); v.removeEventListener('loadeddata', draw); v.removeEventListener('seeked', draw); };
-    }, [src, playing, video, canvas]);
-}
-/** A 4:3 box with a blurred backdrop and the video placed by `frame`. Used by the player and the editor. */
-const VideoFrame = React.forwardRef(function VideoFrame({ src, frame, dims, playing, className = '', preload = 'metadata', onClick, children }, ref) {
-    const inner = reactExports.useRef(null), canvas = reactExports.useRef(null);
-    const setRef = reactExports.useCallback((el) => { inner.current = el; if (typeof ref === 'function')
-        ref(el);
-    else if (ref)
-        ref.current = el; }, [ref]);
-    useBackdrop(inner, canvas, src, playing);
-    return React.createElement("div", { className: `vf ${className}`.trim(), onClick: onClick },
-        React.createElement("canvas", { ref: canvas, className: "vf-backdrop", "aria-hidden": "true" }),
-        React.createElement("video", { key: src, ref: setRef, src: playbackSrc(src), playsInline: true, preload: preload, style: frameStyle(frame, dims.w, dims.h) }),
-        children);
-});
-/* ───────────────────────── duration & probing ───────────────────────── */
-function readDuration(el) {
-    const d = saneDuration(el.duration);
-    if (d)
-        return d;
-    try {
-        const s = el.seekable;
-        if (s.length)
-            return saneDuration(s.end(s.length - 1));
-    }
-    catch { }
-    return 0;
-}
-function isLocalMediaSrc(src) { return /^(data|blob):/i.test(src || ''); }
-function probeHost() {
-    let host = document.getElementById('rf-probe-host');
-    if (!host) {
-        host = document.createElement('div');
-        host.id = 'rf-probe-host';
-        host.style.cssText = 'position:fixed;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden';
-        document.body.appendChild(host);
-    }
-    return host;
-}
-function resolveMediaDuration(el, timeoutMs = 15000) {
-    return new Promise(resolve => {
-        let done = false, fixing = false;
-        const local = isLocalMediaSrc(el.currentSrc || el.src);
-        const evs = ['loadedmetadata', 'durationchange', 'loadeddata', 'canplay'];
-        const finish = (d) => { if (done)
-            return; done = true; window.clearTimeout(timer); window.clearTimeout(seekTimer); evs.forEach(ev => el.removeEventListener(ev, check)); el.removeEventListener('error', onErr); resolve(d); };
-        let seekTimer = 0;
-        const check = () => {
-            const d = readDuration(el);
-            if (d) {
-                finish(d);
-                return;
-            }
-            if (!local && el.readyState >= 1 && !fixing && !Number.isFinite(el.duration)) {
-                fixing = true;
-                const back = () => { el.removeEventListener('seeked', back); window.clearTimeout(seekTimer); const d2 = readDuration(el); try {
-                    el.currentTime = 0;
-                }
-                catch { } if (d2)
-                    finish(d2);
-                else
-                    fixing = false; };
-                el.addEventListener('seeked', back);
-                seekTimer = window.setTimeout(() => { el.removeEventListener('seeked', back); fixing = false; }, 4000);
-                try {
-                    el.currentTime = 1e101;
-                }
-                catch {
-                    el.removeEventListener('seeked', back);
-                    window.clearTimeout(seekTimer);
-                    fixing = false;
-                }
-            }
-        };
-        const onErr = () => finish(0);
-        const timer = window.setTimeout(() => finish(readDuration(el)), timeoutMs);
-        evs.forEach(ev => el.addEventListener(ev, check));
-        el.addEventListener('error', onErr);
-        check();
-    });
-}
-function seekElement(el, t) {
-    return new Promise(resolve => { let timer = 0; const done = () => { el.removeEventListener('seeked', done); window.clearTimeout(timer); resolve(); }; el.addEventListener('seeked', done); timer = window.setTimeout(done, 3000); try {
-        el.currentTime = t;
-    }
-    catch {
-        done();
-    } });
-}
-/** Quick open check for uploads and links. Local blobs use metadata-only + a short timeout. */
-function probeMediaSrc(src, kind, timeoutMs) {
-    const local = isLocalMediaSrc(src);
-    const ms = timeoutMs ?? (local ? 4500 : 12000);
-    return new Promise(resolve => {
-        const el = document.createElement(kind);
-        el.preload = 'metadata';
-        el.muted = true;
-        el.playsInline = true;
-        const host = probeHost();
-        host.appendChild(el);
-        let settled = false;
-        const finish = (ok, duration) => {
-            if (settled)
-                return;
-            settled = true;
-            try {
-                el.pause();
-            }
-            catch { }
-            el.removeAttribute('src');
-            try {
-                el.load();
-            }
-            catch { }
-            el.remove();
-            resolve({ ok, duration });
-        };
-        el.addEventListener('error', () => finish(false, 0), { once: true });
-        el.src = playbackSrc(src);
-        try {
-            el.load();
-        }
-        catch { }
-        void resolveMediaDuration(el, ms).then(d => {
-            const ok = !el.error && (d > 0 || (local ? el.readyState >= 1 : el.readyState >= 2));
-            finish(ok, d);
-        });
-    });
-}
-/* ───────────────────────── decoding, peaks, rendering ───────────────────────── */
-async function decodeAudioFromSrc(src) {
-    const res = await fetch(playbackSrc(src), isEmbeddedMedia(src) ? undefined : { mode: 'cors' });
-    if (!res.ok)
-        throw new Error('Could not fetch this clip.');
-    const ab = await res.arrayBuffer();
-    const Ctx = AC();
-    if (!Ctx)
-        throw new Error('Web Audio is not available in this browser.');
-    const ctx = new Ctx();
-    try {
-        return await ctx.decodeAudioData(ab);
-    }
-    finally {
-        ctx.close().catch(() => { });
-    }
-}
-function computePeaks(buf, bars) {
-    const n = buf.length, block = Math.max(1, Math.floor(n / bars)), chs = buf.numberOfChannels, peaks = new Array(bars).fill(0);
-    let peak = 0;
-    for (let c = 0; c < chs; c++) {
-        const d = buf.getChannelData(c);
-        for (let i = 0; i < bars; i++) {
-            const s = i * block, e = Math.min(n, s + block);
-            let m = 0;
-            for (let j = s; j < e; j++) {
-                const v = d[j] < 0 ? -d[j] : d[j];
-                if (v > m)
-                    m = v;
-            }
-            if (m > peaks[i])
-                peaks[i] = m;
-            if (m > peak)
-                peak = m;
-        }
-    }
-    return { peaks: peaks.map(v => peak ? v / peak : 0), duration: buf.duration, peak, channels: chs, sampleRate: buf.sampleRate };
-}
-const peakCache = new Map();
-const cacheKey = (src, bars) => `${bars}:${src.length}:${src.slice(0, 96)}:${src.slice(-96)}`;
-function decodePeaks(src, bars = 240) {
-    const key = cacheKey(src, bars);
-    const hit = peakCache.get(key);
-    if (hit)
-        return hit;
-    const p = decodeAudioFromSrc(src).then(b => computePeaks(b, bars)).catch(() => null);
-    peakCache.set(key, p);
-    if (peakCache.size > 16)
-        peakCache.delete(peakCache.keys().next().value);
-    return p;
-}
-function peakWithin(p, from, to) {
-    const n = p.peaks.length, a = clamp$3(Math.floor(from * n), 0, n - 1), b = clamp$3(Math.ceil(to * n), a + 1, n);
-    let m = 0;
-    for (let i = a; i < b; i++)
-        if (p.peaks[i] > m)
-            m = p.peaks[i];
-    return m * p.peak;
-}
-async function renderEditedAudio(src, edit, opts = {}) {
-    const buf = await decodeAudioFromSrc(src);
-    const e = normalizeEdit(edit, buf.duration), len = Math.max(MIN_LEN, e.trimEnd - e.trimStart);
-    const sr = opts.sampleRate || buf.sampleRate, chs = opts.mono ? 1 : buf.numberOfChannels;
-    const Off = (window.OfflineAudioContext || window.webkitOfflineAudioContext);
-    const off = new Off(chs, Math.ceil(len * sr), sr);
-    const s = off.createBufferSource();
-    s.buffer = buf;
-    const g = off.createGain();
-    const base = e.muted ? 0 : e.volume * e.gain;
-    g.gain.setValueAtTime(e.fadeIn > 0 ? 0 : base, 0);
-    if (e.fadeIn > 0)
-        g.gain.linearRampToValueAtTime(base, e.fadeIn);
-    if (e.fadeOut > 0) {
-        g.gain.setValueAtTime(base, Math.max(e.fadeIn, len - e.fadeOut));
-        g.gain.linearRampToValueAtTime(0, len);
-    }
-    s.connect(g).connect(off.destination);
-    s.start(0, e.trimStart, len);
-    return off.startRendering();
-}
-function audioBufferToWav(buf) {
-    const chs = buf.numberOfChannels, sr = buf.sampleRate, n = buf.length, bytes = 44 + n * chs * 2;
-    const ab = new ArrayBuffer(bytes), dv = new DataView(ab);
-    const str = (o, s) => { for (let i = 0; i < s.length; i++)
-        dv.setUint8(o + i, s.charCodeAt(i)); };
-    str(0, 'RIFF');
-    dv.setUint32(4, bytes - 8, true);
-    str(8, 'WAVE');
-    str(12, 'fmt ');
-    dv.setUint32(16, 16, true);
-    dv.setUint16(20, 1, true);
-    dv.setUint16(22, chs, true);
-    dv.setUint32(24, sr, true);
-    dv.setUint32(28, sr * chs * 2, true);
-    dv.setUint16(32, chs * 2, true);
-    dv.setUint16(34, 16, true);
-    str(36, 'data');
-    dv.setUint32(40, n * chs * 2, true);
-    const data = Array.from({ length: chs }, (_, c) => buf.getChannelData(c));
-    let o = 44;
-    for (let i = 0; i < n; i++)
-        for (let c = 0; c < chs; c++) {
-            const v = clamp$3(data[c][i], -1, 1);
-            dv.setInt16(o, v < 0 ? v * 0x8000 : v * 0x7fff, true);
-            o += 2;
-        }
-    return new Blob([ab], { type: 'audio/wav' });
-}
-async function encodeAudioBuffer(buf, { bitrate = 48000, onProgress, signal } = {}) {
-    if (typeof MediaRecorder === 'undefined')
-        throw new Error('This browser cannot compress audio.');
-    const Ctx = AC();
-    if (!Ctx)
-        throw new Error('Web Audio is not available in this browser.');
-    const ctx = new Ctx();
-    try {
-        await ctx.resume().catch(() => { });
-        if (ctx.state !== 'running')
-            throw new Error('Audio is blocked until you interact with the page. Tap anywhere, then try again.');
-        const dest = ctx.createMediaStreamDestination(), s = ctx.createBufferSource();
-        s.buffer = buf;
-        s.connect(dest);
-        const mime = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
-        const rec = new MediaRecorder(dest.stream, { ...(mime ? { mimeType: mime } : {}), audioBitsPerSecond: bitrate });
-        const chunks = [];
-        rec.ondataavailable = e => { if (e.data.size)
-            chunks.push(e.data); };
-        const done = new Promise(res => { rec.onstop = () => res(new Blob(chunks, { type: rec.mimeType || mime || 'audio/webm' })); });
-        const t0 = ctx.currentTime;
-        let aborted = false;
-        const tick = window.setInterval(() => onProgress?.(clamp$3((ctx.currentTime - t0) / buf.duration, 0, 0.99)), 200);
-        const stop = () => { window.clearInterval(tick); if (rec.state !== 'inactive')
-            rec.stop(); };
-        s.onended = stop;
-        signal?.addEventListener('abort', () => { aborted = true; try {
-            s.stop();
-        }
-        catch { } stop(); }, { once: true });
-        rec.start(250);
-        s.start();
-        const blob = await done;
-        if (aborted)
-            throw new Error('Cancelled.');
-        onProgress?.(1);
-        return blob;
-    }
-    finally {
-        ctx.close().catch(() => { });
-    }
-}
-async function exportTrimmedAudio(src, edit, opts = {}) {
-    return encodeAudioBuffer(await renderEditedAudio(src, edit), { bitrate: 64000, ...opts });
-}
-async function exportTrimmedWav(src, edit) { return audioBufferToWav(await renderEditedAudio(src, edit)); }
-function paintVideoFrame(g, v, f, W, H, tmp) {
-    const s = W / FRAME_W, vw = v.videoWidth, vh = v.videoHeight, w = vw * f.k * s, h = vh * f.k * s;
-    const k = Math.max(32 / vw, 24 / vh);
-    tmp.getContext('2d').drawImage(v, (32 - vw * k) / 2, (24 - vh * k) / 2, vw * k, vh * k);
-    g.save();
-    if ('filter' in g)
-        g.filter = 'blur(8px)';
-    g.drawImage(tmp, -W * 0.06, -H * 0.06, W * 1.12, H * 1.12);
-    g.restore();
-    g.fillStyle = 'rgba(0,0,0,.15)';
-    g.fillRect(0, 0, W, H);
-    g.save();
-    g.translate(f.x * s, f.y * s);
-    g.scale(f.fx ? -1 : 1, f.fy ? -1 : 1);
-    g.drawImage(v, -w / 2, -h / 2, w, h);
-    g.restore();
-}
-/** Real video export: selection + fades + volume + 4:3 crop frame → WebM via canvas.captureStream. Real time; uploaded clips only. */
-async function exportTrimmedVideo(src, edit, opts = {}) {
-    if (typeof MediaRecorder === 'undefined')
-        throw new Error('This browser cannot export video.');
-    if (!isEmbeddedMedia(src))
-        throw new Error('Exporting an edited video needs an uploaded clip.');
-    const v = document.createElement('video');
-    v.src = playbackSrc(src);
-    v.playsInline = true;
-    v.preload = 'auto';
-    v.muted = false;
-    v.style.cssText = 'position:fixed;left:-9999px;width:2px;height:2px;opacity:0;pointer-events:none';
-    document.body.appendChild(v);
-    let ctx = null;
-    try {
-        const d = await resolveMediaDuration(v);
-        if (!d)
-            throw new Error('Could not read this video.');
-        await new Promise((res, rej) => { if (v.readyState >= 2)
-            return res(); v.addEventListener('loadeddata', () => res(), { once: true }); v.addEventListener('error', () => rej(new Error('Could not read this video.')), { once: true }); });
-        const e = normalizeEdit(edit, d), len = Math.max(MIN_LEN, e.trimEnd - e.trimStart), f = frameFor(edit, v.videoWidth, v.videoHeight);
-        const W = 960, H = 720, canvas = document.createElement('canvas');
-        canvas.width = W;
-        canvas.height = H;
-        const c2 = canvas.getContext('2d');
-        if (!c2)
-            throw new Error('Canvas is not available.');
-        const tmp = document.createElement('canvas');
-        tmp.width = 32;
-        tmp.height = 24;
-        const stream = canvas.captureStream(30);
-        let gain = null;
-        const Ctx = AC();
-        if (!e.muted && Ctx) {
-            ctx = new Ctx();
-            await ctx.resume().catch(() => { });
-            const node = ctx.createMediaElementSource(v);
-            gain = ctx.createGain();
-            const dest = ctx.createMediaStreamDestination();
-            node.connect(gain).connect(dest);
-            dest.stream.getAudioTracks().forEach(t => stream.addTrack(t));
-        }
-        else
-            v.muted = true;
-        const mime = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
-        const rec = new MediaRecorder(stream, { ...(mime ? { mimeType: mime } : {}), videoBitsPerSecond: 2500000 });
-        const chunks = [];
-        rec.ondataavailable = ev => { if (ev.data.size)
-            chunks.push(ev.data); };
-        const stopped = new Promise(res => { rec.onstop = () => res(new Blob(chunks, { type: rec.mimeType || mime || 'video/webm' })); });
-        await seekElement(v, e.trimStart);
-        paintVideoFrame(c2, v, f, W, H, tmp);
-        rec.start(500);
-        let raf = 0, aborted = false;
-        const finish = () => { cancelAnimationFrame(raf); v.pause(); if (rec.state !== 'inactive')
-            rec.stop(); };
-        const draw = () => {
-            const t = v.currentTime;
-            paintVideoFrame(c2, v, f, W, H, tmp);
-            if (gain && ctx)
-                gain.gain.setTargetAtTime(levelAt(e, t), ctx.currentTime, 0.01);
-            opts.onProgress?.(clamp$3((t - e.trimStart) / len, 0, 1));
-            if (t >= e.trimEnd - 0.02 || v.ended) {
-                finish();
-                return;
-            }
-            raf = requestAnimationFrame(draw);
-        };
-        opts.signal?.addEventListener('abort', () => { aborted = true; finish(); }, { once: true });
-        await v.play();
-        raf = requestAnimationFrame(draw);
-        const blob = await stopped;
-        if (aborted)
-            throw new Error('Cancelled.');
-        return blob;
-    }
-    finally {
-        v.pause();
-        v.removeAttribute('src');
-        v.load();
-        v.remove();
-        ctx?.close().catch(() => { });
-    }
-}
-function saveBlob(blob, name) {
-    const url = URL.createObjectURL(blob), a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-}
-async function downloadOriginal(src, name) {
-    try {
-        const blob = await (await fetch(playbackSrc(src), isEmbeddedMedia(src) ? undefined : { mode: 'cors' })).blob();
-        saveBlob(blob, name);
-    }
-    catch {
-        window.open(src, '_blank', 'noopener');
-    }
-}
-const extFor = (mime, kind) => /mp4/.test(mime) ? (kind === 'audio' ? 'm4a' : 'mp4') : /ogg/.test(mime) ? 'ogg' : /wav/.test(mime) ? 'wav' : 'webm';
-function useClipPlayback(ref, src, edit, opts = {}) {
-    const [duration, setDuration] = reactExports.useState(0), [at, setAt] = reactExports.useState(0), [playing, setPlaying] = reactExports.useState(false), [failed, setFailed] = reactExports.useState(false), [ready, setReady] = reactExports.useState(false);
-    const graph = reactExports.useRef(null);
-    const clip = normalizeEdit(edit, duration);
-    const clipRef = reactExports.useRef(clip);
-    clipRef.current = clip;
-    const durRef = reactExports.useRef(duration);
-    durRef.current = duration;
-    const loopRef = reactExports.useRef(!!opts.loop);
-    loopRef.current = !!opts.loop;
-    const embedded = isEmbeddedMedia(src);
-    const embeddedRef = reactExports.useRef(embedded);
-    embeddedRef.current = embedded;
-    const wantAnalyser = reactExports.useRef(!!opts.analyser);
-    reactExports.useEffect(() => {
-        let cancelled = false;
-        const pollId = window.setInterval(() => {
-            if (cancelled)
-                return;
-            const e = ref.current;
-            if (!e)
-                return;
-            const d = readDuration(e);
-            if (d > 0)
-                setDuration(prev => Math.abs(prev - d) < 0.05 ? prev : d);
-            if (e.readyState >= 2)
-                setReady(true);
-            if (e.error)
-                setFailed(true);
-        }, 200);
-        const stop = window.setTimeout(() => window.clearInterval(pollId), 25000);
-        const el = ref.current;
-        setAt(0);
-        setPlaying(false);
-        setFailed(false);
-        setReady(false);
-        setDuration(opts.durationHint || 0);
-        if (!el) {
-            return () => { cancelled = true; window.clearInterval(pollId); window.clearTimeout(stop); };
-        }
-        const onErr = () => { if (!cancelled && el.error)
-            setFailed(true); };
-        const onReady = () => { if (!cancelled)
-            setReady(true); };
-        el.addEventListener('error', onErr);
-        el.addEventListener('loadeddata', onReady);
-        if (el.readyState >= 2)
-            setReady(true);
-        void resolveMediaDuration(el, embedded ? 8000 : 20000).then(d => {
-            if (cancelled)
-                return;
-            if (d > 0) {
-                setDuration(d);
-                return;
-            }
-            const ready = el.readyState >= 1 && !el.error;
-            if (ready) {
-                const fallback = opts.durationHint || 120;
-                setDuration(prev => prev > 0 ? prev : fallback);
-            }
-            else
-                setFailed(true);
-        });
-        if (embedded && el instanceof HTMLAudioElement) {
-            const run = () => { void decodePeaks(src, 160).then(m => { if (!cancelled && m?.duration)
-                setDuration(prev => prev || m.duration); }); };
-            if (typeof requestIdleCallback !== 'undefined')
-                requestIdleCallback(run, { timeout: 2500 });
-            else
-                window.setTimeout(run, 120);
-        }
-        return () => {
-            cancelled = true;
-            el.removeEventListener('error', onErr);
-            el.removeEventListener('loadeddata', onReady);
-            window.clearInterval(pollId);
-            window.clearTimeout(stop);
-            el.pause();
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [src]);
-    reactExports.useEffect(() => { if (opts.durationHint)
-        setDuration(p => p || opts.durationHint); }, [opts.durationHint]);
-    reactExports.useEffect(() => () => { graph.current?.ctx.close().catch(() => { }); graph.current = null; }, []);
-    const ensureGraph = reactExports.useCallback(() => {
-        const el = ref.current;
-        if (!el || !embeddedRef.current)
-            return null;
-        if (graph.current && graph.current.el !== el) {
-            graph.current.ctx.close().catch(() => { });
-            graph.current = null;
-        }
-        if (graph.current)
-            return graph.current;
-        try {
-            const Ctx = AC();
-            if (!Ctx)
-                return null;
-            const ctx = new Ctx(), node = ctx.createMediaElementSource(el), gain = ctx.createGain();
-            let analyser;
-            if (wantAnalyser.current) {
-                analyser = ctx.createAnalyser();
-                analyser.fftSize = 128;
-                analyser.smoothingTimeConstant = 0.7;
-            }
-            node.connect(gain);
-            if (analyser) {
-                gain.connect(analyser);
-                analyser.connect(ctx.destination);
-            }
-            else
-                gain.connect(ctx.destination);
-            el.volume = 1;
-            el.muted = false;
-            graph.current = { el, ctx, gain, analyser };
-        }
-        catch {
-            graph.current = null;
-        }
-        return graph.current;
-    }, [ref]);
-    const applyLevel = reactExports.useCallback((t) => {
-        const el = ref.current;
-        if (!el)
-            return;
-        const c = clipRef.current, lvl = levelAt(c, t), g = graph.current;
-        if (g && g.el === el) {
-            g.gain.gain.setTargetAtTime(lvl, g.ctx.currentTime, 0.015);
-            el.muted = false;
-            el.volume = 1;
-        }
-        else {
-            el.muted = c.muted;
-            try {
-                el.volume = clamp$3(lvl, 0, 1);
-            }
-            catch { }
-        }
-    }, [ref]);
-    reactExports.useEffect(() => { const el = ref.current; if (el)
-        applyLevel(el.currentTime); }, [clip.muted, clip.volume, clip.gain, clip.fadeIn, clip.fadeOut, clip.trimStart, clip.trimEnd, applyLevel, ref]);
-    reactExports.useEffect(() => {
-        let cancelled = false, raf = 0, last = -1, bound = null, pollId = 0, stopId = 0;
-        const visAt = (t) => { const c = clipRef.current; return clamp$3(t, c.trimStart, c.trimEnd); };
-        const step = () => {
-            if (cancelled || !bound)
-                return;
-            const el = bound, c = clipRef.current;
-            let t = el.currentTime;
-            if (durRef.current && t < c.trimStart - 0.01) {
-                try {
-                    el.currentTime = c.trimStart;
-                    t = c.trimStart;
-                }
-                catch { }
-            }
-            applyLevel(t);
-            setPlaying(!el.paused);
-            const vis = visAt(t);
-            if (!el.paused || Math.abs(vis - last) > 0.03) {
-                last = vis;
-                setAt(vis);
-            }
-            if (durRef.current && t >= c.trimEnd - 0.03) {
-                if (loopRef.current) {
-                    el.currentTime = c.trimStart;
-                    last = c.trimStart;
-                    setAt(c.trimStart);
-                }
-                else {
-                    el.pause();
-                    el.currentTime = c.trimStart;
-                    setAt(c.trimStart);
-                    setPlaying(false);
-                    return;
-                }
-            }
-            if (!el.paused)
-                raf = requestAnimationFrame(step);
-        };
-        const onPlay = () => { if (cancelled || !bound)
-            return; const c = clipRef.current, e = bound; if (durRef.current && e.currentTime < c.trimStart - 0.01)
-            try {
-                e.currentTime = c.trimStart;
-            }
-            catch { } setPlaying(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(step); };
-        const onPause = () => { if (cancelled)
-            return; setPlaying(false); cancelAnimationFrame(raf); if (bound) {
-            const v = visAt(bound.currentTime);
-            last = v;
-            setAt(v);
-        } };
-        const onEnded = () => { if (cancelled || !bound)
-            return; setPlaying(false); cancelAnimationFrame(raf); const c = clipRef.current; bound.currentTime = c.trimStart; last = c.trimStart; setAt(c.trimStart); };
-        const onTime = () => { if (cancelled || !bound || !bound.paused)
-            return; const v = visAt(bound.currentTime); last = v; setAt(v); };
-        const detach = () => {
-            if (!bound)
-                return;
-            const el = bound;
-            bound = null;
-            cancelAnimationFrame(raf);
-            el.removeEventListener('play', onPlay);
-            el.removeEventListener('pause', onPause);
-            el.removeEventListener('ended', onEnded);
-            el.removeEventListener('timeupdate', onTime);
-        };
-        const attach = () => {
-            const el = ref.current;
-            if (!el || el === bound)
-                return !!el;
-            detach();
-            bound = el;
-            el.addEventListener('play', onPlay);
-            el.addEventListener('pause', onPause);
-            el.addEventListener('ended', onEnded);
-            el.addEventListener('timeupdate', onTime);
-            if (!el.paused)
-                onPlay();
-            else {
-                const v = visAt(el.currentTime);
-                last = v;
-                setAt(v);
-            }
-            return true;
-        };
-        if (!attach())
-            pollId = window.setInterval(() => { if (attach())
-                window.clearInterval(pollId); }, 150);
-        stopId = window.setTimeout(() => window.clearInterval(pollId), 30000);
-        return () => {
-            cancelled = true;
-            window.clearInterval(pollId);
-            window.clearTimeout(stopId);
-            detach();
-        };
-    }, [src, applyLevel, ref]);
-    const seek = reactExports.useCallback((t, free = false) => {
-        const el = ref.current;
-        if (!el)
-            return;
-        const c = clipRef.current, d = durRef.current;
-        const next = d ? (free ? clamp$3(t, 0, d) : clamp$3(t, c.trimStart, c.trimEnd)) : Math.max(0, t);
-        try {
-            el.currentTime = next;
-        }
-        catch { }
-        setAt(next);
-        applyLevel(next);
-    }, [applyLevel, ref]);
-    const play = reactExports.useCallback(() => {
-        const el = ref.current;
-        if (!el)
-            return;
-        const c = clipRef.current, d = durRef.current;
-        setFailed(false);
-        if (d && (el.currentTime < c.trimStart - 0.01 || el.currentTime >= c.trimEnd - 0.05)) {
-            try {
-                el.currentTime = c.trimStart;
-            }
-            catch { }
-        }
-        const g = ensureGraph();
-        applyLevel(el.currentTime);
-        const p = el.play();
-        if (g && g.ctx.state !== 'running')
-            void g.ctx.resume().catch(() => { });
-        if (p && typeof p.catch === 'function')
-            p.catch((e) => { if (e?.name !== 'AbortError' && e?.name !== 'NotAllowedError')
-                setFailed(true); });
-    }, [applyLevel, ensureGraph, ref]);
-    const pause = reactExports.useCallback(() => { ref.current?.pause(); }, [ref]);
-    const toggle = reactExports.useCallback(() => { const el = ref.current; if (!el)
-        return; if (el.paused)
-        play();
-    else
-        el.pause(); }, [play, ref]);
-    const levels = reactExports.useCallback((bars) => {
-        const g = graph.current;
-        if (!g?.analyser)
-            return null;
-        const data = g.data || (g.data = new Uint8Array(g.analyser.frequencyBinCount));
-        g.analyser.getByteFrequencyData(data);
-        const step = Math.max(1, Math.floor(data.length / bars));
-        return Array.from({ length: bars }, (_, i) => { let s = 0; for (let j = 0; j < step; j++)
-            s += data[i * step + j] || 0; return s / step / 255; });
-    }, []);
-    return { duration, at, playing, failed, ready, clip, seek, play, pause, toggle, levels };
-}
-/* ───────────────────────── timeline strip (waveform / filmstrip) ───────────────────────── */
-async function extractFrames(src, duration, count, height, signal, onFrame) {
-    const v = document.createElement('video');
-    v.src = playbackSrc(src);
-    v.muted = true;
-    v.playsInline = true;
-    v.preload = 'auto';
-    try {
-        await new Promise((res, rej) => { const t = window.setTimeout(() => rej(new Error('timeout')), 15000); v.addEventListener('loadeddata', () => { window.clearTimeout(t); res(); }, { once: true }); v.addEventListener('error', () => { window.clearTimeout(t); rej(new Error('error')); }, { once: true }); });
-        const ratio = v.videoWidth && v.videoHeight ? v.videoWidth / v.videoHeight : 16 / 9, w = Math.max(8, Math.round(height * ratio));
-        for (let i = 0; i < count && !signal.aborted; i++) {
-            await seekElement(v, Math.min(Math.max(0, duration - 0.05), (i + 0.5) / count * duration));
-            if (signal.aborted)
-                break;
-            const c = document.createElement('canvas');
-            c.width = w;
-            c.height = height;
-            c.getContext('2d')?.drawImage(v, 0, 0, w, height);
-            onFrame(c);
-        }
-    }
-    catch { }
-    finally {
-        v.removeAttribute('src');
-        v.load();
-    }
-}
-function useStrip(canvas, src, kind, duration, peaks) {
-    const frames = reactExports.useRef([]);
-    const drawRef = reactExports.useRef(() => { });
-    drawRef.current = () => {
-        const c = canvas.current;
-        if (!c)
-            return;
-        const dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
-        if (!w || !h)
-            return;
-        const W = Math.round(w * dpr), H = Math.round(h * dpr);
-        if (c.width !== W || c.height !== H) {
-            c.width = W;
-            c.height = H;
-        }
-        const g = c.getContext('2d');
-        if (!g)
-            return;
-        g.setTransform(dpr, 0, 0, dpr, 0, 0);
-        g.clearRect(0, 0, w, h);
-        const fr = frames.current;
-        if (fr.length) {
-            const fw = w / fr.length;
-            fr.forEach((f, i) => g.drawImage(f, i * fw, 0, fw + 0.5, h));
-        }
-        if (peaks && peaks.length) {
-            const n = peaks.length, bw = w / n, video = kind === 'video', mid = video ? h * 0.78 : h / 2, amp = video ? h * 0.2 : h * 0.46;
-            g.fillStyle = '#a99cff';
-            g.globalAlpha = video ? 0.85 : 1;
-            for (let i = 0; i < n; i++) {
-                const bh = Math.max(1, peaks[i] * amp);
-                g.fillRect(i * bw + bw * 0.2, mid - bh, Math.max(1, bw * 0.6), bh * 2);
-            }
-            g.globalAlpha = 1;
-        }
-    };
-    reactExports.useEffect(() => {
-        frames.current = [];
-        drawRef.current();
-        if (kind !== 'video' || !duration)
-            return;
-        const ac = new AbortController();
-        void extractFrames(src, duration, 10, 56, ac.signal, f => { frames.current = [...frames.current, f]; drawRef.current(); });
-        return () => ac.abort();
-    }, [src, kind, duration]);
-    reactExports.useEffect(() => {
-        drawRef.current();
-        const c = canvas.current;
-        if (!c || typeof ResizeObserver === 'undefined')
-            return;
-        const ro = new ResizeObserver(() => drawRef.current());
-        ro.observe(c);
-        return () => ro.disconnect();
-    }, [peaks, kind, canvas]);
-}
-/** Big waveform for the audio stage: dim outside the selection, playhead on top. */
-function useWaveStage(canvas, peaks, duration, start, end, at) {
-    reactExports.useEffect(() => {
-        const c = canvas.current;
-        if (!c)
-            return;
-        const dpr = window.devicePixelRatio || 1, w = c.clientWidth, h = c.clientHeight;
-        if (!w || !h)
-            return;
-        const W = Math.round(w * dpr), H = Math.round(h * dpr);
-        if (c.width !== W || c.height !== H) {
-            c.width = W;
-            c.height = H;
-        }
-        const g = c.getContext('2d');
-        if (!g)
-            return;
-        g.setTransform(dpr, 0, 0, dpr, 0, 0);
-        g.clearRect(0, 0, w, h);
-        const p = peaks && peaks.length ? peaks : Array.from({ length: 120 }, (_, i) => 0.2 + 0.1 * Math.abs(Math.sin(i * 0.7)));
-        const n = p.length, bw = w / n, mid = h / 2, amp = h * 0.42, a = duration ? start / duration : 0, b = duration ? end / duration : 1;
-        for (let i = 0; i < n; i++) {
-            const f = (i + 0.5) / n;
-            g.fillStyle = f >= a && f <= b ? '#b5aaff' : '#4c4870';
-            const bh = Math.max(1.5, p[i] * amp);
-            g.fillRect(i * bw + bw * 0.2, mid - bh, Math.max(1, bw * 0.6), bh * 2);
-        }
-        if (duration) {
-            const t = clamp$3(at, start, end), x = clamp$3(t / duration, 0, 1) * w;
-            g.fillStyle = '#fff';
-            g.fillRect(x - 1, 0, 2, h);
-        }
-    }, [canvas, peaks, duration, start, end, at]);
-}
-const bubbleStyle = (pct) => pct < 9 ? { left: 0, transform: 'none' } : pct > 91 ? { right: 0, left: 'auto', transform: 'none' } : { left: `${pct}%`, transform: 'translateX(-50%)' };
-function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplace, saveMode = 'edits', maxSeconds, fileName, durationHint }) {
-    const media = reactExports.useRef(null);
-    const stageEl = reactExports.useRef(null), frameEl = reactExports.useRef(null), strip = reactExports.useRef(null), waveStage = reactExports.useRef(null), root = reactExports.useRef(null);
-    const [edit, setEdit] = reactExports.useState(initial);
-    const [tab, setTab] = reactExports.useState(kind === 'video' ? 'crop' : 'trim');
-    const [loop, setLoop] = reactExports.useState(false), [dragging, setDragging] = reactExports.useState(null), [menu, setMenu] = reactExports.useState(false), [moving, setMoving] = reactExports.useState(false), [slow, setSlow] = reactExports.useState(false);
-    const [size, setSize] = reactExports.useState({ w: 0, h: 0 });
-    const [job, setJob] = reactExports.useState(null);
-    const jobAbort = reactExports.useRef(null);
-    const [note, setNote] = reactExports.useState(null);
-    const [peaksInfo, setPeaksInfo] = reactExports.useState(undefined);
-    const pb = useClipPlayback(media, src, edit, { loop, durationHint });
-    const { duration, at, playing, failed } = pb;
-    const dims = useVideoDims(media, kind === 'video' ? src : '');
-    const e = normalizeEdit(edit, duration);
-    const frame = frameFor(edit, dims.w, dims.h);
-    const embedded = isEmbeddedMedia(src), drive = !embedded && (!!driveFileId(src) || isDriveLink(src));
-    const len = Math.max(0, e.trimEnd - e.trimStart), tooLong = !!maxSeconds && len > maxSeconds + 0.5;
-    const canBake = kind === 'audio' && embedded && !!onReplace, bakeMode = saveMode === 'bake' && canBake;
-    const canRender = !!peaksInfo, canExportVideo = embedded && typeof MediaRecorder !== 'undefined';
-    const stem = (fileName || kind).replace(/\.[a-z0-9]+$/i, '') || 'clip';
-    const ratio = kind === 'video' ? FRAME_W / FRAME_H : 2;
-    useStrip(strip, src, kind, duration, peaksInfo?.peaks ?? null);
-    useWaveStage(waveStage, kind === 'audio' ? (peaksInfo?.peaks ?? null) : null, duration, e.trimStart, e.trimEnd, at);
-    reactExports.useEffect(() => {
-        let c = false;
-        setPeaksInfo(undefined);
-        if (kind === 'video') {
-            setPeaksInfo(null);
-            return () => { c = true; };
-        }
-        const run = () => { void decodePeaks(src, 160).then(p => { if (!c)
-            setPeaksInfo(p); }); };
-        if (typeof requestIdleCallback !== 'undefined') {
-            const id = requestIdleCallback(run, { timeout: 3000 });
-            return () => { c = true; cancelIdleCallback(id); };
-        }
-        const t = window.setTimeout(run, 150);
-        return () => { c = true; window.clearTimeout(t); };
-    }, [src, kind]);
-    reactExports.useEffect(() => { setSlow(false); if (duration || failed || durationHint)
-        return; const t = window.setTimeout(() => setSlow(true), 5000); return () => window.clearTimeout(t); }, [duration, failed, durationHint, src]);
-    reactExports.useEffect(() => { const el = stageEl.current; if (!el)
-        return; const measure = () => { const b = el.getBoundingClientRect(), aw = Math.max(0, b.width - 24), ah = Math.max(0, b.height - 24), w = Math.min(aw, ah * ratio); setSize({ w: Math.floor(w), h: Math.floor(w / ratio) }); }; measure(); const o = new ResizeObserver(measure); o.observe(el); return () => o.disconnect(); }, [ratio]);
-    reactExports.useEffect(() => { if (!note)
-        return; const t = window.setTimeout(() => setNote(null), 5000); return () => window.clearTimeout(t); }, [note]);
-    const cancelRef = reactExports.useRef(() => { });
-    cancelRef.current = () => { jobAbort.current?.abort(); onCancel(); };
-    reactExports.useEffect(() => {
-        const prev = document.activeElement, ov = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
-        root.current?.focus({ preventScroll: true });
-        try {
-            history.pushState({ rfClipEditor: true }, '');
-        }
-        catch { }
-        const onPop = () => cancelRef.current();
-        window.addEventListener('popstate', onPop);
-        return () => { window.removeEventListener('popstate', onPop); if (history.state?.rfClipEditor) {
-            try {
-                history.back();
-            }
-            catch { }
-        } document.body.style.overflow = ov; prev?.focus?.(); };
-    }, []);
-    const flash = (text, k = 'info') => setNote({ text, kind: k });
-    /* edits */
-    const patch = (p, sound = false) => { setEdit(prev => ({ ...normalizeEdit(prev, duration), ...p })); if (sound)
-        playPreset('tick'); };
-    const setStart = (t) => patch({ trimStart: clamp$3(t, 0, e.trimEnd - MIN_LEN) }, true);
-    const setEnd = (t) => patch({ trimEnd: clamp$3(t, e.trimStart + MIN_LEN, duration) }, true);
-    const setFrame = (f) => { if (!dims.w)
-        return; patch({ frame: limitFrame(f, dims.w, dims.h) }); };
-    function normalize() {
-        if (!peaksInfo || !duration)
-            return;
-        const pk = peakWithin(peaksInfo, e.trimStart / duration, e.trimEnd / duration);
-        if (!pk) {
-            flash('This selection is silent.');
-            return;
-        }
-        const g = Math.round(clamp$3(0.9 / pk, 0.25, 4) * 100) / 100;
-        patch({ gain: g, volume: 1, muted: false });
-        flash(g > 1.02 ? `Boosted ${g.toFixed(1)}×` : g < 0.98 ? `Lowered to ${g.toFixed(1)}×` : 'Already at a good level.');
-    }
-    const resetTab = () => {
-        if (tab === 'crop')
-            patch({ frame: undefined });
-        else if (tab === 'trim')
-            patch({ trimStart: 0, trimEnd: duration });
-        else if (tab === 'sound')
-            patch({ muted: false, volume: 1, gain: 1 });
-        else
-            patch({ fadeIn: 0, fadeOut: 0 });
-    };
-    const tabIsDefault = tab === 'crop' ? (!dims.w || frameIsDefault(frame, dims.w, dims.h)) : tab === 'trim' ? (e.trimStart <= 0.01 && Math.abs(e.trimEnd - duration) <= 0.05) : tab === 'sound' ? (!e.muted && e.volume === 1 && e.gain === 1) : (e.fadeIn === 0 && e.fadeOut === 0);
-    /* timeline interaction */
-    const stripBox = reactExports.useRef(null), drag = reactExports.useRef(null);
-    const tAt = (x) => { const r = stripBox.current?.getBoundingClientRect(); if (!r || !duration)
-        return 0; return clamp$3((x - r.left) / r.width, 0, 1) * duration; };
-    function tlDown(k, ev) {
-        if (!duration || (ev.button && ev.button !== 0))
-            return;
-        ev.preventDefault();
-        ev.stopPropagation();
-        try {
-            ev.currentTarget.setPointerCapture(ev.pointerId);
-        }
-        catch { }
-        const t0 = tAt(ev.clientX);
-        drag.current = { kind: k, x0: ev.clientX, base: e, t0, moved: false };
-        setDragging(k);
-        if (k === 'seek' || k === 'move')
-            pb.seek(t0, true);
-        else {
-            pb.pause();
-            pb.seek(k === 'start' ? e.trimStart : e.trimEnd, true);
-        }
-    }
-    function tlMove(ev) {
-        const d = drag.current;
-        if (!d)
-            return;
-        const t = tAt(ev.clientX);
-        if (Math.abs(ev.clientX - d.x0) > 5)
-            d.moved = true;
-        if (d.kind === 'seek') {
-            pb.seek(t, true);
-            return;
-        }
-        const span = d.base.trimEnd - d.base.trimStart, full = duration - span < 0.05;
-        if (d.kind === 'move' && (full || !d.moved)) {
-            pb.seek(t, true);
-            if (full)
-                return;
-        }
-        let next;
-        if (d.kind === 'start')
-            next = { ...d.base, trimStart: Math.min(t, d.base.trimEnd - MIN_LEN) };
-        else if (d.kind === 'end')
-            next = { ...d.base, trimEnd: Math.max(t, d.base.trimStart + MIN_LEN) };
-        else {
-            const w = stripBox.current?.getBoundingClientRect().width || 1, dt = (ev.clientX - d.x0) / w * duration, l = d.base.trimEnd - d.base.trimStart, s = clamp$3(d.base.trimStart + dt, 0, duration - l);
-            next = { ...d.base, trimStart: s, trimEnd: s + l };
-        }
-        const n = normalizeEdit(next, duration);
-        setEdit(n);
-        pb.seek(d.kind === 'end' ? n.trimEnd : n.trimStart, true);
-    }
-    function tlUp(ev) {
-        const d = drag.current;
-        if (!d)
-            return;
-        if ((d.kind === 'move' || d.kind === 'seek') && !d.moved)
-            pb.seek(d.t0, true);
-        drag.current = null;
-        setDragging(null);
-        try {
-            ev.target.releasePointerCapture(ev.pointerId);
-        }
-        catch { }
-        if (d.kind !== 'seek' && d.moved)
-            playPreset('tick');
-    }
-    function handleKey(which, ev) {
-        const step = ev.shiftKey ? 1 : 0.1, dir = ev.key === 'ArrowLeft' || ev.key === 'ArrowDown' ? -1 : ev.key === 'ArrowRight' || ev.key === 'ArrowUp' ? 1 : 0;
-        if (!dir)
-            return;
-        ev.preventDefault();
-        ev.stopPropagation();
-        if (which === 'start')
-            setStart(e.trimStart + dir * step);
-        else
-            setEnd(e.trimEnd + dir * step);
-    }
-    /* crop gesture (same maths as ImageEditor) */
-    const pointers = reactExports.useRef(new Map()), gesture = reactExports.useRef(null), movedRef = reactExports.useRef(false);
-    const toOutput = (cx, cy) => { const b = frameEl.current.getBoundingClientRect(); return { x: (cx - b.left) * FRAME_W / b.width, y: (cy - b.top) * FRAME_H / b.height }; };
-    function startGesture() { const pts = [...pointers.current.values()]; if (!pts.length) {
-        gesture.current = null;
-        return;
-    } const x = pts.reduce((s, p) => s + p.x, 0) / pts.length, y = pts.reduce((s, p) => s + p.y, 0) / pts.length; gesture.current = { f: frame, x, y, dist: pts.length > 1 ? Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) : 0 }; }
-    function cropDown(ev) { if (tab !== 'crop' || !dims.w)
-        return; ev.preventDefault(); try {
-        ev.currentTarget.setPointerCapture(ev.pointerId);
-    }
-    catch { } pointers.current.set(ev.pointerId, { x: ev.clientX, y: ev.clientY }); movedRef.current = false; startGesture(); setMoving(true); }
-    function cropMove(ev) {
-        const g = gesture.current;
-        if (!g || !dims.w || !pointers.current.has(ev.pointerId))
-            return;
-        pointers.current.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
-        const pts = [...pointers.current.values()], b = frameEl.current.getBoundingClientRect(), scale = FRAME_W / b.width;
-        const mx = pts.reduce((s, p) => s + p.x, 0) / pts.length, my = pts.reduce((s, p) => s + p.y, 0) / pts.length;
-        if (Math.abs(mx - g.x) + Math.abs(my - g.y) > 3)
-            movedRef.current = true;
-        let next = { ...g.f, x: g.f.x + (mx - g.x) * scale, y: g.f.y + (my - g.y) * scale };
-        if (pts.length > 1 && g.dist) {
-            const k = clamp$3(g.f.k * Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) / g.dist, fitK$1(dims.w, dims.h), maxK$1(dims.w, dims.h)), o = toOutput(mx, my);
-            next = zoomAround$1(next, k, o.x, o.y);
-        }
-        setFrame(next);
-    }
-    function cropUp(ev) { pointers.current.delete(ev.pointerId); startGesture(); if (!pointers.current.size) {
-        setMoving(false);
-        if (!movedRef.current)
-            pb.toggle();
-    } }
-    function wheel(ev) { if (tab !== 'crop' || !dims.w)
-        return; const o = toOutput(ev.clientX, ev.clientY); setFrame(zoomAround$1(frame, clamp$3(frame.k * Math.exp(-ev.deltaY * .0015), fitK$1(dims.w, dims.h), maxK$1(dims.w, dims.h)), o.x, o.y)); }
-    const zoomTo = (k) => { if (!dims.w)
-        return; setFrame(zoomAround$1(frame, clamp$3(k, fitK$1(dims.w, dims.h), maxK$1(dims.w, dims.h)), FRAME_W / 2, FRAME_H / 2)); };
-    const lo = dims.w ? fitK$1(dims.w, dims.h) : 1, hi = dims.w ? maxK$1(dims.w, dims.h) : 1, level = dims.w && hi > lo ? Math.log(frame.k / lo) / Math.log(hi / lo) : 0;
-    const mode = dims.w ? (Math.abs(frame.k - lo) < 1e-6 ? 'fit' : Math.abs(frame.k - fillK$1(dims.w, dims.h)) < 1e-6 ? 'fill' : '') : '';
-    function onKey(ev) {
-        const tag = ev.target.tagName;
-        if (ev.key === 'Escape') {
-            ev.preventDefault();
-            cancel();
-            return;
-        }
-        if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA')
-            return;
-        if (ev.key === ' ' && tag !== 'BUTTON') {
-            ev.preventDefault();
-            pb.toggle();
-        }
-        else if (ev.key === 'ArrowLeft' && tab !== 'crop') {
-            ev.preventDefault();
-            pb.seek(at - (ev.shiftKey ? 5 : 1), true);
-        }
-        else if (ev.key === 'ArrowRight' && tab !== 'crop') {
-            ev.preventDefault();
-            pb.seek(at + (ev.shiftKey ? 5 : 1), true);
-        }
-        else if (ev.key.toLowerCase() === 'i' && duration)
-            setStart(at);
-        else if (ev.key.toLowerCase() === 'o' && duration)
-            setEnd(at);
-        else if (ev.key.toLowerCase() === 'l')
-            setLoop(v => !v);
-    }
-    /* jobs */
-    async function run(label, fn) {
-        if (job)
-            return;
-        const ac = new AbortController();
-        jobAbort.current = ac;
-        setJob({ label, progress: 0 });
-        pb.pause();
-        setMenu(false);
-        try {
-            await fn(ac.signal, p => setJob(j => j && { ...j, progress: p }));
-        }
-        catch (err) {
-            if (!ac.signal.aborted)
-                flash(err?.message || 'That did not work.', 'error');
-        }
-        finally {
-            setJob(null);
-            jobAbort.current = null;
-        }
-    }
-    const exportWav = () => run('Rendering…', async () => { saveBlob(await exportTrimmedWav(src, e), `${stem}-edited.wav`); flash('WAV saved.'); });
-    const exportWebm = () => run('Compressing…', async (signal, progress) => { const blob = await exportTrimmedAudio(src, e, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'audio')}`); flash('Edited clip saved.'); });
-    const exportVideo = () => run('Exporting video… keep this tab visible', async (signal, progress) => { const blob = await exportTrimmedVideo(src, edit, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'video')}`); flash('Edited video saved.'); });
-    const bake = () => {
-        if (!onReplace)
-            return;
-        if (tooLong) {
-            flash(`Keep the selection under ${fmtTime(maxSeconds)}.`, 'error');
-            return;
-        }
-        void run('Compressing…', async (signal, progress) => {
-            const buf = await renderEditedAudio(src, e, { mono: true, sampleRate: 24000 });
-            const blob = await encodeAudioBuffer(buf, { bitrate: 40000, onProgress: progress, signal });
-            await onReplace(await blobToDataUrl(blob), buf.duration);
-            playPreset('go');
-        });
-    };
-    function done() {
-        if (job)
-            return;
-        if (bakeMode) {
-            bake();
-            return;
-        }
-        playPreset('go');
-        const out = { ...e };
-        if (!out.frame || !dims.w || frameIsDefault(frameFor(out, dims.w, dims.h), dims.w, dims.h))
-            delete out.frame;
-        else
-            out.frame = frameFor(out, dims.w, dims.h);
-        onSave(editIsDefault(out, duration) ? undefined : out);
-    }
-    function cancel() { jobAbort.current?.abort(); onCancel(); }
-    /* render */
-    const left = duration ? e.trimStart / duration * 100 : 0, right = duration ? e.trimEnd / duration * 100 : 100;
-    const showStartBubble = dragging === 'start' || dragging === 'move' || e.trimStart > 0.05, showEndBubble = dragging === 'end' || dragging === 'move' || (duration > 0 && e.trimEnd < duration - 0.05);
-    const vol = Math.round((e.muted ? 0 : e.volume) * 100), maxFade = Math.max(0.1, Math.min(10, len / 2));
-    const selFmt = len < 10 ? fmtFine : fmtTime;
-    const tabs = [...(kind === 'video' ? [{ id: 'crop', label: 'Crop', icon: React.createElement(Crop, { size: 14 }) }] : []), { id: 'trim', label: 'Trim', icon: React.createElement(Scissors, { size: 14 }) }, { id: 'sound', label: 'Sound', icon: React.createElement(Volume2, { size: 14 }) }, { id: 'fades', label: 'Fades', icon: React.createElement(AudioLines, { size: 14 }) }];
-    const hint = job ? '' : bakeMode ? `Pick up to ${fmtTime(maxSeconds || 60)} — only the selection is kept` : tab === 'crop' ? 'Drag to move · pinch or slide to zoom · tap to play' : tab === 'trim' ? (dragging ? `Release to set ${dragging === 'start' ? 'the start' : dragging === 'end' ? 'the end' : 'the selection'}` : 'Press the timeline to move the playhead · drag the handles to trim') : tab === 'sound' ? (e.gain !== 1 ? `${e.gain > 1 ? 'Boosted' : 'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports` : 'Volume applies when the question plays') : 'Fades are shown on the timeline';
-    const sq = (icon, label, onClick, o = {}) => React.createElement("button", { type: "button", disabled: o.disabled, "aria-pressed": o.on, "aria-label": o.aria, onClick: onClick },
-        icon,
-        React.createElement("span", null, label));
-    return reactDomExports.createPortal(React.createElement("div", { ref: root, className: "me", role: "dialog", "aria-modal": "true", "aria-labelledby": "me-title", "data-kind": kind, tabIndex: -1, onKeyDown: onKey },
-        React.createElement("header", { className: "me-head" },
-            React.createElement("button", { type: "button", "aria-label": "Cancel", onClick: cancel },
-                React.createElement(X, { size: 20 })),
-            React.createElement("h2", { id: "me-title" },
-                kind === 'video' ? React.createElement(Crop, { size: 17 }) : React.createElement(AudioLines, { size: 17 }),
-                title),
-            React.createElement("button", { type: "button", className: "me-done", disabled: !!job || (bakeMode && (!duration || tooLong)), onClick: done },
-                job ? React.createElement(LoaderCircle, { size: 16, className: "speech-spinner" }) : bakeMode ? React.createElement(Save, { size: 16 }) : React.createElement(Check, { size: 16 }),
-                bakeMode ? 'Use clip' : 'Done')),
-        React.createElement("div", { className: "me-stage", ref: stageEl }, size.w > 0 && React.createElement("div", { ref: frameEl, className: `me-frame${moving ? ' is-moving' : ''}${tab === 'crop' ? ' is-crop' : ''}`, style: { width: size.w, height: size.h }, role: "application", "aria-label": kind === 'video' ? 'Video frame. Drag to move, pinch or use the slider to zoom' : 'Waveform', onPointerDown: kind === 'video' ? cropDown : undefined, onPointerMove: kind === 'video' ? cropMove : undefined, onPointerUp: kind === 'video' ? cropUp : undefined, onPointerCancel: kind === 'video' ? cropUp : undefined, onWheel: kind === 'video' ? wheel : undefined, onDoubleClick: () => { if (tab === 'crop' && dims.w)
-                setFrame(centredFrame(mode === 'fill' ? lo : fillK$1(dims.w, dims.h))); } },
-            kind === 'video'
-                ? React.createElement(VideoFrame, { ref: media, src: src, frame: frame, dims: dims, playing: playing, preload: embedded ? 'auto' : 'metadata' }, tab === 'crop' && React.createElement("span", { className: "me-grid", "aria-hidden": "true" }))
-                : React.createElement(React.Fragment, null,
-                    React.createElement("audio", { key: src, ref: media, src: playbackSrc(src), preload: embedded ? 'auto' : 'metadata', hidden: true }),
-                    React.createElement("canvas", { ref: waveStage, className: "me-wave", onClick: pb.toggle, "aria-hidden": "true" })),
-            !playing && duration > 0 && !failed && React.createElement("button", { type: "button", className: "me-playbig", "aria-label": "Play selection", onClick: ev => { ev.stopPropagation(); pb.play(); }, onPointerDown: ev => ev.stopPropagation() },
-                React.createElement(Play, { size: 22, fill: "currentColor" })),
-            playing && React.createElement("button", { type: "button", className: "me-playbig is-pause", "aria-label": "Pause", onClick: ev => { ev.stopPropagation(); pb.pause(); }, onPointerDown: ev => ev.stopPropagation() },
-                React.createElement(Pause, { size: 20, fill: "currentColor" })),
-            duration > 0 && React.createElement("span", { className: "me-badge" },
-                selFmt(clamp$3(at - e.trimStart, 0, len)),
-                " / ",
-                selFmt(len)),
-            !duration && !failed && React.createElement("div", { className: "me-state" },
-                React.createElement(LoaderCircle, { size: 22, className: "speech-spinner" }),
-                React.createElement("span", null, slow ? 'Still loading — large file or slow link…' : 'Loading clip…')),
-            failed && React.createElement("div", { className: "me-state is-error" },
-                React.createElement(CircleAlert, { size: 20 }),
-                React.createElement("span", null,
-                    "This clip could not be loaded.",
-                    drive ? ' Google Drive links need "Anyone with the link" sharing — or upload the file instead.' : ''),
-                !embedded && React.createElement("a", { href: src, target: "_blank", rel: "noreferrer" },
-                    React.createElement(ExternalLink, { size: 14 }),
-                    "Open link")))),
-        React.createElement("div", { className: "me-tools" },
-            tab === 'crop' && React.createElement(React.Fragment, null,
-                React.createElement("div", { className: "me-zoom" },
-                    React.createElement("button", { type: "button", "aria-label": "Zoom out", disabled: !dims.w || frame.k <= lo + 1e-6, onClick: () => zoomTo(frame.k / 1.25) },
-                        React.createElement(ZoomOut, { size: 18 })),
-                    React.createElement("input", { type: "range", min: 0, max: 1000, step: 1, "aria-label": "Zoom", disabled: !dims.w || hi <= lo, value: Math.round(level * 1000), onChange: ev => zoomTo(lo * Math.exp(Number(ev.target.value) / 1000 * Math.log(hi / lo))) }),
-                    React.createElement("button", { type: "button", "aria-label": "Zoom in", disabled: !dims.w || frame.k >= hi - 1e-6, onClick: () => zoomTo(frame.k * 1.25) },
-                        React.createElement(ZoomIn, { size: 18 }))),
-                React.createElement("div", { className: "me-pills", role: "radiogroup", "aria-label": "Video size" },
-                    React.createElement("button", { type: "button", role: "radio", "aria-checked": mode === 'fit', disabled: !dims.w, onClick: () => setFrame(centredFrame(lo, { fx: frame.fx, fy: frame.fy })) },
-                        React.createElement(Shrink, { size: 15 }),
-                        "Whole video"),
-                    React.createElement("button", { type: "button", role: "radio", "aria-checked": mode === 'fill', disabled: !dims.w, onClick: () => dims.w && setFrame(centredFrame(fillK$1(dims.w, dims.h), { fx: frame.fx, fy: frame.fy })) },
-                        React.createElement(Expand, { size: 15 }),
-                        "Fill frame"))),
-            tab === 'trim' && React.createElement("div", { className: "me-timeline" },
-                React.createElement("div", { ref: stripBox, className: `me-strip${dragging ? ' is-dragging' : ''}${!duration && !failed ? ' is-loading' : ''}`, onPointerMove: tlMove, onPointerUp: tlUp, onPointerCancel: tlUp },
-                    React.createElement("canvas", { ref: strip, className: "me-strip-canvas", "aria-hidden": "true" }),
-                    duration > 0 && React.createElement(React.Fragment, null,
-                        React.createElement("div", { className: "me-track", onPointerDown: ev => tlDown('seek', ev) }),
-                        React.createElement("span", { className: "me-cut", style: { left: 0, width: `${left}%` } }),
-                        React.createElement("span", { className: "me-cut", style: { left: `${right}%`, right: 0 } }),
-                        React.createElement("div", { className: "me-range", style: { left: `${left}%`, width: `${right - left}%` }, onPointerDown: ev => tlDown('move', ev) },
-                            e.fadeIn > 0 && React.createElement("span", { className: "me-fade is-in", style: { width: `${e.fadeIn / len * 100}%` } }),
-                            e.fadeOut > 0 && React.createElement("span", { className: "me-fade is-out", style: { width: `${e.fadeOut / len * 100}%` } })),
-                        React.createElement("button", { type: "button", className: "me-playhead", style: { left: `${clamp$3(Math.max(e.trimStart, Math.min(at, e.trimEnd)) / duration * 100, 0, 100)}%` }, "aria-label": "Playhead. Drag to seek", onPointerDown: ev => tlDown('seek', ev) }),
-                        React.createElement("button", { type: "button", className: `me-handle${dragging === 'start' ? ' is-active' : ''}`, style: { left: `${left}%` }, "aria-label": `Trim start ${fmtFine(e.trimStart)}. Arrow keys adjust`, onKeyDown: ev => handleKey('start', ev), onPointerDown: ev => tlDown('start', ev) }),
-                        React.createElement("button", { type: "button", className: `me-handle${dragging === 'end' ? ' is-active' : ''}`, style: { left: `${right}%` }, "aria-label": `Trim end ${fmtFine(e.trimEnd)}. Arrow keys adjust`, onKeyDown: ev => handleKey('end', ev), onPointerDown: ev => tlDown('end', ev) }),
-                        showStartBubble && React.createElement("b", { className: `me-bubble${dragging === 'start' ? ' is-active' : ''}`, style: { ...bubbleStyle(left), ...(showEndBubble && right - left < 14 ? { bottom: 'calc(100% + 26px)' } : {}) } }, fmtFine(e.trimStart)),
-                        showEndBubble && React.createElement("b", { className: `me-bubble${dragging === 'end' ? ' is-active' : ''}`, style: bubbleStyle(right) }, fmtFine(e.trimEnd)))),
-                React.createElement("div", { className: "me-ruler", "aria-hidden": "true" },
-                    React.createElement("span", null, "0:00"),
-                    React.createElement("span", null, duration ? (duration < 10 ? fmtFine(duration) : fmtTime(duration)) : '–:––'))),
-            tab === 'sound' && React.createElement("div", { className: "me-row" },
-                React.createElement("button", { type: "button", className: "me-mute", "aria-pressed": e.muted, "aria-label": e.muted ? 'Unmute' : 'Mute', onClick: () => patch({ muted: !e.muted }) }, e.muted || vol === 0 ? React.createElement(VolumeX, { size: 18 }) : React.createElement(Volume2, { size: 18 })),
-                React.createElement("input", { type: "range", min: 0, max: 100, step: 5, value: vol, "aria-label": "Volume", onChange: ev => patch({ volume: Number(ev.target.value) / 100, muted: false }) }),
-                React.createElement("span", { className: "me-val" },
-                    vol,
-                    "%")),
-            tab === 'fades' && React.createElement(React.Fragment, null,
-                React.createElement("label", { className: "me-row" },
-                    React.createElement("span", { className: "me-lab" }, "In"),
-                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: e.fadeIn, disabled: !duration, "aria-label": "Fade in", onChange: ev => patch({ fadeIn: Number(ev.target.value) }) }),
-                    React.createElement("span", { className: "me-val" },
-                        e.fadeIn.toFixed(1),
-                        " s")),
-                React.createElement("label", { className: "me-row" },
-                    React.createElement("span", { className: "me-lab" }, "Out"),
-                    React.createElement("input", { type: "range", min: 0, max: maxFade, step: 0.1, value: e.fadeOut, disabled: !duration, "aria-label": "Fade out", onChange: ev => patch({ fadeOut: Number(ev.target.value) }) }),
-                    React.createElement("span", { className: "me-val" },
-                        e.fadeOut.toFixed(1),
-                        " s"))),
-            React.createElement("div", { className: "me-pills is-tabs", role: "tablist" }, tabs.map(t => React.createElement("button", { key: t.id, type: "button", role: "tab", "aria-selected": tab === t.id, onClick: () => { setTab(t.id); setMenu(false); } },
-                t.icon,
-                t.label))),
-            menu ? React.createElement("div", { className: "me-menu", role: "menu" },
-                React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(false); void downloadOriginal(src, `${stem}.${kind === 'audio' ? 'webm' : 'mp4'}`); } },
-                    kind === 'audio' ? React.createElement(FileAudio, { size: 16 }) : React.createElement(FileVideo, { size: 16 }),
-                    React.createElement("span", null, "Original file")),
-                kind === 'audio' ? React.createElement(React.Fragment, null,
-                    React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: exportWav },
-                        React.createElement(Download, { size: 16 }),
-                        React.createElement("span", null,
-                            "Edited clip \u00B7 WAV ",
-                            React.createElement("small", null, "instant, larger file"))),
-                    React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: exportWebm },
-                        React.createElement(Download, { size: 16 }),
-                        React.createElement("span", null,
-                            "Edited clip \u00B7 compressed ",
-                            React.createElement("small", null,
-                                "takes about ",
-                                fmtTime(len)))),
-                    canBake && !bakeMode && React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: bake },
-                        React.createElement(Save, { size: 16 }),
-                        React.createElement("span", null,
-                            "Save as new clip in this question ",
-                            React.createElement("small", null, "smaller file, edits become permanent")))) : React.createElement("button", { type: "button", role: "menuitem", disabled: !canExportVideo || !duration, onClick: exportVideo },
-                    React.createElement(Download, { size: 16 }),
-                    React.createElement("span", null,
-                        "Edited clip \u00B7 WebM ",
-                        React.createElement("small", null, canExportVideo ? `re-encodes in real time (~${fmtTime(len)})` : 'uploaded videos only'))),
-                React.createElement("button", { type: "button", role: "menuitem", className: "is-close", onClick: () => setMenu(false) },
-                    React.createElement(ArrowLeft, { size: 16 }),
-                    React.createElement("span", null, "Back")))
-                : React.createElement("div", { className: "me-actions" },
-                    tab === 'crop' && React.createElement(React.Fragment, null,
-                        sq(React.createElement(FlipHorizontal2, { size: 18 }), 'Mirror', () => setFrame({ ...frame, fx: !frame.fx }), { disabled: !dims.w, on: !!frame.fx }),
-                        sq(React.createElement(FlipVertical2, { size: 18 }), 'Flip', () => setFrame({ ...frame, fy: !frame.fy }), { disabled: !dims.w, on: !!frame.fy })),
-                    tab === 'trim' && React.createElement(React.Fragment, null,
-                        sq(React.createElement(ArrowLeftToLine, { size: 18 }), 'Start', () => setStart(at), { disabled: !duration, aria: 'Set start here' }),
-                        sq(React.createElement(ArrowRightToLine, { size: 18 }), 'End', () => setEnd(at), { disabled: !duration, aria: 'Set end here' }),
-                        sq(React.createElement(Repeat, { size: 18 }), 'Loop', () => setLoop(v => !v), { on: loop }),
-                        sq(React.createElement(Download, { size: 18 }), 'Export', () => setMenu(true), { disabled: !!job })),
-                    tab === 'sound' && React.createElement(React.Fragment, null,
-                        sq(React.createElement(WandSparkles, { size: 18 }), 'Normalize', normalize, { disabled: !canRender || !duration }),
-                        e.gain !== 1 && sq(React.createElement(Undo2, { size: 18 }), 'No boost', () => patch({ gain: 1 }))),
-                    sq(React.createElement(Undo2, { size: 18 }), 'Reset', resetTab, { disabled: tabIsDefault, aria: `Reset ${tab}` })),
-            job && React.createElement("div", { className: "me-job", role: "status", "aria-live": "polite" },
-                React.createElement("div", { className: "me-jobbar" },
-                    React.createElement("i", { style: { width: `${Math.round(job.progress * 100)}%` } })),
-                React.createElement("span", null,
-                    job.label,
-                    " ",
-                    Math.round(job.progress * 100),
-                    "%"),
-                React.createElement("button", { type: "button", onClick: () => jobAbort.current?.abort() }, "Cancel")),
-            note && React.createElement("p", { className: `me-note is-${note.kind}`, role: "status" }, note.text),
-            !note && peaksInfo === null && tab === 'sound' && React.createElement("p", { className: "me-note" }, embedded ? 'This file could not be analysed, so normalize and export are off.' : 'Normalize and export need an uploaded clip.'),
-            hint && React.createElement("small", { className: "me-hint" }, hint))), document.body);
-}
-
-const clamp$2 = (v, a, b) => Math.min(b, Math.max(a, v));
+const clamp$1 = (v, a, b) => Math.min(b, Math.max(a, v));
 const recorderType = () => typeof MediaRecorder === 'undefined' ? '' : ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
 const guessType = (name) => ({ mp3: 'audio/mpeg', m4a: 'audio/mp4', aac: 'audio/aac', wav: 'audio/wav', ogg: 'audio/ogg', oga: 'audio/ogg', opus: 'audio/ogg', webm: 'audio/webm' }[name.split('.').pop()?.toLowerCase() || ''] || '');
 const tooLong = `Keep the sound to about ${fmtTime(MAX_AUDIO_SECONDS)} or less.`;
@@ -30779,7 +31257,7 @@ function useWaveform(src, bars, start, end) {
     return reactExports.useMemo(() => {
         if (!raw)
             return Array.from({ length: bars }, (_, i) => 0.22 + 0.12 * Math.abs(Math.sin(i * 0.9)));
-        const d = raw.duration || 1, n = raw.peaks.length, a = clamp$2((end > start ? start : 0) / d, 0, 1) * n, b = Math.max(a + 1, clamp$2((end > start ? end : d) / d, 0, 1) * n);
+        const d = raw.duration || 1, n = raw.peaks.length, a = clamp$1((end > start ? start : 0) / d, 0, 1) * n, b = Math.max(a + 1, clamp$1((end > start ? end : d) / d, 0, 1) * n);
         return Array.from({ length: bars }, (_, i) => { const s = Math.floor(a + (i / bars) * (b - a)), e = Math.max(s + 1, Math.floor(a + ((i + 1) / bars) * (b - a))); let m = 0; for (let j = s; j < e && j < n; j++)
             if (raw.peaks[j] > m)
                 m = raw.peaks[j]; return m; });
@@ -30801,7 +31279,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
     const pb = useClipPlayback(audio, src, edit, { durationHint, analyser: variant === 'overlay' });
     const { duration, at, playing, failed } = pb;
     const known = duration > 0, clip = normalizeEdit(edit, duration), selLen = known ? clip.trimEnd - clip.trimStart : 0;
-    const played = known ? clamp$2((at - clip.trimStart) / Math.max(0.1, selLen), 0, 1) : 0;
+    const played = known ? clamp$1((at - clip.trimStart) / Math.max(0.1, selLen), 0, 1) : 0;
     const bars = variant === 'media' ? 48 : variant === 'overlay' ? 30 : 36;
     const peaks = useWaveform(src, bars, known ? clip.trimStart : 0, known ? clip.trimEnd : 0);
     const live = useLiveLevels(pb.levels, bars, playing && variant === 'overlay');
@@ -30813,7 +31291,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
     const cur = known ? f(Math.max(0, at - clip.trimStart)) : '0:00', total = known ? f(selLen) : '–:––';
     if (variant === 'card' || variant === 'media') {
         const seekAt = (x) => { const r = bar.current?.getBoundingClientRect(); if (!r || !known)
-            return; pb.seek(clip.trimStart + clamp$2((x - r.left) / r.width, 0, 1) * selLen); };
+            return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
         const title = failed ? 'This sound could not play' : (displayName || 'Question sound');
         return React.createElement("div", { className: `sp sp-card ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
             React.createElement("button", { type: "button", className: "sp-card-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
@@ -30846,7 +31324,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
             React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
     }
     const seekAt = (x) => { const r = wave.current?.getBoundingClientRect(); if (!r || !known)
-        return; pb.seek(clip.trimStart + clamp$2((x - r.left) / r.width, 0, 1) * selLen); };
+        return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
     return React.createElement("div", { className: `sp sp-${variant} ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
         React.createElement("button", { type: "button", className: "sp-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
         React.createElement("div", { className: "sp-body" },
@@ -31161,181 +31639,6 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         progress,
         warnEl,
         React.createElement("div", { className: "asset-actions" }, assetActions),
-        fileInput,
-        linkForm,
-        clip);
-}
-
-const clamp$1 = (v, a, b) => Math.min(b, Math.max(a, v));
-/** Quiz/preview player: 4:3 frame with blurred backdrop, crop/trim/fades applied, tap to play, drag the bar to seek. */
-function VideoPlayer({ src, className = '', label = 'Play video', edit }) {
-    const video = reactExports.useRef(null), bar = reactExports.useRef(null);
-    const pb = useClipPlayback(video, src, edit);
-    const dims = useVideoDims(video, src);
-    if (isDriveLink(src))
-        return React.createElement("div", { className: `vp ${className}`.trim() },
-            React.createElement(DriveShareLegacyNotice, { kind: "video" }));
-    const clip = pb.clip, sel = Math.max(0, clip.trimEnd - clip.trimStart), known = pb.duration > 0, f = sel < 10 ? fmtFine : fmtTime;
-    const played = known ? clamp$1((pb.at - clip.trimStart) / Math.max(0.1, sel), 0, 1) : 0;
-    const edited = known && !editIsDefault(edit, pb.duration);
-    const seekAt = (x) => { const r = bar.current?.getBoundingClientRect(); if (!r || !known)
-        return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * sel); };
-    return React.createElement("div", { className: `vp ${className}`.trim(), "data-failed": pb.failed || undefined, "data-playing": pb.playing || undefined },
-        React.createElement(VideoFrame, { ref: video, src: src, frame: frameFor(edit, dims.w, dims.h), dims: dims, playing: pb.playing, onClick: pb.toggle },
-            React.createElement("button", { type: "button", className: "vp-play", "aria-label": pb.playing ? 'Pause' : label, onClick: ev => { ev.stopPropagation(); pb.toggle(); } }, pb.playing ? React.createElement(Pause, { size: 20, fill: "currentColor" }) : React.createElement(Play, { size: 22, fill: "currentColor" })),
-            known && React.createElement("span", { className: "vp-badge" },
-                f(clamp$1(pb.at - clip.trimStart, 0, sel)),
-                " / ",
-                f(sel),
-                edited && React.createElement(Crop, { size: 11 })),
-            React.createElement("div", { ref: bar, className: "vp-bar", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(played * 100), tabIndex: known ? 0 : -1, onClick: ev => ev.stopPropagation(), onPointerDown: ev => { ev.stopPropagation(); if (!known)
-                    return; ev.preventDefault(); try {
-                    ev.currentTarget.setPointerCapture(ev.pointerId);
-                }
-                catch { } seekAt(ev.clientX); }, onPointerMove: ev => { if (ev.buttons & 1)
-                    seekAt(ev.clientX); }, onKeyDown: ev => { if (ev.key === 'ArrowLeft') {
-                    ev.preventDefault();
-                    pb.seek(pb.at - 1);
-                }
-                else if (ev.key === 'ArrowRight') {
-                    ev.preventDefault();
-                    pb.seek(pb.at + 1);
-                }
-                else if (ev.key === ' ') {
-                    ev.preventDefault();
-                    pb.toggle();
-                } } },
-                React.createElement("i", { style: { width: `${played * 100}%` } }))),
-        pb.failed && React.createElement("p", { className: "vp-fallback" },
-            "This video could not play.",
-            !isEmbeddedMedia(src) && React.createElement(React.Fragment, null,
-                " ",
-                React.createElement("a", { href: src, target: "_blank", rel: "noreferrer" }, "Open the link"),
-                " to check it.")));
-}
-function VideoField({ video, edit, onEditChange, onChange, onError, onClearError, title = 'Question video', hint = 'Prefer a short upload — large files fill browser storage quickly.', assetLayout, emptyHint, linkLabel = 'Add link', uploadEmptyLabel = 'Upload video' }) {
-    const [busy, setBusy] = reactExports.useState(null), [linking, setLinking] = reactExports.useState(false), [clipOpen, setClipOpen] = reactExports.useState(false), [dragOver, setDragOver] = reactExports.useState(false), [meta, setMeta] = reactExports.useState(null);
-    const input = reactExports.useRef(null);
-    const drive = !!video && isDriveLink(video), linked = !!video?.startsWith('https://');
-    reactExports.useEffect(() => { if (!video) {
-        setLinking(false);
-        setMeta(null);
-    } }, [video]);
-    function applyLink(url) {
-        onError('');
-        const resolved = resolveMediaLink(url.trim());
-        if (!resolved) {
-            onChange(undefined);
-            return true;
-        }
-        if (driveFileId(url) || isDriveLink(resolved)) {
-            pushMediaLinkError(DRIVE_SHARE_REJECT);
-            return false;
-        }
-        if (!/^https:\/\//i.test(resolved) || !videoSafe(resolved)) {
-            pushMediaLinkError('Use an https link to a video file (MP4 or WebM), or upload a small video.');
-            return false;
-        }
-        onEditChange?.(undefined);
-        onChange(resolved);
-        setMeta(null);
-        return true;
-    }
-    async function upload(file) {
-        if (!file || busy)
-            return;
-        onError('');
-        const typed = typedMediaFile(file, 'video');
-        if (!typed) {
-            onError('Choose a video file (MP4, WebM or MOV).');
-            return;
-        }
-        const blob = typed instanceof File ? typed : new File([typed], file.name || 'video.mp4', { type: typed.type });
-        if (dataUrlLength(blob.size, blob.type) > MAX_VIDEO_CHARS) {
-            onError(`Video is ${formatBytes(blob.size)}. Limit is about ${formatBytes(maxBytesForChars(MAX_VIDEO_CHARS))}. Trim it, or add a link.`);
-            return;
-        }
-        setBusy({ label: 'Adding video…' });
-        try {
-            const url = URL.createObjectURL(blob);
-            const [probe, data] = await Promise.all([
-                probeMediaSrc(url, 'video', 5000),
-                blobToDataUrl(blob, p => setBusy({ label: 'Adding video…', progress: p })),
-            ]);
-            URL.revokeObjectURL(url);
-            const ok = probe.ok || blob.size > 0;
-            if (!ok)
-                throw new Error('This video could not be opened in your browser. MP4 (H.264) plays everywhere.');
-            if (!videoSafe(data))
-                throw new Error('This video could not be saved.');
-            onEditChange?.(undefined);
-            onChange(data);
-            setMeta({ duration: probe.duration || 0, size: blob.size });
-            setClipOpen(true);
-        }
-        catch (err) {
-            onError(err?.message || 'This video could not be added.');
-        }
-        finally {
-            setBusy(null);
-        }
-    }
-    const badge = !video ? { text: 'Not added', cls: 'is-empty' } : drive ? { text: 'Needs attention', cls: 'is-warn' } : { text: 'Added', cls: 'is-ok' };
-    const caption = busy ? busy.label : video ? (drive ? 'This link needs attention' : linked ? 'Linked video · plays in the quiz' : [meta && fmtTime(meta.duration), meta && formatBytes(meta.size), edit ? 'edited' : null].filter(Boolean).join(' · ') || 'Tap to preview') : (emptyHint || hint);
-    const openLink = () => { onClearError?.(); setLinking(v => !v); };
-    const pickFile = () => { setLinking(false); input.current?.click(); };
-    const drop = {
-        onDragOver: (ev) => { if (ev.dataTransfer.types.includes('Files')) {
-            ev.preventDefault();
-            setDragOver(true);
-        } },
-        onDragLeave: () => setDragOver(false),
-        onDrop: (ev) => { ev.preventDefault(); setDragOver(false); void upload(ev.dataTransfer.files?.[0]); },
-    };
-    const body = busy
-        ? React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
-            React.createElement("div", { className: `mf-progress-bar${busy.progress === undefined ? ' is-indeterminate' : ''}` },
-                React.createElement("i", { style: busy.progress !== undefined ? { width: `${Math.round(busy.progress * 100)}%` } : undefined })),
-            React.createElement("div", { className: "mf-progress-row" },
-                React.createElement("span", null,
-                    busy.label,
-                    busy.progress !== undefined ? ` ${Math.round(busy.progress * 100)}%` : '')))
-        : video ? (drive ? React.createElement(DriveShareLegacyNotice, { kind: "video" }) : React.createElement(VideoPlayer, { src: video, edit: edit, className: "is-compact", label: `Preview ${title.toLowerCase()}` })) : null;
-    const actions = !busy && (video
-        ? React.createElement("div", { className: "mf-actions" },
-            !drive && React.createElement("button", { type: "button", className: "mf-action is-primary", "aria-label": `Edit ${title.toLowerCase()}`, onClick: () => setClipOpen(true) },
-                React.createElement(Scissors, { size: 14 }),
-                "Edit"),
-            React.createElement("button", { type: "button", className: "mf-action", "aria-label": "Replace video file", onClick: pickFile },
-                React.createElement(RefreshCw, { size: 14 }),
-                "Replace"),
-            React.createElement("button", { type: "button", className: "mf-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, onClick: openLink },
-                React.createElement(Link2, { size: 14 }),
-                linkLabel),
-            React.createElement("button", { type: "button", className: "mf-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); } },
-                React.createElement(Trash2, { size: 14 })))
-        : React.createElement("div", { className: "mf-actions is-empty" },
-            React.createElement("button", { type: "button", className: "mf-action", onClick: pickFile },
-                React.createElement(Upload, { size: 14 }),
-                uploadEmptyLabel),
-            React.createElement("button", { type: "button", className: "mf-action", "aria-expanded": linking, onClick: openLink },
-                React.createElement(Link2, { size: 14 }),
-                linkLabel)));
-    const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, accept: "video/*,.mp4,.webm,.mov,.m4v", onChange: ev => { const f = ev.currentTarget.files?.[0]; ev.currentTarget.value = ''; void upload(f); } });
-    const linkForm = linking && React.createElement(MediaLinkForm, { autoFocus: true, label: `${title} link`, placeholder: "https://\u2026/clip.mp4", submitLabel: "Add", initialUrl: linked && !drive ? video : '', onClearError: onClearError, onCancel: () => setLinking(false), onSubmit: url => { if (applyLink(url))
-            setLinking(false); } });
-    const clip = clipOpen && video && !drive && React.createElement(MediaClipEditor, { kind: "video", title: "Adjust video", src: video, initial: edit, durationHint: meta?.duration, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
-    return React.createElement("article", { className: `mf mf-video${video ? ' has-media' : ''}${assetLayout ? ' is-asset' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
-        React.createElement("header", { className: "mf-head" },
-            React.createElement("span", { className: "mf-ico", "aria-hidden": "true" },
-                React.createElement(Film, { size: 18 })),
-            React.createElement("div", { className: "mf-headmain" },
-                React.createElement("div", { className: "mf-titlerow" },
-                    React.createElement("strong", null, title),
-                    React.createElement("span", { className: `mf-badge ${badge.cls}` }, badge.text)),
-                React.createElement("small", { className: "mf-caption" }, caption))),
-        body,
-        actions,
         fileInput,
         linkForm,
         clip);
@@ -31830,10 +32133,11 @@ function ImageEditor({ src, onSave, onCancel }) {
 }
 
 const icons = { short_answer: PenLine, fill_blank: TextCursorInput, single_choice: CircleDot, flashcard: GalleryVerticalEnd, true_false: ToggleLeft, multi_select: ListChecks, numeric: Hash, matching: ArrowLeftRight, ordering: ListOrdered, cloze: Brackets, fill_blank_options: Puzzle, list_recall: ListTodo, categorize: LayoutGrid, highlight: Highlighter, image_tap: Crosshair, slider: SlidersHorizontal };
-const blurbs = { short_answer: 'Write the answer yourself', fill_blank: 'Complete one missing word', numeric: 'A number, with allowed tolerance', list_recall: 'Name several answers, in any order', single_choice: 'Pick one correct option', true_false: 'Decide if a statement is true', multi_select: 'Pick every correct option', highlight: 'Tap the right words in a sentence', matching: 'Connect pairs together', ordering: 'Put steps in the right order', categorize: 'Put each item in its group', cloze: 'Several blanks in one text', fill_blank_options: 'Choose words from a word bank', image_tap: 'Tap the right spot on a picture', slider: 'Drag to a number, scored by closeness', flashcard: 'Flip the card and rate yourself' };
+const blurbs = { short_answer: 'Write the answer yourself', fill_blank: 'Type the missing words, one blank or several', numeric: 'A number, with allowed tolerance', list_recall: 'Name several answers, in any order', single_choice: 'Pick one correct option', true_false: 'Decide if a statement is true', multi_select: 'Pick every correct option', highlight: 'Tap the right words in a sentence', matching: 'Connect pairs together', ordering: 'Put steps in the right order', categorize: 'Drag items into their groups', cloze: 'Several typed blanks (older type)', fill_blank_options: 'Choose words from a word bank', image_tap: 'Find or name places on a picture or map', slider: 'Drag to a number, scored by closeness', flashcard: 'Flip the card and rate yourself' };
 const groups = [['Write it', ['short_answer', 'fill_blank', 'numeric', 'list_recall']], ['Choose', ['single_choice', 'true_false', 'multi_select', 'highlight']], ['Arrange & fill', ['matching', 'ordering', 'categorize', 'cloze', 'fill_blank_options']], ['Picture & scale', ['image_tap', 'slider']], ['Recall', ['flashcard']]];
 // Types added to question-types.js later still appear, under "More".
-function grouped() { const known = groups.flatMap(([, ids]) => ids), ids = questionTypes.map(([id]) => id); const out = groups.map(([name, list]) => [name, list.filter(id => ids.includes(id))]); const rest = ids.filter(id => !known.includes(id)); if (rest.length)
+// Cloze is offered only on questions that already use it; Fill in the blank now takes several blanks.
+function grouped(value) { const known = [...groups.flatMap(([, ids]) => ids), 'cloze'], ids = questionTypes.map(([id]) => id).filter(id => id !== 'cloze' || id === value); const out = groups.map(([name, list]) => [name, list.filter(id => ids.includes(id))]); const rest = ids.filter(id => !known.includes(id)); if (rest.length)
     out.push(['More', rest]); return out.filter(([, list]) => list.length); }
 const TypeIcon = ({ type, size = 17 }) => { const Icon = icons[type] || Shapes; return React.createElement(Icon, { size: size, "aria-hidden": "true" }); };
 function TypeSheet({ title, value, blocked = [], onPick, onClose }) {
@@ -31860,7 +32164,7 @@ function TypeSheet({ title, value, blocked = [], onPick, onClose }) {
                 React.createElement("h3", null, title),
                 React.createElement("button", { type: "button", className: "type-sheet-close", "aria-label": "Close", onClick: onClose },
                     React.createElement(X, { size: 18 }))),
-            React.createElement("div", { className: "type-sheet-body", role: "listbox", "aria-label": title }, grouped().map(([name, ids]) => React.createElement("div", { className: "type-sheet-group", key: name, role: "group", "aria-label": name },
+            React.createElement("div", { className: "type-sheet-body", role: "listbox", "aria-label": title }, grouped(value).map(([name, ids]) => React.createElement("div", { className: "type-sheet-group", key: name, role: "group", "aria-label": name },
                 React.createElement("p", null, name),
                 ids.map(id => { const taken = blockedSet.has(id); return React.createElement("button", { type: "button", role: "option", key: id, className: "type-sheet-item", "aria-selected": id === value, "aria-disabled": taken || undefined, disabled: taken, title: taken ? 'Already on this question' : undefined, onClick: () => { if (!taken)
                         onPick(id); } },
@@ -31914,25 +32218,39 @@ function ListRecallEditor({ d, field }) {
                     "Any ",
                     i + 1)))));
 }
-function CategorizeEditor({ d, field }) {
+function CategorizeEditor({ d, field, mediaButton, onRename }) {
     const groups = d.groups?.length ? d.groups : emptyGroups(), set = (next) => field('groups', next);
     const change = (i, key, value) => set(groups.map((g, j) => j === i ? { ...g, [key]: value } : g));
+    const total = groups.reduce((n, g) => n + rowsOf(g.items).filter(x => x.trim()).length, 0);
+    function item(i, k, value) { const rows = rowsOf(groups[i].items, 1), old = rows[k] || ''; rows[k] = value; change(i, 'items', rows.join('\n')); onRename?.(old, value); }
     return React.createElement("div", { className: "editor-groups" },
         React.createElement("p", { className: "editor-list-label" },
             "Groups",
-            React.createElement("small", null, "Two to four groups. The quiz mixes all the items together for sorting.")),
-        groups.map((g, i) => React.createElement("div", { className: "editor-group-card", key: i },
-            React.createElement("div", { className: "editor-group-head" },
-                React.createElement("span", { className: "editor-row-number" }, i + 1),
-                React.createElement("input", { "aria-label": `Group ${i + 1} name`, value: g.name, placeholder: ['e.g. Fruit', 'e.g. Vegetable', 'Group 3', 'Group 4'][i], onChange: e => change(i, 'name', e.target.value) }),
-                React.createElement("button", { type: "button", "aria-label": `Remove group ${i + 1}`, disabled: groups.length <= 2, onClick: () => set(groups.filter((_, j) => j !== i)) },
-                    React.createElement(Trash2, { size: 15 }))),
-            React.createElement("textarea", { "aria-label": `Items in group ${i + 1}`, value: g.items, placeholder: [`Apple\nBanana`, `Carrot\nPotato`][i] || 'One item per line', onChange: e => change(i, 'items', e.target.value) }),
-            React.createElement("small", null,
-                "One item per line \u00B7 ",
-                rowsOf(g.items).filter(x => x.trim()).length,
-                " added"))),
-        groups.length < 4 && React.createElement("button", { type: "button", className: "editor-text-button", onClick: () => set([...groups, { name: '', items: '' }]) },
+            React.createElement("small", null, "Two to six groups, up to 30 items. The quiz mixes every item together for learners to sort.")),
+        groups.map((g, i) => {
+            const rows = rowsOf(g.items, 1);
+            return React.createElement("div", { className: "editor-group-card", key: i },
+                React.createElement("div", { className: "editor-group-head" },
+                    React.createElement("span", { className: "editor-row-number" }, i + 1),
+                    React.createElement("input", { "aria-label": `Group ${i + 1} name`, value: g.name, placeholder: ['e.g. Fruit', 'e.g. Vegetable', 'Group 3', 'Group 4', 'Group 5', 'Group 6'][i], onChange: e => change(i, 'name', e.target.value) }),
+                    React.createElement("button", { type: "button", "aria-label": `Remove group ${i + 1}`, disabled: groups.length <= 2, onClick: () => set(groups.filter((_, j) => j !== i)) },
+                        React.createElement(Trash2, { size: 15 }))),
+                React.createElement("div", { className: "editor-group-items" }, rows.map((x, k) => React.createElement("div", { className: "editor-group-item", key: k },
+                    React.createElement("input", { "aria-label": `Group ${i + 1} item ${k + 1}`, value: x, placeholder: k === 0 ? (['e.g. Apple', 'e.g. Carrot'][i] || 'Item') : 'Another item', onChange: e => item(i, k, e.target.value), onKeyDown: e => { if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (x.trim() && total < 30) {
+                                change(i, 'items', [...rows.slice(0, k + 1), '', ...rows.slice(k + 1)].join('\n'));
+                                setTimeout(() => e.target.closest('.editor-group-items')?.querySelectorAll('input')[k + 1]?.focus());
+                            }
+                        } } }),
+                    mediaButton?.(x, `item ${k + 1} in group ${i + 1}`),
+                    React.createElement("button", { type: "button", "aria-label": `Remove item ${k + 1} from group ${i + 1}`, disabled: rows.length <= 1, onClick: () => change(i, 'items', rows.filter((_, j) => j !== k).join('\n')) },
+                        React.createElement(Trash2, { size: 14 }))))),
+                React.createElement("button", { type: "button", className: "editor-text-button", disabled: total >= 30, onClick: () => change(i, 'items', [...rows, ''].join('\n')) },
+                    React.createElement(Plus, { size: 14 }),
+                    "Add item"));
+        }),
+        groups.length < 6 && React.createElement("button", { type: "button", className: "editor-text-button", onClick: () => set([...groups, { name: '', items: '' }]) },
             React.createElement(Plus, { size: 15 }),
             "Add group"));
 }
@@ -31950,29 +32268,85 @@ function HighlightEditor({ d, field }) {
             React.createElement("button", { type: "button", className: "highlight-word", "aria-pressed": t.marked, "data-state": t.marked ? 'correct' : undefined, onClick: () => field('passage', toggleMark(d.passage, t.index)) }, t.word),
             t.post) : React.createElement(React.Fragment, { key: i }, t.space ? t.text : t.plain))));
 }
+// Tap the picture: tap empty space to add a place, drag a place to move it, and name each one.
 function ImageTapEditor({ d, field, image }) {
-    const board = reactExports.useRef(null), spot = d.hotspot;
+    const board = reactExports.useRef(null), press = reactExports.useRef(null), label = reactExports.useRef(null);
+    const spots = d.spots || [], mode = d.tapMode === 'name' ? 'name' : 'find';
+    const [sel, setSel] = reactExports.useState(spots.length ? 0 : -1), [zoomed, setZoomed] = reactExports.useState(false);
     const ratio = () => { const img = board.current?.querySelector('img'); return img && img.naturalWidth ? img.naturalHeight / img.naturalWidth : 1; };
+    const set = (next) => field('spots', next);
+    const at = (e) => { const r = board.current.getBoundingClientRect(), c = (v) => Math.min(1, Math.max(0, v)); return { x: c((e.clientX - r.left) / r.width), y: c((e.clientY - r.top) / r.height) }; };
     if (!image)
         return React.createElement("p", { className: "editor-tap-empty" },
             React.createElement(Crosshair, { size: 18 }),
-            "Add the question picture above, then tap it here to mark the right spot.");
-    function place(e) { const r = board.current.getBoundingClientRect(); const c = (v) => Math.min(1, Math.max(0, v)); field('hotspot', { x: c((e.clientX - r.left) / r.width), y: c((e.clientY - r.top) / r.height), r: spot?.r || .08, aspect: ratio() }); }
+            "Add the picture or map in the Media step, then mark the places here.");
+    function down(e) {
+        if (e.button > 0)
+            return;
+        const hit = e.target.closest('[data-spot]');
+        if (hit) {
+            const i = Number(hit.dataset.spot);
+            setSel(i);
+            press.current = { i, id: e.pointerId, sx: e.clientX, sy: e.clientY, moved: false };
+            try {
+                board.current.setPointerCapture(e.pointerId);
+            }
+            catch { }
+            e.preventDefault();
+            return;
+        }
+        press.current = { add: true, id: e.pointerId, sx: e.clientX, sy: e.clientY };
+    }
+    function move(e) {
+        const p = press.current;
+        if (!p || p.add || p.id !== e.pointerId)
+            return;
+        if (!p.moved && Math.hypot(e.clientX - p.sx, e.clientY - p.sy) < 4)
+            return;
+        p.moved = true;
+        const xy = at(e);
+        set(spots.map((s, j) => j === p.i ? { ...s, ...xy } : s));
+    }
+    function up(e) {
+        const p = press.current;
+        press.current = null;
+        if (!p || p.id !== e.pointerId || !p.add || Math.hypot(e.clientX - p.sx, e.clientY - p.sy) > 8 || spots.length >= 30)
+            return;
+        const r = spots[sel]?.r || spots[spots.length - 1]?.r || .06;
+        set([...spots, { label: '', ...at(e), r, aspect: ratio() }]);
+        setSel(spots.length);
+        setTimeout(() => label.current?.focus({ preventScroll: true }), 30);
+    }
+    const cur = spots[sel], change = (patch) => set(spots.map((s, j) => j === sel ? { ...s, ...patch } : s));
     return React.createElement("div", { className: "editor-tap" },
+        React.createElement("div", { className: "editor-tap-mode", role: "radiogroup", "aria-label": "How learners answer" },
+            React.createElement("button", { type: "button", role: "radio", "aria-checked": mode === 'find', onClick: () => field('tapMode', undefined) },
+                React.createElement("b", null, "Find the place"),
+                React.createElement("small", null, "We name it, they tap it on the picture")),
+            React.createElement("button", { type: "button", role: "radio", "aria-checked": mode === 'name', onClick: () => field('tapMode', 'name') },
+                React.createElement("b", null, "Name the place"),
+                React.createElement("small", null, "Pins are shown, they pick each name"))),
         React.createElement("p", { className: "editor-list-label" },
-            "Right spot",
-            React.createElement("small", null, spot ? 'Tap the picture again to move it.' : 'Tap the picture where the answer is.')),
-        React.createElement("div", { className: "tap-board is-editor", ref: board, onClick: place },
-            React.createElement("img", { src: image, alt: "Question picture", draggable: false, onLoad: () => { if (spot && Math.abs(spot.aspect - ratio()) > .001)
-                    field('hotspot', { ...spot, aspect: ratio() }); } }),
-            spot && React.createElement(TapTarget, { spot: spot })),
-        spot && React.createElement("label", { className: "editor-tap-size" },
-            "Target size",
-            React.createElement("input", { type: "range", min: "0.03", max: "0.25", step: "0.01", value: spot.r, onChange: e => field('hotspot', { ...spot, r: Number(e.target.value) }) })),
-        React.createElement("label", null,
-            "What is at this spot?",
-            React.createElement("small", { className: "editor-optional" }, "Optional \u2014 shown after checking"),
-            React.createElement("input", { value: d.answer || '', onChange: e => field('answer', e.target.value), placeholder: "e.g. The heart" })));
+            "Places \u00B7 ",
+            spots.length,
+            React.createElement("small", null, spots.length ? 'Tap empty space to add another place. Drag a ring to move it.' : 'Tap the picture to mark the first place, e.g. a state or country on a map.')),
+        React.createElement(TapCanvas, { image: image, alt: "Question picture", boardRef: board, zoomed: zoomed, onZoom: () => setZoomed(z => !z), onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: () => { press.current = null; } }, spots.map((s, i) => React.createElement("span", { key: i, "data-spot": i, className: "tap-edit-spot", "data-selected": sel === i || undefined, style: { left: `${s.x * 100}%`, top: `${s.y * 100}%`, width: `${s.r * 200}%`, height: `${s.r * 200 / s.aspect}%` } },
+            React.createElement("b", null, i + 1),
+            s.label && React.createElement("em", null, s.label)))),
+        cur && React.createElement("div", { className: "editor-tap-spot" },
+            React.createElement("div", { className: "editor-tap-spot-row" },
+                React.createElement("span", { className: "editor-row-number" }, sel + 1),
+                React.createElement("input", { ref: label, "aria-label": `Name of place ${sel + 1}`, value: cur.label || '', maxLength: 60, placeholder: spots.length > 1 || mode === 'name' ? 'Name this place, e.g. Texas' : 'Name (optional), e.g. The heart', onChange: e => change({ label: e.target.value }) }),
+                React.createElement("button", { type: "button", "aria-label": `Remove place ${sel + 1}`, onClick: () => { set(spots.filter((_, j) => j !== sel)); setSel(Math.min(sel, spots.length - 2)); } },
+                    React.createElement(Trash2, { size: 15 }))),
+            React.createElement("label", { className: "editor-tap-size" },
+                "Target size",
+                React.createElement("input", { type: "range", min: "0.015", max: "0.25", step: "0.005", value: cur.r, onChange: e => change({ r: Number(e.target.value) }) }))),
+        spots.length > 1 && React.createElement("div", { className: "editor-tap-list", role: "group", "aria-label": "Marked places" }, spots.map((s, i) => React.createElement("button", { type: "button", key: i, "aria-pressed": sel === i, "data-missing": !s.label || undefined, onClick: () => setSel(i) },
+            React.createElement("b", null, i + 1),
+            s.label || 'Unnamed'))),
+        React.createElement("img", { hidden: true, src: image, alt: "", onLoad: e => { const img = e.currentTarget, r = img.naturalWidth ? img.naturalHeight / img.naturalWidth : 1; if (spots.some(s => Math.abs(s.aspect - r) > .001))
+                set(spots.map(s => ({ ...s, aspect: r }))); } }));
 }
 function SliderEditor({ d, field }) {
     const box = (key, label, fallback) => React.createElement("label", null,
@@ -31994,8 +32368,19 @@ function SliderEditor({ d, field }) {
             React.createElement("input", { value: d.unit || '', maxLength: 16, placeholder: "e.g. km, %, years", onChange: e => field('unit', e.target.value) })));
 }
 
-const help = { short_answer: 'Ask a direct question and write the answer you expect.', fill_blank: 'Use ___ where the missing answer belongs.', single_choice: 'Add choices, then select the one correct answer.', flashcard: 'Write the front of the card and the answer on the back.', true_false: 'Write a statement and choose whether it is true or false.', multi_select: 'Add choices and mark every correct answer.', numeric: 'Set the expected number and how much variation to accept.', matching: 'Each row is a pair. Learners will connect the two sides.', ordering: 'Write the steps in their correct order. The quiz will mix them up.', cloze: 'Use ___ for each gap, then enter its answer below.', fill_blank_options: 'Create gaps with ___ and give learners a word bank.', list_recall: 'List the answers. Learners type them in any order.', categorize: 'Make groups and the items that belong in each one.', highlight: 'Write a passage, then tap the words learners should find.', image_tap: 'Add a picture, then tap the spot learners should find.', slider: 'Set a range and the answer. Learners drag to their estimate.' };
-const promptHints = { matching: 'Match each country to its capital.', list_recall: 'Name the seven continents.', categorize: 'Sort each food into its group.', highlight: 'Tap every verb.', image_tap: 'Tap the heart.', slider: 'In what year did World War II end?' };
+// Pictures (optionImages) and sounds/videos (optionMedia) are keyed by item text; keep them with the item when it is renamed.
+function rekeyMedia(v, from, to) {
+    from = String(from ?? '').trim();
+    to = String(to ?? '').trim();
+    if (from === to)
+        return v;
+    const move = (map) => { if (!map?.[from])
+        return map; const next = { ...map }; next[to] = next[from]; delete next[from]; return next; };
+    return { ...v, optionImages: move(v.optionImages), optionMedia: move(v.optionMedia) };
+}
+const dropMedia = (v, key) => ({ ...v, optionImages: Object.fromEntries(Object.entries(v.optionImages || {}).filter(([k, x]) => k !== key && x)), optionMedia: Object.fromEntries(Object.entries(v.optionMedia || {}).filter(([k]) => k !== key)) });
+const help = { short_answer: 'Ask a direct question and write the answer you expect.', fill_blank: 'Use ___ for each missing word. Add several blanks if you like.', single_choice: 'Add choices, then select the one correct answer.', flashcard: 'Write the front of the card and the answer on the back.', true_false: 'Write a statement and choose whether it is true or false.', multi_select: 'Add choices and mark every correct answer.', numeric: 'Set the expected number and how much variation to accept.', matching: 'Each row is a pair. Learners will connect the two sides.', ordering: 'Write the steps in their correct order. The quiz will mix them up.', cloze: 'Use ___ for each gap, then enter its answer below.', fill_blank_options: 'Create gaps with ___ and give learners a word bank.', list_recall: 'List the answers. Learners type them in any order.', categorize: 'Make groups and add the items in each. Items can have pictures or sounds.', highlight: 'Write a passage, then tap the words learners should find.', image_tap: 'Add a picture or map, then mark the places learners find or name.', slider: 'Set a range and the answer. Learners drag to their estimate.' };
+const promptHints = { matching: 'Match each country to its capital.', list_recall: 'Name the seven continents.', categorize: 'Sort each food into its group.', highlight: 'Tap every verb.', image_tap: 'Find these states on the map.', slider: 'In what year did World War II end?' };
 const imageAccept = 'image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp';
 // Stored images live in localStorage (about 5 MB in total), so keep each one small.
 async function compressImage(file) {
@@ -32136,51 +32521,6 @@ function InlineImage({ label, hint, image, onPick, onLink, onRemove, onView, onE
         linkForm,
         fileInput);
 }
-function ChoiceImageButton({ choice, image, onPick, onLink, onRemove, onView, onEdit, disabled }) {
-    const input = reactExports.useRef(null), [loading, setLoading] = reactExports.useState(false), [menu, setMenu] = reactExports.useState(''), box = reactExports.useRef(null);
-    React.useEffect(() => { if (!menu)
-        return; const close = (e) => { if (!box.current?.contains(e.target))
-        setMenu(''); }; document.addEventListener('pointerdown', close); return () => document.removeEventListener('pointerdown', close); }, [menu]);
-    return React.createElement("span", { className: "editor-choice-image", ref: box },
-        image ? React.createElement("button", { type: "button", className: "editor-choice-thumb", "aria-label": `Image options for ${choice}`, "aria-expanded": menu === 'image', onClick: () => setMenu(m => m ? '' : 'image') },
-            React.createElement("img", { src: image, alt: "" })) : React.createElement("button", { type: "button", className: "editor-choice-add", "aria-label": `Add image for ${choice || 'this item'}`, "aria-expanded": !!menu, title: disabled ? 'Type the choice first' : 'Add image', disabled: disabled || loading, onClick: () => setMenu(m => m ? '' : 'menu') }, loading ? React.createElement(LoaderCircle, { size: 15, className: "speech-spinner" }) : React.createElement(ImagePlus, { size: 16 })),
-        image && React.createElement("button", { type: "button", className: "editor-choice-image-remove", "aria-label": `Remove image for ${choice}`, onClick: onRemove },
-            React.createElement(X, { size: 11 })),
-        menu && React.createElement("span", { className: "editor-choice-image-menu", role: "menu", onKeyDown: e => { if (e.key === 'Escape') {
-                e.stopPropagation();
-                setMenu('');
-            } } }, menu === 'image' ? React.createElement(React.Fragment, null,
-            React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(''); onView(image); } },
-                React.createElement(Maximize2, { size: 15 }),
-                "Preview"),
-            onEdit && React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(''); onEdit(); } },
-                React.createElement(Crop, { size: 15 }),
-                "Edit image"),
-            React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(''); input.current?.click(); } },
-                React.createElement(RefreshCw, { size: 15 }),
-                "Replace image")) : menu === 'menu' ? React.createElement(React.Fragment, null,
-            React.createElement("button", { type: "button", role: "menuitem", onClick: () => { setMenu(''); input.current?.click(); } },
-                React.createElement(Upload, { size: 15 }),
-                "Upload image"),
-            React.createElement("button", { type: "button", role: "menuitem", onClick: () => setMenu('link') },
-                React.createElement(Link2, { size: 15 }),
-                "Use image link")) : React.createElement(MediaLinkForm, { resolve: resolveImageLink, label: `Image link for ${choice}`, placeholder: "https://\u2026/picture.jpg", onCancel: () => setMenu(''), onSubmit: async (url) => { setLoading(true); try {
-                if (await onLink(url))
-                    setMenu('');
-            }
-            finally {
-                setLoading(false);
-            } } })),
-        React.createElement("input", { ref: input, type: "file", hidden: true, accept: imageAccept, onChange: async (e) => { const file = e.currentTarget.files?.[0]; e.currentTarget.value = ''; if (file) {
-                setLoading(true);
-                try {
-                    await onPick(file);
-                }
-                finally {
-                    setLoading(false);
-                }
-            } } }));
-}
 function PreviewQuestionMedia({ draft }) {
     const hasImg = !!draft.image && draft.type !== 'image_tap', audio = draft.audio;
     const soundProps = { edit: draft.audioEdit, displayName: audio ? soundDisplayName(audio, draft.audioName) : undefined, fileTitle: audio ? soundFileTitle(audio, draft.audioName) : undefined, label: 'Play question sound' };
@@ -32198,6 +32538,7 @@ function FlashcardEditorPreview({ draft }) {
     return React.createElement("div", { className: "editor-question-preview" },
         React.createElement("small", null, "Flashcard \u00B7 tap to flip"),
         draft.image && React.createElement("img", { src: draft.image, alt: "Flashcard image" }),
+        draft.audio && React.createElement(SoundPlayer, { src: draft.audio, edit: draft.audioEdit, variant: "card", displayName: soundDisplayName(draft.audio, draft.audioName), className: "quiz-sound", label: "Play question sound" }),
         draft.video && React.createElement(VideoPlayer, { src: draft.video, edit: draft.videoEdit, className: "is-compact", label: "Preview question video" }),
         React.createElement("button", { type: "button", className: "editor-flashcard-preview", "aria-pressed": showBack, "aria-label": showBack ? 'Show flashcard front' : 'Show flashcard back', onClick: () => setShowBack(value => !value) },
             React.createElement("span", { className: `editor-flashcard-preview-inner${showBack ? ' is-back' : ''}` },
@@ -32213,113 +32554,81 @@ function FlashcardEditorPreview({ draft }) {
                     React.createElement("strong", null, draft.answer || 'Your answer appears here'),
                     React.createElement("em", null, "Tap to see the question")))));
 }
-function QuestionTypePreview({ draft, choices, pairs, steps }) {
-    const type = draft.type, blanks = String(draft.structured || '').split('\n').map((x) => x.trim()).filter(Boolean), options = type === 'true_false' ? ['True', 'False'] : choices.filter(Boolean), answerList = String(draft.answer || '').split('\n').filter(Boolean);
-    const item = { ...draft, answer: draft.answer || '', options, correctAnswers: type === 'multi_select' ? answerList : undefined, acceptedAnswers: String(draft.accepted || '').split('\n').filter(Boolean), fuzzy: draft.fuzzy !== false, numericTolerance: Number(draft.numericTolerance || 0), pairs: pairs.map((p) => ({ left: p[0], right: p[1] })), sequence: steps.filter(Boolean), blanks };
-    const start = () => type === 'ordering' ? seededShuffle(steps.filter(Boolean), draft.prompt) : ['cloze', 'fill_blank_options'].includes(type) ? Array(blanks.length).fill('') : type === 'multi_select' ? [] : type === 'matching' ? Array(pairs.length).fill('') : '';
-    const [value, setValue] = reactExports.useState(start), [revealed, setRevealed] = reactExports.useState(false);
-    React.useEffect(() => { setValue(start()); setRevealed(false); }, [type, draft.prompt, draft.answer, draft.options, draft.structured]);
-    const complete = type === 'multi_select' ? value.length > 0 : ['cloze', 'fill_blank_options', 'matching', 'ordering'].includes(type) ? Array.isArray(value) && value.length > 0 && value.every(Boolean) : String(value).trim().length > 0;
-    const correct = () => { try {
-        return gradeQuestion(item, value);
+function AnswerMediaPreview({ draft }) {
+    return React.createElement(React.Fragment, null,
+        draft.answerVideo && React.createElement(VideoPlayer, { src: draft.answerVideo, edit: draft.answerVideoEdit, className: "is-compact", label: "Preview answer video" }),
+        draft.answerAudio && React.createElement(SoundPlayer, { src: draft.answerAudio, edit: draft.answerAudioEdit, variant: "card", displayName: "Answer sound", className: "quiz-sound feedback-sound", label: "Preview answer sound" }),
+        draft.answerImage && React.createElement("img", { className: "editor-preview-answer-image", src: draft.answerImage, alt: "Answer illustration" }));
+}
+// The preview uses the same answer components as the quiz, so pictures, sounds, videos and blanks look exactly as learners see them.
+function QuestionTypePreview({ draft }) {
+    if (draft.type === 'flashcard')
+        return React.createElement(FlashcardEditorPreview, { draft: draft });
+    if (extraTypes.includes(draft.type))
+        return React.createElement(ExtraPreview, { draft: draft });
+    return React.createElement(StandardPreview, { draft: draft });
+}
+function StandardPreview({ draft }) {
+    const type = draft.type, spec = specFromDraft(draft), gaps = (String(draft.prompt || '').match(/_{2,}/g) || []).length;
+    const padded = (list = []) => Array.from({ length: gaps }, (_, i) => list[i] || '');
+    const item = { ...spec, id: 'editor-preview', image: draft.image, answer: spec.answer || '', options: type === 'true_false' ? ['True', 'False'] : spec.options || [], numericTolerance: Number(draft.numericTolerance || 0), optionImages: spec.optionImages || {}, optionMedia: spec.optionMedia || {}, blanks: spec.blanks ? padded(spec.blanks) : undefined };
+    const multi = isMultiBlank(item), arrayValue = multi || ['fill_blank_options', 'matching', 'ordering', 'multi_select'].includes(type);
+    const [round, setRound] = reactExports.useState(0), [value, setValue] = reactExports.useState(arrayValue ? [] : ''), [result, setResult] = reactExports.useState(null);
+    const reset = () => { setValue(arrayValue ? [] : ''); setResult(null); setRound(r => r + 1); };
+    React.useEffect(reset, [type, draft.prompt, draft.answer, draft.options, draft.structured, arrayValue]);
+    const grade = (given = value) => { setValue(given); try {
+        setResult(gradeQuestion(item, given));
     }
     catch {
-        return false;
+        setResult(false);
     } };
-    const updateAt = (i, next) => setValue((old) => { const copy = Array.isArray(old) ? [...old] : []; copy[i] = next; return copy; });
-    const check = React.createElement("div", { className: "editor-preview-actions" },
-        React.createElement("button", { type: "button", className: "editor-preview-check", disabled: !complete || revealed, onClick: () => setRevealed(true) }, revealed ? (correct() ? 'Correct' : 'Not quite') : 'Check answer'),
-        revealed && React.createElement("button", { type: "button", className: "editor-preview-reset", onClick: () => { setValue(start()); setRevealed(false); } },
-            React.createElement(RefreshCw, { size: 14 }),
-            "Try again"));
-    if (type === 'flashcard')
-        return React.createElement(FlashcardEditorPreview, { draft: draft });
-    if (extraTypes.includes(type))
-        return React.createElement(ExtraPreview, { draft: draft });
-    const matchOptions = seededShuffle(pairs.map((p) => p[1]), draft.prompt + '|m');
+    const revealed = result !== null, complete = Array.isArray(value) ? value.length > 0 : String(value).trim().length > 0;
+    const options = item.options || [], answerList = String(draft.answer || '').split('\n').filter(Boolean);
+    const check = !revealed && ['single_choice', 'true_false', 'multi_select', 'numeric', 'short_answer'].includes(type) && React.createElement("div", { className: "editor-preview-actions" },
+        React.createElement("button", { type: "button", className: "editor-preview-check", disabled: !complete, onClick: () => grade() }, "Check answer"));
     return React.createElement("div", { className: "editor-question-preview editor-quiz-preview" },
         React.createElement("small", null, typeLabel(type)),
         React.createElement(PreviewQuestionMedia, { draft: draft }),
-        React.createElement("h3", null, draft.prompt || 'Your question appears here'),
+        React.createElement("h3", null, ['fill_blank', 'cloze', 'fill_blank_options'].includes(type) ? (gaps > 1 ? 'Fill in the missing words.' : 'Fill in the missing word.') : draft.prompt || 'Your question appears here'),
         ['single_choice', 'true_false', 'multi_select'].includes(type) && React.createElement("div", { className: "editor-preview-options" },
-            options.map((x, i) => { const picked = type === 'multi_select' ? value.includes(x) : value === x, isCorrect = type === 'multi_select' ? answerList.includes(x) : draft.answer === x; return React.createElement("button", { type: "button", key: i, className: `editor-preview-option${picked ? ' is-selected' : ''}${revealed && isCorrect ? ' is-correct' : ''}${revealed && picked && !isCorrect ? ' is-wrong' : ''}`, "aria-pressed": picked, onClick: () => !revealed && setValue((old) => type === 'multi_select' ? (old.includes(x) ? old.filter((v) => v !== x) : [...old, x]) : x) },
-                draft.optionImages?.[x] && React.createElement("img", { src: draft.optionImages[x], alt: "" }),
-                React.createElement("span", null,
-                    String.fromCharCode(65 + i),
-                    " \u00B7 ",
-                    x)); }),
+            options.map((x, i) => { const picked = type === 'multi_select' ? value.includes(x) : value === x, isCorrect = type === 'multi_select' ? answerList.includes(x) : draft.answer === x; return React.createElement("div", { className: "editor-preview-option-wrap", key: i },
+                React.createElement("button", { type: "button", className: `editor-preview-option${picked ? ' is-selected' : ''}${revealed && isCorrect ? ' is-correct' : ''}${revealed && picked && !isCorrect ? ' is-wrong' : ''}`, "aria-pressed": picked, onClick: () => !revealed && setValue((old) => type === 'multi_select' ? (old.includes(x) ? old.filter((v) => v !== x) : [...old, x]) : x) },
+                    item.optionImages?.[x] && React.createElement("img", { src: item.optionImages[x], alt: "" }),
+                    React.createElement("span", null,
+                        String.fromCharCode(65 + i),
+                        isPictureLabel(x) && (item.optionImages?.[x] || item.optionMedia?.[x]) ? '' : ` · ${x}`)),
+                React.createElement(ItemExtras, { item: item, text: x })); }),
             check),
-        type === 'fill_blank' && React.createElement("div", { className: "editor-preview-interaction" },
-            React.createElement("p", { className: "editor-preview-sentence" }, draft.prompt.split(/_{2,}/g).length > 1 ? draft.prompt.split(/_{2,}/g).map((part, i, all) => React.createElement(React.Fragment, { key: i },
-                part,
-                i < all.length - 1 && React.createElement("input", { "aria-label": "Answer the blank", value: value, disabled: revealed, onChange: e => setValue(e.target.value), placeholder: "\u2026" }))) : React.createElement("input", { "aria-label": "Answer the blank", value: value, disabled: revealed, onChange: e => setValue(e.target.value), placeholder: "Type the missing word" })),
-            check,
-            revealed && React.createElement("small", { className: correct() ? 'is-correct-text' : 'is-wrong-text' },
-                "Answer: ",
-                draft.answer || 'Add the answer above')),
+        ['fill_blank', 'cloze'].includes(type) && React.createElement(InlineBlankAnswer, { key: round, item: item, value: value, onChange: setValue, disabled: revealed, onGrade: grade }),
+        type === 'fill_blank_options' && (item.blanks?.length ? React.createElement(WordBankAnswer, { key: round, item: item, value: value, onChange: setValue, disabled: revealed, onGrade: grade }) : React.createElement("p", { className: "extra-note" }, "Add ___ to the sentence to create a gap.")),
+        ['matching', 'ordering'].includes(type) && ((type === 'matching' ? item.pairs?.length : item.sequence?.length) > 1 ? React.createElement(StructuredAnswer, { key: round, item: item, value: value, onChange: setValue, disabled: revealed, onGrade: grade }) : React.createElement("p", { className: "extra-note" },
+            "Add at least two ",
+            type === 'matching' ? 'pairs' : 'steps',
+            " to try it.")),
         type === 'numeric' && React.createElement("div", { className: "editor-preview-interaction" },
             React.createElement("label", { className: "editor-preview-answer-label" },
                 "Your answer",
                 React.createElement("input", { "aria-label": "Preview numeric answer", inputMode: "decimal", value: value, disabled: revealed, onChange: e => setValue(e.target.value), placeholder: "Enter a number\u2026" })),
-            check,
-            revealed && React.createElement("small", { className: correct() ? 'is-correct-text' : 'is-wrong-text' },
-                "Answer: ",
-                draft.answer || 'Add the answer above',
-                Number(draft.numericTolerance) > 0 ? ` (±${draft.numericTolerance})` : '')),
+            check),
         type === 'short_answer' && React.createElement("div", { className: "editor-preview-interaction" },
             React.createElement("label", { className: "editor-preview-answer-label" },
                 "Your answer",
                 React.createElement("textarea", { "aria-label": "Preview short answer", value: value, disabled: revealed, onChange: e => setValue(e.target.value), placeholder: "Write what you remember\u2026" })),
-            check,
-            revealed && React.createElement("small", { className: correct() ? 'is-correct-text' : 'is-wrong-text' },
-                "Answer: ",
-                draft.answer || 'Add the answer above')),
-        ['cloze', 'fill_blank_options'].includes(type) && React.createElement("div", { className: "editor-preview-interaction" },
-            React.createElement("p", { className: "editor-preview-sentence" }, draft.prompt.split(/_{2,}/g).map((part, i, all) => React.createElement(React.Fragment, { key: i },
-                part,
-                i < all.length - 1 && (type === 'cloze' ? React.createElement("input", { "aria-label": `Blank ${i + 1}`, value: value[i] || '', disabled: revealed, onChange: e => updateAt(i, e.target.value) }) : React.createElement("button", { type: "button", className: "editor-preview-gap", "aria-label": `Blank ${i + 1}`, disabled: revealed, onClick: () => updateAt(i, '') }, value[i] || `Blank ${i + 1}`))))),
-            type === 'fill_blank_options' && React.createElement("div", { className: "editor-preview-options is-bank" }, options.map((x, i) => React.createElement("button", { type: "button", className: `editor-preview-option${value.includes(x) ? ' is-selected' : ''}`, key: i, disabled: revealed, onClick: () => { const empty = value.findIndex((v) => !v); if (empty >= 0)
-                    updateAt(empty, x); } },
-                draft.optionImages?.[x] && React.createElement("img", { src: draft.optionImages[x], alt: "" }),
-                React.createElement("span", null, x)))),
-            check,
-            revealed && React.createElement("small", { className: correct() ? 'is-correct-text' : 'is-wrong-text' },
-                "Answer: ",
-                blanks.join(' · ') || 'Add a blank answer above')),
-        type === 'matching' && React.createElement("div", { className: "editor-preview-interaction" },
-            pairs.map((pair, i) => React.createElement("label", { className: "editor-preview-match", key: i },
-                React.createElement("span", null,
-                    draft.optionImages?.[pair[0].trim()] && React.createElement("img", { src: draft.optionImages[pair[0].trim()], alt: "" }),
-                    pair[0] || 'Left side'),
-                React.createElement("select", { "aria-label": `Match ${pair[0] || i + 1}`, value: value[i] || '', disabled: revealed, onChange: e => updateAt(i, e.target.value) },
-                    React.createElement("option", { value: "" }, "Choose a match"),
-                    matchOptions.map((p, j) => React.createElement("option", { key: j, value: p }, p || 'Matching answer'))))),
-            check,
-            revealed && React.createElement("small", { className: correct() ? 'is-correct-text' : 'is-wrong-text' },
-                "Matches: ",
-                pairs.map((p) => `${p[0]} → ${p[1]}`).join(' · '))),
-        type === 'ordering' && React.createElement("div", { className: "editor-preview-interaction editor-preview-order" },
-            value.map((x, i) => React.createElement("div", { className: "editor-preview-option", key: `${i}-${x}` },
-                React.createElement("span", null,
-                    draft.optionImages?.[x] && React.createElement("img", { src: draft.optionImages[x], alt: "" }),
-                    i + 1,
-                    " \u00B7 ",
-                    x || 'Step'),
-                React.createElement("div", null,
-                    React.createElement("button", { type: "button", "aria-label": "Move step up", disabled: revealed || i === 0, onClick: () => setValue((old) => { const n = [...old]; [n[i - 1], n[i]] = [n[i], n[i - 1]]; return n; }) }, "\u2191"),
-                    React.createElement("button", { type: "button", "aria-label": "Move step down", disabled: revealed || i === value.length - 1, onClick: () => setValue((old) => { const n = [...old]; [n[i + 1], n[i]] = [n[i], n[i + 1]]; return n; }) }, "\u2193")))),
-            check,
-            revealed && React.createElement("small", { className: correct() ? 'is-correct-text' : 'is-wrong-text' },
-                "Correct order: ",
-                steps.filter(Boolean).join(' → '))),
-        revealed && draft.answerVideo && React.createElement(VideoPlayer, { src: draft.answerVideo, edit: draft.answerVideoEdit, className: "is-compact", label: "Preview answer video" }),
-        revealed && draft.answerAudio && React.createElement(SoundPlayer, { src: draft.answerAudio, edit: draft.answerAudioEdit, className: "is-compact", label: "Preview answer sound" }),
-        revealed && draft.answerImage && React.createElement("img", { className: "editor-preview-answer-image", src: draft.answerImage, alt: "Answer illustration" }));
+            check),
+        revealed && React.createElement("div", { className: "editor-preview-actions" },
+            React.createElement("button", { type: "button", className: "editor-preview-check", disabled: true }, result ? 'Correct' : 'Not quite'),
+            React.createElement("button", { type: "button", className: "editor-preview-reset", onClick: reset },
+                React.createElement(RefreshCw, { size: 14 }),
+                "Try again")),
+        revealed && answerText(item) && React.createElement("small", { className: result ? 'is-correct-text' : 'is-wrong-text' },
+            "Answer: ",
+            answerText(item)),
+        revealed && React.createElement(AnswerMediaPreview, { draft: draft }));
 }
 function ExtraPreview({ draft }) {
     const [round, setRound] = reactExports.useState(0), [result, setResult] = reactExports.useState(null);
     const item = { ...specFromDraft(draft), id: 'editor-preview', image: draft.image };
-    const key = JSON.stringify([item.type, item.prompt, item.answer, item.listItems, item.listCount, item.groups, item.passage, item.hotspot, item.sliderMin, item.sliderMax, item.sliderStep, item.numericTolerance, item.image]);
+    const key = JSON.stringify([item.type, item.prompt, item.answer, item.listItems, item.listCount, item.groups, item.passage, item.spots, item.tapMode, item.sliderMin, item.sliderMax, item.sliderStep, item.numericTolerance, item.image, item.optionImages, item.optionMedia]);
     React.useEffect(() => { setResult(null); setRound(r => r + 1); }, [key]);
     const grade = (value) => { try {
         setResult(gradeQuestion(item, value));
@@ -32339,7 +32648,8 @@ function ExtraPreview({ draft }) {
                 "Try again")),
         result !== null && item.answer && React.createElement("small", { className: result ? 'is-correct-text' : 'is-wrong-text' },
             "Answer: ",
-            item.type === 'slider' ? `${item.answer}${item.unit ? ' ' + item.unit : ''}` : item.answer));
+            answerText(item)),
+        result !== null && React.createElement(AnswerMediaPreview, { draft: draft }));
 }
 const textTypes = ['short_answer', 'fill_blank', 'flashcard', 'numeric'];
 function seedVariant(type, base) {
@@ -32363,7 +32673,7 @@ function seedVariant(type, base) {
     return next;
 }
 function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved, editing, prepareAudio, setPrepareAudio, onAnother }) {
-    const [mediaError, setMediaErrorRaw] = reactExports.useState(''), [step, setStep] = reactExports.useState(0), [zoom, setZoom] = reactExports.useState(null), [vi, setVi] = reactExports.useState(0), [addingType, setAddingType] = reactExports.useState(false), [editImg, setEditImg] = reactExports.useState(null);
+    const [mediaError, setMediaErrorRaw] = reactExports.useState(''), [step, setStep] = reactExports.useState(0), [zoom, setZoom] = reactExports.useState(null), [vi, setVi] = reactExports.useState(0), [addingType, setAddingType] = reactExports.useState(false), [mediaFor, setMediaFor] = reactExports.useState(null), [editImg, setEditImg] = reactExports.useState(null);
     // Show every editor error as a bottom toast: buzz once, auto-dismiss after 5s, dismissable with the close button.
     const setMediaError = React.useCallback((msg) => { setMediaErrorRaw(msg); if (msg) {
         try {
@@ -32403,24 +32713,21 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
     const update = (key, i, value, min = 0) => { const rows = lines(key, min); rows[i] = value; field(key, rows.join('\n')); };
     const choices = lines('options', 2), steps = lines('structured', 2), blankCount = (String(d.prompt || '').match(/_{2,}/g) || []).length;
     const pairs = steps.map((line) => { const [left = '', ...rest] = line.split('|'); return [left, rest.join('|')]; });
-    function structuredChange(i, value) { const rows = lines('structured', 2), old = rows[i]; rows[i] = value; setD((v) => { let imgs = { ...(v.optionImages || {}) }; const move = (a, b) => { a = a.trim(); b = b.trim(); if (a !== b && imgs[a]) {
-        imgs[b] = imgs[a];
-        delete imgs[a];
-    } }; if (v.type === 'matching') {
+    function structuredChange(i, value) { const rows = lines('structured', 2), old = rows[i] || ''; rows[i] = value; setD((v) => { let next = { ...v, structured: rows.join('\n') }; if (v.type === 'matching') {
         const [ol = '', ...or] = old.split('|'), [nl = '', ...nr] = value.split('|');
-        move(ol, nl);
-        move(or.join('|'), nr.join('|'));
+        next = rekeyMedia(rekeyMedia(next, ol, nl), or.join('|'), nr.join('|'));
     }
     else
-        move(old, value); return { ...v, structured: rows.join('\n'), optionImages: imgs }; }); }
+        next = rekeyMedia(next, old, value); return next; }); }
     const markChoice = (choice, on) => { if (d.type === 'single_choice')
         field('answer', choice);
     else {
         const answers = lines('answer').filter(Boolean);
         field('answer', (on ? [...new Set([...answers, choice])] : answers.filter((x) => x !== choice)).join('\n'));
     } };
-    function choiceChange(i, value) { const old = choices[i], next = [...choices]; next[i] = value; setD((v) => ({ ...v, options: next.join('\n'), answer: v.type === 'single_choice' ? (v.answer === old ? value : v.answer) : String(v.answer).split('\n').map((x) => x === old ? value : x).join('\n'), optionImages: old && v.optionImages?.[old] ? { ...v.optionImages, [old]: undefined, [value]: v.optionImages[old] } : v.optionImages })); }
-    function removeChoice(i) { const old = choices[i]; setD((v) => ({ ...v, options: choices.filter((_, j) => j !== i).join('\n'), answer: v.type === 'single_choice' ? (v.answer === old ? '' : v.answer) : String(v.answer).split('\n').filter((x) => x !== old).join('\n'), optionImages: Object.fromEntries(Object.entries(v.optionImages || {}).filter(([k]) => k !== old && v.optionImages[k])) })); }
+    function choiceChange(i, value) { const old = choices[i], next = [...choices]; next[i] = value; setD((v) => ({ ...v, options: next.join('\n'), answer: v.type === 'single_choice' ? (v.answer === old ? value : v.answer) : String(v.answer).split('\n').map((x) => x === old ? value : x).join('\n') })); if (old && choices.filter((c) => c === old).length === 1)
+        setD((v) => rekeyMedia(v, old, value)); }
+    function removeChoice(i) { const old = choices[i]; setD((v) => ({ ...dropMedia(v, old.trim()), options: choices.filter((_, j) => j !== i).join('\n'), answer: v.type === 'single_choice' ? (v.answer === old ? '' : v.answer) : String(v.answer).split('\n').filter((x) => x !== old).join('\n') })); }
     async function place(data, key, target = 'image') { const image = await storeImage(data).catch(() => data); if (key)
         setD((v) => ({ ...v, optionImages: { ...v.optionImages, [key]: image } }));
     else
@@ -32456,8 +32763,12 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
     const choiceImages = imageTypes.includes(d.type);
     function nameChoice(i, choice) { if (choice.trim())
         return choice; const name = pictureLabel(i + 1); choiceChange(i, name); return name; }
-    const imageButton = (text, label = text, name) => { const key = text.trim(), keyFor = () => key || name(); return React.createElement(ChoiceImageButton, { choice: label, disabled: !key && !name, image: d.optionImages?.[key], onPick: (file) => upload(file, keyFor()), onLink: (url) => link(url, keyFor()), onRemove: () => removeChoiceImage(key), onView: setZoom, onEdit: () => setEditImg({ src: d.optionImages[key], key, target: 'image' }) }); };
-    const imageList = d.type === 'matching' ? { title: 'Pair images', hint: 'Add a picture to either side of a pair.' } : d.type === 'ordering' ? { title: 'Step images', hint: 'Each picture appears on its step.' } : d.type === 'fill_blank_options' ? { title: 'Word bank images', hint: 'Each picture appears on its word in the word bank.' } : { title: 'Choice images', hint: 'Each picture appears inside its answer choice.' };
+    // Opening the sheet on an empty row names it "Picture n", so its media has a key; the quiz then shows only the media.
+    const mediaButton = (text, label = text, name, blocked = false) => { const key = text.trim(); return React.createElement(ItemMediaButton, { label: key || label, image: key ? d.optionImages?.[key] : undefined, media: key ? d.optionMedia?.[key] : undefined, disabled: blocked || (!key && !name), onOpen: () => setMediaFor(key || name()) }); };
+    const setItemMedia = (key, patch) => setD((v) => ({ ...v, optionMedia: { ...(v.optionMedia || {}), [key]: { ...(v.optionMedia?.[key] || {}), ...patch } } }));
+    const bankWords = d.type === 'fill_blank_options' ? [...new Set([...lines('structured'), ...choices].map((x) => x.trim()).filter(Boolean))] : [];
+    const groupItems = d.type === 'categorize' ? (d.groups || []).flatMap((g) => String(g.items || '').split('\n').map((x) => x.trim()).filter(Boolean)) : [];
+    const imageList = d.type === 'matching' ? { title: 'Pair media', hint: 'Add a picture, sound or video to either side of a pair.' } : d.type === 'ordering' ? { title: 'Step media', hint: 'Shown on each step.' } : d.type === 'fill_blank_options' ? { title: 'Word bank media', hint: 'Shown on each word in the word bank.' } : d.type === 'categorize' ? { title: 'Item media', hint: 'Shown on each item learners sort.' } : { title: 'Choice media', hint: 'Shown inside each answer choice.' };
     function pasteImage(e) { const file = [...e.clipboardData.files].find(f => f.type.startsWith('image/')); if (file) {
         e.preventDefault();
         void upload(file);
@@ -32535,11 +32846,11 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
                         " step.")),
                 React.createElement("div", { className: "editor-answer-fields" },
                     d.type === 'list_recall' && React.createElement(ListRecallEditor, { d: d, field: field }),
-                    d.type === 'categorize' && React.createElement(CategorizeEditor, { d: d, field: field }),
+                    d.type === 'categorize' && React.createElement(CategorizeEditor, { d: d, field: field, mediaButton: (x, label) => mediaButton(x, label), onRename: (a, b) => setD((v) => rekeyMedia(v, a, b)) }),
                     d.type === 'highlight' && React.createElement(HighlightEditor, { d: d, field: field }),
                     d.type === 'image_tap' && React.createElement(ImageTapEditor, { d: d, field: field, image: draft.image }),
                     d.type === 'slider' && React.createElement(SliderEditor, { d: d, field: field }),
-                    textTypes.includes(d.type) && React.createElement("label", null,
+                    textTypes.includes(d.type) && !(d.type === 'fill_blank' && blankCount > 1) && React.createElement("label", null,
                         d.type === 'flashcard' ? 'Back of card' : 'Correct answer',
                         d.type === 'flashcard' && d.answerImage && React.createElement("small", { className: "editor-optional" }, "Optional \u2014 the answer picture is enough"),
                         React.createElement("textarea", { value: d.answer, onChange: e => field('answer', e.target.value), placeholder: d.type === 'numeric' ? 'e.g. 3.14' : 'Enter the correct answer' })),
@@ -32551,14 +32862,18 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
                         d.answer === x && React.createElement(Check, { size: 17 }),
                         " ",
                         x))),
-                    ['single_choice', 'multi_select', 'fill_blank_options'].includes(d.type) && React.createElement("div", { className: "editor-choice-list" },
+                    ['single_choice', 'multi_select'].includes(d.type) && React.createElement("div", { className: "editor-choice-list" },
                         React.createElement("p", { className: "editor-list-label" },
-                            d.type === 'fill_blank_options' ? 'Word bank' : 'Answer choices',
-                            React.createElement("small", null, d.type === 'multi_select' ? 'Mark every correct choice' : d.type === 'single_choice' ? 'Mark the correct choice' : 'Include the answers and a few distractors')),
+                            "Answer choices",
+                            React.createElement("small", null,
+                                d.type === 'multi_select' ? 'Mark every correct choice' : 'Mark the correct choice',
+                                " \u00B7 ",
+                                React.createElement(ImagePlus, { size: 12, "aria-hidden": "true" }),
+                                " adds a picture, sound or video")),
                         choices.map((choice, i) => React.createElement("div", { className: "editor-choice-row", key: i },
-                            d.type !== 'fill_blank_options' ? React.createElement("input", { type: d.type === 'single_choice' ? 'radio' : 'checkbox', name: `editor-correct-choice-${active}`, "aria-label": `Choice ${i + 1} is correct`, checked: !!choice && (d.type === 'single_choice' ? d.answer === choice : lines('answer').includes(choice)), onChange: e => markChoice(choice, e.target.checked), disabled: !choice || busy }) : React.createElement("span", { className: "editor-row-number" }, i + 1),
+                            React.createElement("input", { type: d.type === 'single_choice' ? 'radio' : 'checkbox', name: `editor-correct-choice-${active}`, "aria-label": `Choice ${i + 1} is correct`, checked: !!choice && (d.type === 'single_choice' ? d.answer === choice : lines('answer').includes(choice)), onChange: e => markChoice(choice, e.target.checked), disabled: !choice || busy }),
                             React.createElement("input", { "aria-label": `Choice ${i + 1}`, value: choice, placeholder: `Choice ${i + 1}`, onChange: e => choiceChange(i, e.target.value) }),
-                            choiceImages && React.createElement(ChoiceImageButton, { choice: choice || `choice ${i + 1}`, disabled: !!choice.trim() && choices.filter((c) => c === choice).length > 1, image: d.optionImages?.[choice], onPick: (file) => upload(file, nameChoice(i, choice)), onLink: (url) => link(url, nameChoice(i, choice)), onRemove: () => removeChoiceImage(choice), onView: setZoom, onEdit: () => setEditImg({ src: d.optionImages[choice], key: choice, target: 'image' }) }),
+                            mediaButton(choice, `choice ${i + 1}`, () => nameChoice(i, choice), !!choice.trim() && choices.filter((c) => c === choice).length > 1),
                             React.createElement("button", { type: "button", "aria-label": `Remove choice ${i + 1}`, disabled: choices.length <= 2, onClick: () => removeChoice(i) },
                                 React.createElement(Trash2, { size: 16 })))),
                         React.createElement("button", { type: "button", className: "editor-text-button", onClick: () => field('options', choices.concat('').join('\n')) },
@@ -32580,13 +32895,13 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
                                 "Add pair"),
                             React.createElement("button", { type: "button", className: "editor-text-button", onClick: () => goStep(1) },
                                 React.createElement(ImagePlus, { size: 15 }),
-                                Object.values(d.optionImages || {}).some(Boolean) ? 'Edit pair images' : 'Add pictures'))),
+                                Object.values(d.optionImages || {}).some(Boolean) || Object.keys(d.optionMedia || {}).length ? 'Edit pair media' : 'Add pictures or sound'))),
                     d.type === 'ordering' && React.createElement("div", { className: "editor-sequence" },
                         steps.map((s, i) => React.createElement("div", { className: "editor-step-row", key: i },
                             React.createElement("span", { className: "editor-row-number" }, i + 1),
                             React.createElement("input", { "aria-label": `Step ${i + 1}`, value: s, placeholder: `Step ${i + 1}`, onChange: e => structuredChange(i, e.target.value) }),
                             React.createElement("div", null,
-                                imageButton(s, s || `step ${i + 1}`, () => { const n = pictureLabel(i + 1); structuredChange(i, n); return n; }),
+                                mediaButton(s, s || `step ${i + 1}`, () => { const n = pictureLabel(i + 1); structuredChange(i, n); return n; }),
                                 React.createElement("button", { type: "button", "aria-label": `Move step ${i + 1} up`, disabled: i === 0, onClick: () => { const next = [...steps]; [next[i - 1], next[i]] = [next[i], next[i - 1]]; field('structured', next.join('\n')); } },
                                     React.createElement(ArrowUp, { size: 14 })),
                                 React.createElement("button", { type: "button", "aria-label": `Move step ${i + 1} down`, disabled: i === steps.length - 1, onClick: () => { const next = [...steps]; [next[i + 1], next[i]] = [next[i], next[i + 1]]; field('structured', next.join('\n')); } },
@@ -32596,17 +32911,30 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
                         React.createElement("button", { type: "button", className: "editor-text-button", onClick: () => field('structured', steps.concat('').join('\n')) },
                             React.createElement(Plus, { size: 15 }),
                             "Add step")),
-                    ['cloze', 'fill_blank_options'].includes(d.type) && React.createElement("div", { className: "editor-blanks" },
+                    (['cloze', 'fill_blank_options'].includes(d.type) || (d.type === 'fill_blank' && blankCount > 1)) && React.createElement("div", { className: "editor-blanks" },
                         React.createElement("p", { className: "editor-list-label" },
-                            "Blank answers",
-                            React.createElement("small", null, blankCount ? `${blankCount} ${blankCount === 1 ? 'gap' : 'gaps'} in your prompt` : 'Add ___ to your question to create a gap')),
+                            d.type === 'fill_blank_options' ? 'Blank answers' : 'Answer for each blank',
+                            React.createElement("small", null, !blankCount ? 'Add ___ to your question to create a gap' : d.type === 'fill_blank_options' ? `${blankCount} ${blankCount === 1 ? 'gap' : 'gaps'} · these words go in the word bank` : `${blankCount} gaps · learners type each one. Add other accepted answers after a |, like colour|color`)),
                         Array.from({ length: blankCount }, (_, i) => React.createElement("label", { key: i },
                             "Blank ",
                             i + 1,
-                            React.createElement("input", { value: lines('structured')[i] || '', onChange: e => update('structured', i, e.target.value, blankCount), placeholder: "Correct word or phrase" })))),
+                            React.createElement("input", { value: lines('structured')[i] || '', onChange: e => update('structured', i, e.target.value, blankCount), placeholder: d.type === 'fill_blank_options' ? 'Correct word' : 'Correct word or phrase' })))),
+                    d.type === 'fill_blank_options' && React.createElement("div", { className: "editor-choice-list" },
+                        React.createElement("p", { className: "editor-list-label" },
+                            "Extra words",
+                            React.createElement("small", null, "Wrong words mixed into the bank. Blank answers are added for you.")),
+                        choices.map((choice, i) => React.createElement("div", { className: "editor-choice-row", key: i },
+                            React.createElement("span", { className: "editor-row-number" }, i + 1),
+                            React.createElement("input", { "aria-label": `Extra word ${i + 1}`, value: choice, placeholder: ['e.g. dog', 'e.g. hat'][i] || `Word ${i + 1}`, onChange: e => choiceChange(i, e.target.value) }),
+                            mediaButton(choice, `word ${i + 1}`, undefined, !!choice.trim() && choices.filter((c) => c === choice).length > 1),
+                            React.createElement("button", { type: "button", "aria-label": `Remove word ${i + 1}`, disabled: choices.length <= 1, onClick: () => removeChoice(i) },
+                                React.createElement(Trash2, { size: 16 })))),
+                        React.createElement("button", { type: "button", className: "editor-text-button", onClick: () => field('options', choices.concat('').join('\n')) },
+                            React.createElement(Plus, { size: 15 }),
+                            "Add word")),
                     ['short_answer', 'fill_blank', 'cloze', 'list_recall'].includes(d.type) && React.createElement("details", { className: "editor-details" },
                         React.createElement("summary", null, "Grading options"),
-                        !['cloze', 'list_recall'].includes(d.type) && React.createElement("label", null,
+                        !['cloze', 'list_recall'].includes(d.type) && !(d.type === 'fill_blank' && blankCount > 1) && React.createElement("label", null,
                             "Accepted alternative answers",
                             React.createElement("textarea", { value: d.accepted || '', onChange: e => field('accepted', e.target.value), placeholder: "One accepted answer per line" })),
                         React.createElement("label", { className: "editor-toggle" },
@@ -32647,35 +32975,41 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
                             React.createElement("div", null,
                                 React.createElement("h3", { className: "media-panel-title", id: "editor-answer-media-title" }, draft.type === 'flashcard' ? 'Back of card' : 'Answer media'),
                                 React.createElement("p", { className: "media-panel-help" }, draft.type === 'flashcard' ? 'Shown on the back of the card.' : 'Shown after the answer is checked.')),
-                            React.createElement("span", { className: `media-count${mediaSlotCount(draft.answerImage, draft.answerVideo) ? ' has-added' : ''}` },
-                                mediaSlotCount(draft.answerImage, draft.answerVideo),
+                            React.createElement("span", { className: `media-count${mediaSlotCount(draft.answerImage, draft.answerAudio, draft.answerVideo) ? ' has-added' : ''}` },
+                                mediaSlotCount(draft.answerImage, draft.answerAudio, draft.answerVideo),
                                 " added")),
                         React.createElement("div", { className: "asset-list" },
                             React.createElement(InlineImage, { assetLayout: true, linkLabel: "Add link", uploadEmptyLabel: "Upload image", label: draft.type === 'flashcard' ? 'Back image' : 'Answer image', hint: draft.type === 'flashcard' ? 'Optional · shown on the back of the card' : 'Add a visual explanation for learners.', image: draft.answerImage, onPick: (file) => upload(file, undefined, 'answerImage'), onLink: (url) => link(url, undefined, 'answerImage'), onRemove: () => shared('answerImage', undefined), onView: setZoom, onEdit: () => setEditImg({ src: draft.answerImage, target: 'answerImage' }), onClearError: () => setMediaError('') }),
+                            React.createElement(SoundField, { assetLayout: true, title: draft.type === 'flashcard' ? 'Back sound' : 'Answer sound', hint: draft.type === 'flashcard' ? 'Optional · plays on the back of the card' : 'Optional · e.g. the pronunciation, played after checking', audio: draft.answerAudio, audioName: draft.answerAudioName, onAudioNameChange: value => shared('answerAudioName', value), edit: draft.answerAudioEdit, onEditChange: value => shared('answerAudioEdit', value), onChange: value => shared('answerAudio', value), onError: msg => setMediaError(msg), onClearError: () => setMediaError('') }),
                             React.createElement(VideoField, { assetLayout: true, linkLabel: "Add link", uploadEmptyLabel: "Upload video", title: "Answer video", hint: "Optional \u00B7 shown after checking", emptyHint: "Add a short clip for learners.", video: draft.answerVideo, edit: draft.answerVideoEdit, onEditChange: value => shared('answerVideoEdit', value), onChange: value => shared('answerVideo', value), onError: msg => setMediaError(msg), onClearError: () => setMediaError('') })),
                         React.createElement("p", { className: "media-answer-foot" },
                             React.createElement(CircleCheck, { size: 15, "aria-hidden": "true" }),
                             React.createElement("span", null, "Everything here is optional. Your answer stays clear without media.")))),
-                choiceImages && React.createElement("div", { className: "editor-choice-image-list" },
-                    React.createElement("p", { className: "editor-list-label" },
-                        imageList.title,
-                        allTypes.length > 1 ? ` · type ${active + 1}` : '',
-                        React.createElement("small", null, (d.type === 'matching' ? pairs.some((p) => p[0].trim() || p[1].trim()) : (d.type === 'ordering' ? steps : choices).some((x) => x.trim())) ? imageList.hint : `Add ${d.type === 'matching' ? 'pairs' : d.type === 'ordering' ? 'steps' : d.type === 'fill_blank_options' ? 'words' : 'choices'} in the Question step first.`)),
-                    d.type === 'matching' ? pairs.map((p, i) => React.createElement("div", { className: "editor-choice-image-row is-pair", key: `${i}-${p[0]}` },
-                        imageButton(p[0], p[0] || `pair ${i + 1} left`, () => { const n = pictureLabel(i + 1); structuredChange(i, n + '|' + p[1]); return n; }),
-                        React.createElement("span", null,
-                            p[0] || 'Left side',
-                            " ",
-                            React.createElement("i", null, "\u2194"),
-                            " ",
-                            p[1] || 'Matching answer'),
-                        imageButton(p[1], p[1] || `pair ${i + 1} right`, () => { const n = pictureLabel(String.fromCharCode(65 + i)); structuredChange(i, p[0] + '|' + n); return n; }))) : (d.type === 'ordering' ? steps : choices).filter((x) => x.trim()).map((x, i) => React.createElement("div", { className: "editor-choice-image-row", key: `${i}-${x}` },
-                        imageButton(x),
-                        React.createElement("span", null,
-                            React.createElement("b", null, d.type === 'single_choice' || d.type === 'multi_select' ? String.fromCharCode(65 + i) : i + 1),
-                            " ",
-                            x),
-                        React.createElement("small", null, d.optionImages?.[x.trim()] ? 'Image added' : 'No image'))))),
+                choiceImages && (() => {
+                    const rows = (d.type === 'ordering' ? steps : d.type === 'fill_blank_options' ? bankWords : d.type === 'categorize' ? groupItems : choices).filter((x) => x.trim());
+                    const has = d.type === 'matching' ? pairs.some((p) => p[0].trim() || p[1].trim()) : rows.length > 0;
+                    const summary = (x) => { const k = x.trim(), m = d.optionMedia?.[k] || {}; return [d.optionImages?.[k] && 'Picture', m.audio && 'Sound', m.video && 'Video'].filter(Boolean).join(' · ') || 'Nothing added'; };
+                    return React.createElement("div", { className: "editor-choice-image-list" },
+                        React.createElement("p", { className: "editor-list-label" },
+                            imageList.title,
+                            allTypes.length > 1 ? ` · type ${active + 1}` : '',
+                            React.createElement("small", null, has ? imageList.hint : `Add ${d.type === 'matching' ? 'pairs' : d.type === 'ordering' ? 'steps' : d.type === 'fill_blank_options' ? 'words' : d.type === 'categorize' ? 'group items' : 'choices'} in the Question step first.`)),
+                        d.type === 'matching' ? pairs.map((p, i) => React.createElement("div", { className: "editor-choice-image-row is-pair", key: `${i}-${p[0]}` },
+                            mediaButton(p[0], p[0] || `pair ${i + 1} left`, () => { const n = pictureLabel(i + 1); structuredChange(i, n + '|' + p[1]); return n; }),
+                            React.createElement("span", null,
+                                p[0] || 'Left side',
+                                " ",
+                                React.createElement("i", null, "\u2194"),
+                                " ",
+                                p[1] || 'Matching answer'),
+                            mediaButton(p[1], p[1] || `pair ${i + 1} right`, () => { const n = pictureLabel(String.fromCharCode(65 + i)); structuredChange(i, p[0] + '|' + n); return n; }))) : rows.map((x, i) => React.createElement("div", { className: "editor-choice-image-row", key: `${i}-${x}` },
+                            mediaButton(x),
+                            React.createElement("span", null,
+                                React.createElement("b", null, d.type === 'single_choice' || d.type === 'multi_select' ? String.fromCharCode(65 + i) : i + 1),
+                                " ",
+                                x),
+                            React.createElement("small", null, summary(x)))));
+                })()),
             React.createElement("section", { className: "editor-section editor-ready editor-step-panel", role: "tabpanel", id: "editor-panel-2", "aria-labelledby": "editor-tab-2", hidden: step !== 2 },
                 React.createElement("div", { className: "editor-section-heading" },
                     React.createElement("span", null, "03"),
@@ -32714,6 +33048,13 @@ function QuestionEditor({ draft, setDraft, onSave, onCancel, busy, status, saved
                     React.createElement("span", null, i + 1),
                     typeLabel(v.type)))),
                 React.createElement(QuestionTypePreview, { key: active, draft: { ...draft, ...d, image: draft.image, answerImage: draft.answerImage, audio: draft.audio, audioEdit: draft.audioEdit, audioName: draft.audioName, video: draft.video, videoEdit: draft.videoEdit, answerAudio: draft.answerAudio, answerAudioEdit: draft.answerAudioEdit, answerVideo: draft.answerVideo, answerVideoEdit: draft.answerVideoEdit }, choices: choices, pairs: pairs, steps: steps }))),
+        mediaFor && (() => {
+            const key = mediaFor, m = d.optionMedia?.[key] || {}, img = d.optionImages?.[key];
+            return React.createElement(ItemMediaSheet, { title: isPictureLabel(key) ? `Media for ${key.toLowerCase()}` : `Media for “${key}”`, hint: "Shown on this answer in the quiz. Everything is optional.", onClose: () => setMediaFor(null) },
+                React.createElement(InlineImage, { assetLayout: true, label: "Picture", uploadEmptyLabel: "Upload", linkLabel: "Link", hint: "Shown on the answer", image: img, onPick: (file) => upload(file, key), onLink: (url) => link(url, key), onRemove: () => removeChoiceImage(key), onView: setZoom, onEdit: () => setEditImg({ src: img, key, target: 'image' }), onClearError: () => setMediaError('') }),
+                React.createElement(SoundField, { assetLayout: true, title: "Sound", hint: "A speaker button appears on the answer", audio: m.audio, edit: m.audioEdit, onEditChange: value => setItemMedia(key, { audioEdit: value }), onChange: value => setItemMedia(key, value ? { audio: value } : { audio: undefined, audioEdit: undefined }), onError: msg => setMediaError(msg), onClearError: () => setMediaError('') }),
+                React.createElement(VideoField, { assetLayout: true, title: "Video", hint: "Opens full screen from the answer", emptyHint: "Keep it short, or add a link.", video: m.video, edit: m.videoEdit, onEditChange: value => setItemMedia(key, { videoEdit: value }), onChange: value => setItemMedia(key, value ? { video: value } : { video: undefined, videoEdit: undefined }), onError: msg => setMediaError(msg), onClearError: () => setMediaError('') }));
+        })(),
         React.createElement(ImageLightbox, { src: zoom, onClose: () => setZoom(null) }),
         editImg && React.createElement(ImageEditor, { src: editImg.src, onCancel: closeEditor, onSave: (image) => { place(image, editImg.key, editImg.target); closeEditor(); } }),
         status && !busy && /^Saved successfully|Question saved|preparing/i.test(status) && React.createElement("p", { className: "editor-save-message", id: statusId, role: "status", "aria-live": "polite" },
@@ -33549,7 +33890,7 @@ function IndexPage() {
         setTab("library");
         window.scrollTo({ top: 0 });
         setEditingId(item?.id || null);
-        const nextDraft = item ? { ...draftFromSpec(item), subject: item.subject, topic: item.topic, tags: (item.tags || []).join(", "), image: item.image, answerImage: item.answerImage, audio: item.audio, audioName: item.audioName, audioEdit: item.audioEdit, video: item.video, videoEdit: item.videoEdit, answerAudio: item.answerAudio, answerAudioEdit: item.answerAudioEdit, answerVideo: item.answerVideo, answerVideoEdit: item.answerVideoEdit, variants: item.variants?.length ? item.variants.map(draftFromSpec) : undefined, typeMode: item.variants?.length ? item.typeMode || "random" : undefined } : { subject: "", topic: "", prompt: "", answer: "", type: "short_answer", options: "", numericTolerance: "0" };
+        const nextDraft = item ? { ...draftFromSpec(item), subject: item.subject, topic: item.topic, tags: (item.tags || []).join(", "), image: item.image, answerImage: item.answerImage, audio: item.audio, audioName: item.audioName, audioEdit: item.audioEdit, video: item.video, videoEdit: item.videoEdit, answerAudio: item.answerAudio, answerAudioName: item.answerAudioName, answerAudioEdit: item.answerAudioEdit, answerVideo: item.answerVideo, answerVideoEdit: item.answerVideoEdit, variants: item.variants?.length ? item.variants.map(draftFromSpec) : undefined, typeMode: item.variants?.length ? item.typeMode || "random" : undefined } : { subject: "", topic: "", prompt: "", answer: "", type: "short_answer", options: "", numericTolerance: "0" };
         setDraft(nextDraft);
         setDraftBaseline(JSON.stringify(nextDraft));
         setShowAdd(true);
@@ -33559,7 +33900,7 @@ function IndexPage() {
             return;
         try {
             const variants = (draft.variants || []).map(specFromDraft);
-            const data = validateQuestion({ ...specFromDraft(draft), subject: draft.subject.trim() || "General", topic: draft.topic.trim() || "General", tags: (draft.tags || "").split(",").map(x => x.trim()).filter(Boolean), image: draft.image, answerImage: draft.answerImage, audio: draft.audio || undefined, audioName: draft.audioName || undefined, audioEdit: draft.audioEdit, video: draft.video || undefined, videoEdit: draft.videoEdit, answerAudio: draft.answerAudio || undefined, answerAudioEdit: draft.answerAudioEdit, answerVideo: draft.answerVideo || undefined, answerVideoEdit: draft.answerVideoEdit, variants: variants.length ? variants : undefined, typeMode: variants.length ? draft.typeMode || "random" : undefined });
+            const data = validateQuestion({ ...specFromDraft(draft), subject: draft.subject.trim() || "General", topic: draft.topic.trim() || "General", tags: (draft.tags || "").split(",").map(x => x.trim()).filter(Boolean), image: draft.image, answerImage: draft.answerImage, audio: draft.audio || undefined, audioName: draft.audioName || undefined, audioEdit: draft.audioEdit, video: draft.video || undefined, videoEdit: draft.videoEdit, answerAudio: draft.answerAudio || undefined, answerAudioName: draft.answerAudio && draft.answerAudioName || undefined, answerAudioEdit: draft.answerAudioEdit, answerVideo: draft.answerVideo || undefined, answerVideoEdit: draft.answerVideoEdit, variants: variants.length ? variants : undefined, typeMode: variants.length ? draft.typeMode || "random" : undefined });
             const id = editingId || `item_${Date.now()}`;
             const { variants: _oldVariants, typeMode: _oldMode, ...previous } = items.find(x => x.id === id) || {};
             const saved = { ...previous, ...data, id };
@@ -33859,14 +34200,14 @@ function IndexPage() {
                                         React.createElement("span", null, "ANSWER"),
                                         current.answerImage && React.createElement(ZoomableImage, { className: "flashcard-answer-zoom", imgClassName: "flashcard-answer-media", src: current.answerImage, alt: "Answer illustration", label: "Enlarge answer image", tapImage: false }),
                                         current.answerVideo && React.createElement(VideoPlayer, { edit: current.answerVideoEdit, src: current.answerVideo, className: "is-compact quiz-video", label: "Play answer video" }),
-                                        current.answerAudio && React.createElement(SoundPlayer, { edit: current.answerAudioEdit, src: current.answerAudio, className: "is-compact quiz-sound", label: "Play answer sound" }),
+                                        current.answerAudio && React.createElement(SoundPlayer, { edit: current.answerAudioEdit, src: current.answerAudio, variant: "card", displayName: "Answer sound", className: "quiz-sound", label: "Play answer sound" }),
                                         React.createElement("strong", null, current.answer),
                                         React.createElement("small", null, "Tap to see question"))))) : React.createElement("div", { className: "question-with-speech" },
-                            React.createElement("h1", null, current?.type === "fill_blank_options" ? "Choose the missing words." : current?.type === "fill_blank" ? "Fill in the missing word." : current?.type === "cloze" ? "Fill in the missing words." : current?.prompt || (current?.type === "image_tap" ? "Tap the right place on the picture." : "Look at the picture.")),
+                            React.createElement("h1", null, current?.type === "fill_blank_options" ? "Choose the missing words." : current?.type === "fill_blank" ? (isMultiBlank(current) ? "Fill in the missing words." : "Fill in the missing word.") : current?.type === "cloze" ? "Fill in the missing words." : current?.prompt || (current?.type === "image_tap" ? "Tap the right place on the picture." : "Look at the picture.")),
                             current && React.createElement(SpeechButton, { questionId: current.id, text: current.prompt, spokenText: current.type === "fill_blank" ? current.prompt.replace(/_{2,}/g, "blank") : undefined }))),
                     React.createElement("section", { className: "quiz-answer-card", "aria-label": "Answer area", "data-type": current?.type },
                         React.createElement("h2", { className: current?.type === "true_false" ? "visually-hidden" : undefined }, answerTitle),
-                        extraTypes.includes(current?.type || "") ? React.createElement(ExtraAnswer, { key: `${current.id}-${idx}`, item: current, disabled: revealed, onGrade: (value) => grade(undefined, value) }) : current?.type === "fill_blank_options" ? React.createElement(WordBankAnswer, { key: current.id, item: current, value: selected, onChange: setSelected, disabled: revealed, onGrade: values => { setSelected(values); grade(undefined, values); } }) : ["fill_blank", "cloze"].includes(current?.type || "") ? React.createElement(InlineBlankAnswer, { key: current.id, item: current, value: current.type === "cloze" ? selected : answer, onChange: current.type === "cloze" ? setSelected : setAnswer, disabled: revealed, onGrade: values => { if (Array.isArray(values))
+                        extraTypes.includes(current?.type || "") ? React.createElement(ExtraAnswer, { key: `${current.id}-${idx}`, item: current, disabled: revealed, onGrade: (value) => grade(undefined, value) }) : current?.type === "fill_blank_options" ? React.createElement(WordBankAnswer, { key: current.id, item: current, value: selected, onChange: setSelected, disabled: revealed, onGrade: values => { setSelected(values); grade(undefined, values); } }) : ["fill_blank", "cloze"].includes(current?.type || "") ? React.createElement(InlineBlankAnswer, { key: current.id, item: current, value: isMultiBlank(current) ? selected : answer, onChange: isMultiBlank(current) ? setSelected : setAnswer, disabled: revealed, onGrade: values => { if (Array.isArray(values))
                                 setSelected(values);
                             else
                                 setAnswer(values); grade(undefined, values); } }) : ["matching", "ordering"].includes(current?.type || "") ? React.createElement(StructuredAnswer, { item: current, value: selected, onChange: setSelected, disabled: revealed, onGrade: values => { setSelected(values); grade(undefined, values); } }) : current?.type === "flashcard" ? React.createElement("div", { className: "split-flash-actions" },
@@ -33883,6 +34224,7 @@ function IndexPage() {
                                     current?.optionImages?.[o] && React.createElement(ZoomableImage, { className: "choice-media-zoom", imgClassName: "choice-media", src: current.optionImages[o], alt: o, label: `Enlarge picture for ${o}`, tapImage: false }),
                                     " ",
                                     isPictureLabel(o) && current.optionImages?.[o] ? React.createElement("span", { className: "visually-hidden" }, o) : o),
+                                React.createElement(ItemExtras, { item: current, text: o }),
                                 React.createElement("span", { className: "split-choice-indicator", "aria-hidden": "true" }))),
                             !revealed && React.createElement(Button, { className: "split-submit", disabled: !selected.length, onClick: () => grade() }, "Check selections")) : current?.type === "true_false" ? React.createElement("div", { className: "tf-buttons", role: "group", "aria-label": "Choose an answer" }, ["False", "True"].map(o => { const picked = revealed && answer === o, showAnswer = revealed && result === false && !picked && gradeQuestion(current, o), state = !revealed ? undefined : picked ? (result ? "correct" : "wrong") : "faded"; return React.createElement("button", { key: o, type: "button", className: "tf-button", "data-value": o.toLowerCase(), "data-state": state, disabled: revealed, "aria-label": picked ? `${o}, your answer, ${result ? "correct" : "wrong"}` : showAnswer ? `${o}, correct answer` : o, onClick: () => { setAnswer(o); grade(undefined, o); } },
                             React.createElement("span", { className: "tf-circle" }, o === "True" ? React.createElement(Check, { size: 32, strokeWidth: 3 }) : React.createElement(X, { size: 32, strokeWidth: 3 })),
@@ -33896,6 +34238,7 @@ function IndexPage() {
                                     current?.optionImages?.[o] && React.createElement(ZoomableImage, { className: "choice-media-zoom", imgClassName: "choice-media", src: current.optionImages[o], alt: o, label: `Enlarge picture for ${o}`, tapImage: false }),
                                     " ",
                                     isPictureLabel(o) && current.optionImages?.[o] ? React.createElement("span", { className: "visually-hidden" }, o) : o),
+                                React.createElement(ItemExtras, { item: current, text: o }),
                                 React.createElement("span", { className: "split-choice-indicator", "aria-hidden": "true" })))),
                             !revealed && React.createElement(Button, { className: "split-submit", disabled: !answer, onClick: () => grade() }, "Check answer")) : React.createElement("div", { className: styles$1.answerArea },
                             React.createElement("p", { className: "split-answer-help" }, current?.type === "numeric" ? "Enter a number." : "Write what you remember."),
@@ -33909,7 +34252,7 @@ function IndexPage() {
                                 current && answerText(current) && !/^\(answer (picture|video|sound)\)$/.test(answerText(current)) && React.createElement("span", null, result ? `Answer: ${answerText(current)}` : `Correct answer: ${answerText(current)}`),
                                 current && React.createElement(SpeechButton, { questionId: current.id, role: "answer", text: current.answer || answerText(current), label: "Read correct answer" }),
                                 current?.answerVideo && current.type !== "flashcard" && React.createElement(VideoPlayer, { edit: current.answerVideoEdit, src: current.answerVideo, className: "is-compact quiz-video", label: "Play answer video" }),
-                                current?.answerAudio && current.type !== "flashcard" && React.createElement(SoundPlayer, { edit: current.answerAudioEdit, src: current.answerAudio, className: "is-compact quiz-sound", label: "Play answer sound" }),
+                                current?.answerAudio && current.type !== "flashcard" && React.createElement(SoundPlayer, { edit: current.answerAudioEdit, src: current.answerAudio, variant: "card", displayName: "Answer sound", className: "quiz-sound feedback-sound", label: "Play answer sound" }),
                                 current?.answerImage && current.type !== "flashcard" && React.createElement(ZoomableImage, { className: "feedback-answer-zoom", imgClassName: "feedback-answer-media", src: current.answerImage, alt: "Answer illustration", label: "Enlarge answer image" })),
                             React.createElement(Button, { onClick: next },
                                 idx + 1 === review.length ? "See results" : "Continue",
