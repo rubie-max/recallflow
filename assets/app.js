@@ -29404,16 +29404,33 @@ function frameStyle(f, w, h) {
 function useVideoDims(ref, src) {
     const [dims, setDims] = reactExports.useState({ w: 0, h: 0 });
     reactExports.useEffect(() => {
+        let cancelled = false;
+        const read = () => {
+            if (cancelled)
+                return;
+            const v = ref.current;
+            if (v && v.videoWidth && v.videoHeight)
+                setDims({ w: v.videoWidth, h: v.videoHeight });
+        };
         const v = ref.current;
-        setDims({ w: 0, h: 0 });
-        if (!v)
-            return;
-        const read = () => { if (v.videoWidth && v.videoHeight)
-            setDims({ w: v.videoWidth, h: v.videoHeight }); };
-        v.addEventListener('loadedmetadata', read);
-        v.addEventListener('loadeddata', read);
+        if (v) {
+            v.addEventListener('loadedmetadata', read);
+            v.addEventListener('loadeddata', read);
+            v.addEventListener('canplay', read);
+        }
         read();
-        return () => { v.removeEventListener('loadedmetadata', read); v.removeEventListener('loadeddata', read); };
+        const poll = window.setInterval(read, 200);
+        const stop = window.setTimeout(() => window.clearInterval(poll), 15000);
+        return () => {
+            cancelled = true;
+            window.clearInterval(poll);
+            window.clearTimeout(stop);
+            if (v) {
+                v.removeEventListener('loadedmetadata', read);
+                v.removeEventListener('loadeddata', read);
+                v.removeEventListener('canplay', read);
+            }
+        };
     }, [src, ref]);
     return dims;
 }
@@ -29861,15 +29878,31 @@ function useClipPlayback(ref, src, edit, opts = {}) {
     embeddedRef.current = embedded;
     const wantAnalyser = reactExports.useRef(!!opts.analyser);
     reactExports.useEffect(() => {
+        let cancelled = false;
+        const pollId = window.setInterval(() => {
+            if (cancelled)
+                return;
+            const e = ref.current;
+            if (!e)
+                return;
+            const d = readDuration(e);
+            if (d > 0)
+                setDuration(prev => Math.abs(prev - d) < 0.05 ? prev : d);
+            if (e.readyState >= 2)
+                setReady(true);
+            if (e.error)
+                setFailed(true);
+        }, 200);
+        const stop = window.setTimeout(() => window.clearInterval(pollId), 25000);
         const el = ref.current;
         setAt(0);
         setPlaying(false);
         setFailed(false);
         setReady(false);
         setDuration(opts.durationHint || 0);
-        if (!el)
-            return;
-        let cancelled = false;
+        if (!el) {
+            return () => { cancelled = true; window.clearInterval(pollId); window.clearTimeout(stop); };
+        }
         const onErr = () => { if (!cancelled && el.error)
             setFailed(true); };
         const onReady = () => { if (!cancelled)
@@ -29878,8 +29911,21 @@ function useClipPlayback(ref, src, edit, opts = {}) {
         el.addEventListener('loadeddata', onReady);
         if (el.readyState >= 2)
             setReady(true);
-        void resolveMediaDuration(el, embedded ? 8000 : 15000).then(d => { if (!cancelled && d)
-            setDuration(d); });
+        void resolveMediaDuration(el, embedded ? 8000 : 20000).then(d => {
+            if (cancelled)
+                return;
+            if (d > 0) {
+                setDuration(d);
+                return;
+            }
+            const ready = el.readyState >= 1 && !el.error;
+            if (ready) {
+                const fallback = opts.durationHint || 120;
+                setDuration(prev => prev > 0 ? prev : fallback);
+            }
+            else
+                setFailed(true);
+        });
         if (embedded && el instanceof HTMLAudioElement) {
             const run = () => { void decodePeaks(src, 160).then(m => { if (!cancelled && m?.duration)
                 setDuration(prev => prev || m.duration); }); };
@@ -29888,7 +29934,14 @@ function useClipPlayback(ref, src, edit, opts = {}) {
             else
                 window.setTimeout(run, 120);
         }
-        return () => { cancelled = true; el.removeEventListener('error', onErr); el.removeEventListener('loadeddata', onReady); el.pause(); };
+        return () => {
+            cancelled = true;
+            el.removeEventListener('error', onErr);
+            el.removeEventListener('loadeddata', onReady);
+            window.clearInterval(pollId);
+            window.clearTimeout(stop);
+            el.pause();
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [src]);
     reactExports.useEffect(() => { if (opts.durationHint)
