@@ -31698,6 +31698,12 @@ function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTit
             React.createElement("div", { className: "quiz-media-panel", hidden: showVideo }, pictureBlock),
             React.createElement("div", { className: "quiz-media-panel", hidden: !showVideo }, clip));
     }
+    if (!picture && sound && clip) {
+        const block = React.createElement("div", { className: "quiz-media-stack is-video" },
+            clip,
+            React.createElement(SoundPlayer, { ...sound, variant: "overlay", className: "quiz-sound-overlay" }));
+        return className ? React.createElement("div", { className: `quiz-media-group ${className}` }, block) : block;
+    }
     const parts = React.createElement(React.Fragment, null,
         pictureBlock,
         !picture && sound && React.createElement(SoundPlayer, { ...sound, variant: "card", className: kind === 'answer' ? 'quiz-sound feedback-sound' : 'quiz-sound' }),
