@@ -8,9 +8,24 @@ function audioContext(){
   if(typeof window==='undefined')return null;
   const AC=window.AudioContext||window.webkitAudioContext;
   if(!AC)return null;
-  if(!ctx)ctx=new AC();
-  if(ctx.state==='suspended')ctx.resume().catch(()=>{});
+  if(!ctx||ctx.state==='closed'){
+    // iOS mutes Web Audio with the ring/silent switch unless the session is "playback".
+    try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch{}
+    ctx=new AC();
+  }
+  // Safari reports "interrupted" after other media plays or the app is backgrounded.
+  if(ctx.state!=='running')ctx.resume().catch(()=>{});
   return ctx;
+}
+
+function unlock(){
+  if((ctx&&ctx.state==='running')||appPreferences().soundEffects==='off')return;
+  const c=audioContext();if(!c)return;
+  try{const b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0);}catch{}
+}
+if(typeof window!=='undefined'){
+  for(const ev of ['pointerdown','touchend','keydown'])window.addEventListener(ev,unlock,{capture:true,passive:true});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&ctx&&ctx.state!=='running')ctx.resume().catch(()=>{});});
 }
 
 function tone(c,{freq,start=0,dur=.14,type='sine',gain=.22,slide}){
