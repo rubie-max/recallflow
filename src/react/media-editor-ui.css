@@ -181,9 +181,8 @@
 .me-strip.is-dragging .me-range{cursor:grabbing}
 .me-fade{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--primary) 38%,transparent);pointer-events:none}
 .me-fade.is-in{left:0;clip-path:polygon(0 100%,100% 0,100% 100%)}.me-fade.is-out{right:0;clip-path:polygon(0 0,100% 100%,0 100%)}
-.me-playhead{position:absolute;top:-8px;bottom:-4px;z-index:6;width:14px;margin-left:-7px;background:transparent;pointer-events:auto;cursor:ew-resize}
-.me-playhead::after{content:'';position:absolute;left:6px;top:8px;bottom:2px;width:2px;background:#fff;border-radius:2px 2px 0 0}
-.me-playhead::before{content:'';position:absolute;top:0;left:50%;width:12px;height:12px;margin-left:-6px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.45);pointer-events:none}
+.me-playhead{position:absolute;top:-6px;bottom:-2px;z-index:4;width:2px;margin-left:-1px;background:#fff;pointer-events:none;border-radius:2px 2px 0 0}
+.me-playhead::before{content:'';position:absolute;top:-5px;left:50%;width:10px;height:10px;margin-left:-5px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.4)}
 .me-handle{position:absolute;top:-10px;bottom:-10px;z-index:3;width:34px;margin-left:-17px;padding:0;border:0;background:transparent;cursor:ew-resize}
 .me-handle::after{content:"";position:absolute;left:12px;top:6px;bottom:6px;width:10px;border-radius:5px;background:var(--primary);box-shadow:0 1px 4px #0006}
 .me-handle.is-active::after{background:#fff}

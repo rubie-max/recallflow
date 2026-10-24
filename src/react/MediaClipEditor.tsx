@@ -325,53 +325,49 @@ export function useClipPlayback(ref:React.RefObject<HTMLMediaElement|null>,src:s
  const wantAnalyser=useRef(!!opts.analyser);
 
  useEffect(()=>{
-  let cancelled = false;
-  // Unconditional poll — works even if ref is attached after this effect runs
-  const pollId = window.setInterval(() => {
-    if (cancelled) return;
-    const e = ref.current;
-    if (!e) return;
-    const d = readDuration(e);
-    if (d > 0) setDuration(prev => Math.abs(prev - d) < 0.05 ? prev : d);
-    if (e.readyState >= 2) setReady(true);
-    if (e.error) setFailed(true);
-  }, 200);
-  const stop = window.setTimeout(() => window.clearInterval(pollId), 25000);
+  let cancelled=false;
+  const pollId=window.setInterval(()=>{
+   if(cancelled)return;
+   const e=ref.current;
+   if(!e)return;
+   const d=readDuration(e);
+   if(d>0)setDuration(prev=>Math.abs(prev-d)<0.05?prev:d);
+   if(e.readyState>=2)setReady(true);
+   if(e.error)setFailed(true);
+  },200);
+  const stop=window.setTimeout(()=>window.clearInterval(pollId),25000);
 
-  const el = ref.current;
-  setAt(0); setPlaying(false); setFailed(false); setReady(false); setDuration(opts.durationHint || 0);
-  if (!el) {
-    return () => { cancelled = true; window.clearInterval(pollId); window.clearTimeout(stop); };
+  const el=ref.current;
+  setAt(0);setPlaying(false);setFailed(false);setReady(false);setDuration(opts.durationHint||0);
+  if(!el){
+   return()=>{cancelled=true;window.clearInterval(pollId);window.clearTimeout(stop);};
   }
   const onErr=()=>{if(!cancelled&&el.error)setFailed(true);};
   const onReady=()=>{if(!cancelled)setReady(true);};
   el.addEventListener('error',onErr);el.addEventListener('loadeddata',onReady);
   if(el.readyState>=2)setReady(true);
 
-  void resolveMediaDuration(el, embedded ? 8000 : 20000).then(d => {
-    if (cancelled) return;
-    if (d > 0) { setDuration(d); return; }
-    const ready = el.readyState >= 1 && !el.error;
-    if (ready) {
-      const fallback = opts.durationHint || 120;
-      setDuration(prev => prev > 0 ? prev : fallback);
-    } else {
-      setFailed(true);
-    }
+  void resolveMediaDuration(el,embedded?8000:20000).then(d=>{
+   if(cancelled)return;
+   if(d>0){setDuration(d);return;}
+   const ready=el.readyState>=1&&!el.error;
+   if(ready){
+    const fallback=opts.durationHint||120;
+    setDuration(prev=>prev>0?prev:fallback);
+   }else setFailed(true);
   });
-  // peaks for embedded audio
   if(embedded&&el instanceof HTMLAudioElement){
    const run=()=>{void decodePeaks(src,160).then(m=>{if(!cancelled&&m?.duration)setDuration(prev=>prev||m.duration);});};
    if(typeof requestIdleCallback!=='undefined')requestIdleCallback(run,{timeout:2500});
    else window.setTimeout(run,120);
   }
-  return () => {
-    cancelled = true;
-    el.removeEventListener('error', onErr);
-    el.removeEventListener('loadeddata', onReady);
-    window.clearInterval(pollId);
-    window.clearTimeout(stop);
-    el.pause();
+  return()=>{
+   cancelled=true;
+   el.removeEventListener('error',onErr);
+   el.removeEventListener('loadeddata',onReady);
+   window.clearInterval(pollId);
+   window.clearTimeout(stop);
+   el.pause();
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
  },[src]);
@@ -379,7 +375,7 @@ export function useClipPlayback(ref:React.RefObject<HTMLMediaElement|null>,src:s
  useEffect(()=>()=>{graph.current?.ctx.close().catch(()=>{});graph.current=null;},[]);
 
  const ensureGraph=useCallback(()=>{
-  const el=ref.current;if(!el)return null;
+  const el=ref.current;if(!el||!embeddedRef.current)return null;
   if(graph.current&&graph.current.el!==el){graph.current.ctx.close().catch(()=>{});graph.current=null;}
   if(graph.current)return graph.current;
   try{
@@ -394,51 +390,57 @@ export function useClipPlayback(ref:React.RefObject<HTMLMediaElement|null>,src:s
   return graph.current;
  },[ref]);
  const applyLevel=useCallback((t:number)=>{
-  const el=ref.current;if(!el)return;const c=clipRef.current,lvl=levelAt(c,t);
-  const g=ensureGraph();
+  const el=ref.current;if(!el)return;const c=clipRef.current,lvl=levelAt(c,t),g=graph.current;
   if(g&&g.el===el){g.gain.gain.setTargetAtTime(lvl,g.ctx.currentTime,0.015);el.muted=false;el.volume=1;}
   else{el.muted=c.muted;try{el.volume=clamp(lvl,0,1);}catch{}}
- },[ensureGraph,ref]);
+ },[ref]);
  useEffect(()=>{const el=ref.current;if(el)applyLevel(el.currentTime);},[clip.muted,clip.volume,clip.gain,clip.fadeIn,clip.fadeOut,clip.trimStart,clip.trimEnd,applyLevel,ref]);
 
  useEffect(()=>{
-  let cancelled=false, raf=0, last=-1, attached:HTMLMediaElement|null=null;
-  let onPlay:()=>void, onPause:()=>void, onEnded:()=>void, onTime:()=>void;
-  const attach=(el:HTMLMediaElement)=>{
-   if(attached===el)return;
-   if(attached){attached.removeEventListener('play',onPlay);attached.removeEventListener('pause',onPause);attached.removeEventListener('ended',onEnded);attached.removeEventListener('timeupdate',onTime);}
-   attached=el;
-   const step=()=>{
-    if(cancelled||!attached)return;
-    const c=clipRef.current,t=attached.currentTime;
-    // keep playhead and playback inside the trim
-    if(t<c.trimStart-0.02){attached.currentTime=c.trimStart;}
-    if(Math.abs(t-last)>0.03){last=t;setAt(Math.max(c.trimStart,Math.min(t,c.trimEnd)));}
-    applyLevel(t);
-    if(durRef.current&&t>=c.trimEnd-0.03){
-     if(loopRef.current){attached.currentTime=c.trimStart;}
-     else{attached.pause();attached.currentTime=c.trimStart;setAt(c.trimStart);setPlaying(false);return;}
-    }
-    if(!attached.paused)raf=requestAnimationFrame(step);
-   };
-   onPlay=()=>{
-    const c=clipRef.current;
-    if(durRef.current&&attached&&attached.currentTime<c.trimStart-0.01)attached.currentTime=c.trimStart;
-    setPlaying(true);cancelAnimationFrame(raf);raf=requestAnimationFrame(step);
-   };
-   onPause=()=>{setPlaying(false);cancelAnimationFrame(raf);if(attached)setAt(attached.currentTime);};
-   onEnded=()=>{setPlaying(false);cancelAnimationFrame(raf);const c=clipRef.current;if(attached){attached.currentTime=c.trimStart;setAt(c.trimStart);}};
-   onTime=()=>{if(attached&&attached.paused)setAt(attached.currentTime);};
+  let cancelled=false,raf=0,last=-1,bound:HTMLMediaElement|null=null,pollId=0,stopId=0;
+  const visAt=(t:number)=>{const c=clipRef.current;return clamp(t,c.trimStart,c.trimEnd);};
+  const step=()=>{
+   if(cancelled||!bound)return;
+   const el=bound,c=clipRef.current;
+   let t=el.currentTime;
+   if(durRef.current&&t<c.trimStart-0.01){try{el.currentTime=c.trimStart;t=c.trimStart;}catch{}}
+   applyLevel(t);
+   setPlaying(!el.paused);
+   const vis=visAt(t);
+   if(!el.paused||Math.abs(vis-last)>0.03){last=vis;setAt(vis);}
+   if(durRef.current&&t>=c.trimEnd-0.03){
+    if(loopRef.current){el.currentTime=c.trimStart;last=c.trimStart;setAt(c.trimStart);}
+    else{el.pause();el.currentTime=c.trimStart;setAt(c.trimStart);setPlaying(false);return;}
+   }
+   if(!el.paused)raf=requestAnimationFrame(step);
+  };
+  const onPlay=()=>{if(cancelled||!bound)return;const c=clipRef.current,e=bound;if(durRef.current&&e.currentTime<c.trimStart-0.01)try{e.currentTime=c.trimStart;}catch{}setPlaying(true);cancelAnimationFrame(raf);raf=requestAnimationFrame(step);};
+  const onPause=()=>{if(cancelled)return;setPlaying(false);cancelAnimationFrame(raf);if(bound){const v=visAt(bound.currentTime);last=v;setAt(v);}};
+  const onEnded=()=>{if(cancelled||!bound)return;setPlaying(false);cancelAnimationFrame(raf);const c=clipRef.current;bound.currentTime=c.trimStart;last=c.trimStart;setAt(c.trimStart);};
+  const onTime=()=>{if(cancelled||!bound||!bound.paused)return;const v=visAt(bound.currentTime);last=v;setAt(v);};
+  const detach=()=>{
+   if(!bound)return;
+   const el=bound;bound=null;
+   cancelAnimationFrame(raf);
+   el.removeEventListener('play',onPlay);el.removeEventListener('pause',onPause);el.removeEventListener('ended',onEnded);el.removeEventListener('timeupdate',onTime);
+  };
+  const attach=()=>{
+   const el=ref.current;
+   if(!el||el===bound)return !!el;
+   detach();
+   bound=el;
    el.addEventListener('play',onPlay);el.addEventListener('pause',onPause);el.addEventListener('ended',onEnded);el.addEventListener('timeupdate',onTime);
    if(!el.paused)onPlay();
+   else{const v=visAt(el.currentTime);last=v;setAt(v);}
+   return true;
   };
-  const tryAttach=()=>{if(!cancelled&&ref.current)attach(ref.current);};
-  tryAttach();
-  const poll=window.setInterval(tryAttach,150);
-  const stop=window.setTimeout(()=>window.clearInterval(poll),8000);
+  if(!attach())pollId=window.setInterval(()=>{if(attach())window.clearInterval(pollId);},150);
+  stopId=window.setTimeout(()=>window.clearInterval(pollId),30000);
   return()=>{
-   cancelled=true;cancelAnimationFrame(raf);window.clearInterval(poll);window.clearTimeout(stop);
-   if(attached&&onPlay){attached.removeEventListener('play',onPlay);attached.removeEventListener('pause',onPause);attached.removeEventListener('ended',onEnded);attached.removeEventListener('timeupdate',onTime);attached.pause();}
+   cancelled=true;
+   window.clearInterval(pollId);
+   window.clearTimeout(stopId);
+   detach();
   };
  },[src,applyLevel,ref]);
 
@@ -524,7 +526,7 @@ function useWaveStage(canvas:React.RefObject<HTMLCanvasElement|null>,peaks:numbe
   const p=peaks&&peaks.length?peaks:Array.from({length:120},(_,i)=>0.2+0.1*Math.abs(Math.sin(i*0.7)));
   const n=p.length,bw=w/n,mid=h/2,amp=h*0.42,a=duration?start/duration:0,b=duration?end/duration:1;
   for(let i=0;i<n;i++){const f=(i+0.5)/n;g.fillStyle=f>=a&&f<=b?'#b5aaff':'#4c4870';const bh=Math.max(1.5,p[i]*amp);g.fillRect(i*bw+bw*0.2,mid-bh,Math.max(1,bw*0.6),bh*2);}
-  if(duration){const x=clamp(Math.max(start,Math.min(at,end))/duration,0,1)*w;g.fillStyle='#fff';g.fillRect(x-1,0,2,h);}
+  if(duration){const t=clamp(at,start,end),x=clamp(t/duration,0,1)*w;g.fillStyle='#fff';g.fillRect(x-1,0,2,h);}
  },[canvas,peaks,duration,start,end,at]);
 }
 
@@ -544,7 +546,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
  const stageEl=useRef<HTMLDivElement>(null),frameEl=useRef<HTMLDivElement>(null),strip=useRef<HTMLCanvasElement>(null),waveStage=useRef<HTMLCanvasElement>(null),root=useRef<HTMLDivElement>(null);
  const [edit,setEdit]=useState<MediaEdit|undefined>(initial);
  const [tab,setTab]=useState<Tab>(kind==='video'?'crop':'trim');
- const [loop,setLoop]=useState(false),[dragging,setDragging]=useState<DragKind|null>(null),[menu,setMenu]=useState(false),[moving,setMoving]=useState(false),[slow,setSlow]=useState(false),[rate,setRate]=useState(1);
+ const [loop,setLoop]=useState(false),[dragging,setDragging]=useState<DragKind|null>(null),[menu,setMenu]=useState(false),[moving,setMoving]=useState(false),[slow,setSlow]=useState(false);
  const [size,setSize]=useState({w:0,h:0});
  const [job,setJob]=useState<{label:string;progress:number}|null>(null);const jobAbort=useRef<AbortController|null>(null);
  const [note,setNote]=useState<{text:string;kind:'info'|'error'}|null>(null);
@@ -582,7 +584,6 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
   const onPop=()=>cancelRef.current();window.addEventListener('popstate',onPop);
   return()=>{window.removeEventListener('popstate',onPop);if(history.state?.rfClipEditor){try{history.back();}catch{}}document.body.style.overflow=ov;prev?.focus?.();};
  },[]);
- useEffect(()=>{const el=media.current;if(el)el.playbackRate=rate;},[rate,src]);
  const flash=(text:string,k:'info'|'error'='info')=>setNote({text,kind:k});
 
  /* edits */
@@ -672,14 +673,14 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
   finally{setJob(null);jobAbort.current=null;}
  }
  const exportWav=()=>run('Rendering…',async()=>{saveBlob(await exportTrimmedWav(src,e),`${stem}-edited.wav`);flash('WAV saved.');});
- const exportWebm=()=>run('Compressing… real-time',async(signal,progress)=>{const blob=await exportTrimmedAudio(src,e,{onProgress:progress,signal});saveBlob(blob,`${stem}-edited.${extFor(blob.type,'audio')}`);flash('Compressed clip saved.');});
+ const exportWebm=()=>run('Compressing…',async(signal,progress)=>{const blob=await exportTrimmedAudio(src,e,{onProgress:progress,signal});saveBlob(blob,`${stem}-edited.${extFor(blob.type,'audio')}`);flash('Edited clip saved.');});
  const exportVideo=()=>run('Exporting video… keep this tab visible',async(signal,progress)=>{const blob=await exportTrimmedVideo(src,edit,{onProgress:progress,signal});saveBlob(blob,`${stem}-edited.${extFor(blob.type,'video')}`);flash('Edited video saved.');});
  const bake=()=>{
   if(!onReplace)return;
   if(tooLong){flash(`Keep the selection under ${fmtTime(maxSeconds!)}.`,'error');return;}
-  void run('Saving…',async()=>{
+  void run('Compressing…',async(signal,progress)=>{
    const buf=await renderEditedAudio(src,e,{mono:true,sampleRate:24000});
-   const blob=audioBufferToWav(buf);
+   const blob=await encodeAudioBuffer(buf,{bitrate:40000,onProgress:progress,signal});
    await onReplace(await blobToDataUrl(blob),buf.duration);playPreset('go');
   });
  };
@@ -698,7 +699,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
  const vol=Math.round((e.muted?0:e.volume)*100),maxFade=Math.max(0.1,Math.min(10,len/2));
  const selFmt=len<10?fmtFine:fmtTime;
  const tabs:{id:Tab;label:string;icon:React.ReactNode}[]=[...(kind==='video'?[{id:'crop' as Tab,label:'Crop',icon:<Crop size={14}/>}]:[]),{id:'trim',label:'Trim',icon:<Scissors size={14}/>},{id:'sound',label:'Sound',icon:<Volume2 size={14}/>},{id:'fades',label:'Fades',icon:<AudioLines size={14}/>}];
- const hint=job?'':bakeMode?`Pick up to ${fmtTime(maxSeconds||60)} — only the selection is kept`:tab==='crop'?'Drag to move · pinch or slide to zoom · tap to play':tab==='trim'?(dragging==='seek'?'Release to seek':dragging?`Release to set ${dragging==='start'?'the start':dragging==='end'?'the end':'the selection'}`:'Drag the white line to seek · drag handles to trim'):tab==='sound'?(e.muted?'Muted':`${vol}% volume${e.gain!==1?` · ${e.gain.toFixed(2)}× gain`:''}`):'Fades are shown on the timeline';
+ const hint=job?'':bakeMode?`Pick up to ${fmtTime(maxSeconds||60)} — only the selection is kept`:tab==='crop'?'Drag to move · pinch or slide to zoom · tap to play':tab==='trim'?(dragging?`Release to set ${dragging==='start'?'the start':dragging==='end'?'the end':'the selection'}`:'Drag the handles to trim · tap to play'):tab==='sound'?(e.gain!==1?`${e.gain>1?'Boosted':'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports`:'Volume applies when the question plays'):'Fades are shown on the timeline';
  const sq=(icon:React.ReactNode,label:string,onClick:()=>void,o:{disabled?:boolean;on?:boolean;aria?:string}={})=><button type="button" disabled={o.disabled} aria-pressed={o.on} aria-label={o.aria} onClick={onClick}>{icon}<span>{label}</span></button>;
 
  return createPortal(<div ref={root} className="me" role="dialog" aria-modal="true" aria-labelledby="me-title" data-kind={kind} tabIndex={-1} onKeyDown={onKey}>
@@ -737,7 +738,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
        {e.fadeIn>0&&<span className="me-fade is-in" style={{width:`${e.fadeIn/len*100}%`}}/>}
        {e.fadeOut>0&&<span className="me-fade is-out" style={{width:`${e.fadeOut/len*100}%`}}/>}
       </div>
-      <button type="button" className="me-playhead" style={{left:`${clamp(Math.max(e.trimStart,Math.min(at,e.trimEnd))/duration*100,0,100)}%`}} aria-label="Playhead. Drag to seek" onPointerDown={ev=>tlDown('seek',ev)}/>
+      <span className="me-playhead" style={{left:`${clamp(Math.max(e.trimStart,Math.min(at,e.trimEnd))/duration*100,0,100)}%`}}/>
       <button type="button" className={`me-handle${dragging==='start'?' is-active':''}`} style={{left:`${left}%`}} aria-label={`Trim start ${fmtFine(e.trimStart)}. Arrow keys adjust`} onKeyDown={ev=>handleKey('start',ev)} onPointerDown={ev=>tlDown('start',ev)}/>
       <button type="button" className={`me-handle${dragging==='end'?' is-active':''}`} style={{left:`${right}%`}} aria-label={`Trim end ${fmtFine(e.trimEnd)}. Arrow keys adjust`} onKeyDown={ev=>handleKey('end',ev)} onPointerDown={ev=>tlDown('end',ev)}/>
       {showStartBubble&&<b className={`me-bubble${dragging==='start'?' is-active':''}`} style={{...bubbleStyle(left),...(showEndBubble&&right-left<14?{bottom:'calc(100% + 26px)'}:{})}}>{fmtFine(e.trimStart)}</b>}
@@ -745,19 +746,8 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
      </>}
     </div>
     <div className="me-ruler" aria-hidden="true"><span>0:00</span><span>{duration?(duration<10?fmtFine(duration):fmtTime(duration)):'–:––'}</span></div>
-    <div className="me-row" style={{marginTop:8}}>
-     <label className="me-lab">Start<input type="number" min={0} max={Math.max(0,e.trimEnd-MIN_LEN)} step={0.1} value={Number(e.trimStart.toFixed(1))} disabled={!duration} aria-label="Trim start seconds" onChange={ev=>setStart(Number(ev.target.value)||0)} style={{width:72,marginLeft:6}}/></label>
-     <label className="me-lab">End<input type="number" min={e.trimStart+MIN_LEN} max={duration||0} step={0.1} value={Number(e.trimEnd.toFixed(1))} disabled={!duration} aria-label="Trim end seconds" onChange={ev=>setEnd(Number(ev.target.value)||0)} style={{width:72,marginLeft:6}}/></label>
-     <span className="me-val">{fmtFine(len)} selected</span>
-    </div>
-    <div className="me-pills" role="group" aria-label="Playback speed" style={{marginTop:6}}>
-     {[0.5,0.75,1,1.25,1.5,2].map(r=><button key={r} type="button" role="radio" aria-checked={rate===r} onClick={()=>setRate(r)}>{r}×</button>)}
-    </div>
    </div>}
-   {tab==='sound'&&<>
-    <div className="me-row"><button type="button" className="me-mute" aria-pressed={e.muted} aria-label={e.muted?'Unmute':'Mute'} onClick={()=>patch({muted:!e.muted})}>{e.muted||vol===0?<VolumeX size={18}/>:<Volume2 size={18}/>}</button><input type="range" min={0} max={100} step={5} value={vol} aria-label="Volume" onChange={ev=>patch({volume:Number(ev.target.value)/100,muted:false})}/><span className="me-val">{vol}%</span></div>
-    <label className="me-row"><span className="me-lab">Gain</span><input type="range" min={25} max={400} step={5} value={Math.round(e.gain*100)} aria-label="Gain" onChange={ev=>patch({gain:Number(ev.target.value)/100,muted:false})}/><span className="me-val">{e.gain.toFixed(2)}×</span></label>
-   </>}
+   {tab==='sound'&&<div className="me-row"><button type="button" className="me-mute" aria-pressed={e.muted} aria-label={e.muted?'Unmute':'Mute'} onClick={()=>patch({muted:!e.muted})}>{e.muted||vol===0?<VolumeX size={18}/>:<Volume2 size={18}/>}</button><input type="range" min={0} max={100} step={5} value={vol} aria-label="Volume" onChange={ev=>patch({volume:Number(ev.target.value)/100,muted:false})}/><span className="me-val">{vol}%</span></div>}
    {tab==='fades'&&<>
     <label className="me-row"><span className="me-lab">In</span><input type="range" min={0} max={maxFade} step={0.1} value={e.fadeIn} disabled={!duration} aria-label="Fade in" onChange={ev=>patch({fadeIn:Number(ev.target.value)})}/><span className="me-val">{e.fadeIn.toFixed(1)} s</span></label>
     <label className="me-row"><span className="me-lab">Out</span><input type="range" min={0} max={maxFade} step={0.1} value={e.fadeOut} disabled={!duration} aria-label="Fade out" onChange={ev=>patch({fadeOut:Number(ev.target.value)})}/><span className="me-val">{e.fadeOut.toFixed(1)} s</span></label>
@@ -768,8 +758,8 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
    {menu?<div className="me-menu" role="menu">
     <button type="button" role="menuitem" onClick={()=>{setMenu(false);void downloadOriginal(src,`${stem}.${kind==='audio'?'webm':'mp4'}`);}}>{kind==='audio'?<FileAudio size={16}/>:<FileVideo size={16}/>}<span>Original file</span></button>
     {kind==='audio'?<>
-     <button type="button" role="menuitem" disabled={!canRender||!duration} onClick={exportWav}><Download size={16}/><span>Edited clip · WAV <small>instant</small></span></button>
-     <button type="button" role="menuitem" disabled={!canRender||!duration} onClick={exportWebm}><Download size={16}/><span>Edited clip · compressed <small>real-time, slower (~{fmtTime(len)})</small></span></button>
+     <button type="button" role="menuitem" disabled={!canRender||!duration} onClick={exportWav}><Download size={16}/><span>Edited clip · WAV <small>instant, larger file</small></span></button>
+     <button type="button" role="menuitem" disabled={!canRender||!duration} onClick={exportWebm}><Download size={16}/><span>Edited clip · compressed <small>takes about {fmtTime(len)}</small></span></button>
      {canBake&&!bakeMode&&<button type="button" role="menuitem" disabled={!canRender||!duration} onClick={bake}><Save size={16}/><span>Save as new clip in this question <small>smaller file, edits become permanent</small></span></button>}
     </>:<button type="button" role="menuitem" disabled={!canExportVideo||!duration} onClick={exportVideo}><Download size={16}/><span>Edited clip · WebM <small>{canExportVideo?`re-encodes in real time (~${fmtTime(len)})`:'uploaded videos only'}</small></span></button>}
     <button type="button" role="menuitem" className="is-close" onClick={()=>setMenu(false)}><ArrowLeft size={16}/><span>Back</span></button>
@@ -783,7 +773,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
 
    {job&&<div className="me-job" role="status" aria-live="polite"><div className="me-jobbar"><i style={{width:`${Math.round(job.progress*100)}%`}}/></div><span>{job.label} {Math.round(job.progress*100)}%</span><button type="button" onClick={()=>jobAbort.current?.abort()}>Cancel</button></div>}
    {note&&<p className={`me-note is-${note.kind}`} role="status">{note.text}</p>}
-   {!note&&peaksInfo===null&&tab==='sound'&&<p className="me-note">{embedded?'This file could not be analysed, so normalize and file export are off. Volume still works.':'Normalize and file export need an uploaded clip. Volume, mute and gain work on links.'}</p>}
+   {!note&&peaksInfo===null&&tab==='sound'&&<p className="me-note">{embedded?'This file could not be analysed, so normalize and export are off.':'Normalize and export need an uploaded clip.'}</p>}
    {hint&&<small className="me-hint">{hint}</small>}
   </div>
  </div>,document.body);
