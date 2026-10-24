@@ -30,6 +30,6 @@ export function QuestionMedia({image,imageAlt,audio,audioEdit,displayName,fileTi
   const block=<div className="quiz-media-dock">{clip}<SoundPlayer {...sound} variant="overlay" className="quiz-sound-dock"/></div>;
   return className?<div className={`quiz-media-group ${className}`}>{block}</div>:block;
  }
- const parts=<>{pictureBlock}{!picture&&sound&&<SoundPlayer {...sound} variant="card" className={kind==='answer'?'quiz-sound feedback-sound':'quiz-sound'}/>}{clip}</>;
+ const parts=<>{pictureBlock}{!picture&&sound&&<SoundPlayer {...sound} variant={kind==='answer'?'card':'pulse'} className={kind==='answer'?'quiz-sound feedback-sound':'quiz-sound'}/>}{clip}</>;
  return className?<div className={`quiz-media-group ${className}`}>{parts}</div>:parts;
 }

@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2,AlertCircle,Scissors} from 'lucide-react';
+import {Play,Pause,Mic,Square,Upload,Trash2,RefreshCw,LoaderCircle,AudioLines,Link2,AlertCircle,Scissors,RotateCcw} from 'lucide-react';
 import {MediaLinkForm,DriveShareLegacyNotice,pushMediaLinkError} from './MediaLinkForm';
 import {MAX_AUDIO_CHARS,MAX_AUDIO_SECONDS,driveFileId,isDriveLink,resolveMediaLink,DRIVE_SHARE_REJECT,DRIVE_SHARE_LEGACY_HINT,typedMediaFile,blobToDataUrl,dataUrlLength,formatBytes,audioSafe} from '../question-types.js';
 import {MediaClipEditor,normalizeEdit,useClipPlayback,decodePeaks,probeMediaSrc,playbackSrc,fmtTime,fmtFine,type MediaEdit,type Peaks} from './MediaClipEditor';
@@ -58,8 +58,9 @@ function useLiveLevels(levels:(bars:number)=>number[]|null,bars:number,on:boolea
 }
 
 /* ───────── player ───────── */
-export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media'|'card';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number}){
+export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media'|'card'|'pulse';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number}){
  const audio=useRef<HTMLAudioElement>(null),wave=useRef<HTMLDivElement>(null),bar=useRef<HTMLDivElement>(null);
+ const [drag,setDrag]=useState<number|null>(null),dragging=useRef(false);
  const pb=useClipPlayback(audio,src,edit,{durationHint,analyser:variant==='overlay'});
  const {duration,at,playing,failed}=pb;
  const known=duration>0,clip=normalizeEdit(edit,duration),selLen=known?clip.trimEnd-clip.trimStart:0;
@@ -72,6 +73,30 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
  const f=selLen>0&&selLen<10?fmtFine:fmtTime;
  const cur=known?f(Math.max(0,at-clip.trimStart)):'0:00',total=known?f(selLen):'–:––';
+ if(variant==='pulse'){
+  const ratio=(x:number)=>{const r=bar.current?.getBoundingClientRect();return r&&r.width?clamp((x-r.left)/r.width,0,1):0;};
+  const shown=drag??played,secs=(v:number)=>fmtTime(Math.round(v));
+  const nowAt=known?secs((drag!==null?drag*selLen:Math.max(0,at-clip.trimStart))):'0:00',len=known?secs(selLen):'–:––';
+  const end=(e:React.PointerEvent)=>{if(!dragging.current)return;dragging.current=false;pb.seek(clip.trimStart+ratio(e.clientX)*selLen);setDrag(null);};
+  const replay=()=>{pb.seek(clip.trimStart);if(!playing)pb.play();};
+  return <div className={`sp sp-pulse ${className}`.trim()} data-playing={playing||undefined} data-failed={failed||undefined}>
+   <div className="sp-pulse-orb">
+    <span className="sp-pulse-ring" aria-hidden="true"/><span className="sp-pulse-ring" aria-hidden="true"/><span className="sp-pulse-ring" aria-hidden="true"/>
+    <button type="button" className="sp-pulse-play" aria-label={playing?'Pause sound':label} onClick={pb.toggle}>{playing?<Pause size={20} fill="currentColor"/>:<Play size={20} fill="currentColor"/>}</button>
+   </div>
+   <div className="sp-pulse-body">
+    <div className="sp-pulse-top"><span className="sp-pulse-title">{failed?'This sound could not play':'Listen carefully'}</span><span className="sp-pulse-time">{nowAt} / {len}</span></div>
+    <div ref={bar} className="sp-pulse-bar" role="slider" aria-label="Seek" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(shown*100)} tabIndex={known?0:-1} data-dragging={drag!==null||undefined}
+     onPointerDown={e=>{if(!known)return;e.preventDefault();try{e.currentTarget.setPointerCapture(e.pointerId);}catch{}dragging.current=true;setDrag(ratio(e.clientX));}}
+     onPointerMove={e=>{if(dragging.current)setDrag(ratio(e.clientX));}} onPointerUp={end} onPointerCancel={()=>{dragging.current=false;setDrag(null);}}
+     onKeyDown={e=>{if(e.key==='ArrowLeft'){e.preventDefault();pb.seek(at-1);}else if(e.key==='ArrowRight'){e.preventDefault();pb.seek(at+1);}else if(e.key===' '){e.preventDefault();pb.toggle();}}}>
+     <i style={{width:`${shown*100}%`}}/><b style={{left:`${shown*100}%`}}/>
+    </div>
+    <div className="sp-pulse-actions"><button type="button" className="sp-pulse-replay" disabled={!known} onClick={replay}><RotateCcw size={13}/>Replay</button></div>
+   </div>
+   <audio key={src} ref={audio} src={playbackSrc(src)} preload="metadata" onError={()=>{}}/>
+  </div>;
+ }
  if(variant==='card'||variant==='media'){
   const seekAt=(x:number)=>{const r=bar.current?.getBoundingClientRect();if(!r||!known)return;pb.seek(clip.trimStart+clamp((x-r.left)/r.width,0,1)*selLen);};
   const title=failed?'This sound could not play':(displayName||'Question sound');

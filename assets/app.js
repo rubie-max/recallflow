@@ -31341,6 +31341,7 @@ function useLiveLevels(levels, bars, on) {
 /* ───────── player ───────── */
 function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'default', edit, displayName, fileTitle, durationHint }) {
     const audio = reactExports.useRef(null), wave = reactExports.useRef(null), bar = reactExports.useRef(null);
+    const [drag, setDrag] = reactExports.useState(null), dragging = reactExports.useRef(false);
     const pb = useClipPlayback(audio, src, edit, { durationHint, analyser: variant === 'overlay' });
     const { duration, at, playing, failed } = pb;
     const known = duration > 0, clip = normalizeEdit(edit, duration), selLen = known ? clip.trimEnd - clip.trimStart : 0;
@@ -31354,6 +31355,52 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
         return React.createElement(DriveShareLegacyNotice, { kind: "sound" });
     const f = selLen > 0 && selLen < 10 ? fmtFine : fmtTime;
     const cur = known ? f(Math.max(0, at - clip.trimStart)) : '0:00', total = known ? f(selLen) : '–:––';
+    if (variant === 'pulse') {
+        const ratio = (x) => { const r = bar.current?.getBoundingClientRect(); return r && r.width ? clamp$1((x - r.left) / r.width, 0, 1) : 0; };
+        const shown = drag ?? played, secs = (v) => fmtTime(Math.round(v));
+        const nowAt = known ? secs((drag !== null ? drag * selLen : Math.max(0, at - clip.trimStart))) : '0:00', len = known ? secs(selLen) : '–:––';
+        const end = (e) => { if (!dragging.current)
+            return; dragging.current = false; pb.seek(clip.trimStart + ratio(e.clientX) * selLen); setDrag(null); };
+        const replay = () => { pb.seek(clip.trimStart); if (!playing)
+            pb.play(); };
+        return React.createElement("div", { className: `sp sp-pulse ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
+            React.createElement("div", { className: "sp-pulse-orb" },
+                React.createElement("span", { className: "sp-pulse-ring", "aria-hidden": "true" }),
+                React.createElement("span", { className: "sp-pulse-ring", "aria-hidden": "true" }),
+                React.createElement("span", { className: "sp-pulse-ring", "aria-hidden": "true" }),
+                React.createElement("button", { type: "button", className: "sp-pulse-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 20, fill: "currentColor" }) : React.createElement(Play, { size: 20, fill: "currentColor" }))),
+            React.createElement("div", { className: "sp-pulse-body" },
+                React.createElement("div", { className: "sp-pulse-top" },
+                    React.createElement("span", { className: "sp-pulse-title" }, failed ? 'This sound could not play' : 'Listen carefully'),
+                    React.createElement("span", { className: "sp-pulse-time" },
+                        nowAt,
+                        " / ",
+                        len)),
+                React.createElement("div", { ref: bar, className: "sp-pulse-bar", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(shown * 100), tabIndex: known ? 0 : -1, "data-dragging": drag !== null || undefined, onPointerDown: e => { if (!known)
+                        return; e.preventDefault(); try {
+                        e.currentTarget.setPointerCapture(e.pointerId);
+                    }
+                    catch { } dragging.current = true; setDrag(ratio(e.clientX)); }, onPointerMove: e => { if (dragging.current)
+                        setDrag(ratio(e.clientX)); }, onPointerUp: end, onPointerCancel: () => { dragging.current = false; setDrag(null); }, onKeyDown: e => { if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        pb.seek(at - 1);
+                    }
+                    else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        pb.seek(at + 1);
+                    }
+                    else if (e.key === ' ') {
+                        e.preventDefault();
+                        pb.toggle();
+                    } } },
+                    React.createElement("i", { style: { width: `${shown * 100}%` } }),
+                    React.createElement("b", { style: { left: `${shown * 100}%` } })),
+                React.createElement("div", { className: "sp-pulse-actions" },
+                    React.createElement("button", { type: "button", className: "sp-pulse-replay", disabled: !known, onClick: replay },
+                        React.createElement(RotateCcw, { size: 13 }),
+                        "Replay"))),
+            React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
+    }
     if (variant === 'card' || variant === 'media') {
         const seekAt = (x) => { const r = bar.current?.getBoundingClientRect(); if (!r || !known)
             return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
@@ -31742,7 +31789,7 @@ function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTit
     }
     const parts = React.createElement(React.Fragment, null,
         pictureBlock,
-        !picture && sound && React.createElement(SoundPlayer, { ...sound, variant: "card", className: kind === 'answer' ? 'quiz-sound feedback-sound' : 'quiz-sound' }),
+        !picture && sound && React.createElement(SoundPlayer, { ...sound, variant: kind === 'answer' ? 'card' : 'pulse', className: kind === 'answer' ? 'quiz-sound feedback-sound' : 'quiz-sound' }),
         clip);
     return className ? React.createElement("div", { className: `quiz-media-group ${className}` }, parts) : parts;
 }
