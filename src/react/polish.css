@@ -927,7 +927,7 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .editor-quiz-preview .quiz-media-stack{margin:4px 0 14px;border-radius:14px;overflow:hidden}
 .editor-quiz-preview .question-media-zoom{margin-bottom:0!important;width:100%!important;max-width:100%!important}
 /* Bottom error toast: buzzes, auto-dismisses after 5s, floats just above the action bar */
-.editor-toast{position:sticky;bottom:86px;z-index:4;display:flex;align-items:center;gap:10px;width:fit-content;max-width:min(460px,92%);margin:0 auto 10px;padding:11px 10px 11px 14px;border-radius:13px;background:var(--error);color:#fff;box-shadow:0 12px 34px #0007;font-size:13px;line-height:1.4;animation:editor-toast-in .22s cubic-bezier(.2,.9,.3,1.3)}
+.editor-toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:flex-start;gap:10px;width:min(420px,calc(100% - 32px));margin:0;padding:12px 12px 12px 14px;border-radius:14px;background:#2a1518;border:1px solid #5c2a2e;color:#ffd6d4;box-shadow:0 16px 40px #0008;font-size:13px;line-height:1.45;animation:editor-toast-in .22s ease-out}
 .editor-toast>svg:first-child{flex-shrink:0}
 .editor-toast>span{flex:1;min-width:0}
 .editor-toast>button{display:grid;place-items:center;width:28px;height:28px;flex-shrink:0;padding:0;border:0;border-radius:8px;background:rgba(255,255,255,.18);color:#fff;cursor:pointer}

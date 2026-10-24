@@ -48,7 +48,7 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   const typed=typedMediaFile(file,'video');
   if(!typed){onError('Choose a video file (MP4, WebM or MOV).');return;}
   const blob=typed instanceof File?typed:new File([typed],file.name||'video.mp4',{type:typed.type});
-  if(dataUrlLength(blob.size,blob.type)>MAX_VIDEO_CHARS){onError(`This video is ${formatBytes(blob.size)}; the limit is about ${formatBytes(maxBytesForChars(MAX_VIDEO_CHARS))}. Trim or compress it first, or paste an https link.`);return;}
+  if(dataUrlLength(blob.size,blob.type)>MAX_VIDEO_CHARS){onError(`Video is ${formatBytes(blob.size)}. Limit is about ${formatBytes(maxBytesForChars(MAX_VIDEO_CHARS))}. Trim it, or add a link.`);return;}
   setBusy({label:'Adding video…'});
   try{
    const url=URL.createObjectURL(blob);

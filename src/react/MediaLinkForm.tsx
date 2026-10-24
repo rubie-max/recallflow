@@ -15,14 +15,14 @@ export function DriveShareLegacyNotice({kind='media'}:{kind?:'sound'|'video'|'me
 function bandTitle(label:string){const t=label.replace(/\s*link$/i,'').trim()||'Media';return /^add\s/i.test(t)?t:`Add ${t.toLowerCase()} link`;}
 function linkHint(label:string){
  const l=label.toLowerCase();
- if(l.includes('image')||l.includes('picture'))return 'Paste a direct https link to an image file (PNG, JPEG, WebP, GIF).';
- if(l.includes('video'))return 'Paste a direct https link to a video file (MP4, WebM). Google Drive and YouTube pages will not play.';
- return 'Paste a direct https link to an audio file (MP3, WAV, OGG, …). Google Drive share pages will not play.';
+ if(l.includes('image')||l.includes('picture'))return 'Paste a direct image link (PNG, JPEG, WebP, GIF).';
+ if(l.includes('video'))return 'Paste a direct video link (MP4 or WebM).';
+ return 'Paste a direct audio link (MP3, WAV, OGG).';
 }
 function bandIcon(label:string){const l=label.toLowerCase();return l.includes('image')||l.includes('picture')?ImageIcon:l.includes('video')?Film:Link2;}
 function liveHint(url:string){
  const u=url.trim();if(!u)return '';
- if(driveFileId(u)||isDriveLink(u))return 'Google Drive links do not play here. Download the file from Drive and upload it instead.';
+ if(driveFileId(u)||isDriveLink(u))return 'This link won’t play. Use a direct file link.';
  if(/^http:\/\//i.test(u))return 'Links must start with https://';
  if(!/^https:\/\//i.test(u))return 'That does not look like a link yet.';
  return '';

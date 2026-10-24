@@ -29259,10 +29259,10 @@ function bandTitle(label) { const t = label.replace(/\s*link$/i, '').trim() || '
 function linkHint(label) {
     const l = label.toLowerCase();
     if (l.includes('image') || l.includes('picture'))
-        return 'Paste a direct https link to an image file (PNG, JPEG, WebP, GIF).';
+        return 'Paste a direct image link (PNG, JPEG, WebP, GIF).';
     if (l.includes('video'))
-        return 'Paste a direct https link to a video file (MP4, WebM). Google Drive and YouTube pages will not play.';
-    return 'Paste a direct https link to an audio file (MP3, WAV, OGG, …). Google Drive share pages will not play.';
+        return 'Paste a direct video link (MP4 or WebM).';
+    return 'Paste a direct audio link (MP3, WAV, OGG).';
 }
 function bandIcon(label) { const l = label.toLowerCase(); return l.includes('image') || l.includes('picture') ? Image$1 : l.includes('video') ? Film : Link2; }
 function liveHint(url) {
@@ -29270,7 +29270,7 @@ function liveHint(url) {
     if (!u)
         return '';
     if (driveFileId(u) || isDriveLink(u))
-        return 'Google Drive links do not play here. Download the file from Drive and upload it instead.';
+        return 'This link won’t play. Use a direct file link.';
     if (/^http:\/\//i.test(u))
         return 'Links must start with https://';
     if (!/^https:\/\//i.test(u))
@@ -31229,7 +31229,7 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
         }
         const blob = typed instanceof File ? typed : new File([typed], file.name || 'video.mp4', { type: typed.type });
         if (dataUrlLength(blob.size, blob.type) > MAX_VIDEO_CHARS) {
-            onError(`This video is ${formatBytes(blob.size)}; the limit is about ${formatBytes(maxBytesForChars(MAX_VIDEO_CHARS))}. Trim or compress it first, or paste an https link.`);
+            onError(`Video is ${formatBytes(blob.size)}. Limit is about ${formatBytes(maxBytesForChars(MAX_VIDEO_CHARS))}. Trim it, or add a link.`);
             return;
         }
         setBusy({ label: 'Adding video…' });
