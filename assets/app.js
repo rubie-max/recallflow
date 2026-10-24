@@ -17476,7 +17476,7 @@ const createLucideIcon = (iconName, iconNode) => {
  */
 
 
-const __iconNode$29 = [
+const __iconNode$2a = [
   [
     "path",
     {
@@ -17485,7 +17485,21 @@ const __iconNode$29 = [
     }
   ]
 ];
-const Activity = createLucideIcon("Activity", __iconNode$29);
+const Activity = createLucideIcon("Activity", __iconNode$2a);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$29 = [
+  ["path", { d: "M12 5v14", key: "s699le" }],
+  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+];
+const ArrowDown = createLucideIcon("ArrowDown", __iconNode$29);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17496,10 +17510,12 @@ const Activity = createLucideIcon("Activity", __iconNode$29);
 
 
 const __iconNode$28 = [
-  ["path", { d: "M12 5v14", key: "s699le" }],
-  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
+  ["path", { d: "M4 7h16", key: "6tx8e3" }],
+  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
+  ["path", { d: "M20 17H4", key: "h6l3hr" }]
 ];
-const ArrowDown = createLucideIcon("ArrowDown", __iconNode$28);
+const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$28);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17510,12 +17526,11 @@ const ArrowDown = createLucideIcon("ArrowDown", __iconNode$28);
 
 
 const __iconNode$27 = [
-  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
-  ["path", { d: "M4 7h16", key: "6tx8e3" }],
-  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
-  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+  ["path", { d: "M3 19V5", key: "rwsyhb" }],
+  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
+  ["path", { d: "M7 12h14", key: "uoisry" }]
 ];
-const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$27);
+const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$27);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17526,11 +17541,10 @@ const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$27);
 
 
 const __iconNode$26 = [
-  ["path", { d: "M3 19V5", key: "rwsyhb" }],
-  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
-  ["path", { d: "M7 12h14", key: "uoisry" }]
+  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
+  ["path", { d: "M19 12H5", key: "x3x0zl" }]
 ];
-const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$26);
+const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$26);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17541,10 +17555,11 @@ const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$26);
 
 
 const __iconNode$25 = [
-  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
-  ["path", { d: "M19 12H5", key: "x3x0zl" }]
+  ["path", { d: "M17 12H3", key: "8awo09" }],
+  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
+  ["path", { d: "M21 5v14", key: "nzette" }]
 ];
-const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$25);
+const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$25);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17555,11 +17570,10 @@ const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$25);
 
 
 const __iconNode$24 = [
-  ["path", { d: "M17 12H3", key: "8awo09" }],
-  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
-  ["path", { d: "M21 5v14", key: "nzette" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$24);
+const ArrowRight = createLucideIcon("ArrowRight", __iconNode$24);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17570,10 +17584,12 @@ const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$24);
 
 
 const __iconNode$23 = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
+  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
+  ["path", { d: "M17 20V4", key: "1ejh1v" }],
+  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
+  ["path", { d: "M7 4v16", key: "1glfcx" }]
 ];
-const ArrowRight = createLucideIcon("ArrowRight", __iconNode$23);
+const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$23);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17584,12 +17600,10 @@ const ArrowRight = createLucideIcon("ArrowRight", __iconNode$23);
 
 
 const __iconNode$22 = [
-  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
-  ["path", { d: "M17 20V4", key: "1ejh1v" }],
-  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
-  ["path", { d: "M7 4v16", key: "1glfcx" }]
+  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
+  ["path", { d: "M12 19V5", key: "x0mq9r" }]
 ];
-const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$22);
+const ArrowUp = createLucideIcon("ArrowUp", __iconNode$22);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17600,10 +17614,14 @@ const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$22);
 
 
 const __iconNode$21 = [
-  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
-  ["path", { d: "M12 19V5", key: "x0mq9r" }]
+  ["path", { d: "M2 10v3", key: "1fnikh" }],
+  ["path", { d: "M6 6v11", key: "11sgs0" }],
+  ["path", { d: "M10 3v18", key: "yhl04a" }],
+  ["path", { d: "M14 8v7", key: "3a1oy3" }],
+  ["path", { d: "M18 5v13", key: "123xd1" }],
+  ["path", { d: "M22 10v3", key: "154ddg" }]
 ];
-const ArrowUp = createLucideIcon("ArrowUp", __iconNode$21);
+const AudioLines = createLucideIcon("AudioLines", __iconNode$21);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17614,14 +17632,16 @@ const ArrowUp = createLucideIcon("ArrowUp", __iconNode$21);
 
 
 const __iconNode$20 = [
-  ["path", { d: "M2 10v3", key: "1fnikh" }],
-  ["path", { d: "M6 6v11", key: "11sgs0" }],
-  ["path", { d: "M10 3v18", key: "yhl04a" }],
-  ["path", { d: "M14 8v7", key: "3a1oy3" }],
-  ["path", { d: "M18 5v13", key: "123xd1" }],
-  ["path", { d: "M22 10v3", key: "154ddg" }]
+  ["path", { d: "M12 7v14", key: "1akyts" }],
+  [
+    "path",
+    {
+      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+      key: "ruj8y"
+    }
+  ]
 ];
-const AudioLines = createLucideIcon("AudioLines", __iconNode$20);
+const BookOpen = createLucideIcon("BookOpen", __iconNode$20);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17632,16 +17652,9 @@ const AudioLines = createLucideIcon("AudioLines", __iconNode$20);
 
 
 const __iconNode$1$ = [
-  ["path", { d: "M12 7v14", key: "1akyts" }],
-  [
-    "path",
-    {
-      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
-      key: "ruj8y"
-    }
-  ]
+  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
 ];
-const BookOpen = createLucideIcon("BookOpen", __iconNode$1$);
+const Bookmark = createLucideIcon("Bookmark", __iconNode$1$);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17652,9 +17665,10 @@ const BookOpen = createLucideIcon("BookOpen", __iconNode$1$);
 
 
 const __iconNode$1_ = [
-  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
+  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
+  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
 ];
-const Bookmark = createLucideIcon("Bookmark", __iconNode$1_);
+const Brackets = createLucideIcon("Brackets", __iconNode$1_);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17665,20 +17679,6 @@ const Bookmark = createLucideIcon("Bookmark", __iconNode$1_);
 
 
 const __iconNode$1Z = [
-  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
-  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
-];
-const Brackets = createLucideIcon("Brackets", __iconNode$1Z);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1Y = [
   [
     "path",
     {
@@ -17701,7 +17701,25 @@ const __iconNode$1Y = [
   ["path", { d: "M6 18a4 4 0 0 1-1.967-.516", key: "2e4loj" }],
   ["path", { d: "M19.967 17.484A4 4 0 0 1 18 18", key: "159ez6" }]
 ];
-const Brain = createLucideIcon("Brain", __iconNode$1Y);
+const Brain = createLucideIcon("Brain", __iconNode$1Z);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1Y = [
+  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
+  ["path", { d: "M16 2v4", key: "4m81vk" }],
+  ["path", { d: "M8 2v4", key: "1cmpym" }],
+  ["path", { d: "M3 10h5", key: "r794hk" }],
+  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
+  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
+];
+const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1Y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17712,24 +17730,6 @@ const Brain = createLucideIcon("Brain", __iconNode$1Y);
 
 
 const __iconNode$1X = [
-  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
-  ["path", { d: "M16 2v4", key: "4m81vk" }],
-  ["path", { d: "M8 2v4", key: "1cmpym" }],
-  ["path", { d: "M3 10h5", key: "r794hk" }],
-  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
-  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
-];
-const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1X);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1W = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -17741,7 +17741,27 @@ const __iconNode$1W = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1W);
+const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1X);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1W = [
+  [
+    "path",
+    {
+      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
+      key: "1tc9qg"
+    }
+  ],
+  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
+];
+const Camera = createLucideIcon("Camera", __iconNode$1W);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17752,31 +17772,11 @@ const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1W);
 
 
 const __iconNode$1V = [
-  [
-    "path",
-    {
-      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
-      key: "1tc9qg"
-    }
-  ],
-  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
-];
-const Camera = createLucideIcon("Camera", __iconNode$1V);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1U = [
   ["line", { x1: "12", x2: "12", y1: "20", y2: "10", key: "1vz5eb" }],
   ["line", { x1: "18", x2: "18", y1: "20", y2: "4", key: "cun8e5" }],
   ["line", { x1: "6", x2: "6", y1: "20", y2: "16", key: "hq0ia6" }]
 ];
-const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1U);
+const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1V);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17786,8 +17786,8 @@ const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasin
  */
 
 
-const __iconNode$1T = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("Check", __iconNode$1T);
+const __iconNode$1U = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("Check", __iconNode$1U);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17797,8 +17797,8 @@ const Check = createLucideIcon("Check", __iconNode$1T);
  */
 
 
-const __iconNode$1S = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1S);
+const __iconNode$1T = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1T);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17808,8 +17808,8 @@ const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1S);
  */
 
 
-const __iconNode$1R = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1R);
+const __iconNode$1S = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1S);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17819,8 +17819,23 @@ const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1R);
  */
 
 
-const __iconNode$1Q = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1Q);
+const __iconNode$1R = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1R);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1Q = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1Q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17832,10 +17847,9 @@ const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1Q);
 
 const __iconNode$1P = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1P);
+const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1P);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17847,9 +17861,9 @@ const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1P);
 
 const __iconNode$1O = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
 ];
-const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1O);
+const CircleDot = createLucideIcon("CircleDot", __iconNode$1O);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17861,9 +17875,10 @@ const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1O);
 
 const __iconNode$1N = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const CircleDot = createLucideIcon("CircleDot", __iconNode$1N);
+const CircleX = createLucideIcon("CircleX", __iconNode$1N);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17874,21 +17889,6 @@ const CircleDot = createLucideIcon("CircleDot", __iconNode$1N);
 
 
 const __iconNode$1M = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
-];
-const CircleX = createLucideIcon("CircleX", __iconNode$1M);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1L = [
   [
     "path",
     { d: "M15 2H9a1 1 0 0 0-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z", key: "1pp7kr" }
@@ -17902,7 +17902,21 @@ const __iconNode$1L = [
   ],
   ["path", { d: "m17 10 4 4-4 4", key: "vp2hj1" }]
 ];
-const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1L);
+const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1M);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1L = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
+];
+const Clock = createLucideIcon("Clock", __iconNode$1L);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17913,10 +17927,14 @@ const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1L);
 
 
 const __iconNode$1K = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
+  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
+  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
+  [
+    "path",
+    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
+  ]
 ];
-const Clock = createLucideIcon("Clock", __iconNode$1K);
+const CloudOff = createLucideIcon("CloudOff", __iconNode$1K);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17927,14 +17945,11 @@ const Clock = createLucideIcon("Clock", __iconNode$1K);
 
 
 const __iconNode$1J = [
-  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
-  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
-  [
-    "path",
-    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
-  ]
+  ["path", { d: "M12 13v8", key: "1l5pq0" }],
+  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
+  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
 ];
-const CloudOff = createLucideIcon("CloudOff", __iconNode$1J);
+const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1J);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17945,11 +17960,9 @@ const CloudOff = createLucideIcon("CloudOff", __iconNode$1J);
 
 
 const __iconNode$1I = [
-  ["path", { d: "M12 13v8", key: "1l5pq0" }],
-  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
-  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
+  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
 ];
-const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1I);
+const Cloud = createLucideIcon("Cloud", __iconNode$1I);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17960,9 +17973,10 @@ const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1I);
 
 
 const __iconNode$1H = [
-  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
 ];
-const Cloud = createLucideIcon("Cloud", __iconNode$1H);
+const Contrast = createLucideIcon("Contrast", __iconNode$1H);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17973,10 +17987,11 @@ const Cloud = createLucideIcon("Cloud", __iconNode$1H);
 
 
 const __iconNode$1G = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
+  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Contrast = createLucideIcon("Contrast", __iconNode$1G);
+const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1G);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17987,11 +18002,10 @@ const Contrast = createLucideIcon("Contrast", __iconNode$1G);
 
 
 const __iconNode$1F = [
-  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
   ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
   ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1F);
+const Copy = createLucideIcon("Copy", __iconNode$1F);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18002,10 +18016,10 @@ const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1F);
 
 
 const __iconNode$1E = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
+  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
 ];
-const Copy = createLucideIcon("Copy", __iconNode$1E);
+const Crop = createLucideIcon("Crop", __iconNode$1E);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18016,10 +18030,13 @@ const Copy = createLucideIcon("Copy", __iconNode$1E);
 
 
 const __iconNode$1D = [
-  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
-  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
+  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
+  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
+  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
 ];
-const Crop = createLucideIcon("Crop", __iconNode$1D);
+const Crosshair = createLucideIcon("Crosshair", __iconNode$1D);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18030,13 +18047,11 @@ const Crop = createLucideIcon("Crop", __iconNode$1D);
 
 
 const __iconNode$1C = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
-  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
-  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
-  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
 ];
-const Crosshair = createLucideIcon("Crosshair", __iconNode$1C);
+const Database = createLucideIcon("Database", __iconNode$1C);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18047,21 +18062,6 @@ const Crosshair = createLucideIcon("Crosshair", __iconNode$1C);
 
 
 const __iconNode$1B = [
-  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
-  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
-  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
-];
-const Database = createLucideIcon("Database", __iconNode$1B);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1A = [
   ["path", { d: "M13 4h3a2 2 0 0 1 2 2v14", key: "hrm0s9" }],
   ["path", { d: "M2 20h3", key: "1gaodv" }],
   ["path", { d: "M13 20h9", key: "s90cdi" }],
@@ -18074,7 +18074,22 @@ const __iconNode$1A = [
     }
   ]
 ];
-const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1A);
+const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1B);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1A = [
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
+  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+];
+const Download = createLucideIcon("Download", __iconNode$1A);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18085,11 +18100,15 @@ const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1A);
 
 
 const __iconNode$1z = [
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
-  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+  [
+    "path",
+    {
+      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
+      key: "c7niix"
+    }
+  ]
 ];
-const Download = createLucideIcon("Download", __iconNode$1z);
+const Droplet = createLucideIcon("Droplet", __iconNode$1z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18100,15 +18119,11 @@ const Download = createLucideIcon("Download", __iconNode$1z);
 
 
 const __iconNode$1y = [
-  [
-    "path",
-    {
-      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
-      key: "c7niix"
-    }
-  ]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
+  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
 ];
-const Droplet = createLucideIcon("Droplet", __iconNode$1y);
+const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18119,11 +18134,16 @@ const Droplet = createLucideIcon("Droplet", __iconNode$1y);
 
 
 const __iconNode$1x = [
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
-  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
-  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
+  ["path", { d: "m15 15 6 6", key: "1s409w" }],
+  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
+  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
+  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
+  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
+  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
+  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
+  ["path", { d: "M9 9 3 3", key: "v551iv" }]
 ];
-const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1x);
+const Expand = createLucideIcon("Expand", __iconNode$1x);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18134,16 +18154,11 @@ const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1x);
 
 
 const __iconNode$1w = [
-  ["path", { d: "m15 15 6 6", key: "1s409w" }],
-  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
-  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
-  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
-  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
-  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
-  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
-  ["path", { d: "M9 9 3 3", key: "v551iv" }]
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
 ];
-const Expand = createLucideIcon("Expand", __iconNode$1w);
+const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1w);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18154,21 +18169,6 @@ const Expand = createLucideIcon("Expand", __iconNode$1w);
 
 
 const __iconNode$1v = [
-  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
-  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
-  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
-];
-const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1v);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1u = [
   [
     "path",
     {
@@ -18186,7 +18186,27 @@ const __iconNode$1u = [
   ],
   ["path", { d: "m2 2 20 20", key: "1ooewy" }]
 ];
-const EyeOff = createLucideIcon("EyeOff", __iconNode$1u);
+const EyeOff = createLucideIcon("EyeOff", __iconNode$1v);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1u = [
+  [
+    "path",
+    {
+      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
+      key: "1nclc0"
+    }
+  ],
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+];
+const Eye = createLucideIcon("Eye", __iconNode$1u);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18197,16 +18217,10 @@ const EyeOff = createLucideIcon("EyeOff", __iconNode$1u);
 
 
 const __iconNode$1t = [
-  [
-    "path",
-    {
-      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
-      key: "1nclc0"
-    }
-  ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
+  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
 ];
-const Eye = createLucideIcon("Eye", __iconNode$1t);
+const FastForward = createLucideIcon("FastForward", __iconNode$1t);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18217,20 +18231,6 @@ const Eye = createLucideIcon("Eye", __iconNode$1t);
 
 
 const __iconNode$1s = [
-  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
-  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
-];
-const FastForward = createLucideIcon("FastForward", __iconNode$1s);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1r = [
   ["path", { d: "M10 12v-1", key: "v7bkov" }],
   ["path", { d: "M10 18v-2", key: "1cjy8d" }],
   ["path", { d: "M10 7V6", key: "dljcrl" }],
@@ -18241,7 +18241,7 @@ const __iconNode$1r = [
   ],
   ["circle", { cx: "10", cy: "20", r: "2", key: "1xzdoj" }]
 ];
-const FileArchive = createLucideIcon("FileArchive", __iconNode$1r);
+const FileArchive = createLucideIcon("FileArchive", __iconNode$1s);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18251,7 +18251,7 @@ const FileArchive = createLucideIcon("FileArchive", __iconNode$1r);
  */
 
 
-const __iconNode$1q = [
+const __iconNode$1r = [
   ["path", { d: "M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3", key: "rslqgf" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
   [
@@ -18262,7 +18262,23 @@ const __iconNode$1q = [
     }
   ]
 ];
-const FileAudio = createLucideIcon("FileAudio", __iconNode$1q);
+const FileAudio = createLucideIcon("FileAudio", __iconNode$1r);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1q = [
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  ["path", { d: "M12 18v-6", key: "17g6i2" }],
+  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+];
+const FileDown = createLucideIcon("FileDown", __iconNode$1q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18275,10 +18291,16 @@ const FileAudio = createLucideIcon("FileAudio", __iconNode$1q);
 const __iconNode$1p = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 18v-6", key: "17g6i2" }],
-  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+  [
+    "path",
+    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
+  ],
+  [
+    "path",
+    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
+  ]
 ];
-const FileDown = createLucideIcon("FileDown", __iconNode$1p);
+const FileJson = createLucideIcon("FileJson", __iconNode$1p);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18291,16 +18313,12 @@ const FileDown = createLucideIcon("FileDown", __iconNode$1p);
 const __iconNode$1o = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  [
-    "path",
-    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
-  ],
-  [
-    "path",
-    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
-  ]
+  ["path", { d: "M8 13h2", key: "yr2amv" }],
+  ["path", { d: "M14 13h2", key: "un5t4a" }],
+  ["path", { d: "M8 17h2", key: "2yhykz" }],
+  ["path", { d: "M14 17h2", key: "10kma7" }]
 ];
-const FileJson = createLucideIcon("FileJson", __iconNode$1o);
+const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1o);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18313,12 +18331,11 @@ const FileJson = createLucideIcon("FileJson", __iconNode$1o);
 const __iconNode$1n = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M8 13h2", key: "yr2amv" }],
-  ["path", { d: "M14 13h2", key: "un5t4a" }],
-  ["path", { d: "M8 17h2", key: "2yhykz" }],
-  ["path", { d: "M14 17h2", key: "10kma7" }]
+  ["path", { d: "M10 9H8", key: "b1mrlr" }],
+  ["path", { d: "M16 13H8", key: "t4e002" }],
+  ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1n);
+const FileText = createLucideIcon("FileText", __iconNode$1n);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18331,11 +18348,10 @@ const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1n);
 const __iconNode$1m = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M10 9H8", key: "b1mrlr" }],
-  ["path", { d: "M16 13H8", key: "t4e002" }],
-  ["path", { d: "M16 17H8", key: "z1uh3a" }]
+  ["path", { d: "M12 12v6", key: "3ahymv" }],
+  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
 ];
-const FileText = createLucideIcon("FileText", __iconNode$1m);
+const FileUp = createLucideIcon("FileUp", __iconNode$1m);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18348,10 +18364,9 @@ const FileText = createLucideIcon("FileText", __iconNode$1m);
 const __iconNode$1l = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 12v6", key: "3ahymv" }],
-  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
+  ["path", { d: "m10 11 5 3-5 3v-6Z", key: "7ntvm4" }]
 ];
-const FileUp = createLucideIcon("FileUp", __iconNode$1l);
+const FileVideo = createLucideIcon("FileVideo", __iconNode$1l);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18362,11 +18377,16 @@ const FileUp = createLucideIcon("FileUp", __iconNode$1l);
 
 
 const __iconNode$1k = [
-  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
-  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "m10 11 5 3-5 3v-6Z", key: "7ntvm4" }]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M7 3v18", key: "bbkbws" }],
+  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
+  ["path", { d: "M3 12h18", key: "1i2n21" }],
+  ["path", { d: "M3 16.5h4", key: "1230mu" }],
+  ["path", { d: "M17 3v18", key: "in4fa5" }],
+  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
+  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
 ];
-const FileVideo = createLucideIcon("FileVideo", __iconNode$1k);
+const Film = createLucideIcon("Film", __iconNode$1k);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18377,16 +18397,15 @@ const FileVideo = createLucideIcon("FileVideo", __iconNode$1k);
 
 
 const __iconNode$1j = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
-  ["path", { d: "M7 3v18", key: "bbkbws" }],
-  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
-  ["path", { d: "M3 12h18", key: "1i2n21" }],
-  ["path", { d: "M3 16.5h4", key: "1230mu" }],
-  ["path", { d: "M17 3v18", key: "in4fa5" }],
-  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
-  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
+  [
+    "path",
+    {
+      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+      key: "96xj49"
+    }
+  ]
 ];
-const Film = createLucideIcon("Film", __iconNode$1j);
+const Flame = createLucideIcon("Flame", __iconNode$1j);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18397,15 +18416,14 @@ const Film = createLucideIcon("Film", __iconNode$1j);
 
 
 const __iconNode$1i = [
-  [
-    "path",
-    {
-      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
-      key: "96xj49"
-    }
-  ]
+  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
+  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "M12 14v2", key: "8jcxud" }],
+  ["path", { d: "M12 8v2", key: "1woqiv" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }]
 ];
-const Flame = createLucideIcon("Flame", __iconNode$1i);
+const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1i);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18416,14 +18434,14 @@ const Flame = createLucideIcon("Flame", __iconNode$1i);
 
 
 const __iconNode$1h = [
-  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
-  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
-  ["path", { d: "M12 20v2", key: "1lh1kg" }],
-  ["path", { d: "M12 14v2", key: "8jcxud" }],
-  ["path", { d: "M12 8v2", key: "1woqiv" }],
-  ["path", { d: "M12 2v2", key: "tus03m" }]
+  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
+  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
+  ["path", { d: "M4 12H2", key: "rhcxmi" }],
+  ["path", { d: "M10 12H8", key: "s88cx1" }],
+  ["path", { d: "M16 12h-2", key: "10asgb" }],
+  ["path", { d: "M22 12h-2", key: "14jgyd" }]
 ];
-const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1h);
+const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1h);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18434,14 +18452,17 @@ const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1h);
 
 
 const __iconNode$1g = [
-  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
-  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
-  ["path", { d: "M4 12H2", key: "rhcxmi" }],
-  ["path", { d: "M10 12H8", key: "s88cx1" }],
-  ["path", { d: "M16 12h-2", key: "10asgb" }],
-  ["path", { d: "M22 12h-2", key: "14jgyd" }]
+  [
+    "path",
+    {
+      d: "M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1",
+      key: "fm4g5t"
+    }
+  ],
+  ["path", { d: "M2 13h10", key: "pgb2dq" }],
+  ["path", { d: "m9 16 3-3-3-3", key: "6m91ic" }]
 ];
-const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1g);
+const FolderInput = createLucideIcon("FolderInput", __iconNode$1g);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -30691,12 +30712,18 @@ Maths,Basics,short_answer,What is 7 x 8?,56,,numeric=56;true_false=true,
 Art,Colour,short_answer,Name one primary colour.,Red,,,`;
 
 const formatIcons = { json: FileJson, csv: Sheet, tsv: Layers, text: FileText };
+const formatShort = { json: ['RecallFlow', 'Full backup'], csv: ['Spreadsheet', 'Excel · Sheets'], tsv: ['Flashcards', 'Anki · Quizlet'], text: ['Printable', 'Read or print'] };
+const importShort = { json: 'RecallFlow', csv: 'CSV', tsv: 'Tab separated', lines: 'Text lines' };
 const size = (n) => n < 1024 ? `${n} B` : n < 1048576 ? `${Math.round(n / 1024)} KB` : `${(n / 1048576).toFixed(1)} MB`;
+const plural = (n, one, many = one + 's') => `${n} ${n === 1 ? one : many}`;
 const FORMAT_KEY = 'recallflow_export_format';
 function download(text, name, mime) { const url = URL.createObjectURL(new Blob([text], { type: mime + ';charset=utf-8' })); const link = document.createElement('a'); link.href = url; link.download = name; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
 function ExportPanel({ items, selectedIds, onDone }) {
-    const subjects = reactExports.useMemo(() => [...new Set(items.map((x) => x.subject || 'General'))].sort(), [items]);
-    const [scope, setScope] = reactExports.useState(selectedIds.length ? 'selected' : 'all'), [subject, setSubject] = reactExports.useState(subjects[0] || ''), [types, setTypes] = reactExports.useState([]);
+    const subjects = reactExports.useMemo(() => { const m = new Map(); for (const x of items) {
+        const s = x.subject || 'General';
+        m.set(s, (m.get(s) || 0) + 1);
+    } return [...m].sort((a, b) => a[0].localeCompare(b[0])); }, [items]);
+    const [scope, setScope] = reactExports.useState(selectedIds.length ? 'selected' : 'all'), [subject, setSubject] = reactExports.useState(subjects[0]?.[0] || ''), [types, setTypes] = reactExports.useState([]);
     const [format, setFormatState] = reactExports.useState(() => { try {
         const f = localStorage.getItem(FORMAT_KEY);
         return exportFormats.some(x => x.id === f) ? f : 'json';
@@ -30725,6 +30752,8 @@ function ExportPanel({ items, selectedIds, onDone }) {
     const linkSoundCount = chosen.filter((x) => typeof x.audio === 'string' && x.audio.startsWith('https://') || typeof x.answerAudio === 'string' && x.answerAudio.startsWith('https://')).length;
     const videoCount = embeddedVideoCount(chosen);
     const linkVideoCount = chosen.filter((x) => ['video', 'answerVideo'].some(k => typeof x[k] === 'string' && x[k].startsWith('https://'))).length;
+    const chosenSubjects = new Set(chosen.map((x) => x.subject || 'General')).size;
+    const bytes = reactExports.useMemo(() => new Blob([output]).size, [output]);
     const name = `recallflow-${scope === 'subject' ? subject.toLowerCase().replace(/[^a-z0-9]+/g, '-') : scope}-${new Date().toISOString().slice(0, 10)}.${meta.ext}`;
     async function copy() { try {
         await navigator.clipboard.writeText(output);
@@ -30733,12 +30762,6 @@ function ExportPanel({ items, selectedIds, onDone }) {
     catch {
         setStatus('Copy is blocked here. Use Download instead.');
     } }
-    const shareFile = () => { try {
-        return new File([output], name, { type: meta.mime });
-    }
-    catch {
-        return null;
-    } };
     const canShare = reactExports.useMemo(() => { if (typeof navigator === 'undefined' || !navigator.share || !navigator.canShare)
         return false; try {
         return navigator.canShare({ files: [new File(['x'], 'test.' + meta.ext, { type: meta.mime })] });
@@ -30746,8 +30769,12 @@ function ExportPanel({ items, selectedIds, onDone }) {
     catch {
         return false;
     } }, [meta]);
-    async function share() { const f = shareFile(); if (!f)
-        return; try {
+    async function share() { let f; try {
+        f = new File([output], name, { type: meta.mime });
+    }
+    catch {
+        return;
+    } try {
         await navigator.share({ files: [f], title: name });
         setStatus(`Shared ${name}`);
     }
@@ -30755,95 +30782,86 @@ function ExportPanel({ items, selectedIds, onDone }) {
         if (e?.name !== 'AbortError')
             setStatus('Sharing did not work here. Use Download instead.');
     } }
-    return React.createElement("div", { className: "transfer-panel" },
-        React.createElement("section", { className: "transfer-card" },
-            React.createElement("h2", null,
-                React.createElement("span", null, "1"),
-                "Which questions?"),
-            React.createElement("div", { className: "transfer-scope", role: "radiogroup", "aria-label": "Questions to export" }, [['all', 'All questions', `${items.length}`], ['subject', 'One subject', `${subjects.length} ${subjects.length === 1 ? 'subject' : 'subjects'}`], ['types', 'By question type', types.length ? `${types.length} selected` : 'Any type'], ...(selectedIds.length ? [['selected', 'Selected in library', `${selectedIds.length}`]] : [])].map(([id, label, hint]) => React.createElement("button", { key: id, role: "radio", "aria-checked": scope === id, onClick: () => setScope(id) },
-                React.createElement("i", { "aria-hidden": "true" }),
+    const typeCounts = reactExports.useMemo(() => new Map(questionTypes.map(([id]) => [id, items.filter((x) => itemTypes(x).includes(id)).length])), [items]);
+    const scopes = [['all', 'Everything', plural(items.length, 'question'), Library], ['subject', 'One subject', plural(subjects.length, 'subject'), BookOpen], ['types', 'By type', types.length ? `${types.length} picked` : 'Pick types', LayoutGrid], ...(selectedIds.length ? [['selected', 'Selected', plural(selectedIds.length, 'question'), ListChecks]] : [])];
+    const switchRow = (Icon, title, hint, checked, set) => React.createElement("label", { className: "settings-switch" },
+        React.createElement("span", { className: "settings-switch-icon" },
+            React.createElement(Icon, { size: 17 })),
+        React.createElement("span", { className: "settings-switch-copy" },
+            React.createElement("strong", null, title),
+            React.createElement("small", null, hint)),
+        React.createElement("input", { type: "checkbox", role: "switch", checked: checked, onChange: e => set(e.target.checked) }),
+        React.createElement("i", { "aria-hidden": "true" }));
+    return React.createElement("div", { className: "tf-stack" },
+        React.createElement("section", { className: "tf-card" },
+            React.createElement("h2", { className: "tf-h" }, "What to export"),
+            React.createElement("div", { className: "tf-scope", role: "radiogroup", "aria-label": "Questions to export" }, scopes.map(([id, label, hint, Icon]) => React.createElement("button", { key: id, type: "button", role: "radio", "aria-checked": scope === id, onClick: () => setScope(id) },
+                React.createElement(Icon, { size: 19 }),
+                React.createElement("strong", null, label),
+                React.createElement("small", null, hint)))),
+            scope === 'subject' && React.createElement("div", { className: "tf-chips", role: "radiogroup", "aria-label": "Subject" }, subjects.map(([s, n]) => React.createElement("button", { key: s, type: "button", role: "radio", "aria-checked": subject === s, onClick: () => setSubject(s) },
+                s,
+                React.createElement("b", null, n)))),
+            scope === 'types' && React.createElement("div", { className: "tf-chips", role: "group", "aria-label": "Question types" }, questionTypes.map(([id, label]) => { const n = typeCounts.get(id) || 0; return n > 0 && React.createElement("button", { key: id, type: "button", "aria-pressed": types.includes(id), onClick: () => setTypes(t => t.includes(id) ? t.filter(x => x !== id) : [...t, id]) },
+                types.includes(id) && React.createElement(Check, { size: 13 }),
+                label,
+                React.createElement("b", null, n)); }))),
+        React.createElement("section", { className: "tf-card" },
+            React.createElement("h2", { className: "tf-h" }, "Format"),
+            React.createElement("div", { className: "tf-formats", role: "radiogroup", "aria-label": "Export format" }, exportFormats.map(f => { const Icon = formatIcons[f.id]; const [label, tag] = formatShort[f.id] || [f.label, '']; return React.createElement("button", { key: f.id, type: "button", role: "radio", "aria-checked": format === f.id, "data-format": f.id, onClick: () => setFormat(f.id) },
+                React.createElement("span", { className: "tf-format-icon" },
+                    React.createElement(Icon, { size: 18 })),
+                React.createElement("strong", null, label),
+                React.createElement("small", null, tag),
+                format === f.id && React.createElement(Check, { size: 15, className: "tf-format-check" })); })),
+            React.createElement("p", { className: "tf-format-detail" },
+                React.createElement(Info, { size: 14 }),
+                meta.detail),
+            format === 'json' && React.createElement("div", { className: "tf-include" },
+                React.createElement("p", { className: "tf-label" }, "Include in the file"),
+                switchRow(Image$1, 'Pictures', imageCount ? `${plural(imageCount, 'question')} with pictures` : 'None in this selection', images, setImages),
+                switchRow(AudioLines, 'Recorded sounds', soundCount ? `${plural(soundCount, 'clip')} · makes the file larger` : linkSoundCount ? 'Sound links are always kept' : 'None in this selection', audio, setAudio),
+                switchRow(Film, 'Uploaded videos', videoCount ? `${plural(videoCount, 'video')} · makes the file much larger` : linkVideoCount ? 'Video links are always kept' : 'None in this selection', video, setVideo),
+                switchRow(History, 'Study progress', 'Review dates and past answers', progress, setProgress)),
+            format !== 'json' && chosen.some((x) => x.variants?.length) && React.createElement("p", { className: "tf-note" }, "Questions with several types keep only their first type here. Choose RecallFlow to keep them all.")),
+        React.createElement("section", { className: "tf-card tf-summary-card" },
+            React.createElement("div", { className: "tf-file-line" },
+                React.createElement("span", { className: "tf-file-icon", "data-format": format }, React.createElement(formatIcons[format], { size: 20 })),
                 React.createElement("span", null,
-                    React.createElement("strong", null, label),
-                    React.createElement("small", null, hint))))),
-            scope === 'subject' && React.createElement("label", { className: "transfer-field" },
-                "Subject",
-                React.createElement("select", { value: subject, onChange: e => setSubject(e.target.value) }, subjects.map(s => React.createElement("option", { key: s }, s)))),
-            scope === 'types' && React.createElement("div", { className: "transfer-chips", role: "group", "aria-label": "Question types" }, questionTypes.map(([id, label]) => { const count = items.filter((x) => itemTypes(x).includes(id)).length; return React.createElement("label", { key: id, "data-empty": !count || undefined },
-                React.createElement("input", { type: "checkbox", checked: types.includes(id), disabled: !count, onChange: e => setTypes(t => e.target.checked ? [...t, id] : t.filter(x => x !== id)) }),
+                    React.createElement("strong", null, name),
+                    React.createElement("small", null, preparing ? 'Preparing pictures…' : chosen.length ? size(bytes) : 'Nothing to export'))),
+            React.createElement("div", { className: "tf-facts" },
                 React.createElement("span", null,
-                    label,
-                    React.createElement("b", null, count))); }))),
-        React.createElement("section", { className: "transfer-card" },
-            React.createElement("h2", null,
-                React.createElement("span", null, "2"),
-                "Format"),
-            React.createElement("div", { className: "transfer-formats", role: "radiogroup", "aria-label": "Export format" }, exportFormats.map(f => { const Icon = formatIcons[f.id]; return React.createElement("button", { key: f.id, role: "radio", "aria-checked": format === f.id, onClick: () => setFormat(f.id) },
-                React.createElement(Icon, { size: 20 }),
-                React.createElement("span", null,
-                    React.createElement("strong", null, f.label),
-                    React.createElement("small", null, f.detail)),
-                format === f.id && React.createElement(Check, { size: 16, className: "transfer-check" })); })),
-            format === 'json' && React.createElement("div", { className: "transfer-options" },
-                React.createElement("label", { className: "settings-switch" },
-                    React.createElement("span", { className: "settings-switch-icon" },
-                        React.createElement(Image$1, { size: 17 })),
-                    React.createElement("span", { className: "settings-switch-copy" },
-                        React.createElement("strong", null, "Include pictures"),
-                        React.createElement("small", null, imageCount ? `${imageCount} ${imageCount === 1 ? 'question has' : 'questions have'} pictures` : 'No pictures in this selection')),
-                    React.createElement("input", { type: "checkbox", role: "switch", checked: images, onChange: e => setImages(e.target.checked) }),
-                    React.createElement("i", { "aria-hidden": "true" })),
-                React.createElement("label", { className: "settings-switch" },
-                    React.createElement("span", { className: "settings-switch-icon" },
-                        React.createElement(AudioLines, { size: 17 })),
-                    React.createElement("span", { className: "settings-switch-copy" },
-                        React.createElement("strong", null, "Include recorded sounds"),
-                        React.createElement("small", null, soundCount ? `${soundCount} embedded ${soundCount === 1 ? 'clip' : 'clips'} (can make the file very large)` : linkSoundCount ? 'Only https sound links are kept when this is off' : 'No question sounds here')),
-                    React.createElement("input", { type: "checkbox", role: "switch", checked: audio, onChange: e => setAudio(e.target.checked) }),
-                    React.createElement("i", { "aria-hidden": "true" })),
-                React.createElement("label", { className: "settings-switch" },
-                    React.createElement("span", { className: "settings-switch-icon" },
-                        React.createElement(Film, { size: 17 })),
-                    React.createElement("span", { className: "settings-switch-copy" },
-                        React.createElement("strong", null, "Include embedded videos"),
-                        React.createElement("small", null, videoCount ? `${videoCount} uploaded ${videoCount === 1 ? 'video' : 'videos'} (very large)` : linkVideoCount ? 'https / Drive video links stay in the file' : 'No uploaded videos here')),
-                    React.createElement("input", { type: "checkbox", role: "switch", checked: video, onChange: e => setVideo(e.target.checked) }),
-                    React.createElement("i", { "aria-hidden": "true" })),
-                React.createElement("label", { className: "settings-switch" },
-                    React.createElement("span", { className: "settings-switch-icon" },
-                        React.createElement(History, { size: 17 })),
-                    React.createElement("span", { className: "settings-switch-copy" },
-                        React.createElement("strong", null, "Include study progress"),
-                        React.createElement("small", null, "Next review dates and attempts")),
-                    React.createElement("input", { type: "checkbox", role: "switch", checked: progress, onChange: e => setProgress(e.target.checked) }),
-                    React.createElement("i", { "aria-hidden": "true" }))),
-            format === 'json' && soundCount > 0 && !audio && React.createElement("p", { className: "transfer-note" }, "Recorded sounds are left out of this export. https sound links are still included. Turn on \u201CInclude recorded sounds\u201D to copy clips inside the file."),
-            format === 'json' && videoCount > 0 && !video && React.createElement("p", { className: "transfer-note" }, "Uploaded videos are left out of this export. https and Google Drive video links are still included. Turn on \u201CInclude embedded videos\u201D to copy files inside the export."),
-            format !== 'json' && chosen.some((x) => x.variants?.length) && React.createElement("p", { className: "transfer-note" }, "Only the first type of multi-type questions is included. Use RecallFlow file to keep every type.")),
-        chosen.length > 0 && !preparing && React.createElement("section", { className: "transfer-card transfer-preview" },
-            React.createElement("button", { type: "button", className: "transfer-preview-toggle", "aria-expanded": preview, onClick: () => setPreview(v => !v) },
-                React.createElement(Eye, { size: 16 }),
-                React.createElement("span", null,
-                    React.createElement("strong", null, "Preview the file"),
-                    React.createElement("small", null, name)),
-                React.createElement(ChevronRight, { size: 16, className: "transfer-preview-chev" })),
-            preview && React.createElement("pre", null, output.length > 2400 ? output.slice(0, 2400) + '\n…' : output)),
-        React.createElement("footer", { className: "transfer-footer" },
-            React.createElement("div", null,
-                React.createElement("strong", null,
-                    chosen.length,
-                    " ",
+                    React.createElement("b", null, chosen.length),
                     chosen.length === 1 ? 'question' : 'questions'),
-                React.createElement("small", null, preparing ? 'Preparing pictures…' : chosen.length ? `${meta.ext.toUpperCase()} file · ${size(new Blob([output]).size)}` : 'Nothing to export')),
-            React.createElement("div", { className: "transfer-footer-actions" },
-                canShare ? React.createElement(Button, { variant: "outline", disabled: !chosen.length || preparing, onClick: share, "aria-label": "Share file" },
+                React.createElement("span", null,
+                    React.createElement("b", null, chosenSubjects),
+                    chosenSubjects === 1 ? 'subject' : 'subjects'),
+                React.createElement("span", null,
+                    React.createElement("b", null, format === 'json' && images ? imageCount : 0),
+                    "pictures")),
+            chosen.length > 0 && !preparing && React.createElement(React.Fragment, null,
+                React.createElement("button", { type: "button", className: "tf-collapse", "aria-expanded": preview, onClick: () => setPreview(v => !v) },
+                    React.createElement(Eye, { size: 16 }),
+                    React.createElement("span", null, "Preview the file"),
+                    React.createElement(ChevronDown, { size: 16, className: "tf-chev" })),
+                preview && React.createElement("pre", { className: "tf-pre" }, output.length > 2400 ? output.slice(0, 2400) + '\n…' : output))),
+        React.createElement("footer", { className: "tf-bar" },
+            React.createElement("div", { className: "tf-bar-copy" },
+                React.createElement("strong", null, plural(chosen.length, 'question')),
+                React.createElement("small", null, preparing ? 'Preparing…' : chosen.length ? `${formatShort[format]?.[0] || meta.label} · ${size(bytes)}` : 'Pick something to export')),
+            React.createElement("div", { className: "tf-bar-actions" },
+                canShare ? React.createElement(Button, { variant: "outline", disabled: !chosen.length || preparing, onClick: share },
                     React.createElement(Share2, { size: 16 }),
-                    "Share") : React.createElement(Button, { variant: "outline", disabled: !chosen.length || preparing, onClick: copy },
+                    "Share") : React.createElement(Button, { variant: "outline", disabled: !chosen.length || preparing, onClick: copy, "aria-label": "Copy to clipboard" },
                     React.createElement(Copy, { size: 16 }),
                     "Copy"),
                 React.createElement(Button, { disabled: !chosen.length || preparing, onClick: () => { download(output, name, meta.mime); setStatus(`Downloaded ${name}`); onDone?.(); } },
                     React.createElement(Download, { size: 16 }),
                     "Download"))),
-        status && React.createElement("p", { className: "transfer-status", role: "status" }, status));
+        status && React.createElement("p", { className: "tf-status", role: "status" },
+            React.createElement(CircleCheck, { size: 15 }),
+            status));
 }
 function AiHelper({ onCopyPrompt, promptCopied }) {
     const example = `{
@@ -30855,33 +30873,37 @@ function AiHelper({ onCopyPrompt, promptCopied }) {
     { "type": "single_choice", "options": ["Paris","Lyon","Nice"] }
   ]
 }`;
-    return React.createElement("div", { className: "transfer-ai-panel" },
-        React.createElement("div", { className: "transfer-ai-tags" },
-            React.createElement("span", null,
-                React.createElement(Layers, { size: 14 }),
-                "Several types per question"),
-            React.createElement("span", null,
-                React.createElement(AudioLines, { size: 14 }),
-                "Question sound (https)"),
-            React.createElement("span", null,
-                React.createElement(Image$1, { size: 14 }),
-                "Pictures (https)")),
-        React.createElement("div", { className: "transfer-ai-example" },
-            React.createElement("div", { className: "transfer-ai-example-head" },
-                React.createElement("span", null, "Example \u2014 one question, two types + sound"),
+    return React.createElement("div", { className: "tf-ai" },
+        React.createElement("ol", { className: "tf-steps" },
+            React.createElement("li", null,
+                React.createElement("b", null, "1"),
+                React.createElement("span", null, "Copy the guide below")),
+            React.createElement("li", null,
+                React.createElement("b", null, "2"),
+                React.createElement("span", null, "Paste it into ChatGPT or any AI with your notes")),
+            React.createElement("li", null,
+                React.createElement("b", null, "3"),
+                React.createElement("span", null, "Paste or upload what it gives back"))),
+        React.createElement(Button, { className: "tf-ai-copy", onClick: onCopyPrompt },
+            React.createElement(Sparkles, { size: 16 }),
+            "Copy AI guide"),
+        promptCopied && React.createElement("p", { className: "tf-status", role: "status" },
+            React.createElement(CircleCheck, { size: 15 }),
+            promptCopied),
+        React.createElement("details", { className: "tf-ai-example" },
+            React.createElement("summary", null,
+                "See an example question",
+                React.createElement(ChevronDown, { size: 15, className: "tf-chev" })),
+            React.createElement("div", null,
                 React.createElement("button", { type: "button", onClick: () => void navigator.clipboard?.writeText(example) },
                     React.createElement(Copy, { size: 13 }),
-                    "Copy")),
-            React.createElement("pre", null, example)),
-        React.createElement(Button, { className: "transfer-ai-copy-btn", onClick: onCopyPrompt },
-            React.createElement(Sparkles, { size: 16 }),
-            "Copy AI formatting guide"),
-        promptCopied && React.createElement("p", { className: "transfer-status", role: "status" }, promptCopied),
-        React.createElement("p", { className: "transfer-note" }, "Use https links for pictures and sound \u2014 not base64. CSV keeps only the first type; use the RecallFlow / JSON format to keep every type."));
+                    "Copy"),
+                React.createElement("pre", { className: "tf-pre" }, example))),
+        React.createElement("p", { className: "tf-note" }, "Pictures and sounds should be https links. Several types per question are kept."));
 }
 function ImportPanel({ items, onImport, onUndo, onBack }) {
-    const [text, setText] = reactExports.useState(''), [fileName, setFileName] = reactExports.useState(''), [format, setFormat] = reactExports.useState('auto'), [pasting, setPasting] = reactExports.useState(false), [drag, setDrag] = reactExports.useState(false), [promptCopied, setPromptCopied] = reactExports.useState(''), [aiOpen, setAiOpen] = reactExports.useState(false);
-    const [subject, setSubject] = reactExports.useState(''), [topic, setTopic] = reactExports.useState(''), [tag, setTag] = reactExports.useState(''), [dupes, setDupes] = reactExports.useState('skip'), [keepProgress, setKeepProgress] = reactExports.useState(false), [excluded, setExcluded] = reactExports.useState(new Set()), [done, setDone] = reactExports.useState(null), [addedIds, setAddedIds] = reactExports.useState([]), [undone, setUndone] = reactExports.useState(false);
+    const [text, setText] = reactExports.useState(''), [fileName, setFileName] = reactExports.useState(''), [format, setFormat] = reactExports.useState('auto'), [pasting, setPasting] = reactExports.useState(false), [drag, setDrag] = reactExports.useState(false), [promptCopied, setPromptCopied] = reactExports.useState(''), [aiOpen, setAiOpen] = reactExports.useState(false), [optsOpen, setOptsOpen] = reactExports.useState(false);
+    const [subject, setSubject] = reactExports.useState(''), [topic, setTopic] = reactExports.useState(''), [tag, setTag] = reactExports.useState(''), [dupes, setDupes] = reactExports.useState('skip'), [keepProgress, setKeepProgress] = reactExports.useState(false), [excluded, setExcluded] = reactExports.useState(new Set()), [done, setDone] = reactExports.useState(null), [added, setAdded] = reactExports.useState({ ids: [], subjects: [] }), [undone, setUndone] = reactExports.useState(false);
     const input = reactExports.useRef(null);
     const parsed = reactExports.useMemo(() => {
         if (!text.trim())
@@ -30907,6 +30929,8 @@ function ImportPanel({ items, onImport, onUndo, onBack }) {
     }, [text, format, fileName, items]);
     const rows = parsed?.rows || [];
     const ready = rows.filter((r) => r.item && !excluded.has(r.i) && (dupes === 'keep' || !r.duplicate));
+    const pickable = rows.filter((r) => r.item && (dupes === 'keep' || !r.duplicate));
+    const newCount = rows.filter((r) => r.item && !r.duplicate).length, dupeCount = rows.filter((r) => r.duplicate).length, errorCount = rows.filter((r) => r.error).length;
     const [fileError, setFileError] = reactExports.useState('');
     async function readFile(file) { if (!file)
         return; if (file.size > 15 * 1024 * 1024) {
@@ -30917,10 +30941,10 @@ function ImportPanel({ items, onImport, onUndo, onBack }) {
     } setFileError(''); setText(await file.text()); setFileName(file.name); setFormat('auto'); setExcluded(new Set()); setDone(null); setPasting(false); }
     async function copyPrompt() { try {
         await navigator.clipboard.writeText(aiImportPrompt);
-        setPromptCopied('AI formatting guide copied.');
+        setPromptCopied('AI guide copied. Paste it into your AI chat.');
     }
     catch {
-        setPromptCopied('Copy is blocked here. Select the text from RecallFlow on another device.');
+        setPromptCopied('Copy is blocked here. Try another browser.');
     } }
     function commit() {
         const stamp = Date.now(), extraTags = tag.split(',').map(x => x.trim()).filter(Boolean);
@@ -30930,222 +30954,249 @@ function ImportPanel({ items, onImport, onUndo, onBack }) {
                 delete out[k]; for (const k of Object.keys(out))
             if (out[k] === undefined)
                 delete out[k]; return out; });
+        const subs = new Map();
+        for (const x of clean)
+            subs.set(x.subject, (subs.get(x.subject) || 0) + 1);
         onImport(clean);
         setDone(clean.length);
-        setAddedIds(clean.map((x) => x.id));
+        setAdded({ ids: clean.map((x) => x.id), subjects: [...subs].sort((a, b) => b[1] - a[1]) });
         setUndone(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    function reset() { setUndone(false); setAddedIds([]); setText(''); setFileName(''); setFormat('auto'); setExcluded(new Set()); setDone(null); setSubject(''); setTopic(''); setTag(''); setPromptCopied(''); setAiOpen(false); }
+    function reset() { setUndone(false); setAdded({ ids: [], subjects: [] }); setText(''); setFileName(''); setFormat('auto'); setExcluded(new Set()); setDone(null); setSubject(''); setTopic(''); setTag(''); setPromptCopied(''); setAiOpen(false); setPasting(false); setOptsOpen(false); }
     const detectedLabel = parsed?.detected ? importFormats.find(([id]) => id === parsed.detected)?.[1] : '';
     if (done !== null)
-        return React.createElement("div", { className: "transfer-panel" },
-            React.createElement("section", { className: "transfer-card transfer-done" }, undone ? React.createElement(React.Fragment, null,
-                React.createElement("span", { className: "transfer-done-icon is-undone" },
+        return React.createElement("div", { className: "tf-stack" },
+            React.createElement("section", { className: "tf-card tf-done" }, undone ? React.createElement(React.Fragment, null,
+                React.createElement("span", { className: "tf-done-icon is-undone" },
                     React.createElement(Undo2, { size: 28 })),
                 React.createElement("h2", null, "Import undone"),
                 React.createElement("p", null,
-                    "The ",
-                    done,
-                    " ",
-                    done === 1 ? 'question was' : 'questions were',
-                    " removed again. Your bank is back to how it was."),
-                React.createElement("div", { className: "transfer-footer-actions" },
-                    React.createElement(Button, { onClick: reset }, "Import something else"))) : React.createElement(React.Fragment, null,
-                React.createElement("span", { className: "transfer-done-icon" },
-                    React.createElement(CircleCheck, { size: 30 })),
-                React.createElement("h2", null,
-                    "Added ",
-                    done,
-                    " ",
-                    done === 1 ? 'question' : 'questions'),
-                React.createElement("p", null, "They are in your question bank and ready to practise."),
-                React.createElement("div", { className: "transfer-footer-actions" },
-                    React.createElement(Button, { onClick: onBack }, "View questions"),
-                    React.createElement(Button, { variant: "outline", onClick: reset }, "Import more")),
-                onUndo && addedIds.length > 0 && React.createElement("button", { type: "button", className: "transfer-undo", onClick: () => { onUndo(addedIds); setUndone(true); } },
-                    React.createElement(Undo2, { size: 15 }),
-                    "Undo this import"))));
-    return React.createElement("div", { className: "transfer-panel" }, !text.trim() || pasting ? React.createElement("section", { className: "transfer-card" },
-        React.createElement("h2", null,
-            React.createElement("span", null, "1"),
-            "Add your questions"),
-        !pasting && React.createElement("button", { type: "button", className: "transfer-drop", "data-drag": drag || undefined, onClick: () => input.current?.click(), onDragOver: e => { e.preventDefault(); setDrag(true); }, onDragLeave: () => setDrag(false), onDrop: e => { e.preventDefault(); setDrag(false); void readFile(e.dataTransfer.files?.[0]); } },
-            React.createElement(CloudUpload, { size: 30 }),
-            React.createElement("strong", null, "Choose a file or drop it here"),
-            React.createElement("small", null, "JSON, CSV, TSV or TXT")),
-        fileError && React.createElement("p", { className: "transfer-error", role: "alert" },
-            React.createElement(CircleAlert, { size: 16 }),
-            fileError),
-        React.createElement("input", { ref: input, type: "file", hidden: true, "aria-label": "Choose a file to import", accept: ".json,.csv,.tsv,.txt,.md,application/json,text/csv,text/plain,text/tab-separated-values", onChange: e => { void readFile(e.currentTarget.files?.[0]); e.currentTarget.value = ''; } }),
-        pasting ? React.createElement(React.Fragment, null,
-            React.createElement("label", { className: "transfer-field" },
-                "Paste questions",
-                React.createElement("textarea", { autoFocus: true, value: text, onChange: e => { setText(e.target.value); setFileName(''); setFormat('auto'); setExcluded(new Set()); }, placeholder: 'One per line, question then answer:\nCapital of France? | Paris\nLargest planet, Jupiter' })),
-            React.createElement("div", { className: "transfer-footer-actions" },
-                React.createElement(Button, { variant: "outline", onClick: () => { setPasting(false); setText(''); } }, "Cancel"),
-                React.createElement(Button, { disabled: !text.trim(), onClick: () => setPasting(false) }, "Preview"))) : React.createElement(React.Fragment, null,
-            React.createElement("div", { className: "transfer-or", "aria-hidden": "true" },
-                React.createElement("span", null),
-                React.createElement("span", null, "OR"),
-                React.createElement("span", null)),
-            React.createElement("button", { type: "button", className: "transfer-ai-card", "aria-expanded": aiOpen, onClick: () => setAiOpen(o => !o) },
-                React.createElement("span", { className: "transfer-ai-icon" },
-                    React.createElement(Sparkles, { size: 20 })),
-                React.createElement("span", { className: "transfer-ai-copy" },
-                    React.createElement("strong", null, "Make questions with AI"),
-                    React.createElement("small", null, "Copy the guide, paste your notes into any AI, bring the result back")),
-                React.createElement(ChevronRight, { size: 18, className: "transfer-ai-chevron" })),
-            aiOpen && React.createElement(AiHelper, { onCopyPrompt: () => void copyPrompt(), promptCopied: promptCopied }),
-            React.createElement("div", { className: "transfer-quick" },
-                React.createElement("button", { type: "button", onClick: () => setPasting(true) },
-                    React.createElement(ClipboardPaste, { size: 16 }),
-                    "Paste text"),
-                React.createElement("button", { type: "button", onClick: () => download(csvTemplate, 'recallflow-template.csv', 'text/csv') },
-                    React.createElement(Download, { size: 16 }),
-                    "CSV template")),
-            React.createElement("details", { className: "transfer-formats-note" },
-                React.createElement("summary", null, "Supported formats"),
+                    plural(done, 'question'),
+                    " removed. Your bank is back to how it was."),
+                React.createElement("div", { className: "tf-done-actions" },
+                    React.createElement(Button, { onClick: reset }, "Import something else")))
+                : React.createElement(React.Fragment, null,
+                    React.createElement("span", { className: "tf-done-icon" },
+                        React.createElement(CircleCheck, { size: 32 })),
+                    React.createElement("h2", null,
+                        "Added ",
+                        plural(done, 'question')),
+                    React.createElement("p", null, "They are in your question bank and ready to practise."),
+                    added.subjects.length > 0 && React.createElement("div", { className: "tf-done-tags" }, added.subjects.slice(0, 5).map(([s, n]) => React.createElement("span", { key: s },
+                        s,
+                        React.createElement("b", null, n)))),
+                    React.createElement("div", { className: "tf-done-actions" },
+                        React.createElement(Button, { onClick: onBack }, "View questions"),
+                        React.createElement(Button, { variant: "outline", onClick: reset }, "Import more")),
+                    onUndo && added.ids.length > 0 && React.createElement("button", { type: "button", className: "tf-undo", onClick: () => { onUndo(added.ids); setUndone(true); } },
+                        React.createElement(Undo2, { size: 15 }),
+                        "Undo this import"))));
+    const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, "aria-label": "Choose a file to import", accept: ".json,.csv,.tsv,.txt,.md,application/json,text/csv,text/plain,text/tab-separated-values", onChange: e => { void readFile(e.currentTarget.files?.[0]); e.currentTarget.value = ''; } });
+    if (pasting)
+        return React.createElement("div", { className: "tf-stack" },
+            React.createElement("section", { className: "tf-card" },
+                React.createElement("div", { className: "tf-card-head" },
+                    React.createElement("span", { className: "tf-tile", "data-tone": "blue" },
+                        React.createElement(ClipboardPaste, { size: 18 })),
+                    React.createElement("div", null,
+                        React.createElement("h2", null, "Paste questions"),
+                        React.createElement("p", null, "One per line. Put the answer after a | or a comma."))),
+                React.createElement("textarea", { className: "tf-textarea", autoFocus: true, value: text, onChange: e => { setText(e.target.value); setFileName(''); setFormat('auto'); setExcluded(new Set()); }, placeholder: 'Capital of France? | Paris\nLargest planet, Jupiter\nH2O is called… | Water' }),
+                React.createElement("p", { className: "tf-live", "data-state": !text.trim() ? 'empty' : errorCount && !newCount ? 'error' : 'ok' }, !text.trim() ? 'Questions are checked as you type.' : parsed?.error ? parsed.error : React.createElement(React.Fragment, null,
+                    React.createElement("b", null, plural(newCount, 'question')),
+                    " ready",
+                    dupeCount ? ` · ${dupeCount} already in your bank` : '',
+                    errorCount ? ` · ${errorCount} missing an answer` : '')),
+                React.createElement("div", { className: "tf-row-actions" },
+                    React.createElement(Button, { variant: "outline", onClick: () => { setPasting(false); setText(''); } }, "Cancel"),
+                    React.createElement(Button, { disabled: !rows.length, onClick: () => setPasting(false) },
+                        "Review",
+                        React.createElement(ChevronRight, { size: 16 })))));
+    if (!text.trim())
+        return React.createElement("div", { className: "tf-stack" },
+            React.createElement("button", { type: "button", className: "tf-drop", "data-drag": drag || undefined, onClick: () => input.current?.click(), onDragOver: e => { e.preventDefault(); setDrag(true); }, onDragLeave: () => setDrag(false), onDrop: e => { e.preventDefault(); setDrag(false); void readFile(e.dataTransfer.files?.[0]); } },
+                React.createElement("span", { className: "tf-drop-icon" },
+                    React.createElement(CloudUpload, { size: 28 })),
+                React.createElement("strong", null, "Choose a file"),
+                React.createElement("small", null, "or drag and drop it here"),
+                React.createElement("span", { className: "tf-drop-types" }, ['JSON', 'CSV', 'TSV', 'TXT'].map(t => React.createElement("i", { key: t }, t)))),
+            fileInput,
+            fileError && React.createElement("p", { className: "tf-error", role: "alert" },
+                React.createElement(CircleAlert, { size: 16 }),
+                fileError),
+            React.createElement("p", { className: "tf-label" }, "Other ways to add"),
+            React.createElement("div", { className: "tf-list" },
+                React.createElement("button", { type: "button", className: "tf-item", onClick: () => setPasting(true) },
+                    React.createElement("span", { className: "tf-tile", "data-tone": "blue" },
+                        React.createElement(ClipboardPaste, { size: 18 })),
+                    React.createElement("span", { className: "tf-item-copy" },
+                        React.createElement("strong", null, "Paste text"),
+                        React.createElement("small", null, "Type or paste question and answer lines")),
+                    React.createElement(ChevronRight, { size: 18, className: "tf-item-chev" })),
+                React.createElement("button", { type: "button", className: "tf-item", "aria-expanded": aiOpen, onClick: () => setAiOpen(o => !o) },
+                    React.createElement("span", { className: "tf-tile", "data-tone": "violet" },
+                        React.createElement(Sparkles, { size: 18 })),
+                    React.createElement("span", { className: "tf-item-copy" },
+                        React.createElement("strong", null, "Make questions with AI"),
+                        React.createElement("small", null, "Turn your notes into questions with any AI chat")),
+                    React.createElement(ChevronDown, { size: 18, className: "tf-item-chev tf-chev" })),
+                aiOpen && React.createElement(AiHelper, { onCopyPrompt: () => void copyPrompt(), promptCopied: promptCopied }),
+                React.createElement("button", { type: "button", className: "tf-item", onClick: () => download(csvTemplate, 'recallflow-template.csv', 'text/csv') },
+                    React.createElement("span", { className: "tf-tile", "data-tone": "green" },
+                        React.createElement(Sheet, { size: 18 })),
+                    React.createElement("span", { className: "tf-item-copy" },
+                        React.createElement("strong", null, "Spreadsheet template"),
+                        React.createElement("small", null, "Fill it in Excel or Google Sheets, then import")),
+                    React.createElement(Download, { size: 17, className: "tf-item-chev" }))),
+            React.createElement("details", { className: "tf-help" },
+                React.createElement("summary", null,
+                    React.createElement(Info, { size: 15 }),
+                    "Which files work?",
+                    React.createElement(ChevronDown, { size: 15, className: "tf-chev" })),
                 React.createElement("ul", null,
                     React.createElement("li", null,
                         React.createElement("b", null, "RecallFlow file"),
-                        " \u2013 JSON from Export; best for every question type"),
+                        React.createElement("span", null, "The JSON from Export. Keeps every question type, picture and setting.")),
                     React.createElement("li", null,
-                        React.createElement("b", null, "CSV"),
-                        " \u2013 columns: subject, topic, type, prompt, answer, options, variants, audio"),
+                        React.createElement("b", null, "Spreadsheet (CSV)"),
+                        React.createElement("span", null, "Columns like subject, topic, type, prompt, answer, options.")),
                     React.createElement("li", null,
                         React.createElement("b", null, "Anki / Quizlet"),
-                        " \u2013 front and back separated by a tab"),
+                        React.createElement("span", null, "Front and back separated by a tab.")),
                     React.createElement("li", null,
-                        React.createElement("b", null, "Plain lines"),
-                        " \u2013 ",
-                        React.createElement("code", null, "question | answer"),
-                        " on each line"))))) : React.createElement(React.Fragment, null,
-        React.createElement("section", { className: "transfer-card" },
-            React.createElement("div", { className: "transfer-file" },
-                React.createElement(FileUp, { size: 20 }),
-                React.createElement("span", null,
-                    React.createElement("strong", null, fileName || 'Pasted text'),
-                    React.createElement("small", null, parsed?.error ? 'Could not read' : format === 'auto' && detectedLabel ? `Detected: ${detectedLabel}` : detectedLabel || 'Choose a format')),
-                React.createElement("button", { type: "button", "aria-label": "Remove file", onClick: reset },
-                    React.createElement(X, { size: 16 }))),
-            React.createElement("label", { className: "transfer-field transfer-inline" },
-                "Read as",
-                React.createElement("select", { value: format, onChange: e => { setFormat(e.target.value); setExcluded(new Set()); } }, importFormats.map(([id, label]) => React.createElement("option", { key: id, value: id }, label)))),
-            format === 'auto' && detectedLabel && !(parsed?.error) && React.createElement("p", { className: "transfer-note" },
-                "Automatic: treating this as ",
-                React.createElement("b", null, detectedLabel),
-                ". Pick another format if that looks wrong."),
-            React.createElement("div", { className: "transfer-help-actions" },
-                React.createElement("button", { type: "button", onClick: () => void copyPrompt() },
-                    React.createElement(Sparkles, { size: 14 }),
-                    "Copy AI formatting guide")),
-            parsed?.error && React.createElement("p", { className: "transfer-error", role: "alert" },
-                React.createElement(CircleAlert, { size: 16 }),
-                parsed.error)),
+                        React.createElement("b", null, "Plain text"),
+                        React.createElement("span", null, "One question per line, answer after | or a comma.")))));
+    const allOn = pickable.length > 0 && ready.length === pickable.length;
+    const types = new Map();
+    for (const r of ready)
+        types.set(r.item.type, (types.get(r.item.type) || 0) + 1);
+    const optsSummary = [subject.trim() ? `Subject: ${subject.trim()}` : 'Subject from file', topic.trim() ? `Topic: ${topic.trim()}` : null, dupes === 'skip' ? 'Skip duplicates' : 'Keep duplicates'].filter(Boolean).join(' · ');
+    return React.createElement("div", { className: "tf-stack" },
+        React.createElement("section", { className: "tf-file" },
+            React.createElement("span", { className: "tf-file-icon" },
+                React.createElement(FileUp, { size: 19 })),
+            React.createElement("span", { className: "tf-file-copy" },
+                React.createElement("strong", null, fileName || 'Pasted text'),
+                React.createElement("label", null,
+                    "Read as",
+                    React.createElement("select", { value: format, onChange: e => { setFormat(e.target.value); setExcluded(new Set()); } }, importFormats.map(([id, label]) => React.createElement("option", { key: id, value: id }, id === 'auto' ? `Automatic${parsed?.detected ? ` · ${importShort[parsed.detected] || detectedLabel}` : ''}` : label))))),
+            !fileName && React.createElement("button", { type: "button", className: "tf-file-edit", onClick: () => setPasting(true) }, "Edit"),
+            React.createElement("button", { type: "button", className: "tf-file-x", "aria-label": "Start over", onClick: reset },
+                React.createElement(X, { size: 17 }))),
+        parsed?.error && React.createElement("p", { className: "tf-error", role: "alert" },
+            React.createElement(CircleAlert, { size: 16 }),
+            parsed.error),
         !!rows.length && React.createElement(React.Fragment, null,
-            React.createElement("section", { className: "transfer-card" },
-                React.createElement("h2", null,
-                    React.createElement("span", null, "2"),
-                    "Review"),
-                React.createElement("div", { className: "transfer-counts" },
-                    React.createElement("span", { "data-kind": "ready" },
-                        React.createElement(CircleCheck, { size: 15 }),
-                        React.createElement("b", null, rows.filter((r) => r.item && !r.duplicate).length),
-                        " new"),
-                    React.createElement("span", { "data-kind": "dupe" },
-                        React.createElement(CopyCheck, { size: 15 }),
-                        React.createElement("b", null, rows.filter((r) => r.duplicate).length),
-                        " already in bank"),
-                    React.createElement("span", { "data-kind": "error" },
-                        React.createElement(CircleAlert, { size: 15 }),
-                        React.createElement("b", null, rows.filter((r) => r.error).length),
-                        " need fixing")),
-                (() => { const ok = ready, types = new Map(), subs = new Map(); for (const r of ok) {
-                    types.set(r.item.type, (types.get(r.item.type) || 0) + 1);
-                    const s = subject.trim() || r.item.subject || 'General';
-                    subs.set(s, (subs.get(s) || 0) + 1);
-                } return ok.length > 0 && React.createElement("div", { className: "transfer-breakdown" },
-                    [...types].map(([t, n]) => React.createElement("span", { key: t },
-                        typeLabel(t),
-                        " ",
-                        React.createElement("b", null, n))),
-                    [...subs].slice(0, 4).map(([s, n]) => React.createElement("span", { key: 's' + s, "data-kind": "subject" },
-                        s,
-                        " ",
-                        React.createElement("b", null, n)))); })(),
-                (() => { const pickable = rows.filter((r) => r.item && (dupes === 'keep' || !r.duplicate)); return pickable.length > 1 && React.createElement("div", { className: "transfer-select" },
-                    React.createElement("span", null,
-                        ready.length,
-                        " of ",
-                        pickable.length,
-                        " selected"),
-                    React.createElement("button", { type: "button", disabled: ready.length === pickable.length, onClick: () => setExcluded(new Set()) }, "Select all"),
-                    React.createElement("button", { type: "button", disabled: !ready.length, onClick: () => setExcluded(new Set(pickable.map((r) => r.i))) }, "Select none")); })(),
-                React.createElement("ul", { className: "transfer-rows" },
-                    rows.slice(0, 200).map((r) => React.createElement("li", { key: r.i, "data-state": r.error ? 'error' : r.duplicate ? 'dupe' : 'ok' },
-                        r.item ? React.createElement("input", { type: "checkbox", "aria-label": `Include ${r.item.prompt || "picture question"}`, checked: !excluded.has(r.i) && (dupes === 'keep' || !r.duplicate), disabled: r.duplicate && dupes === 'skip', onChange: e => setExcluded(s => { const n = new Set(s); if (e.target.checked)
-                                n.delete(r.i);
-                            else
-                                n.add(r.i); return n; }) }) : React.createElement(CircleAlert, { size: 16 }),
-                        React.createElement("div", null,
-                            React.createElement("strong", null, r.item?.prompt || r.raw?.prompt || (r.item?.image ? 'Picture question' : `Row ${r.i + 1}`)),
-                            React.createElement("small", null, r.error ? r.error : `${[r.item.type, ...(r.item.variants || []).map((v) => v.type)].map(typeLabel).join(' + ')} · ${r.item.answer}`),
-                            r.item && (subject.trim() || r.item.subject) && React.createElement("small", { className: "transfer-row-place" }, [subject.trim() || r.item.subject, topic.trim() || r.item.topic].filter(Boolean).join(' › '))),
-                        r.duplicate && React.createElement("em", null, "Duplicate"))),
-                    rows.length > 200 && React.createElement("li", { className: "transfer-more" },
+            React.createElement("div", { className: "tf-tally" },
+                React.createElement("div", { "data-kind": "new" },
+                    React.createElement("strong", null, newCount),
+                    React.createElement("span", null, "New")),
+                React.createElement("div", { "data-kind": "dupe" },
+                    React.createElement("strong", null, dupeCount),
+                    React.createElement("span", null, "Already have")),
+                React.createElement("div", { "data-kind": "error" },
+                    React.createElement("strong", null, errorCount),
+                    React.createElement("span", null, "Need fixing"))),
+            errorCount > 0 && React.createElement("div", { className: "tf-fix" },
+                React.createElement(CircleAlert, { size: 16 }),
+                React.createElement("span", null,
+                    plural(errorCount, 'row'),
+                    " can't be added yet. The AI guide can reformat ",
+                    errorCount === 1 ? 'it' : 'them',
+                    " for you."),
+                React.createElement("button", { type: "button", onClick: () => void copyPrompt() }, "Copy guide")),
+            promptCopied && errorCount > 0 && React.createElement("p", { className: "tf-status", role: "status" },
+                React.createElement(CircleCheck, { size: 15 }),
+                promptCopied),
+            React.createElement("section", { className: "tf-card tf-review" },
+                React.createElement("div", { className: "tf-review-head" },
+                    React.createElement("h2", { className: "tf-h" }, "Questions"),
+                    pickable.length > 1 && React.createElement("button", { type: "button", className: "tf-link", onClick: () => setExcluded(allOn ? new Set(pickable.map((r) => r.i)) : new Set()) }, allOn ? 'Select none' : 'Select all')),
+                ready.length > 0 && React.createElement("div", { className: "tf-types" }, [...types].map(([t, n]) => React.createElement("span", { key: t },
+                    typeLabel(t),
+                    React.createElement("b", null, n)))),
+                React.createElement("ul", { className: "tf-rows" },
+                    rows.slice(0, 200).map((r) => {
+                        const on = !!r.item && !excluded.has(r.i) && (dupes === 'keep' || !r.duplicate), locked = !r.item || (r.duplicate && dupes === 'skip');
+                        return React.createElement("li", { key: r.i },
+                            React.createElement("label", { className: "tf-q", "data-state": r.error ? 'error' : r.duplicate ? 'dupe' : 'ok', "data-on": on || undefined },
+                                r.item ? React.createElement("input", { type: "checkbox", className: "tf-check", "aria-label": `Include ${r.item.prompt || 'picture question'}`, checked: on, disabled: locked, onChange: e => setExcluded(s => { const n = new Set(s); if (e.target.checked)
+                                        n.delete(r.i);
+                                    else
+                                        n.add(r.i); return n; }) }) : React.createElement("span", { className: "tf-q-alert" },
+                                    React.createElement(CircleAlert, { size: 17 })),
+                                React.createElement("span", { className: "tf-q-copy" },
+                                    React.createElement("strong", null, r.item?.prompt || r.raw?.prompt || (r.item?.image ? 'Picture question' : `Row ${r.i + 1}`)),
+                                    React.createElement("small", null, r.error ? r.error : React.createElement(React.Fragment, null,
+                                        [r.item.type, ...(r.item.variants || []).map((v) => v.type)].map(typeLabel).join(' + '),
+                                        React.createElement("em", null, r.item.answer)))),
+                                r.duplicate && React.createElement("span", { className: "tf-badge" }, "Have it")));
+                    }),
+                    rows.length > 200 && React.createElement("li", { className: "tf-more" },
                         "and ",
                         rows.length - 200,
-                        " more\u2026"))),
-            React.createElement("section", { className: "transfer-card" },
-                React.createElement("h2", null,
-                    React.createElement("span", null, "3"),
-                    "Options"),
-                React.createElement("div", { className: "transfer-grid" },
-                    React.createElement("label", { className: "transfer-field" },
-                        "Subject",
-                        React.createElement("input", { value: subject, onChange: e => setSubject(e.target.value), placeholder: "Keep from file" })),
-                    React.createElement("label", { className: "transfer-field" },
-                        "Topic",
-                        React.createElement("input", { value: topic, onChange: e => setTopic(e.target.value), placeholder: "Keep from file" }))),
-                React.createElement("label", { className: "transfer-field" },
-                    "Add tags",
-                    React.createElement("input", { value: tag, onChange: e => setTag(e.target.value), placeholder: "e.g. imported, chapter 3" })),
-                React.createElement("p", { className: "settings-label" }, "Duplicates"),
-                React.createElement("div", { className: "settings-segmented", role: "radiogroup", "aria-label": "Duplicates" },
-                    React.createElement("button", { role: "radio", "aria-checked": dupes === 'skip', onClick: () => setDupes('skip') }, "Skip"),
-                    React.createElement("button", { role: "radio", "aria-checked": dupes === 'keep', onClick: () => setDupes('keep') }, "Import anyway")),
-                parsed.hasProgress && React.createElement("label", { className: "settings-switch" },
-                    React.createElement("span", { className: "settings-switch-icon" },
-                        React.createElement(History, { size: 17 })),
-                    React.createElement("span", { className: "settings-switch-copy" },
-                        React.createElement("strong", null, "Keep study progress"),
-                        React.createElement("small", null, "Otherwise questions start as new.")),
-                    React.createElement("input", { type: "checkbox", role: "switch", checked: keepProgress, onChange: e => setKeepProgress(e.target.checked) }),
-                    React.createElement("i", { "aria-hidden": "true" }))),
-            React.createElement("footer", { className: "transfer-footer" },
-                React.createElement("div", null,
-                    React.createElement("strong", null,
-                        ready.length,
-                        " ",
-                        ready.length === 1 ? 'question' : 'questions'),
-                    React.createElement("small", null, ready.length ? 'Ready to add' : 'Nothing selected')),
-                React.createElement("div", { className: "transfer-footer-actions" },
+                        " more"))),
+            React.createElement("section", { className: "tf-card tf-opts" },
+                React.createElement("button", { type: "button", className: "tf-collapse tf-opts-toggle", "aria-expanded": optsOpen, onClick: () => setOptsOpen(o => !o) },
+                    React.createElement("span", { className: "tf-tile", "data-tone": "amber" },
+                        React.createElement(FolderInput, { size: 17 })),
+                    React.createElement("span", { className: "tf-item-copy" },
+                        React.createElement("strong", null, "Where they go"),
+                        React.createElement("small", null, optsSummary)),
+                    React.createElement(ChevronDown, { size: 17, className: "tf-chev" })),
+                optsOpen && React.createElement("div", { className: "tf-opts-body" },
+                    React.createElement("div", { className: "tf-grid" },
+                        React.createElement("label", { className: "tf-field" },
+                            "Subject",
+                            React.createElement("input", { value: subject, onChange: e => setSubject(e.target.value), placeholder: "Keep from file" })),
+                        React.createElement("label", { className: "tf-field" },
+                            "Topic",
+                            React.createElement("input", { value: topic, onChange: e => setTopic(e.target.value), placeholder: "Keep from file" }))),
+                    React.createElement("label", { className: "tf-field" },
+                        "Add tags",
+                        React.createElement("input", { value: tag, onChange: e => setTag(e.target.value), placeholder: "e.g. imported, chapter 3" })),
+                    React.createElement("p", { className: "tf-label" }, "If a question is already in your bank"),
+                    React.createElement("div", { className: "settings-segmented", role: "radiogroup", "aria-label": "Duplicates" },
+                        React.createElement("button", { type: "button", role: "radio", "aria-checked": dupes === 'skip', onClick: () => setDupes('skip') }, "Skip it"),
+                        React.createElement("button", { type: "button", role: "radio", "aria-checked": dupes === 'keep', onClick: () => setDupes('keep') }, "Add a copy")),
+                    parsed.hasProgress && React.createElement("label", { className: "settings-switch" },
+                        React.createElement("span", { className: "settings-switch-icon" },
+                            React.createElement(History, { size: 17 })),
+                        React.createElement("span", { className: "settings-switch-copy" },
+                            React.createElement("strong", null, "Keep study progress"),
+                            React.createElement("small", null, "Otherwise they start as new questions.")),
+                        React.createElement("input", { type: "checkbox", role: "switch", checked: keepProgress, onChange: e => setKeepProgress(e.target.checked) }),
+                        React.createElement("i", { "aria-hidden": "true" })))),
+            React.createElement("footer", { className: "tf-bar" },
+                React.createElement("div", { className: "tf-bar-copy" },
+                    React.createElement("strong", null, plural(ready.length, 'question')),
+                    React.createElement("small", null, ready.length ? 'Ready to add' : newCount ? 'Nothing selected' : 'Nothing new to add')),
+                React.createElement("div", { className: "tf-bar-actions" },
                     React.createElement(Button, { disabled: !ready.length, onClick: commit },
                         React.createElement(FileUp, { size: 16 }),
-                        ready.length ? `Add ${ready.length} ${ready.length === 1 ? 'question' : 'questions'}` : 'Nothing new to add'))))));
+                        "Add ",
+                        ready.length || '')))));
 }
 function TransferPage({ items, selectedIds, initial = 'import', onImport, onUndo, onBack }) {
     const [tab, setTab] = reactExports.useState(initial);
-    return React.createElement("section", { className: "transfer-page" },
-        React.createElement("button", { className: "quiz-options-back transfer-back", onClick: onBack },
+    const subjectCount = reactExports.useMemo(() => new Set(items.map((x) => x.subject || 'General')).size, [items]);
+    return React.createElement("section", { className: "tf-page" },
+        React.createElement("button", { className: "tf-back", onClick: onBack },
             React.createElement(ArrowLeft, { size: 16 }),
             "Question bank"),
-        React.createElement("header", { className: "transfer-hero" },
-            React.createElement("p", null, "YOUR QUESTIONS"),
-            React.createElement("h1", null, "Import & export")),
-        React.createElement("div", { className: "transfer-tabs", role: "tablist", "aria-label": "Import or export" }, [['import', 'Import', FileUp], ['export', 'Export', FileDown]].map(([id, label, Icon]) => React.createElement("button", { key: id, role: "tab", "aria-selected": tab === id, onClick: () => setTab(id) },
-            React.createElement(Icon, { size: 17 }),
-            label))),
+        React.createElement("header", { className: "tf-hero" },
+            React.createElement("h1", null, "Import & export"),
+            React.createElement("p", null,
+                plural(items.length, 'question'),
+                " \u00B7 ",
+                plural(subjectCount, 'subject'),
+                " in your bank")),
+        React.createElement("div", { className: "tf-tabs", role: "tablist", "aria-label": "Import or export", "data-tab": tab },
+            React.createElement("span", { className: "tf-tabs-pill", "aria-hidden": "true" }),
+            [['import', 'Import', FileUp], ['export', 'Export', FileDown]].map(([id, label, Icon]) => React.createElement("button", { key: id, type: "button", role: "tab", "aria-selected": tab === id, onClick: () => setTab(id) },
+                React.createElement(Icon, { size: 17 }),
+                label))),
         tab === 'import' ? React.createElement(ImportPanel, { items: items, onImport: onImport, onUndo: onUndo, onBack: onBack }) : React.createElement(ExportPanel, { items: items, selectedIds: selectedIds }));
 }
 
