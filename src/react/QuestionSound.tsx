@@ -150,13 +150,14 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
   const blob=typed.type?typed:new Blob([typed],{type:guessType(file.name)||'audio/mpeg'});
   if(blob.size>80*1024*1024){onError(`That file is ${formatBytes(blob.size)} — too large to open here.`);return;}
   const fits=dataUrlLength(blob.size,blob.type)<=MAX_AUDIO_CHARS;
-  setBusy({label:fits?'Reading sound…':'Opening sound…'});
+  setBusy({label:fits?'Adding sound…':'Opening sound…'});
   try{
    const url=URL.createObjectURL(blob);
-   const meta=await probeMediaSrc(url,'audio');
+   let meta=await probeMediaSrc(url,'audio',5000);
+   if(!meta.ok&&blob.size>0)meta={ok:true,duration:meta.duration};
    if(!meta.ok){URL.revokeObjectURL(url);throw new Error('This sound file could not be opened in your browser.');}
-   if(fits&&meta.duration<=MAX_AUDIO_SECONDS+5){
-    const data=await blobToDataUrl(blob,p=>setBusy({label:'Reading sound…',progress:p}));
+   if(fits&&(meta.duration<=MAX_AUDIO_SECONDS+5||meta.duration<=0)){
+    const data=await blobToDataUrl(blob,p=>setBusy({label:'Adding sound…',progress:p}));
     URL.revokeObjectURL(url);
     if(!audioSafe(data))throw new Error('This sound could not be saved.');
     onEditChange?.(undefined);onChange(data);setDurationHint(meta.duration||undefined);onAudioNameChange?.(normalizeSoundFileName(file.name));
@@ -230,8 +231,8 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
  const warnEl=warn&&!recording&&<p className="media-alert" role="status"><AlertCircle size={14} aria-hidden="true"/><span>{warn.includes('cannot play')?<><strong>Linked sound can’t play.</strong> Remove it, upload the file, or use a direct audio URL.</>:warn}</span></p>;
  const linkForm=!recording&&linking&&<MediaLinkForm autoFocus id="question-sound-link" label="Sound link" placeholder="https://example.com/sound.mp3" submitLabel="Add" initialUrl={linked&&!drive?audio!:''} onClearError={onClearError} onCancel={()=>{setLinking(false);onClearError?.();}} onSubmit={async url=>{if(await applyLink(url))setLinking(false);}}/>;
  const clip=clipOpen&&(pending
-  ?<MediaClipEditor kind="audio" title="Trim before adding" fileName={pending.name} src={pending.url} saveMode="bake" maxSeconds={MAX_AUDIO_SECONDS} onReplace={(data,len)=>acceptBaked(data,len,pending.name)} onSave={()=>closePending()} onCancel={closePending}/>
-  :audio?<MediaClipEditor kind="audio" title="Adjust sound" fileName={fullName} src={audio} initial={edit} onReplace={audio.startsWith('data:')?(data,len)=>acceptBaked(data,len):undefined} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>:null);
+  ?<MediaClipEditor kind="audio" title="Trim before adding" fileName={pending.name} src={pending.url} durationHint={pending.duration} saveMode="bake" maxSeconds={MAX_AUDIO_SECONDS} onReplace={(data,len)=>acceptBaked(data,len,pending.name)} onSave={()=>closePending()} onCancel={closePending}/>
+  :audio?<MediaClipEditor kind="audio" title="Adjust sound" fileName={fullName} src={audio} initial={edit} durationHint={durationHint} onReplace={audio.startsWith('data:')?(data,len)=>acceptBaked(data,len):undefined} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>:null);
  const fileInput=<input ref={input} type="file" hidden aria-label={`Upload ${title.toLowerCase()}`} accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus" onChange={e=>{const f=e.currentTarget.files?.[0];e.currentTarget.value='';void upload(f);}}/>;
 
  if(assetLayout){

@@ -49,15 +49,19 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   if(!typed){onError('Choose a video file (MP4, WebM or MOV).');return;}
   const blob=typed instanceof File?typed:new File([typed],file.name||'video.mp4',{type:typed.type});
   if(dataUrlLength(blob.size,blob.type)>MAX_VIDEO_CHARS){onError(`This video is ${formatBytes(blob.size)}; the limit is about ${formatBytes(maxBytesForChars(MAX_VIDEO_CHARS))}. Trim or compress it first, or paste an https link.`);return;}
-  setBusy({label:'Checking video…'});
+  setBusy({label:'Adding video…'});
   try{
    const url=URL.createObjectURL(blob);
-   const probe=await probeMediaSrc(url,'video');URL.revokeObjectURL(url);
-   if(!probe.ok)throw new Error('This video could not be opened in your browser. MP4 (H.264) plays everywhere.');
-   const data=await blobToDataUrl(blob,p=>setBusy({label:'Adding video…',progress:p}));
+   const [probe,data]=await Promise.all([
+    probeMediaSrc(url,'video',5000),
+    blobToDataUrl(blob,p=>setBusy({label:'Adding video…',progress:p})),
+   ]);
+   URL.revokeObjectURL(url);
+   const ok=probe.ok||blob.size>0;
+   if(!ok)throw new Error('This video could not be opened in your browser. MP4 (H.264) plays everywhere.');
    if(!videoSafe(data))throw new Error('This video could not be saved.');
-   onEditChange?.(undefined);onChange(data);setMeta({duration:probe.duration,size:blob.size});
-   setClipOpen(true); // open the editor right away, like pictures do
+   onEditChange?.(undefined);onChange(data);setMeta({duration:probe.duration||0,size:blob.size});
+   setClipOpen(true);
   }catch(err:any){onError(err?.message||'This video could not be added.');}
   finally{setBusy(null);}
  }
@@ -87,7 +91,7 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
   </div>);
  const fileInput=<input ref={input} type="file" hidden accept="video/*,.mp4,.webm,.mov,.m4v" onChange={ev=>{const f=ev.currentTarget.files?.[0];ev.currentTarget.value='';void upload(f);}}/>;
  const linkForm=linking&&<MediaLinkForm autoFocus label={`${title} link`} placeholder="https://…/clip.mp4" submitLabel="Add" initialUrl={linked&&!drive?video!:''} onClearError={onClearError} onCancel={()=>setLinking(false)} onSubmit={url=>{if(applyLink(url))setLinking(false);}}/>;
- const clip=clipOpen&&video&&!drive&&<MediaClipEditor kind="video" title="Adjust video" src={video} initial={edit} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>;
+ const clip=clipOpen&&video&&!drive&&<MediaClipEditor kind="video" title="Adjust video" src={video} initial={edit} durationHint={meta?.duration} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>;
 
  return <article className={`mf mf-video${video?' has-media':''}${assetLayout?' is-asset':''}${dragOver?' is-dragover':''}`} {...drop}>
   <header className="mf-head">

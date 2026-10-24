@@ -29471,31 +29471,48 @@ function readDuration(el) {
     catch { }
     return 0;
 }
+function isLocalMediaSrc(src) { return /^(data|blob):/i.test(src || ''); }
+function probeHost() {
+    let host = document.getElementById('rf-probe-host');
+    if (!host) {
+        host = document.createElement('div');
+        host.id = 'rf-probe-host';
+        host.style.cssText = 'position:fixed;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden';
+        document.body.appendChild(host);
+    }
+    return host;
+}
 function resolveMediaDuration(el, timeoutMs = 15000) {
     return new Promise(resolve => {
         let done = false, fixing = false;
+        const local = isLocalMediaSrc(el.currentSrc || el.src);
         const evs = ['loadedmetadata', 'durationchange', 'loadeddata', 'canplay'];
         const finish = (d) => { if (done)
-            return; done = true; window.clearTimeout(timer); evs.forEach(ev => el.removeEventListener(ev, check)); el.removeEventListener('error', onErr); resolve(d); };
+            return; done = true; window.clearTimeout(timer); window.clearTimeout(seekTimer); evs.forEach(ev => el.removeEventListener(ev, check)); el.removeEventListener('error', onErr); resolve(d); };
+        let seekTimer = 0;
         const check = () => {
             const d = readDuration(el);
             if (d) {
                 finish(d);
                 return;
             }
-            if (el.readyState >= 1 && !fixing && !Number.isFinite(el.duration)) {
+            if (!local && el.readyState >= 1 && !fixing && !Number.isFinite(el.duration)) {
                 fixing = true;
-                const back = () => { el.removeEventListener('seeked', back); const d2 = readDuration(el); try {
+                const back = () => { el.removeEventListener('seeked', back); window.clearTimeout(seekTimer); const d2 = readDuration(el); try {
                     el.currentTime = 0;
                 }
                 catch { } if (d2)
-                    finish(d2); };
+                    finish(d2);
+                else
+                    fixing = false; };
                 el.addEventListener('seeked', back);
+                seekTimer = window.setTimeout(() => { el.removeEventListener('seeked', back); fixing = false; }, 4000);
                 try {
                     el.currentTime = 1e101;
                 }
                 catch {
                     el.removeEventListener('seeked', back);
+                    window.clearTimeout(seekTimer);
                     fixing = false;
                 }
             }
@@ -29515,18 +29532,44 @@ function seekElement(el, t) {
         done();
     } });
 }
-function probeMediaSrc(src, kind, timeoutMs = 15000) {
+/** Quick open check for uploads and links. Local blobs use metadata-only + a short timeout. */
+function probeMediaSrc(src, kind, timeoutMs) {
+    const local = isLocalMediaSrc(src);
+    const ms = timeoutMs ?? (local ? 4500 : 12000);
     return new Promise(resolve => {
         const el = document.createElement(kind);
-        el.preload = 'auto';
+        el.preload = 'metadata';
         el.muted = true;
         el.playsInline = true;
+        const host = probeHost();
+        host.appendChild(el);
         let settled = false;
-        const finish = (ok, duration) => { if (settled)
-            return; settled = true; el.removeAttribute('src'); el.load(); resolve({ ok, duration }); };
+        const finish = (ok, duration) => {
+            if (settled)
+                return;
+            settled = true;
+            try {
+                el.pause();
+            }
+            catch { }
+            el.removeAttribute('src');
+            try {
+                el.load();
+            }
+            catch { }
+            el.remove();
+            resolve({ ok, duration });
+        };
         el.addEventListener('error', () => finish(false, 0), { once: true });
         el.src = playbackSrc(src);
-        void resolveMediaDuration(el, timeoutMs).then(d => finish(!el.error && (d > 0 || el.readyState >= 1), d));
+        try {
+            el.load();
+        }
+        catch { }
+        void resolveMediaDuration(el, ms).then(d => {
+            const ok = !el.error && (d > 0 || (local ? el.readyState >= 1 : el.readyState >= 2));
+            finish(ok, d);
+        });
     });
 }
 /* ───────────────────────── decoding, peaks, rendering ───────────────────────── */
@@ -29835,11 +29878,16 @@ function useClipPlayback(ref, src, edit, opts = {}) {
         el.addEventListener('loadeddata', onReady);
         if (el.readyState >= 2)
             setReady(true);
-        void resolveMediaDuration(el).then(d => { if (!cancelled && d)
+        void resolveMediaDuration(el, embedded ? 8000 : 15000).then(d => { if (!cancelled && d)
             setDuration(d); });
-        if (embedded)
-            void decodePeaks(src).then(m => { if (!cancelled && m?.duration)
-                setDuration(prev => prev || m.duration); });
+        if (embedded && el instanceof HTMLAudioElement) {
+            const run = () => { void decodePeaks(src, 160).then(m => { if (!cancelled && m?.duration)
+                setDuration(prev => prev || m.duration); }); };
+            if (typeof requestIdleCallback !== 'undefined')
+                requestIdleCallback(run, { timeout: 2500 });
+            else
+                window.setTimeout(run, 120);
+        }
         return () => { cancelled = true; el.removeEventListener('error', onErr); el.removeEventListener('loadeddata', onReady); el.pause(); };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [src]);
@@ -30112,7 +30160,7 @@ function useWaveStage(canvas, peaks, duration, start, end, at) {
     }, [canvas, peaks, duration, start, end, at]);
 }
 const bubbleStyle = (pct) => pct < 9 ? { left: 0, transform: 'none' } : pct > 91 ? { right: 0, left: 'auto', transform: 'none' } : { left: `${pct}%`, transform: 'translateX(-50%)' };
-function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplace, saveMode = 'edits', maxSeconds, fileName }) {
+function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplace, saveMode = 'edits', maxSeconds, fileName, durationHint }) {
     const media = reactExports.useRef(null);
     const stageEl = reactExports.useRef(null), frameEl = reactExports.useRef(null), strip = reactExports.useRef(null), waveStage = reactExports.useRef(null), root = reactExports.useRef(null);
     const [edit, setEdit] = reactExports.useState(initial);
@@ -30123,7 +30171,7 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
     const jobAbort = reactExports.useRef(null);
     const [note, setNote] = reactExports.useState(null);
     const [peaksInfo, setPeaksInfo] = reactExports.useState(undefined);
-    const pb = useClipPlayback(media, src, edit, { loop });
+    const pb = useClipPlayback(media, src, edit, { loop, durationHint });
     const { duration, at, playing, failed } = pb;
     const dims = useVideoDims(media, kind === 'video' ? src : '');
     const e = normalizeEdit(edit, duration);
@@ -30136,10 +30184,24 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
     const ratio = kind === 'video' ? FRAME_W / FRAME_H : 2;
     useStrip(strip, src, kind, duration, peaksInfo?.peaks ?? null);
     useWaveStage(waveStage, kind === 'audio' ? (peaksInfo?.peaks ?? null) : null, duration, e.trimStart, e.trimEnd, at);
-    reactExports.useEffect(() => { let c = false; setPeaksInfo(undefined); void decodePeaks(src).then(p => { if (!c)
-        setPeaksInfo(p); }); return () => { c = true; }; }, [src]);
-    reactExports.useEffect(() => { setSlow(false); if (duration || failed)
-        return; const t = window.setTimeout(() => setSlow(true), 8000); return () => window.clearTimeout(t); }, [duration, failed, src]);
+    reactExports.useEffect(() => {
+        let c = false;
+        setPeaksInfo(undefined);
+        if (kind === 'video') {
+            setPeaksInfo(null);
+            return () => { c = true; };
+        }
+        const run = () => { void decodePeaks(src, 160).then(p => { if (!c)
+            setPeaksInfo(p); }); };
+        if (typeof requestIdleCallback !== 'undefined') {
+            const id = requestIdleCallback(run, { timeout: 3000 });
+            return () => { c = true; cancelIdleCallback(id); };
+        }
+        const t = window.setTimeout(run, 150);
+        return () => { c = true; window.clearTimeout(t); };
+    }, [src, kind]);
+    reactExports.useEffect(() => { setSlow(false); if (duration || failed || durationHint)
+        return; const t = window.setTimeout(() => setSlow(true), 5000); return () => window.clearTimeout(t); }, [duration, failed, durationHint, src]);
     reactExports.useEffect(() => { const el = stageEl.current; if (!el)
         return; const measure = () => { const b = el.getBoundingClientRect(), aw = Math.max(0, b.width - 24), ah = Math.max(0, b.height - 24), w = Math.min(aw, ah * ratio); setSize({ w: Math.floor(w), h: Math.floor(w / ratio) }); }; measure(); const o = new ResizeObserver(measure); o.observe(el); return () => o.disconnect(); }, [ratio]);
     reactExports.useEffect(() => { if (!note)
@@ -30757,16 +30819,18 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
             return;
         }
         const fits = dataUrlLength(blob.size, blob.type) <= MAX_AUDIO_CHARS;
-        setBusy({ label: fits ? 'Reading sound…' : 'Opening sound…' });
+        setBusy({ label: fits ? 'Adding sound…' : 'Opening sound…' });
         try {
             const url = URL.createObjectURL(blob);
-            const meta = await probeMediaSrc(url, 'audio');
+            let meta = await probeMediaSrc(url, 'audio', 5000);
+            if (!meta.ok && blob.size > 0)
+                meta = { ok: true, duration: meta.duration };
             if (!meta.ok) {
                 URL.revokeObjectURL(url);
                 throw new Error('This sound file could not be opened in your browser.');
             }
-            if (fits && meta.duration <= MAX_AUDIO_SECONDS + 5) {
-                const data = await blobToDataUrl(blob, p => setBusy({ label: 'Reading sound…', progress: p }));
+            if (fits && (meta.duration <= MAX_AUDIO_SECONDS + 5 || meta.duration <= 0)) {
+                const data = await blobToDataUrl(blob, p => setBusy({ label: 'Adding sound…', progress: p }));
                 URL.revokeObjectURL(url);
                 if (!audioSafe(data))
                     throw new Error('This sound could not be saved.');
@@ -30930,8 +30994,8 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
     const linkForm = !recording && linking && React.createElement(MediaLinkForm, { autoFocus: true, id: "question-sound-link", label: "Sound link", placeholder: "https://example.com/sound.mp3", submitLabel: "Add", initialUrl: linked && !drive ? audio : '', onClearError: onClearError, onCancel: () => { setLinking(false); onClearError?.(); }, onSubmit: async (url) => { if (await applyLink(url))
             setLinking(false); } });
     const clip = clipOpen && (pending
-        ? React.createElement(MediaClipEditor, { kind: "audio", title: "Trim before adding", fileName: pending.name, src: pending.url, saveMode: "bake", maxSeconds: MAX_AUDIO_SECONDS, onReplace: (data, len) => acceptBaked(data, len, pending.name), onSave: () => closePending(), onCancel: closePending })
-        : audio ? React.createElement(MediaClipEditor, { kind: "audio", title: "Adjust sound", fileName: fullName, src: audio, initial: edit, onReplace: audio.startsWith('data:') ? (data, len) => acceptBaked(data, len) : undefined, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } }) : null);
+        ? React.createElement(MediaClipEditor, { kind: "audio", title: "Trim before adding", fileName: pending.name, src: pending.url, durationHint: pending.duration, saveMode: "bake", maxSeconds: MAX_AUDIO_SECONDS, onReplace: (data, len) => acceptBaked(data, len, pending.name), onSave: () => closePending(), onCancel: closePending })
+        : audio ? React.createElement(MediaClipEditor, { kind: "audio", title: "Adjust sound", fileName: fullName, src: audio, initial: edit, durationHint: durationHint, onReplace: audio.startsWith('data:') ? (data, len) => acceptBaked(data, len) : undefined, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } }) : null);
     const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, "aria-label": `Upload ${title.toLowerCase()}`, accept: "audio/*,.mp3,.m4a,.wav,.ogg,.webm,.aac,.opus", onChange: e => { const f = e.currentTarget.files?.[0]; e.currentTarget.value = ''; void upload(f); } });
     if (assetLayout) {
         const badge = recording || countIn !== null ? 'Recording' : !audio ? 'Not added' : warn || drive ? 'Needs attention' : 'Added';
@@ -31059,20 +31123,23 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
             onError(`This video is ${formatBytes(blob.size)}; the limit is about ${formatBytes(maxBytesForChars(MAX_VIDEO_CHARS))}. Trim or compress it first, or paste an https link.`);
             return;
         }
-        setBusy({ label: 'Checking video…' });
+        setBusy({ label: 'Adding video…' });
         try {
             const url = URL.createObjectURL(blob);
-            const probe = await probeMediaSrc(url, 'video');
+            const [probe, data] = await Promise.all([
+                probeMediaSrc(url, 'video', 5000),
+                blobToDataUrl(blob, p => setBusy({ label: 'Adding video…', progress: p })),
+            ]);
             URL.revokeObjectURL(url);
-            if (!probe.ok)
+            const ok = probe.ok || blob.size > 0;
+            if (!ok)
                 throw new Error('This video could not be opened in your browser. MP4 (H.264) plays everywhere.');
-            const data = await blobToDataUrl(blob, p => setBusy({ label: 'Adding video…', progress: p }));
             if (!videoSafe(data))
                 throw new Error('This video could not be saved.');
             onEditChange?.(undefined);
             onChange(data);
-            setMeta({ duration: probe.duration, size: blob.size });
-            setClipOpen(true); // open the editor right away, like pictures do
+            setMeta({ duration: probe.duration || 0, size: blob.size });
+            setClipOpen(true);
         }
         catch (err) {
             onError(err?.message || 'This video could not be added.');
@@ -31125,7 +31192,7 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
     const fileInput = React.createElement("input", { ref: input, type: "file", hidden: true, accept: "video/*,.mp4,.webm,.mov,.m4v", onChange: ev => { const f = ev.currentTarget.files?.[0]; ev.currentTarget.value = ''; void upload(f); } });
     const linkForm = linking && React.createElement(MediaLinkForm, { autoFocus: true, label: `${title} link`, placeholder: "https://\u2026/clip.mp4", submitLabel: "Add", initialUrl: linked && !drive ? video : '', onClearError: onClearError, onCancel: () => setLinking(false), onSubmit: url => { if (applyLink(url))
             setLinking(false); } });
-    const clip = clipOpen && video && !drive && React.createElement(MediaClipEditor, { kind: "video", title: "Adjust video", src: video, initial: edit, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
+    const clip = clipOpen && video && !drive && React.createElement(MediaClipEditor, { kind: "video", title: "Adjust video", src: video, initial: edit, durationHint: meta?.duration, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
     return React.createElement("article", { className: `mf mf-video${video ? ' has-media' : ''}${assetLayout ? ' is-asset' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
         React.createElement("header", { className: "mf-head" },
             React.createElement("span", { className: "mf-ico", "aria-hidden": "true" },

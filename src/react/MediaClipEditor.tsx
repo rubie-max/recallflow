@@ -102,18 +102,27 @@ function readDuration(el:HTMLMediaElement){
  try{const s=el.seekable;if(s.length)return saneDuration(s.end(s.length-1));}catch{}
  return 0;
 }
+function isLocalMediaSrc(src:string){return /^(data|blob):/i.test(src||'');}
+function probeHost(){
+ let host=document.getElementById('rf-probe-host') as HTMLDivElement|null;
+ if(!host){host=document.createElement('div');host.id='rf-probe-host';host.style.cssText='position:fixed;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden';document.body.appendChild(host);}
+ return host;
+}
 export function resolveMediaDuration(el:HTMLMediaElement,timeoutMs=15000):Promise<number>{
  return new Promise(resolve=>{
   let done=false,fixing=false;
+  const local=isLocalMediaSrc(el.currentSrc||el.src);
   const evs=['loadedmetadata','durationchange','loadeddata','canplay'];
-  const finish=(d:number)=>{if(done)return;done=true;window.clearTimeout(timer);evs.forEach(ev=>el.removeEventListener(ev,check));el.removeEventListener('error',onErr);resolve(d);};
+  const finish=(d:number)=>{if(done)return;done=true;window.clearTimeout(timer);window.clearTimeout(seekTimer);evs.forEach(ev=>el.removeEventListener(ev,check));el.removeEventListener('error',onErr);resolve(d);};
+  let seekTimer=0;
   const check=()=>{
    const d=readDuration(el);if(d){finish(d);return;}
-   if(el.readyState>=1&&!fixing&&!Number.isFinite(el.duration)){
+   if(!local&&el.readyState>=1&&!fixing&&!Number.isFinite(el.duration)){
     fixing=true;
-    const back=()=>{el.removeEventListener('seeked',back);const d2=readDuration(el);try{el.currentTime=0;}catch{}if(d2)finish(d2);};
+    const back=()=>{el.removeEventListener('seeked',back);window.clearTimeout(seekTimer);const d2=readDuration(el);try{el.currentTime=0;}catch{}if(d2)finish(d2);else fixing=false;};
     el.addEventListener('seeked',back);
-    try{el.currentTime=1e101;}catch{el.removeEventListener('seeked',back);fixing=false;}
+    seekTimer=window.setTimeout(()=>{el.removeEventListener('seeked',back);fixing=false;},4000);
+    try{el.currentTime=1e101;}catch{el.removeEventListener('seeked',back);window.clearTimeout(seekTimer);fixing=false;}
    }
   };
   const onErr=()=>finish(0);
@@ -125,14 +134,34 @@ export function resolveMediaDuration(el:HTMLMediaElement,timeoutMs=15000):Promis
 export function seekElement(el:HTMLMediaElement,t:number){
  return new Promise<void>(resolve=>{let timer=0;const done=()=>{el.removeEventListener('seeked',done);window.clearTimeout(timer);resolve();};el.addEventListener('seeked',done);timer=window.setTimeout(done,3000);try{el.currentTime=t;}catch{done();}});
 }
-export function probeMediaSrc(src:string,kind:'audio'|'video',timeoutMs=15000):Promise<{ok:boolean;duration:number}>{
+/** Quick open check for uploads and links. Local blobs use metadata-only + a short timeout. */
+export function probeMediaSrc(src:string,kind:'audio'|'video',timeoutMs?:number):Promise<{ok:boolean;duration:number}>{
+ const local=isLocalMediaSrc(src);
+ const ms=timeoutMs??(local?4500:12000);
  return new Promise(resolve=>{
-  const el=document.createElement(kind);el.preload='auto';el.muted=true;(el as HTMLVideoElement).playsInline=true;
+  const el=document.createElement(kind);
+  el.preload='metadata';
+  el.muted=true;
+  (el as HTMLVideoElement).playsInline=true;
+  const host=probeHost();
+  host.appendChild(el);
   let settled=false;
-  const finish=(ok:boolean,duration:number)=>{if(settled)return;settled=true;el.removeAttribute('src');el.load();resolve({ok,duration});};
+  const finish=(ok:boolean,duration:number)=>{
+   if(settled)return;
+   settled=true;
+   try{el.pause();}catch{}
+   el.removeAttribute('src');
+   try{el.load();}catch{}
+   el.remove();
+   resolve({ok,duration});
+  };
   el.addEventListener('error',()=>finish(false,0),{once:true});
   el.src=playbackSrc(src);
-  void resolveMediaDuration(el,timeoutMs).then(d=>finish(!el.error&&(d>0||el.readyState>=1),d));
+  try{el.load();}catch{}
+  void resolveMediaDuration(el,ms).then(d=>{
+   const ok=!el.error&&(d>0||(local?el.readyState>=1:el.readyState>=2));
+   finish(ok,d);
+  });
  });
 }
 
@@ -291,8 +320,12 @@ export function useClipPlayback(ref:React.RefObject<HTMLMediaElement|null>,src:s
   const onReady=()=>{if(!cancelled)setReady(true);};
   el.addEventListener('error',onErr);el.addEventListener('loadeddata',onReady);
   if(el.readyState>=2)setReady(true);
-  void resolveMediaDuration(el).then(d=>{if(!cancelled&&d)setDuration(d);});
-  if(embedded)void decodePeaks(src).then(m=>{if(!cancelled&&m?.duration)setDuration(prev=>prev||m.duration);});
+  void resolveMediaDuration(el,embedded?8000:15000).then(d=>{if(!cancelled&&d)setDuration(d);});
+  if(embedded&&el instanceof HTMLAudioElement){
+   const run=()=>{void decodePeaks(src,160).then(m=>{if(!cancelled&&m?.duration)setDuration(prev=>prev||m.duration);});};
+   if(typeof requestIdleCallback!=='undefined')requestIdleCallback(run,{timeout:2500});
+   else window.setTimeout(run,120);
+  }
   return()=>{cancelled=true;el.removeEventListener('error',onErr);el.removeEventListener('loadeddata',onReady);el.pause();};
   // eslint-disable-next-line react-hooks/exhaustive-deps
  },[src]);
@@ -436,11 +469,11 @@ type Props={
  src:string;kind:'audio'|'video';title:string;initial?:MediaEdit;
  onSave:(edit:MediaEdit|undefined)=>void;onCancel:()=>void;
  onReplace?:(dataUrl:string,duration:number)=>void|Promise<void>;
- saveMode?:'edits'|'bake';maxSeconds?:number;fileName?:string;
+ saveMode?:'edits'|'bake';maxSeconds?:number;fileName?:string;durationHint?:number;
 };
 const bubbleStyle=(pct:number):React.CSSProperties=>pct<9?{left:0,transform:'none'}:pct>91?{right:0,left:'auto',transform:'none'}:{left:`${pct}%`,transform:'translateX(-50%)'};
 
-export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplace,saveMode='edits',maxSeconds,fileName}:Props){
+export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplace,saveMode='edits',maxSeconds,fileName,durationHint}:Props){
  const media=useRef<HTMLVideoElement|HTMLAudioElement|null>(null);
  const stageEl=useRef<HTMLDivElement>(null),frameEl=useRef<HTMLDivElement>(null),strip=useRef<HTMLCanvasElement>(null),waveStage=useRef<HTMLCanvasElement>(null),root=useRef<HTMLDivElement>(null);
  const [edit,setEdit]=useState<MediaEdit|undefined>(initial);
@@ -450,7 +483,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
  const [job,setJob]=useState<{label:string;progress:number}|null>(null);const jobAbort=useRef<AbortController|null>(null);
  const [note,setNote]=useState<{text:string;kind:'info'|'error'}|null>(null);
  const [peaksInfo,setPeaksInfo]=useState<Peaks|null|undefined>(undefined);
- const pb=useClipPlayback(media,src,edit,{loop});
+ const pb=useClipPlayback(media,src,edit,{loop,durationHint});
  const {duration,at,playing,failed}=pb;
  const dims=useVideoDims(media as React.RefObject<HTMLVideoElement|null>,kind==='video'?src:'');
  const e=normalizeEdit(edit,duration);
@@ -464,8 +497,16 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
 
  useStrip(strip,src,kind,duration,peaksInfo?.peaks??null);
  useWaveStage(waveStage,kind==='audio'?(peaksInfo?.peaks??null):null,duration,e.trimStart,e.trimEnd,at);
- useEffect(()=>{let c=false;setPeaksInfo(undefined);void decodePeaks(src).then(p=>{if(!c)setPeaksInfo(p);});return()=>{c=true;};},[src]);
- useEffect(()=>{setSlow(false);if(duration||failed)return;const t=window.setTimeout(()=>setSlow(true),8000);return()=>window.clearTimeout(t);},[duration,failed,src]);
+ useEffect(()=>{
+  let c=false;
+  setPeaksInfo(undefined);
+  if(kind==='video'){setPeaksInfo(null);return ()=>{c=true;};}
+  const run=()=>{void decodePeaks(src,160).then(p=>{if(!c)setPeaksInfo(p);});};
+  if(typeof requestIdleCallback!=='undefined'){const id=requestIdleCallback(run,{timeout:3000});return()=>{c=true;cancelIdleCallback(id);};}
+  const t=window.setTimeout(run,150);
+  return()=>{c=true;window.clearTimeout(t);};
+ },[src,kind]);
+ useEffect(()=>{setSlow(false);if(duration||failed||durationHint)return;const t=window.setTimeout(()=>setSlow(true),5000);return()=>window.clearTimeout(t);},[duration,failed,durationHint,src]);
  useEffect(()=>{const el=stageEl.current;if(!el)return;const measure=()=>{const b=el.getBoundingClientRect(),aw=Math.max(0,b.width-24),ah=Math.max(0,b.height-24),w=Math.min(aw,ah*ratio);setSize({w:Math.floor(w),h:Math.floor(w/ratio)});};measure();const o=new ResizeObserver(measure);o.observe(el);return()=>o.disconnect();},[ratio]);
  useEffect(()=>{if(!note)return;const t=window.setTimeout(()=>setNote(null),5000);return()=>window.clearTimeout(t);},[note]);
  const cancelRef=useRef(()=>{});cancelRef.current=()=>{jobAbort.current?.abort();onCancel();};
