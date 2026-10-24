@@ -58,7 +58,7 @@ function useLiveLevels(levels:(bars:number)=>number[]|null,bars:number,on:boolea
 }
 
 /* ───────── player ───────── */
-export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number}){
+export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media'|'card';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number}){
  const audio=useRef<HTMLAudioElement>(null),wave=useRef<HTMLDivElement>(null),bar=useRef<HTMLDivElement>(null);
  const pb=useClipPlayback(audio,src,edit,{durationHint,analyser:variant==='overlay'});
  const {duration,at,playing,failed}=pb;
@@ -72,19 +72,19 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
  const f=selLen>0&&selLen<10?fmtFine:fmtTime;
  const cur=known?f(Math.max(0,at-clip.trimStart)):'0:00',total=known?f(selLen):'–:––';
- if(variant==='media'){
+ if(variant==='card'||variant==='media'){
   const seekAt=(x:number)=>{const r=bar.current?.getBoundingClientRect();if(!r||!known)return;pb.seek(clip.trimStart+clamp((x-r.left)/r.width,0,1)*selLen);};
-  return <div className={`sp sp-pill ${className}`.trim()} data-playing={playing||undefined} data-failed={failed||undefined}>
-   <button type="button" className="sp-pill-play" aria-label={playing?'Pause sound':label} onClick={pb.toggle}>{playing?<Pause size={16} fill="currentColor"/>:<Play size={16} fill="currentColor"/>}</button>
-   <div className="sp-pill-body">
-    <span className="sp-pill-name" title={tip!==name?tip:undefined}>{failed?'This sound could not play':name}</span>
-    <div ref={bar} className="sp-pill-bar" role="slider" aria-label="Seek" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(played*100)} tabIndex={known?0:-1}
+  const title=failed?'This sound could not play':(displayName||'Question sound');
+  return <div className={`sp sp-card ${className}`.trim()} data-playing={playing||undefined} data-failed={failed||undefined}>
+   <button type="button" className="sp-card-play" aria-label={playing?'Pause sound':label} onClick={pb.toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
+   <div className="sp-card-body">
+    <div className="sp-card-top"><span className="sp-card-name" title={tip||title}>{title}</span><span className="sp-card-time">{cur} / {total}</span></div>
+    <div ref={bar} className="sp-card-bar" role="slider" aria-label="Seek" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(played*100)} tabIndex={known?0:-1}
      onPointerDown={e=>{if(!known)return;e.preventDefault();try{e.currentTarget.setPointerCapture(e.pointerId);}catch{}seekAt(e.clientX);}} onPointerMove={e=>{if(e.buttons&1)seekAt(e.clientX);}}
      onKeyDown={e=>{if(e.key==='ArrowLeft'){e.preventDefault();pb.seek(at-1);}else if(e.key==='ArrowRight'){e.preventDefault();pb.seek(at+1);}else if(e.key===' '){e.preventDefault();pb.toggle();}}}>
-     <i style={{width:`${played*100}%`}}/>
+     <i style={{width:`${played*100}%`}}/><b style={{left:`${played*100}%`}}/>
     </div>
    </div>
-   <span className="sp-pill-time">{playing||at>clip.trimStart+0.05?cur:total}</span>
    <audio key={src} ref={audio} src={playbackSrc(src)} preload="metadata" onError={()=>{}}/>
   </div>;
  }
@@ -225,7 +225,7 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
   {audio&&!recording&&!drive&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
   {audio&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={clearAudio}><Trash2 size={14}/></button>}
  </>;
- const player=audio&&!recording&&!drive&&<div className="asset-media-extra"><SoundPlayer key={JSON.stringify(edit??null)} src={audio} edit={edit} durationHint={durationHint} variant="media" displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/></div>;
+ const player=audio&&!recording&&!drive&&<div className="asset-media-extra"><SoundPlayer key={JSON.stringify(edit??null)} src={audio} edit={edit} durationHint={durationHint} variant="card" displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/></div>;
  const legacy=audio&&!recording&&drive&&<div className="asset-media-extra"><DriveShareLegacyNotice kind="sound"/></div>;
  const progress=busy&&!recording&&<div className="mf-progress" role="status" aria-live="polite"><div className={`mf-progress-bar${busy.progress===undefined?' is-indeterminate':''}`}><i style={busy.progress!==undefined?{width:`${Math.round(busy.progress*100)}%`}:undefined}/></div><div className="mf-progress-row"><span>{busy.label}{busy.progress!==undefined?` ${Math.round(busy.progress*100)}%`:''}</span></div></div>;
  const warnEl=warn&&!recording&&<p className="media-alert" role="status"><AlertCircle size={14} aria-hidden="true"/><span>{warn.includes('cannot play')?<><strong>Linked sound can’t play.</strong> Remove it, upload the file, or use a direct audio URL.</>:warn}</span></p>;

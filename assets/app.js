@@ -30811,14 +30811,20 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
         return React.createElement(DriveShareLegacyNotice, { kind: "sound" });
     const f = selLen > 0 && selLen < 10 ? fmtFine : fmtTime;
     const cur = known ? f(Math.max(0, at - clip.trimStart)) : '0:00', total = known ? f(selLen) : '–:––';
-    if (variant === 'media') {
+    if (variant === 'card' || variant === 'media') {
         const seekAt = (x) => { const r = bar.current?.getBoundingClientRect(); if (!r || !known)
             return; pb.seek(clip.trimStart + clamp$2((x - r.left) / r.width, 0, 1) * selLen); };
-        return React.createElement("div", { className: `sp sp-pill ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
-            React.createElement("button", { type: "button", className: "sp-pill-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 16, fill: "currentColor" }) : React.createElement(Play, { size: 16, fill: "currentColor" })),
-            React.createElement("div", { className: "sp-pill-body" },
-                React.createElement("span", { className: "sp-pill-name", title: tip !== name ? tip : undefined }, failed ? 'This sound could not play' : name),
-                React.createElement("div", { ref: bar, className: "sp-pill-bar", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(played * 100), tabIndex: known ? 0 : -1, onPointerDown: e => { if (!known)
+        const title = failed ? 'This sound could not play' : (displayName || 'Question sound');
+        return React.createElement("div", { className: `sp sp-card ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
+            React.createElement("button", { type: "button", className: "sp-card-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
+            React.createElement("div", { className: "sp-card-body" },
+                React.createElement("div", { className: "sp-card-top" },
+                    React.createElement("span", { className: "sp-card-name", title: tip || title }, title),
+                    React.createElement("span", { className: "sp-card-time" },
+                        cur,
+                        " / ",
+                        total)),
+                React.createElement("div", { ref: bar, className: "sp-card-bar", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(played * 100), tabIndex: known ? 0 : -1, onPointerDown: e => { if (!known)
                         return; e.preventDefault(); try {
                         e.currentTarget.setPointerCapture(e.pointerId);
                     }
@@ -30835,8 +30841,8 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
                         e.preventDefault();
                         pb.toggle();
                     } } },
-                    React.createElement("i", { style: { width: `${played * 100}%` } }))),
-            React.createElement("span", { className: "sp-pill-time" }, playing || at > clip.trimStart + 0.05 ? cur : total),
+                    React.createElement("i", { style: { width: `${played * 100}%` } }),
+                    React.createElement("b", { style: { left: `${played * 100}%` } }))),
             React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
     }
     const seekAt = (x) => { const r = wave.current?.getBoundingClientRect(); if (!r || !known)
@@ -31102,7 +31108,7 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         audio && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: clearAudio },
             React.createElement(Trash2, { size: 14 })));
     const player = audio && !recording && !drive && React.createElement("div", { className: "asset-media-extra" },
-        React.createElement(SoundPlayer, { key: JSON.stringify(edit ?? null), src: audio, edit: edit, durationHint: durationHint, variant: "media", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" }));
+        React.createElement(SoundPlayer, { key: JSON.stringify(edit ?? null), src: audio, edit: edit, durationHint: durationHint, variant: "card", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" }));
     const legacy = audio && !recording && drive && React.createElement("div", { className: "asset-media-extra" },
         React.createElement(DriveShareLegacyNotice, { kind: "sound" }));
     const progress = busy && !recording && React.createElement("div", { className: "mf-progress", role: "status", "aria-live": "polite" },
@@ -32184,7 +32190,7 @@ function PreviewQuestionMedia({ draft }) {
             React.createElement(SoundPlayer, { src: audio, ...soundProps, variant: "overlay", className: "quiz-sound-overlay" }));
     return React.createElement(React.Fragment, null,
         hasImg && React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: draft.image, alt: "Question illustration", label: "Enlarge question image" }),
-        audio && React.createElement(SoundPlayer, { src: audio, ...soundProps, className: "quiz-sound" }),
+        audio && React.createElement(SoundPlayer, { src: audio, ...soundProps, variant: "card", className: "quiz-sound" }),
         draft.video && React.createElement(VideoPlayer, { src: draft.video, edit: draft.videoEdit, className: "is-compact quiz-video", label: "Preview question video" }));
 }
 function FlashcardEditorPreview({ draft }) {
@@ -33839,7 +33845,7 @@ function IndexPage() {
                                 React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: current.image, alt: current.imageAlt || "Question illustration", label: "Enlarge question image" }),
                                 React.createElement(SoundPlayer, { key: current.id, src: audioSrc, edit: current.audioEdit, label: "Play question sound", variant: "overlay", className: "quiz-sound-overlay" })); return React.createElement(React.Fragment, null,
                             hasImg && React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: current.image, alt: current.imageAlt || "Question illustration", label: "Enlarge question image" }),
-                            audioSrc && React.createElement(SoundPlayer, { key: current.id, src: audioSrc, edit: current.audioEdit, label: "Play question sound", className: "quiz-sound" })); })(),
+                            audioSrc && React.createElement(SoundPlayer, { key: current.id, src: audioSrc, edit: current.audioEdit, label: "Play question sound", variant: "card", className: "quiz-sound" })); })(),
                         current?.video && React.createElement(VideoPlayer, { key: `${current.id}-video`, edit: current.videoEdit, src: current.video, className: "quiz-video", label: "Play question video" }),
                         current?.type === "flashcard" ? React.createElement("div", { className: "flashcard-stage" },
                             React.createElement("div", { className: "flashcard-speech" },

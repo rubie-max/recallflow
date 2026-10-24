@@ -111,7 +111,7 @@ function PreviewQuestionMedia({draft}:{draft:any}){
  const hasImg=!!draft.image&&draft.type!=='image_tap',audio=draft.audio;
  const soundProps={edit:draft.audioEdit,displayName:audio?soundDisplayName(audio,draft.audioName):undefined,fileTitle:audio?soundFileTitle(audio,draft.audioName):undefined,label:'Play question sound'};
  if(hasImg&&audio)return <div className="quiz-media-stack"><ZoomableImage className="question-media-zoom" imgClassName="question-media" src={draft.image} alt="Question illustration" label="Enlarge question image"/><SoundPlayer src={audio} {...soundProps} variant="overlay" className="quiz-sound-overlay"/></div>;
- return <>{hasImg&&<ZoomableImage className="question-media-zoom" imgClassName="question-media" src={draft.image} alt="Question illustration" label="Enlarge question image"/>}{audio&&<SoundPlayer src={audio} {...soundProps} className="quiz-sound"/>}{draft.video&&<VideoPlayer src={draft.video} edit={draft.videoEdit} className="is-compact quiz-video" label="Preview question video"/>}</>;
+ return <>{hasImg&&<ZoomableImage className="question-media-zoom" imgClassName="question-media" src={draft.image} alt="Question illustration" label="Enlarge question image"/>}{audio&&<SoundPlayer src={audio} {...soundProps} variant="card" className="quiz-sound"/>}{draft.video&&<VideoPlayer src={draft.video} edit={draft.videoEdit} className="is-compact quiz-video" label="Preview question video"/>}</>;
 }
 
 function FlashcardEditorPreview({draft}:any){
