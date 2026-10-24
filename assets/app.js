@@ -30005,44 +30005,100 @@ function useClipPlayback(ref, src, edit, opts = {}) {
     reactExports.useEffect(() => { const el = ref.current; if (el)
         applyLevel(el.currentTime); }, [clip.muted, clip.volume, clip.gain, clip.fadeIn, clip.fadeOut, clip.trimStart, clip.trimEnd, applyLevel, ref]);
     reactExports.useEffect(() => {
-        const el = ref.current;
-        if (!el)
-            return;
-        let raf = 0, last = -1;
+        let cancelled = false, raf = 0, last = -1, bound = null, pollId = 0, stopId = 0;
+        const visAt = (t) => { const c = clipRef.current; return clamp$3(t, c.trimStart, c.trimEnd); };
         const step = () => {
-            const c = clipRef.current, t = el.currentTime;
-            if (Math.abs(t - last) > 0.03) {
-                last = t;
-                setAt(t);
+            if (cancelled || !bound)
+                return;
+            const el = bound, c = clipRef.current;
+            let t = el.currentTime;
+            if (durRef.current && t < c.trimStart - 0.01) {
+                try {
+                    el.currentTime = c.trimStart;
+                    t = c.trimStart;
+                }
+                catch { }
             }
             applyLevel(t);
+            setPlaying(!el.paused);
+            const vis = visAt(t);
+            if (!el.paused || Math.abs(vis - last) > 0.03) {
+                last = vis;
+                setAt(vis);
+            }
             if (durRef.current && t >= c.trimEnd - 0.03) {
                 if (loopRef.current) {
                     el.currentTime = c.trimStart;
+                    last = c.trimStart;
+                    setAt(c.trimStart);
                 }
                 else {
                     el.pause();
                     el.currentTime = c.trimStart;
                     setAt(c.trimStart);
+                    setPlaying(false);
                     return;
                 }
             }
             if (!el.paused)
                 raf = requestAnimationFrame(step);
         };
-        const onPlay = () => { const c = clipRef.current; if (durRef.current && el.currentTime < c.trimStart - 0.01)
-            el.currentTime = c.trimStart; setPlaying(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(step); };
-        const onPause = () => { setPlaying(false); cancelAnimationFrame(raf); setAt(el.currentTime); };
-        const onEnded = () => { setPlaying(false); cancelAnimationFrame(raf); const c = clipRef.current; el.currentTime = c.trimStart; setAt(c.trimStart); };
-        const onTime = () => { if (el.paused)
-            setAt(el.currentTime); };
-        el.addEventListener('play', onPlay);
-        el.addEventListener('pause', onPause);
-        el.addEventListener('ended', onEnded);
-        el.addEventListener('timeupdate', onTime);
-        if (!el.paused)
-            onPlay();
-        return () => { cancelAnimationFrame(raf); el.removeEventListener('play', onPlay); el.removeEventListener('pause', onPause); el.removeEventListener('ended', onEnded); el.removeEventListener('timeupdate', onTime); };
+        const onPlay = () => { if (cancelled || !bound)
+            return; const c = clipRef.current, e = bound; if (durRef.current && e.currentTime < c.trimStart - 0.01)
+            try {
+                e.currentTime = c.trimStart;
+            }
+            catch { } setPlaying(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(step); };
+        const onPause = () => { if (cancelled)
+            return; setPlaying(false); cancelAnimationFrame(raf); if (bound) {
+            const v = visAt(bound.currentTime);
+            last = v;
+            setAt(v);
+        } };
+        const onEnded = () => { if (cancelled || !bound)
+            return; setPlaying(false); cancelAnimationFrame(raf); const c = clipRef.current; bound.currentTime = c.trimStart; last = c.trimStart; setAt(c.trimStart); };
+        const onTime = () => { if (cancelled || !bound || !bound.paused)
+            return; const v = visAt(bound.currentTime); last = v; setAt(v); };
+        const detach = () => {
+            if (!bound)
+                return;
+            const el = bound;
+            bound = null;
+            cancelAnimationFrame(raf);
+            el.removeEventListener('play', onPlay);
+            el.removeEventListener('pause', onPause);
+            el.removeEventListener('ended', onEnded);
+            el.removeEventListener('timeupdate', onTime);
+        };
+        const attach = () => {
+            const el = ref.current;
+            if (!el || el === bound)
+                return !!el;
+            detach();
+            bound = el;
+            el.addEventListener('play', onPlay);
+            el.addEventListener('pause', onPause);
+            el.addEventListener('ended', onEnded);
+            el.addEventListener('timeupdate', onTime);
+            if (!el.paused)
+                onPlay();
+            else {
+                const v = visAt(el.currentTime);
+                last = v;
+                setAt(v);
+            }
+            return true;
+        };
+        if (!attach())
+            pollId = window.setInterval(() => { if (attach())
+                window.clearInterval(pollId); }, 150);
+        stopId = window.setTimeout(() => window.clearInterval(pollId), 30000);
+        return () => {
+            cancelled = true;
+            window.clearInterval(pollId);
+            window.clearTimeout(stopId);
+            detach();
+        };
     }, [src, applyLevel, ref]);
     const seek = reactExports.useCallback((t, free = false) => {
         const el = ref.current;
@@ -30206,7 +30262,7 @@ function useWaveStage(canvas, peaks, duration, start, end, at) {
             g.fillRect(i * bw + bw * 0.2, mid - bh, Math.max(1, bw * 0.6), bh * 2);
         }
         if (duration) {
-            const x = clamp$3(at / duration, 0, 1) * w;
+            const t = clamp$3(at, start, end), x = clamp$3(t / duration, 0, 1) * w;
             g.fillStyle = '#fff';
             g.fillRect(x - 1, 0, 2, h);
         }
@@ -30563,7 +30619,7 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
                         React.createElement("div", { className: "me-range", style: { left: `${left}%`, width: `${right - left}%` }, onPointerDown: ev => tlDown('move', ev) },
                             e.fadeIn > 0 && React.createElement("span", { className: "me-fade is-in", style: { width: `${e.fadeIn / len * 100}%` } }),
                             e.fadeOut > 0 && React.createElement("span", { className: "me-fade is-out", style: { width: `${e.fadeOut / len * 100}%` } })),
-                        React.createElement("span", { className: "me-playhead", style: { left: `${clamp$3(at / duration * 100, 0, 100)}%` } }),
+                        React.createElement("span", { className: "me-playhead", style: { left: `${clamp$3(Math.max(e.trimStart, Math.min(at, e.trimEnd)) / duration * 100, 0, 100)}%` } }),
                         React.createElement("button", { type: "button", className: `me-handle${dragging === 'start' ? ' is-active' : ''}`, style: { left: `${left}%` }, "aria-label": `Trim start ${fmtFine(e.trimStart)}. Arrow keys adjust`, onKeyDown: ev => handleKey('start', ev), onPointerDown: ev => tlDown('start', ev) }),
                         React.createElement("button", { type: "button", className: `me-handle${dragging === 'end' ? ' is-active' : ''}`, style: { left: `${right}%` }, "aria-label": `Trim end ${fmtFine(e.trimEnd)}. Arrow keys adjust`, onKeyDown: ev => handleKey('end', ev), onPointerDown: ev => tlDown('end', ev) }),
                         showStartBubble && React.createElement("b", { className: `me-bubble${dragging === 'start' ? ' is-active' : ''}`, style: { ...bubbleStyle(left), ...(showEndBubble && right - left < 14 ? { bottom: 'calc(100% + 26px)' } : {}) } }, fmtFine(e.trimStart)),
