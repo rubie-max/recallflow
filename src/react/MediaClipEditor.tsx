@@ -608,24 +608,35 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
  const tabIsDefault=tab==='crop'?(!dims.w||frameIsDefault(frame,dims.w,dims.h)):tab==='trim'?(e.trimStart<=0.01&&Math.abs(e.trimEnd-duration)<=0.05):tab==='sound'?(!e.muted&&e.volume===1&&e.gain===1):(e.fadeIn===0&&e.fadeOut===0);
 
  /* timeline interaction */
- const stripBox=useRef<HTMLDivElement>(null),drag=useRef<{kind:DragKind;x0:number;base:Norm}|null>(null);
+ const stripBox=useRef<HTMLDivElement>(null),drag=useRef<{kind:DragKind;x0:number;base:Norm;t0:number;moved:boolean}|null>(null);
  const tAt=(x:number)=>{const r=stripBox.current?.getBoundingClientRect();if(!r||!duration)return 0;return clamp((x-r.left)/r.width,0,1)*duration;};
  function tlDown(k:DragKind,ev:React.PointerEvent){
   if(!duration||(ev.button&&ev.button!==0))return;ev.preventDefault();ev.stopPropagation();
   try{(ev.currentTarget as HTMLElement).setPointerCapture(ev.pointerId);}catch{}
-  drag.current={kind:k,x0:ev.clientX,base:e};setDragging(k);
-  if(k==='seek')pb.seek(tAt(ev.clientX),true);else{pb.pause();if(k!=='move')pb.seek(k==='start'?e.trimStart:e.trimEnd,true);}
+  const t0=tAt(ev.clientX);
+  drag.current={kind:k,x0:ev.clientX,base:e,t0,moved:false};setDragging(k);
+  if(k==='seek'||k==='move')pb.seek(t0,true);
+  else{pb.pause();pb.seek(k==='start'?e.trimStart:e.trimEnd,true);}
  }
  function tlMove(ev:React.PointerEvent){
   const d=drag.current;if(!d)return;const t=tAt(ev.clientX);
+  if(Math.abs(ev.clientX-d.x0)>5)d.moved=true;
   if(d.kind==='seek'){pb.seek(t,true);return;}
+  const span=d.base.trimEnd-d.base.trimStart,full=duration-span<0.05;
+  if(d.kind==='move'&&(full||!d.moved)){pb.seek(t,true);if(full)return;}
   let next:MediaEdit;
   if(d.kind==='start')next={...d.base,trimStart:Math.min(t,d.base.trimEnd-MIN_LEN)};
   else if(d.kind==='end')next={...d.base,trimEnd:Math.max(t,d.base.trimStart+MIN_LEN)};
   else{const w=stripBox.current?.getBoundingClientRect().width||1,dt=(ev.clientX-d.x0)/w*duration,l=d.base.trimEnd-d.base.trimStart,s=clamp(d.base.trimStart+dt,0,duration-l);next={...d.base,trimStart:s,trimEnd:s+l};}
   const n=normalizeEdit(next,duration);setEdit(n);pb.seek(d.kind==='end'?n.trimEnd:n.trimStart,true);
  }
- function tlUp(ev:React.PointerEvent){const d=drag.current;if(!d)return;drag.current=null;setDragging(null);try{(ev.target as HTMLElement).releasePointerCapture(ev.pointerId);}catch{}if(d.kind!=='seek')playPreset('tick');}
+ function tlUp(ev:React.PointerEvent){
+  const d=drag.current;if(!d)return;
+  if((d.kind==='move'||d.kind==='seek')&&!d.moved)pb.seek(d.t0,true);
+  drag.current=null;setDragging(null);
+  try{(ev.target as HTMLElement).releasePointerCapture(ev.pointerId);}catch{}
+  if(d.kind!=='seek'&&d.moved)playPreset('tick');
+ }
  function handleKey(which:'start'|'end',ev:React.KeyboardEvent){
   const step=ev.shiftKey?1:0.1,dir=ev.key==='ArrowLeft'||ev.key==='ArrowDown'?-1:ev.key==='ArrowRight'||ev.key==='ArrowUp'?1:0;
   if(!dir)return;ev.preventDefault();ev.stopPropagation();
@@ -699,7 +710,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
  const vol=Math.round((e.muted?0:e.volume)*100),maxFade=Math.max(0.1,Math.min(10,len/2));
  const selFmt=len<10?fmtFine:fmtTime;
  const tabs:{id:Tab;label:string;icon:React.ReactNode}[]=[...(kind==='video'?[{id:'crop' as Tab,label:'Crop',icon:<Crop size={14}/>}]:[]),{id:'trim',label:'Trim',icon:<Scissors size={14}/>},{id:'sound',label:'Sound',icon:<Volume2 size={14}/>},{id:'fades',label:'Fades',icon:<AudioLines size={14}/>}];
- const hint=job?'':bakeMode?`Pick up to ${fmtTime(maxSeconds||60)} — only the selection is kept`:tab==='crop'?'Drag to move · pinch or slide to zoom · tap to play':tab==='trim'?(dragging?`Release to set ${dragging==='start'?'the start':dragging==='end'?'the end':'the selection'}`:'Drag the handles to trim · tap to play'):tab==='sound'?(e.gain!==1?`${e.gain>1?'Boosted':'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports`:'Volume applies when the question plays'):'Fades are shown on the timeline';
+ const hint=job?'':bakeMode?`Pick up to ${fmtTime(maxSeconds||60)} — only the selection is kept`:tab==='crop'?'Drag to move · pinch or slide to zoom · tap to play':tab==='trim'?(dragging?`Release to set ${dragging==='start'?'the start':dragging==='end'?'the end':'the selection'}`:'Press the timeline to move the playhead · drag the handles to trim'):tab==='sound'?(e.gain!==1?`${e.gain>1?'Boosted':'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports`:'Volume applies when the question plays'):'Fades are shown on the timeline';
  const sq=(icon:React.ReactNode,label:string,onClick:()=>void,o:{disabled?:boolean;on?:boolean;aria?:string}={})=><button type="button" disabled={o.disabled} aria-pressed={o.on} aria-label={o.aria} onClick={onClick}>{icon}<span>{label}</span></button>;
 
  return createPortal(<div ref={root} className="me" role="dialog" aria-modal="true" aria-labelledby="me-title" data-kind={kind} tabIndex={-1} onKeyDown={onKey}>
@@ -738,7 +749,7 @@ export function MediaClipEditor({src,kind,title,initial,onSave,onCancel,onReplac
        {e.fadeIn>0&&<span className="me-fade is-in" style={{width:`${e.fadeIn/len*100}%`}}/>}
        {e.fadeOut>0&&<span className="me-fade is-out" style={{width:`${e.fadeOut/len*100}%`}}/>}
       </div>
-      <span className="me-playhead" style={{left:`${clamp(Math.max(e.trimStart,Math.min(at,e.trimEnd))/duration*100,0,100)}%`}}/>
+      <button type="button" className="me-playhead" style={{left:`${clamp(Math.max(e.trimStart,Math.min(at,e.trimEnd))/duration*100,0,100)}%`}} aria-label="Playhead. Drag to seek" onPointerDown={ev=>tlDown('seek',ev)}/>
       <button type="button" className={`me-handle${dragging==='start'?' is-active':''}`} style={{left:`${left}%`}} aria-label={`Trim start ${fmtFine(e.trimStart)}. Arrow keys adjust`} onKeyDown={ev=>handleKey('start',ev)} onPointerDown={ev=>tlDown('start',ev)}/>
       <button type="button" className={`me-handle${dragging==='end'?' is-active':''}`} style={{left:`${right}%`}} aria-label={`Trim end ${fmtFine(e.trimEnd)}. Arrow keys adjust`} onKeyDown={ev=>handleKey('end',ev)} onPointerDown={ev=>tlDown('end',ev)}/>
       {showStartBubble&&<b className={`me-bubble${dragging==='start'?' is-active':''}`} style={{...bubbleStyle(left),...(showEndBubble&&right-left<14?{bottom:'calc(100% + 26px)'}:{})}}>{fmtFine(e.trimStart)}</b>}

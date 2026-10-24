@@ -30378,14 +30378,14 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
             ev.currentTarget.setPointerCapture(ev.pointerId);
         }
         catch { }
-        drag.current = { kind: k, x0: ev.clientX, base: e };
+        const t0 = tAt(ev.clientX);
+        drag.current = { kind: k, x0: ev.clientX, base: e, t0, moved: false };
         setDragging(k);
-        if (k === 'seek')
-            pb.seek(tAt(ev.clientX), true);
+        if (k === 'seek' || k === 'move')
+            pb.seek(t0, true);
         else {
             pb.pause();
-            if (k !== 'move')
-                pb.seek(k === 'start' ? e.trimStart : e.trimEnd, true);
+            pb.seek(k === 'start' ? e.trimStart : e.trimEnd, true);
         }
     }
     function tlMove(ev) {
@@ -30393,9 +30393,17 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
         if (!d)
             return;
         const t = tAt(ev.clientX);
+        if (Math.abs(ev.clientX - d.x0) > 5)
+            d.moved = true;
         if (d.kind === 'seek') {
             pb.seek(t, true);
             return;
+        }
+        const span = d.base.trimEnd - d.base.trimStart, full = duration - span < 0.05;
+        if (d.kind === 'move' && (full || !d.moved)) {
+            pb.seek(t, true);
+            if (full)
+                return;
         }
         let next;
         if (d.kind === 'start')
@@ -30410,12 +30418,21 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
         setEdit(n);
         pb.seek(d.kind === 'end' ? n.trimEnd : n.trimStart, true);
     }
-    function tlUp(ev) { const d = drag.current; if (!d)
-        return; drag.current = null; setDragging(null); try {
-        ev.target.releasePointerCapture(ev.pointerId);
+    function tlUp(ev) {
+        const d = drag.current;
+        if (!d)
+            return;
+        if ((d.kind === 'move' || d.kind === 'seek') && !d.moved)
+            pb.seek(d.t0, true);
+        drag.current = null;
+        setDragging(null);
+        try {
+            ev.target.releasePointerCapture(ev.pointerId);
+        }
+        catch { }
+        if (d.kind !== 'seek' && d.moved)
+            playPreset('tick');
     }
-    catch { } if (d.kind !== 'seek')
-        playPreset('tick'); }
     function handleKey(which, ev) {
         const step = ev.shiftKey ? 1 : 0.1, dir = ev.key === 'ArrowLeft' || ev.key === 'ArrowDown' ? -1 : ev.key === 'ArrowRight' || ev.key === 'ArrowUp' ? 1 : 0;
         if (!dir)
@@ -30554,7 +30571,7 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
     const vol = Math.round((e.muted ? 0 : e.volume) * 100), maxFade = Math.max(0.1, Math.min(10, len / 2));
     const selFmt = len < 10 ? fmtFine : fmtTime;
     const tabs = [...(kind === 'video' ? [{ id: 'crop', label: 'Crop', icon: React.createElement(Crop, { size: 14 }) }] : []), { id: 'trim', label: 'Trim', icon: React.createElement(Scissors, { size: 14 }) }, { id: 'sound', label: 'Sound', icon: React.createElement(Volume2, { size: 14 }) }, { id: 'fades', label: 'Fades', icon: React.createElement(AudioLines, { size: 14 }) }];
-    const hint = job ? '' : bakeMode ? `Pick up to ${fmtTime(maxSeconds || 60)} — only the selection is kept` : tab === 'crop' ? 'Drag to move · pinch or slide to zoom · tap to play' : tab === 'trim' ? (dragging ? `Release to set ${dragging === 'start' ? 'the start' : dragging === 'end' ? 'the end' : 'the selection'}` : 'Drag the handles to trim · tap to play') : tab === 'sound' ? (e.gain !== 1 ? `${e.gain > 1 ? 'Boosted' : 'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports` : 'Volume applies when the question plays') : 'Fades are shown on the timeline';
+    const hint = job ? '' : bakeMode ? `Pick up to ${fmtTime(maxSeconds || 60)} — only the selection is kept` : tab === 'crop' ? 'Drag to move · pinch or slide to zoom · tap to play' : tab === 'trim' ? (dragging ? `Release to set ${dragging === 'start' ? 'the start' : dragging === 'end' ? 'the end' : 'the selection'}` : 'Press the timeline to move the playhead · drag the handles to trim') : tab === 'sound' ? (e.gain !== 1 ? `${e.gain > 1 ? 'Boosted' : 'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports` : 'Volume applies when the question plays') : 'Fades are shown on the timeline';
     const sq = (icon, label, onClick, o = {}) => React.createElement("button", { type: "button", disabled: o.disabled, "aria-pressed": o.on, "aria-label": o.aria, onClick: onClick },
         icon,
         React.createElement("span", null, label));
@@ -30619,7 +30636,7 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
                         React.createElement("div", { className: "me-range", style: { left: `${left}%`, width: `${right - left}%` }, onPointerDown: ev => tlDown('move', ev) },
                             e.fadeIn > 0 && React.createElement("span", { className: "me-fade is-in", style: { width: `${e.fadeIn / len * 100}%` } }),
                             e.fadeOut > 0 && React.createElement("span", { className: "me-fade is-out", style: { width: `${e.fadeOut / len * 100}%` } })),
-                        React.createElement("span", { className: "me-playhead", style: { left: `${clamp$3(Math.max(e.trimStart, Math.min(at, e.trimEnd)) / duration * 100, 0, 100)}%` } }),
+                        React.createElement("button", { type: "button", className: "me-playhead", style: { left: `${clamp$3(Math.max(e.trimStart, Math.min(at, e.trimEnd)) / duration * 100, 0, 100)}%` }, "aria-label": "Playhead. Drag to seek", onPointerDown: ev => tlDown('seek', ev) }),
                         React.createElement("button", { type: "button", className: `me-handle${dragging === 'start' ? ' is-active' : ''}`, style: { left: `${left}%` }, "aria-label": `Trim start ${fmtFine(e.trimStart)}. Arrow keys adjust`, onKeyDown: ev => handleKey('start', ev), onPointerDown: ev => tlDown('start', ev) }),
                         React.createElement("button", { type: "button", className: `me-handle${dragging === 'end' ? ' is-active' : ''}`, style: { left: `${right}%` }, "aria-label": `Trim end ${fmtFine(e.trimEnd)}. Arrow keys adjust`, onKeyDown: ev => handleKey('end', ev), onPointerDown: ev => tlDown('end', ev) }),
                         showStartBubble && React.createElement("b", { className: `me-bubble${dragging === 'start' ? ' is-active' : ''}`, style: { ...bubbleStyle(left), ...(showEndBubble && right - left < 14 ? { bottom: 'calc(100% + 26px)' } : {}) } }, fmtFine(e.trimStart)),
