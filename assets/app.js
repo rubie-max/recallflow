@@ -31694,9 +31694,9 @@ function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTit
     const sound = audio ? { src: audio, edit: audioEdit, displayName: displayName || (kind === 'answer' ? 'Answer sound' : undefined), fileTitle, label: `Play ${kind} sound` } : null;
     const picture = image ? React.createElement(ZoomableImage, { className: zoomClass, imgClassName: imgClass, src: image, alt: imageAlt || (kind === 'answer' ? 'Answer illustration' : 'Question illustration'), label: `Enlarge ${kind} image` }) : null;
     const clip = video ? React.createElement(VideoPlayer, { src: video, edit: videoEdit, className: `quiz-video ${videoClass}`.trim(), label: `${preview ? 'Preview' : 'Play'} ${kind} video` }) : null;
-    const pictureBlock = picture && sound ? React.createElement("div", { className: "quiz-media-stack" },
+    const pictureBlock = picture && sound ? React.createElement("div", { className: "quiz-media-dock is-picture" },
         picture,
-        React.createElement(SoundPlayer, { ...sound, variant: "overlay", className: "quiz-sound-overlay" })) : picture;
+        React.createElement(SoundPlayer, { ...sound, variant: "overlay", className: "quiz-sound-dock" })) : picture;
     if (!picture && !sound && !clip)
         return null;
     if (picture && clip) {

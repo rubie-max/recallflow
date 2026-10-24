@@ -2838,5 +2838,8 @@ label.split-choice:has(.choice-media)>.im-extras .im-sound[data-playing]{backgro
 .quiz-media-dock .quiz-sound-dock .sp-wave i[data-on]{background:var(--primary)}
 .quiz-media-dock .quiz-sound-dock .sp-time{color:var(--muted-foreground)}
 .quiz-media-tabs .quiz-media-dock,.feedback-media .quiz-media-dock{margin:0}
+.quiz-media-dock.is-picture>.zoomable-image{display:block;width:100%!important;max-width:none!important;margin:0!important;border-radius:0!important}
+.quiz-media-dock.is-picture>.zoomable-image>img{border-radius:0!important;margin:0!important}
+.quiz-media-dock.is-picture .zoomable-image-btn.zoomable-image-btn.zoomable-image-btn{top:8px!important;right:8px!important;bottom:auto!important;left:auto!important}
 .split-quiz:not(:has(.split-submit,.split-feedback))::after{display:none}
 .split-quiz:not(:has(.split-submit,.split-feedback)){padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))!important}
