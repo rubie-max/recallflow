@@ -74,6 +74,8 @@ assert.deepEqual(parseCSV('a,"b\nc",d\r\n1,2,3'),[['a','b\nc','d'],['1','2','3']
 const tsv=serialize(items,'tsv');assert.equal(detectFormat(tsv),'tsv');assert.equal(parseImport(tsv).records[0].answer,'Na');
 const lines=parseImport('Capital of France? | Paris\nLargest planet :: Jupiter\n# comment\n','auto');
 assert.equal(lines.format,'lines');assert.deepEqual(lines.records.map(r=>r.answer),['Paris','Jupiter']);
+const loose=parseImport('Capital of Japan?,Tokyo\nWho wrote it, really? Orwell\nLargest ocean, Pacific\nRed planet - Mars','auto');
+assert.deepEqual(loose.records.map(r=>[r.prompt,r.answer]),[['Capital of Japan?','Tokyo'],['Who wrote it, really?','Orwell'],['Largest ocean','Pacific'],['Red planet','Mars']]);
 assert.match(serialize(items,'text'),/\*\*Answer:\*\* Na[\s\S]*Also asked as: Type answer, Matching/);
 assert.throws(()=>parseImport('{"nope":1}'),/no questions/);
 assert.throws(()=>parseImport('subject,answer\nA,B','csv'),/prompt/);

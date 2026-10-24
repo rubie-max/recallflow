@@ -63,4 +63,28 @@ export function reportsCsv(reports){
   return rows.map(row=>row.map(csvCell).join(',')).join('\r\n');
 }
 
+// Every question that has been missed: still open (with progress toward the two right answers that clear it) or already cleared.
+export function mistakeLedger(reports,cleared=2){
+  const map=new Map();
+  for(const r of [...reports].reverse())for(const q of r.questions||[]){
+    const id=q.knowledge_id;let e=map.get(id);
+    if(!q.correct){if(!e){e={id,misses:0,attempts:0};map.set(id,e);}e.misses++;e.attempts++;e.open=true;e.streak=0;e.last=q;e.lastMissed=r.date;e.firstMissed??=r.date;e.clearedAt=undefined;continue;}
+    if(!e)continue;e.attempts++;
+    if(e.open&&++e.streak>=cleared){e.open=false;e.clearedAt=r.date;}
+  }
+  const all=[...map.values()];
+  return {open:all.filter(e=>e.open).sort((a,b)=>b.lastMissed.localeCompare(a.lastMissed)),cleared:all.filter(e=>!e.open).sort((a,b)=>b.clearedAt.localeCompare(a.clearedAt))};
+}
+
+// When and how much you study: one entry per calendar day, plus weekday and time-of-day totals.
+export function activityStats(reports){
+  const days=new Map(),weekdays=Array(7).fill(0),parts={morning:0,afternoon:0,evening:0,night:0};
+  for(const r of reports){
+    const d=new Date(r.date),key=localDay(d),s=days.get(key)||{day:key,quizzes:0,answers:0,correct:0,seconds:0,reports:[]};
+    s.quizzes++;s.answers+=r.total||0;s.correct+=r.correct||0;s.seconds+=Number(r.duration_seconds)||0;s.reports.push(r);days.set(key,s);
+    weekdays[(d.getDay()+6)%7]++;const h=d.getHours();parts[h<5?'night':h<12?'morning':h<17?'afternoon':h<22?'evening':'night']++;
+  }
+  return {days,weekdays,parts};
+}
+
 export function formatDuration(seconds){seconds=Math.round(seconds||0);if(seconds<60)return `${seconds}s`;const minutes=Math.round(seconds/60);return minutes<60?`${minutes}m`:`${Math.floor(minutes/60)}h ${minutes%60}m`;}

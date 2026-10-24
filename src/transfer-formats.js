@@ -227,7 +227,7 @@ export function parseImport(text,format='auto',filename=''){
   }
   const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim()&&!l.startsWith('#'));
   if(fmt==='tsv')return {format:fmt,records:lines.map(l=>{const [prompt,answer,tags]=l.split('\t');return {type:'short_answer',prompt:(prompt||'').trim(),answer:(answer||'').trim(),...(tags?.trim()?{tags:tags.trim().split(/\s+/)}:{})};})};
-  return {format:fmt,records:lines.map(l=>{const m=l.match(/^(.*?)\s*(?:\||::|\t| = | - )\s*(.*)$/);return {type:'short_answer',prompt:(m?m[1]:l).trim(),answer:(m?m[2]:'').trim()};})};
+  return {format:fmt,records:lines.map(l=>{const m=l.match(/^(.*?)\s*(?:\||::|\t| = | - )\s*(.*)$/)||l.match(/^(.*\?)\s*,?\s*(\S.*)$/)||l.match(/^(.+),\s*([^,]+)$/);return {type:'short_answer',prompt:(m?m[1]:l).trim(),answer:(m?m[2]:'').trim()};})};
 }
 
 export function duplicateKey(item){return (item.prompt?normalize(item.prompt):'image:'+String(item.image||'').slice(-80))+'|'+normalize(item.answer)+'|'+(item.type||'short_answer');}

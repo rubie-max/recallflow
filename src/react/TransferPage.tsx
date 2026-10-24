@@ -1,5 +1,5 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {FileUp,FileDown,FileJson,Sheet,Layers,FileText,Download,Copy,Check,CheckCircle2,AlertCircle,CopyCheck,UploadCloud,ClipboardPaste,ArrowLeft,X,ImageIcon,History,AudioLines,Sparkles,ChevronRight,Film} from 'lucide-react';
+import {FileUp,FileDown,FileJson,Sheet,Layers,FileText,Download,Copy,Check,CheckCircle2,AlertCircle,CopyCheck,UploadCloud,ClipboardPaste,ArrowLeft,X,ImageIcon,History,AudioLines,Sparkles,ChevronRight,Film,Undo2,Share2,Eye} from 'lucide-react';
 import {Button} from './components/Button';
 import {questionTypes,typeLabel,validateQuestion} from '../question-types.js';
 import {itemTypes} from '../question-variants.js';
@@ -8,12 +8,15 @@ import {inlineImages} from '../sync.js';
 
 const formatIcons:any={json:FileJson,csv:Sheet,tsv:Layers,text:FileText};
 const size=(n:number)=>n<1024?`${n} B`:n<1048576?`${Math.round(n/1024)} KB`:`${(n/1048576).toFixed(1)} MB`;
+const FORMAT_KEY='recallflow_export_format';
 function download(text:string,name:string,mime:string){const url=URL.createObjectURL(new Blob([text],{type:mime+';charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 
 function ExportPanel({items,selectedIds,onDone}:any){
  const subjects=useMemo(()=>[...new Set(items.map((x:any)=>x.subject||'General'))].sort() as string[],[items]);
  const [scope,setScope]=useState(selectedIds.length?'selected':'all'),[subject,setSubject]=useState(subjects[0]||''),[types,setTypes]=useState<string[]>([]);
- const [format,setFormat]=useState('json'),[images,setImages]=useState(true),[audio,setAudio]=useState(false),[video,setVideo]=useState(false),[progress,setProgress]=useState(true),[status,setStatus]=useState('');
+ const [format,setFormatState]=useState(()=>{try{const f=localStorage.getItem(FORMAT_KEY);return exportFormats.some(x=>x.id===f)?f!:'json';}catch{return 'json';}});
+ const setFormat=(f:string)=>{setFormatState(f);try{localStorage.setItem(FORMAT_KEY,f);}catch{}};
+ const [preview,setPreview]=useState(false),[images,setImages]=useState(true),[audio,setAudio]=useState(false),[video,setVideo]=useState(false),[progress,setProgress]=useState(true),[status,setStatus]=useState('');
  const chosen=useMemo(()=>scope==='selected'?items.filter((x:any)=>selectedIds.includes(x.id)):scope==='subject'?items.filter((x:any)=>(x.subject||'General')===subject):scope==='types'?items.filter((x:any)=>!types.length||itemTypes(x).some(t=>types.includes(t))):items,[items,scope,subject,types,selectedIds]);
  const [inlined,setInlined]=useState<any[]|null>(chosen);
  useEffect(()=>{if(format!=='json'||!images||!chosen.some((x:any)=>JSON.stringify(x).includes('"rf-img/'))){setInlined(chosen);return;}let live=true;setInlined(null);inlineImages(chosen).then((x:any[])=>{if(live)setInlined(x);}).catch(()=>{if(live)setInlined(chosen);});return()=>{live=false;};},[chosen,format,images]);
@@ -27,6 +30,9 @@ function ExportPanel({items,selectedIds,onDone}:any){
  const linkVideoCount=chosen.filter((x:any)=>['video','answerVideo'].some(k=>typeof x[k]==='string'&&x[k].startsWith('https://'))).length;
  const name=`recallflow-${scope==='subject'?subject.toLowerCase().replace(/[^a-z0-9]+/g,'-'):scope}-${new Date().toISOString().slice(0,10)}.${meta.ext}`;
  async function copy(){try{await navigator.clipboard.writeText(output);setStatus('Copied to the clipboard.');}catch{setStatus('Copy is blocked here. Use Download instead.');}}
+ const shareFile=()=>{try{return new File([output],name,{type:meta.mime});}catch{return null;}};
+ const canShare=useMemo(()=>{if(typeof navigator==='undefined'||!navigator.share||!navigator.canShare)return false;try{return navigator.canShare({files:[new File(['x'],'test.'+meta.ext,{type:meta.mime})]});}catch{return false;}},[meta]);
+ async function share(){const f=shareFile();if(!f)return;try{await navigator.share({files:[f],title:name});setStatus(`Shared ${name}`);}catch(e:any){if(e?.name!=='AbortError')setStatus('Sharing did not work here. Use Download instead.');}}
  return <div className="transfer-panel">
   <section className="transfer-card"><h2><span>1</span>Which questions?</h2>
    <div className="transfer-scope" role="radiogroup" aria-label="Questions to export">
@@ -42,7 +48,8 @@ function ExportPanel({items,selectedIds,onDone}:any){
    {format==='json'&&videoCount>0&&!video&&<p className="transfer-note">Uploaded videos are left out of this export. https and Google Drive video links are still included. Turn on “Include embedded videos” to copy files inside the export.</p>}
    {format!=='json'&&chosen.some((x:any)=>x.variants?.length)&&<p className="transfer-note">Only the first type of multi-type questions is included. Use RecallFlow file to keep every type.</p>}
   </section>
-  <footer className="transfer-footer"><div><strong>{chosen.length} {chosen.length===1?'question':'questions'}</strong><small>{preparing?'Preparing pictures…':chosen.length?`${meta.ext.toUpperCase()} file · ${size(new Blob([output]).size)}`:'Nothing to export'}</small></div><div className="transfer-footer-actions"><Button variant="outline" disabled={!chosen.length||preparing} onClick={copy}><Copy size={16}/>Copy</Button><Button disabled={!chosen.length||preparing} onClick={()=>{download(output,name,meta.mime);setStatus(`Downloaded ${name}`);onDone?.();}}><Download size={16}/>Download</Button></div></footer>
+  {chosen.length>0&&!preparing&&<section className="transfer-card transfer-preview"><button type="button" className="transfer-preview-toggle" aria-expanded={preview} onClick={()=>setPreview(v=>!v)}><Eye size={16}/><span><strong>Preview the file</strong><small>{name}</small></span><ChevronRight size={16} className="transfer-preview-chev"/></button>{preview&&<pre>{output.length>2400?output.slice(0,2400)+'\n…':output}</pre>}</section>}
+  <footer className="transfer-footer"><div><strong>{chosen.length} {chosen.length===1?'question':'questions'}</strong><small>{preparing?'Preparing pictures…':chosen.length?`${meta.ext.toUpperCase()} file · ${size(new Blob([output]).size)}`:'Nothing to export'}</small></div><div className="transfer-footer-actions">{canShare?<Button variant="outline" disabled={!chosen.length||preparing} onClick={share} aria-label="Share file"><Share2 size={16}/>Share</Button>:<Button variant="outline" disabled={!chosen.length||preparing} onClick={copy}><Copy size={16}/>Copy</Button>}<Button disabled={!chosen.length||preparing} onClick={()=>{download(output,name,meta.mime);setStatus(`Downloaded ${name}`);onDone?.();}}><Download size={16}/>Download</Button></div></footer>
   {status&&<p className="transfer-status" role="status">{status}</p>}
  </div>;
 }
@@ -66,9 +73,9 @@ function AiHelper({onCopyPrompt,promptCopied}:any){
  </div>;
 }
 
-function ImportPanel({items,onImport,onBack}:any){
+function ImportPanel({items,onImport,onUndo,onBack}:any){
  const [text,setText]=useState(''),[fileName,setFileName]=useState(''),[format,setFormat]=useState('auto'),[pasting,setPasting]=useState(false),[drag,setDrag]=useState(false),[promptCopied,setPromptCopied]=useState(''),[aiOpen,setAiOpen]=useState(false);
- const [subject,setSubject]=useState(''),[topic,setTopic]=useState(''),[tag,setTag]=useState(''),[dupes,setDupes]=useState<'skip'|'keep'>('skip'),[keepProgress,setKeepProgress]=useState(false),[excluded,setExcluded]=useState<Set<number>>(new Set()),[done,setDone]=useState<number|null>(null);
+ const [subject,setSubject]=useState(''),[topic,setTopic]=useState(''),[tag,setTag]=useState(''),[dupes,setDupes]=useState<'skip'|'keep'>('skip'),[keepProgress,setKeepProgress]=useState(false),[excluded,setExcluded]=useState<Set<number>>(new Set()),[done,setDone]=useState<number|null>(null),[addedIds,setAddedIds]=useState<string[]>([]),[undone,setUndone]=useState(false);
  const input=useRef<HTMLInputElement>(null);
  const parsed=useMemo(()=>{
   if(!text.trim())return null;
@@ -87,17 +94,17 @@ function ImportPanel({items,onImport,onBack}:any){
  function commit(){
   const stamp=Date.now(),extraTags=tag.split(',').map(x=>x.trim()).filter(Boolean);
   const clean=ready.map((r:any,n:number)=>{const {id:_id,...item}=r.item;const out:any={...item,id:`item_${stamp}_${n}`,subject:subject.trim()||String(item.subject||'').trim()||'General',topic:topic.trim()||String(item.topic||'').trim()||'Imported',tags:[...new Set([...(item.tags||[]),...extraTags])]};if(!out.tags.length)delete out.tags;if(!keepProgress)for(const k of ['due','interval','lastReviewed','attempts','lapses'])delete out[k];for(const k of Object.keys(out))if(out[k]===undefined)delete out[k];return out;});
-  onImport(clean);setDone(clean.length);
+  onImport(clean);setDone(clean.length);setAddedIds(clean.map((x:any)=>x.id));setUndone(false);
  }
- function reset(){setText('');setFileName('');setFormat('auto');setExcluded(new Set());setDone(null);setSubject('');setTopic('');setTag('');setPromptCopied('');setAiOpen(false);}
+ function reset(){setUndone(false);setAddedIds([]);setText('');setFileName('');setFormat('auto');setExcluded(new Set());setDone(null);setSubject('');setTopic('');setTag('');setPromptCopied('');setAiOpen(false);}
  const detectedLabel=(parsed as any)?.detected?importFormats.find(([id])=>id===(parsed as any).detected)?.[1]:'';
- if(done!==null)return <div className="transfer-panel"><section className="transfer-card transfer-done"><span className="transfer-done-icon"><CheckCircle2 size={30}/></span><h2>Added {done} {done===1?'question':'questions'}</h2><p>They are in your question bank and ready to practise.</p><div className="transfer-footer-actions"><Button onClick={onBack}>View questions</Button><Button variant="outline" onClick={reset}>Import more</Button></div></section></div>;
+ if(done!==null)return <div className="transfer-panel"><section className="transfer-card transfer-done">{undone?<><span className="transfer-done-icon is-undone"><Undo2 size={28}/></span><h2>Import undone</h2><p>The {done} {done===1?'question was':'questions were'} removed again. Your bank is back to how it was.</p><div className="transfer-footer-actions"><Button onClick={reset}>Import something else</Button></div></>:<><span className="transfer-done-icon"><CheckCircle2 size={30}/></span><h2>Added {done} {done===1?'question':'questions'}</h2><p>They are in your question bank and ready to practise.</p><div className="transfer-footer-actions"><Button onClick={onBack}>View questions</Button><Button variant="outline" onClick={reset}>Import more</Button></div>{onUndo&&addedIds.length>0&&<button type="button" className="transfer-undo" onClick={()=>{onUndo(addedIds);setUndone(true);}}><Undo2 size={15}/>Undo this import</button>}</>}</section></div>;
  return <div className="transfer-panel">
   {!text.trim()||pasting?<section className="transfer-card"><h2><span>1</span>Add your questions</h2>
    {!pasting&&<button type="button" className="transfer-drop" data-drag={drag||undefined} onClick={()=>input.current?.click()} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);void readFile(e.dataTransfer.files?.[0]);}}><UploadCloud size={30}/><strong>Choose a file or drop it here</strong><small>JSON, CSV, TSV or TXT</small></button>}
    {fileError&&<p className="transfer-error" role="alert"><AlertCircle size={16}/>{fileError}</p>}
    <input ref={input} type="file" hidden aria-label="Choose a file to import" accept=".json,.csv,.tsv,.txt,.md,application/json,text/csv,text/plain,text/tab-separated-values" onChange={e=>{void readFile(e.currentTarget.files?.[0]);e.currentTarget.value='';}}/>
-   {pasting?<><label className="transfer-field">Paste questions<textarea autoFocus value={text} onChange={e=>{setText(e.target.value);setFileName('');setFormat('auto');setExcluded(new Set());}} placeholder={'One per line, for example:\nCapital of France? | Paris\nLargest planet? | Jupiter'}/></label><div className="transfer-footer-actions"><Button variant="outline" onClick={()=>{setPasting(false);setText('');}}>Cancel</Button><Button disabled={!text.trim()} onClick={()=>setPasting(false)}>Preview</Button></div></>:<>
+   {pasting?<><label className="transfer-field">Paste questions<textarea autoFocus value={text} onChange={e=>{setText(e.target.value);setFileName('');setFormat('auto');setExcluded(new Set());}} placeholder={'One per line, question then answer:\nCapital of France? | Paris\nLargest planet, Jupiter'}/></label><div className="transfer-footer-actions"><Button variant="outline" onClick={()=>{setPasting(false);setText('');}}>Cancel</Button><Button disabled={!text.trim()} onClick={()=>setPasting(false)}>Preview</Button></div></>:<>
     <div className="transfer-or" aria-hidden="true"><span/><span>OR</span><span/></div>
     <button type="button" className="transfer-ai-card" aria-expanded={aiOpen} onClick={()=>setAiOpen(o=>!o)}><span className="transfer-ai-icon"><Sparkles size={20}/></span><span className="transfer-ai-copy"><strong>Make questions with AI</strong><small>Copy the guide, paste your notes into any AI, bring the result back</small></span><ChevronRight size={18} className="transfer-ai-chevron"/></button>
     {aiOpen&&<AiHelper onCopyPrompt={()=>void copyPrompt()} promptCopied={promptCopied}/>}
@@ -114,7 +121,9 @@ function ImportPanel({items,onImport,onBack}:any){
    {!!rows.length&&<>
     <section className="transfer-card"><h2><span>2</span>Review</h2>
      <div className="transfer-counts"><span data-kind="ready"><CheckCircle2 size={15}/><b>{rows.filter((r:any)=>r.item&&!r.duplicate).length}</b> new</span><span data-kind="dupe"><CopyCheck size={15}/><b>{rows.filter((r:any)=>r.duplicate).length}</b> already in bank</span><span data-kind="error"><AlertCircle size={15}/><b>{rows.filter((r:any)=>r.error).length}</b> need fixing</span></div>
-     <ul className="transfer-rows">{rows.slice(0,200).map((r:any)=><li key={r.i} data-state={r.error?'error':r.duplicate?'dupe':'ok'}>{r.item?<input type="checkbox" aria-label={`Include ${r.item.prompt||"picture question"}`} checked={!excluded.has(r.i)&&(dupes==='keep'||!r.duplicate)} disabled={r.duplicate&&dupes==='skip'} onChange={e=>setExcluded(s=>{const n=new Set(s);if(e.target.checked)n.delete(r.i);else n.add(r.i);return n;})}/>:<AlertCircle size={16}/>}<div><strong>{r.item?.prompt||r.raw?.prompt||(r.item?.image?'Picture question':`Row ${r.i+1}`)}</strong><small>{r.error?r.error:`${[r.item.type,...(r.item.variants||[]).map((v:any)=>v.type)].map(typeLabel).join(' + ')} · ${r.item.answer}`}</small></div>{r.duplicate&&<em>Duplicate</em>}</li>)}{rows.length>200&&<li className="transfer-more">and {rows.length-200} more…</li>}</ul>
+     {(()=>{const ok=ready,types=new Map<string,number>(),subs=new Map<string,number>();for(const r of ok){types.set(r.item.type,(types.get(r.item.type)||0)+1);const s=subject.trim()||r.item.subject||'General';subs.set(s,(subs.get(s)||0)+1);}return ok.length>0&&<div className="transfer-breakdown">{[...types].map(([t,n])=><span key={t}>{typeLabel(t)} <b>{n}</b></span>)}{[...subs].slice(0,4).map(([s,n])=><span key={'s'+s} data-kind="subject">{s} <b>{n}</b></span>)}</div>;})()}
+     {(()=>{const pickable=rows.filter((r:any)=>r.item&&(dupes==='keep'||!r.duplicate));return pickable.length>1&&<div className="transfer-select"><span>{ready.length} of {pickable.length} selected</span><button type="button" disabled={ready.length===pickable.length} onClick={()=>setExcluded(new Set())}>Select all</button><button type="button" disabled={!ready.length} onClick={()=>setExcluded(new Set(pickable.map((r:any)=>r.i)))}>Select none</button></div>;})()}
+     <ul className="transfer-rows">{rows.slice(0,200).map((r:any)=><li key={r.i} data-state={r.error?'error':r.duplicate?'dupe':'ok'}>{r.item?<input type="checkbox" aria-label={`Include ${r.item.prompt||"picture question"}`} checked={!excluded.has(r.i)&&(dupes==='keep'||!r.duplicate)} disabled={r.duplicate&&dupes==='skip'} onChange={e=>setExcluded(s=>{const n=new Set(s);if(e.target.checked)n.delete(r.i);else n.add(r.i);return n;})}/>:<AlertCircle size={16}/>}<div><strong>{r.item?.prompt||r.raw?.prompt||(r.item?.image?'Picture question':`Row ${r.i+1}`)}</strong><small>{r.error?r.error:`${[r.item.type,...(r.item.variants||[]).map((v:any)=>v.type)].map(typeLabel).join(' + ')} · ${r.item.answer}`}</small>{r.item&&(subject.trim()||r.item.subject)&&<small className="transfer-row-place">{[subject.trim()||r.item.subject,topic.trim()||r.item.topic].filter(Boolean).join(' › ')}</small>}</div>{r.duplicate&&<em>Duplicate</em>}</li>)}{rows.length>200&&<li className="transfer-more">and {rows.length-200} more…</li>}</ul>
     </section>
     <section className="transfer-card"><h2><span>3</span>Options</h2>
      <div className="transfer-grid"><label className="transfer-field">Subject<input value={subject} onChange={e=>setSubject(e.target.value)} placeholder="Keep from file"/></label><label className="transfer-field">Topic<input value={topic} onChange={e=>setTopic(e.target.value)} placeholder="Keep from file"/></label></div>
@@ -129,12 +138,12 @@ function ImportPanel({items,onImport,onBack}:any){
  </div>;
 }
 
-export function TransferPage({items,selectedIds,initial='import',onImport,onBack}:any){
+export function TransferPage({items,selectedIds,initial='import',onImport,onUndo,onBack}:any){
  const [tab,setTab]=useState<'import'|'export'>(initial);
  return <section className="transfer-page">
   <button className="quiz-options-back transfer-back" onClick={onBack}><ArrowLeft size={16}/>Question bank</button>
   <header className="transfer-hero"><p>YOUR QUESTIONS</p><h1>Import &amp; export</h1></header>
   <div className="transfer-tabs" role="tablist" aria-label="Import or export">{([['import','Import',FileUp],['export','Export',FileDown]] as const).map(([id,label,Icon])=><button key={id} role="tab" aria-selected={tab===id} onClick={()=>setTab(id)}><Icon size={17}/>{label}</button>)}</div>
-  {tab==='import'?<ImportPanel items={items} onImport={onImport} onBack={onBack}/>:<ExportPanel items={items} selectedIds={selectedIds}/>}
+  {tab==='import'?<ImportPanel items={items} onImport={onImport} onUndo={onUndo} onBack={onBack}/>:<ExportPanel items={items} selectedIds={selectedIds}/>}
  </section>;
 }
