@@ -21168,7 +21168,7 @@ function validateExtra(type,input,prompt,answer){
     if((spots.length>1||mode==='name')&&spots.some(s=>!s.label))throw new Error(mode==='name'?'Name every place you marked.':'Name every place, so learners know what to find.');
     if(new Set(spots.map(s=>normalize(s.label))).size!==spots.length&&spots.length>1)throw new Error('Each place needs a different name.');
     if(mode==='name'&&spots.length<2)throw new Error('Mark at least two places so learners can choose names.');
-    return {fields:{spots,tapMode:mode==='name'?'name':undefined,hotspot:undefined},answer:spots.map(s=>s.label).filter(Boolean).join('; ')||answer||'The marked spot'};
+    return {fields:{spots,tapMode:mode==='name'?'name':undefined,hotspot:undefined},answer:spots.map(s=>s.label).filter(Boolean).join('; ')||'The marked spot'};
   }
   if(type==='slider'){
     const min=numericValue(input.sliderMin??''),max=numericValue(input.sliderMax??''),step=numericValue(input.sliderStep??1),value=numericValue(answer),tolerance=numericValue(input.numericTolerance??0);
@@ -21230,6 +21230,7 @@ function answerText(item){
   if(item.type==='multi_select'&&item.correctAnswers?.length)return item.correctAnswers.join('; ');
   if(item.type==='slider'&&String(item.answer??'').trim())return `${item.answer}${item.unit?' '+item.unit:''}${Number(item.numericTolerance)>0?` (± ${item.numericTolerance})`:''}`;
   if(item.type==='list_recall'&&item.listItems?.length){const names=item.listItems.map(x=>listAlternatives(x)[0]).join('; ');return listNeed(item)<item.listItems.length?`Any ${listNeed(item)} of: ${names}`:names;}
+  if(item.type==='image_tap'){const spots=tapSpots(item);if(spots.length)return spots.map(s=>s.label).filter(Boolean).join('; ')||'The marked spot';}
   if(item.type==='fill_blank_options'&&item.blanks?.length)return item.blanks.join('; ');
   if(isMultiBlank(item)&&item.blanks?.length)return item.blanks.map(x=>listAlternatives(x)[0]).join('; ');
   if(String(item.answer??'').trim())return String(item.answer);
@@ -22893,7 +22894,35 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
     const linkForm = linking && React.createElement(MediaLinkForm, { autoFocus: true, label: `${title} link`, placeholder: "https://\u2026/clip.mp4", submitLabel: "Add", initialUrl: linked && !drive ? video : '', onClearError: onClearError, onCancel: () => setLinking(false), onSubmit: url => { if (applyLink(url))
             setLinking(false); } });
     const clip = clipOpen && video && !drive && React.createElement(MediaClipEditor, { kind: "video", title: "Adjust video", src: video, initial: edit, durationHint: meta?.duration, onCancel: () => setClipOpen(false), onSave: next => { onEditChange?.(next); setClipOpen(false); } });
-    return React.createElement("article", { className: `mf mf-video${video ? ' has-media' : ''}${assetLayout ? ' is-asset' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
+    if (assetLayout) {
+        const remove = () => { setLinking(false); onEditChange?.(undefined); onChange(undefined); };
+        return React.createElement("article", { className: `asset asset-video${video ? ' has-image' : ''}${linking ? ' is-linking' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
+            React.createElement("header", { className: "media-head" },
+                React.createElement("span", { className: "media-ico", "aria-hidden": "true" },
+                    React.createElement(Film, { size: 17 })),
+                React.createElement("div", { className: "media-headmain" },
+                    React.createElement("div", { className: "media-titlerow" },
+                        React.createElement("span", { className: "asset-name" }, title),
+                        React.createElement("span", { className: `asset-state ${badge.cls}` }, badge.text)),
+                    React.createElement("small", { className: "asset-caption" }, caption))),
+            busy ? body : video && React.createElement("div", { className: "asset-media-extra" }, body),
+            !busy && React.createElement("div", { className: "asset-actions" },
+                React.createElement("button", { type: "button", className: "media-action", onClick: pickFile },
+                    video ? React.createElement(RefreshCw, { size: 14 }) : React.createElement(Upload, { size: 14 }),
+                    video ? 'Replace' : 'Upload'),
+                React.createElement("button", { type: "button", className: "media-action", "aria-label": `Add ${title.toLowerCase()} from a link`, "aria-expanded": linking, onClick: openLink },
+                    React.createElement(Link2, { size: 14 }),
+                    "Link"),
+                video && !drive && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Edit ${title.toLowerCase()}`, onClick: () => setClipOpen(true) },
+                    React.createElement(Scissors, { size: 14 }),
+                    "Edit"),
+                video && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: remove },
+                    React.createElement(Trash2, { size: 14 }))),
+            fileInput,
+            linkForm,
+            clip);
+    }
+    return React.createElement("article", { className: `mf mf-video${video ? ' has-media' : ''}${dragOver ? ' is-dragover' : ''}`, ...drop },
         React.createElement("header", { className: "mf-head" },
             React.createElement("span", { className: "mf-ico", "aria-hidden": "true" },
                 React.createElement(Film, { size: 18 })),
@@ -31644,6 +31673,38 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         clip);
 }
 
+function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTitle, video, videoEdit, videoClass = '', preview = false, kind = 'question', className = '', zoomClass = 'question-media-zoom', imgClass = 'question-media' }) {
+    const [tab, setTab] = reactExports.useState('picture');
+    const root = reactExports.useRef(null);
+    const sound = audio ? { src: audio, edit: audioEdit, displayName: displayName || (kind === 'answer' ? 'Answer sound' : undefined), fileTitle, label: `Play ${kind} sound` } : null;
+    const picture = image ? React.createElement(ZoomableImage, { className: zoomClass, imgClassName: imgClass, src: image, alt: imageAlt || (kind === 'answer' ? 'Answer illustration' : 'Question illustration'), label: `Enlarge ${kind} image` }) : null;
+    const clip = video ? React.createElement(VideoPlayer, { src: video, edit: videoEdit, className: `quiz-video ${videoClass}`.trim(), label: `${preview ? 'Preview' : 'Play'} ${kind} video` }) : null;
+    const pictureBlock = picture && sound ? React.createElement("div", { className: "quiz-media-stack" },
+        picture,
+        React.createElement(SoundPlayer, { ...sound, variant: "overlay", className: "quiz-sound-overlay" })) : picture;
+    if (!picture && !sound && !clip)
+        return null;
+    if (picture && clip) {
+        const showVideo = tab === 'video';
+        const choose = (next) => { root.current?.querySelectorAll('video,audio').forEach(m => m.pause()); setTab(next); };
+        return React.createElement("div", { ref: root, className: `quiz-media-tabs ${className}`.trim(), "data-tab": tab },
+            React.createElement("div", { className: "quiz-media-switch", role: "tablist", "aria-label": `${kind === 'answer' ? 'Answer' : 'Question'} media` },
+                React.createElement("button", { type: "button", role: "tab", "aria-selected": !showVideo, onClick: () => choose('picture') },
+                    React.createElement(Image$1, { size: 14 }),
+                    " Picture"),
+                React.createElement("button", { type: "button", role: "tab", "aria-selected": showVideo, onClick: () => choose('video') },
+                    React.createElement(Film, { size: 14 }),
+                    " Video")),
+            React.createElement("div", { className: "quiz-media-panel", hidden: showVideo }, pictureBlock),
+            React.createElement("div", { className: "quiz-media-panel", hidden: !showVideo }, clip));
+    }
+    const parts = React.createElement(React.Fragment, null,
+        pictureBlock,
+        !picture && sound && React.createElement(SoundPlayer, { ...sound, variant: "card", className: kind === 'answer' ? 'quiz-sound feedback-sound' : 'quiz-sound' }),
+        clip);
+    return className ? React.createElement("div", { className: `quiz-media-group ${className}` }, parts) : parts;
+}
+
 const REPORT_RANGES=[[7,'7 days'],[30,'30 days'],[90,'90 days'],[0,'All time']];
 const MASTERY_LEVELS=[['new','New','Not studied yet'],['learning','Learning','Next review within a week'],['familiar','Familiar','Next review in 1–4 weeks'],['mastered','Mastered','Next review a month or more away']];
 
@@ -32522,24 +32583,14 @@ function InlineImage({ label, hint, image, onPick, onLink, onRemove, onView, onE
         fileInput);
 }
 function PreviewQuestionMedia({ draft }) {
-    const hasImg = !!draft.image && draft.type !== 'image_tap', audio = draft.audio;
-    const soundProps = { edit: draft.audioEdit, displayName: audio ? soundDisplayName(audio, draft.audioName) : undefined, fileTitle: audio ? soundFileTitle(audio, draft.audioName) : undefined, label: 'Play question sound' };
-    if (hasImg && audio)
-        return React.createElement("div", { className: "quiz-media-stack" },
-            React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: draft.image, alt: "Question illustration", label: "Enlarge question image" }),
-            React.createElement(SoundPlayer, { src: audio, ...soundProps, variant: "overlay", className: "quiz-sound-overlay" }));
-    return React.createElement(React.Fragment, null,
-        hasImg && React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: draft.image, alt: "Question illustration", label: "Enlarge question image" }),
-        audio && React.createElement(SoundPlayer, { src: audio, ...soundProps, variant: "card", className: "quiz-sound" }),
-        draft.video && React.createElement(VideoPlayer, { src: draft.video, edit: draft.videoEdit, className: "is-compact quiz-video", label: "Preview question video" }));
+    const audio = draft.audio;
+    return React.createElement(QuestionMedia, { preview: true, image: draft.type !== 'image_tap' ? draft.image : undefined, audio: audio, audioEdit: draft.audioEdit, displayName: audio ? soundDisplayName(audio, draft.audioName) : undefined, fileTitle: audio ? soundFileTitle(audio, draft.audioName) : undefined, video: draft.video, videoEdit: draft.videoEdit, videoClass: "is-compact" });
 }
 function FlashcardEditorPreview({ draft }) {
     const [showBack, setShowBack] = reactExports.useState(false);
     return React.createElement("div", { className: "editor-question-preview" },
         React.createElement("small", null, "Flashcard \u00B7 tap to flip"),
-        draft.image && React.createElement("img", { src: draft.image, alt: "Flashcard image" }),
-        draft.audio && React.createElement(SoundPlayer, { src: draft.audio, edit: draft.audioEdit, variant: "card", displayName: soundDisplayName(draft.audio, draft.audioName), className: "quiz-sound", label: "Play question sound" }),
-        draft.video && React.createElement(VideoPlayer, { src: draft.video, edit: draft.videoEdit, className: "is-compact", label: "Preview question video" }),
+        React.createElement(PreviewQuestionMedia, { draft: draft }),
         React.createElement("button", { type: "button", className: "editor-flashcard-preview", "aria-pressed": showBack, "aria-label": showBack ? 'Show flashcard front' : 'Show flashcard back', onClick: () => setShowBack(value => !value) },
             React.createElement("span", { className: `editor-flashcard-preview-inner${showBack ? ' is-back' : ''}` },
                 React.createElement("span", { className: "editor-flashcard-preview-face editor-flashcard-front" },
@@ -32555,10 +32606,7 @@ function FlashcardEditorPreview({ draft }) {
                     React.createElement("em", null, "Tap to see the question")))));
 }
 function AnswerMediaPreview({ draft }) {
-    return React.createElement(React.Fragment, null,
-        draft.answerVideo && React.createElement(VideoPlayer, { src: draft.answerVideo, edit: draft.answerVideoEdit, className: "is-compact", label: "Preview answer video" }),
-        draft.answerAudio && React.createElement(SoundPlayer, { src: draft.answerAudio, edit: draft.answerAudioEdit, variant: "card", displayName: "Answer sound", className: "quiz-sound feedback-sound", label: "Preview answer sound" }),
-        draft.answerImage && React.createElement("img", { className: "editor-preview-answer-image", src: draft.answerImage, alt: "Answer illustration" }));
+    return React.createElement(QuestionMedia, { preview: true, kind: "answer", className: "feedback-media", zoomClass: "feedback-answer-zoom", imgClass: "feedback-answer-media", image: draft.answerImage, audio: draft.answerAudio, audioEdit: draft.answerAudioEdit, video: draft.answerVideo, videoEdit: draft.answerVideoEdit, videoClass: "is-compact" });
 }
 // The preview uses the same answer components as the quiz, so pictures, sounds, videos and blanks look exactly as learners see them.
 function QuestionTypePreview({ draft }) {
@@ -32646,7 +32694,7 @@ function ExtraPreview({ draft }) {
             React.createElement("button", { type: "button", className: "editor-preview-reset", onClick: () => { setResult(null); setRound(r => r + 1); } },
                 React.createElement(RefreshCw, { size: 14 }),
                 "Try again")),
-        result !== null && item.answer && React.createElement("small", { className: result ? 'is-correct-text' : 'is-wrong-text' },
+        result !== null && item.type !== 'image_tap' && answerText(item) && React.createElement("small", { className: result ? 'is-correct-text' : 'is-wrong-text' },
             "Answer: ",
             answerText(item)),
         result !== null && React.createElement(AnswerMediaPreview, { draft: draft }));
@@ -34181,13 +34229,7 @@ function IndexPage() {
                                     " ",
                                     current.topic)),
                             React.createElement("span", { className: "split-type-badge" }, typeLabel(current?.type))),
-                        (() => { const hasImg = !!(current?.image && current.type !== "image_tap"); const audioSrc = current?.audio; if (hasImg && audioSrc)
-                            return React.createElement("div", { className: "quiz-media-stack" },
-                                React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: current.image, alt: current.imageAlt || "Question illustration", label: "Enlarge question image" }),
-                                React.createElement(SoundPlayer, { key: current.id, src: audioSrc, edit: current.audioEdit, label: "Play question sound", variant: "overlay", className: "quiz-sound-overlay" })); return React.createElement(React.Fragment, null,
-                            hasImg && React.createElement(ZoomableImage, { className: "question-media-zoom", imgClassName: "question-media", src: current.image, alt: current.imageAlt || "Question illustration", label: "Enlarge question image" }),
-                            audioSrc && React.createElement(SoundPlayer, { key: current.id, src: audioSrc, edit: current.audioEdit, label: "Play question sound", variant: "card", className: "quiz-sound" })); })(),
-                        current?.video && React.createElement(VideoPlayer, { key: `${current.id}-video`, edit: current.videoEdit, src: current.video, className: "quiz-video", label: "Play question video" }),
+                        current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.audio, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit }),
                         current?.type === "flashcard" ? React.createElement("div", { className: "flashcard-stage" },
                             React.createElement("div", { className: "flashcard-speech" },
                                 React.createElement(SpeechButton, { questionId: current.id, role: revealed ? "answer" : "question", text: revealed ? current.answer : current.prompt, label: revealed ? "Read flashcard answer" : "Read flashcard question" })),
@@ -34251,9 +34293,7 @@ function IndexPage() {
                                 React.createElement("strong", null, result ? (results[results.length - 1]?.grading === "typo" ? "Accepted — likely typo" : "Correct!") : "Not quite"),
                                 current && answerText(current) && !/^\(answer (picture|video|sound)\)$/.test(answerText(current)) && React.createElement("span", null, result ? `Answer: ${answerText(current)}` : `Correct answer: ${answerText(current)}`),
                                 current && React.createElement(SpeechButton, { questionId: current.id, role: "answer", text: current.answer || answerText(current), label: "Read correct answer" }),
-                                current?.answerVideo && current.type !== "flashcard" && React.createElement(VideoPlayer, { edit: current.answerVideoEdit, src: current.answerVideo, className: "is-compact quiz-video", label: "Play answer video" }),
-                                current?.answerAudio && current.type !== "flashcard" && React.createElement(SoundPlayer, { edit: current.answerAudioEdit, src: current.answerAudio, variant: "card", displayName: "Answer sound", className: "quiz-sound feedback-sound", label: "Play answer sound" }),
-                                current?.answerImage && current.type !== "flashcard" && React.createElement(ZoomableImage, { className: "feedback-answer-zoom", imgClassName: "feedback-answer-media", src: current.answerImage, alt: "Answer illustration", label: "Enlarge answer image" })),
+                                current && current.type !== "flashcard" && React.createElement(QuestionMedia, { key: `${current.id}-answer`, kind: "answer", className: "feedback-media", zoomClass: "feedback-answer-zoom", imgClass: "feedback-answer-media", image: current.answerImage, audio: current.answerAudio, audioEdit: current.answerAudioEdit, video: current.answerVideo, videoEdit: current.answerVideoEdit, videoClass: "is-compact" })),
                             React.createElement(Button, { onClick: next },
                                 idx + 1 === review.length ? "See results" : "Continue",
                                 " ",

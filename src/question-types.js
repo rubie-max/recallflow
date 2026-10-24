@@ -175,7 +175,7 @@ function validateExtra(type,input,prompt,answer){
     if((spots.length>1||mode==='name')&&spots.some(s=>!s.label))throw new Error(mode==='name'?'Name every place you marked.':'Name every place, so learners know what to find.');
     if(new Set(spots.map(s=>normalize(s.label))).size!==spots.length&&spots.length>1)throw new Error('Each place needs a different name.');
     if(mode==='name'&&spots.length<2)throw new Error('Mark at least two places so learners can choose names.');
-    return {fields:{spots,tapMode:mode==='name'?'name':undefined,hotspot:undefined},answer:spots.map(s=>s.label).filter(Boolean).join('; ')||answer||'The marked spot'};
+    return {fields:{spots,tapMode:mode==='name'?'name':undefined,hotspot:undefined},answer:spots.map(s=>s.label).filter(Boolean).join('; ')||'The marked spot'};
   }
   if(type==='slider'){
     const min=numericValue(input.sliderMin??''),max=numericValue(input.sliderMax??''),step=numericValue(input.sliderStep??1),value=numericValue(answer),tolerance=numericValue(input.numericTolerance??0);
@@ -237,6 +237,7 @@ export function answerText(item){
   if(item.type==='multi_select'&&item.correctAnswers?.length)return item.correctAnswers.join('; ');
   if(item.type==='slider'&&String(item.answer??'').trim())return `${item.answer}${item.unit?' '+item.unit:''}${Number(item.numericTolerance)>0?` (± ${item.numericTolerance})`:''}`;
   if(item.type==='list_recall'&&item.listItems?.length){const names=item.listItems.map(x=>listAlternatives(x)[0]).join('; ');return listNeed(item)<item.listItems.length?`Any ${listNeed(item)} of: ${names}`:names;}
+  if(item.type==='image_tap'){const spots=tapSpots(item);if(spots.length)return spots.map(s=>s.label).filter(Boolean).join('; ')||'The marked spot';}
   if(item.type==='fill_blank_options'&&item.blanks?.length)return item.blanks.join('; ');
   if(isMultiBlank(item)&&item.blanks?.length)return item.blanks.map(x=>listAlternatives(x)[0]).join('; ');
   if(String(item.answer??'').trim())return String(item.answer);

@@ -93,7 +93,21 @@ export function VideoField({video,edit,onEditChange,onChange,onError,onClearErro
  const linkForm=linking&&<MediaLinkForm autoFocus label={`${title} link`} placeholder="https://…/clip.mp4" submitLabel="Add" initialUrl={linked&&!drive?video!:''} onClearError={onClearError} onCancel={()=>setLinking(false)} onSubmit={url=>{if(applyLink(url))setLinking(false);}}/>;
  const clip=clipOpen&&video&&!drive&&<MediaClipEditor kind="video" title="Adjust video" src={video} initial={edit} durationHint={meta?.duration} onCancel={()=>setClipOpen(false)} onSave={next=>{onEditChange?.(next);setClipOpen(false);}}/>;
 
- return <article className={`mf mf-video${video?' has-media':''}${assetLayout?' is-asset':''}${dragOver?' is-dragover':''}`} {...drop}>
+ if(assetLayout){
+  const remove=()=>{setLinking(false);onEditChange?.(undefined);onChange(undefined);};
+  return <article className={`asset asset-video${video?' has-image':''}${linking?' is-linking':''}${dragOver?' is-dragover':''}`} {...drop}>
+   <header className="media-head"><span className="media-ico" aria-hidden="true"><Film size={17}/></span><div className="media-headmain"><div className="media-titlerow"><span className="asset-name">{title}</span><span className={`asset-state ${badge.cls}`}>{badge.text}</span></div><small className="asset-caption">{caption}</small></div></header>
+   {busy?body:video&&<div className="asset-media-extra">{body}</div>}
+   {!busy&&<div className="asset-actions">
+    <button type="button" className="media-action" onClick={pickFile}>{video?<RefreshCw size={14}/>:<Upload size={14}/>}{video?'Replace':'Upload'}</button>
+    <button type="button" className="media-action" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} onClick={openLink}><Link2 size={14}/>Link</button>
+    {video&&!drive&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
+    {video&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} onClick={remove}><Trash2 size={14}/></button>}
+   </div>}
+   {fileInput}{linkForm}{clip}
+  </article>;
+ }
+ return <article className={`mf mf-video${video?' has-media':''}${dragOver?' is-dragover':''}`} {...drop}>
   <header className="mf-head">
    <span className="mf-ico" aria-hidden="true"><Film size={18}/></span>
    <div className="mf-headmain"><div className="mf-titlerow"><strong>{title}</strong><span className={`mf-badge ${badge.cls}`}>{badge.text}</span></div><small className="mf-caption">{caption}</small></div>

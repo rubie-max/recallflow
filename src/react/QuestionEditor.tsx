@@ -10,6 +10,7 @@ import {ExtraAnswer} from './ExtraAnswers';
 import {ListRecallEditor,CategorizeEditor,HighlightEditor,ImageTapEditor,SliderEditor} from './ExtraEditors';
 import {SoundField,SoundPlayer,soundDisplayName,soundFileTitle} from './QuestionSound';
 import {VideoField,VideoPlayer} from './QuestionVideo';
+import {QuestionMedia} from './QuestionMedia';
 import {Button} from './components/Button';
 import {SpeechButton} from './KokoroPanel';
 import {storeImage} from '../sync.js';
@@ -120,19 +121,17 @@ function ImageUpload({label,image,onPick,onLink,onRemove,onEdit,hint='PNG, JPEG,
  </div>;
 }
 function PreviewQuestionMedia({draft}:{draft:any}){
- const hasImg=!!draft.image&&draft.type!=='image_tap',audio=draft.audio;
- const soundProps={edit:draft.audioEdit,displayName:audio?soundDisplayName(audio,draft.audioName):undefined,fileTitle:audio?soundFileTitle(audio,draft.audioName):undefined,label:'Play question sound'};
- if(hasImg&&audio)return <div className="quiz-media-stack"><ZoomableImage className="question-media-zoom" imgClassName="question-media" src={draft.image} alt="Question illustration" label="Enlarge question image"/><SoundPlayer src={audio} {...soundProps} variant="overlay" className="quiz-sound-overlay"/></div>;
- return <>{hasImg&&<ZoomableImage className="question-media-zoom" imgClassName="question-media" src={draft.image} alt="Question illustration" label="Enlarge question image"/>}{audio&&<SoundPlayer src={audio} {...soundProps} variant="card" className="quiz-sound"/>}{draft.video&&<VideoPlayer src={draft.video} edit={draft.videoEdit} className="is-compact quiz-video" label="Preview question video"/>}</>;
+ const audio=draft.audio;
+ return <QuestionMedia preview image={draft.type!=='image_tap'?draft.image:undefined} audio={audio} audioEdit={draft.audioEdit} displayName={audio?soundDisplayName(audio,draft.audioName):undefined} fileTitle={audio?soundFileTitle(audio,draft.audioName):undefined} video={draft.video} videoEdit={draft.videoEdit} videoClass="is-compact"/>;
 }
 
 function FlashcardEditorPreview({draft}:any){
  const [showBack,setShowBack]=useState(false);
- return <div className="editor-question-preview"><small>Flashcard · tap to flip</small>{draft.image&&<img src={draft.image} alt="Flashcard image"/>}{draft.audio&&<SoundPlayer src={draft.audio} edit={draft.audioEdit} variant="card" displayName={soundDisplayName(draft.audio,draft.audioName)} className="quiz-sound" label="Play question sound"/>}{draft.video&&<VideoPlayer src={draft.video} edit={draft.videoEdit} className="is-compact" label="Preview question video"/>}<button type="button" className="editor-flashcard-preview" aria-pressed={showBack} aria-label={showBack?'Show flashcard front':'Show flashcard back'} onClick={()=>setShowBack(value=>!value)}><span className={`editor-flashcard-preview-inner${showBack?' is-back':''}`}><span className="editor-flashcard-preview-face editor-flashcard-front"><small>FRONT · QUESTION</small><strong>{draft.prompt||'Your question appears here'}</strong><em>Tap to reveal the answer</em></span><span className="editor-flashcard-preview-face editor-flashcard-back"><small>BACK · ANSWER</small>{draft.answerImage&&<img className="editor-flashcard-answer-image" src={draft.answerImage} alt=""/>}{draft.answerVideo&&<VideoPlayer src={draft.answerVideo} edit={draft.answerVideoEdit} className="is-compact" label="Preview answer video"/>}{draft.answerAudio&&<SoundPlayer src={draft.answerAudio} edit={draft.answerAudioEdit} className="is-compact" label="Preview answer sound"/>}<strong>{draft.answer||'Your answer appears here'}</strong><em>Tap to see the question</em></span></span></button></div>;
+ return <div className="editor-question-preview"><small>Flashcard · tap to flip</small><PreviewQuestionMedia draft={draft}/><button type="button" className="editor-flashcard-preview" aria-pressed={showBack} aria-label={showBack?'Show flashcard front':'Show flashcard back'} onClick={()=>setShowBack(value=>!value)}><span className={`editor-flashcard-preview-inner${showBack?' is-back':''}`}><span className="editor-flashcard-preview-face editor-flashcard-front"><small>FRONT · QUESTION</small><strong>{draft.prompt||'Your question appears here'}</strong><em>Tap to reveal the answer</em></span><span className="editor-flashcard-preview-face editor-flashcard-back"><small>BACK · ANSWER</small>{draft.answerImage&&<img className="editor-flashcard-answer-image" src={draft.answerImage} alt=""/>}{draft.answerVideo&&<VideoPlayer src={draft.answerVideo} edit={draft.answerVideoEdit} className="is-compact" label="Preview answer video"/>}{draft.answerAudio&&<SoundPlayer src={draft.answerAudio} edit={draft.answerAudioEdit} className="is-compact" label="Preview answer sound"/>}<strong>{draft.answer||'Your answer appears here'}</strong><em>Tap to see the question</em></span></span></button></div>;
 }
 
 function AnswerMediaPreview({draft}:any){
- return <>{draft.answerVideo&&<VideoPlayer src={draft.answerVideo} edit={draft.answerVideoEdit} className="is-compact" label="Preview answer video"/>}{draft.answerAudio&&<SoundPlayer src={draft.answerAudio} edit={draft.answerAudioEdit} variant="card" displayName="Answer sound" className="quiz-sound feedback-sound" label="Preview answer sound"/>}{draft.answerImage&&<img className="editor-preview-answer-image" src={draft.answerImage} alt="Answer illustration"/>}</>;
+ return <QuestionMedia preview kind="answer" className="feedback-media" zoomClass="feedback-answer-zoom" imgClass="feedback-answer-media" image={draft.answerImage} audio={draft.answerAudio} audioEdit={draft.answerAudioEdit} video={draft.answerVideo} videoEdit={draft.answerVideoEdit} videoClass="is-compact"/>;
 }
 
 // The preview uses the same answer components as the quiz, so pictures, sounds, videos and blanks look exactly as learners see them.
@@ -176,7 +175,7 @@ function ExtraPreview({draft}:any){
  return <div className="editor-question-preview editor-quiz-preview"><small>{typeLabel(item.type)}</small><PreviewQuestionMedia draft={draft}/><h3>{draft.prompt||'Your question appears here'}</h3>
   <ExtraAnswer key={round} item={item} disabled={result!==null} onGrade={grade}/>
   {result!==null&&<div className="editor-preview-actions"><button type="button" className="editor-preview-check" disabled>{result?'Correct':'Not quite'}</button><button type="button" className="editor-preview-reset" onClick={()=>{setResult(null);setRound(r=>r+1);}}><RefreshCw size={14}/>Try again</button></div>}
-  {result!==null&&item.answer&&<small className={result?'is-correct-text':'is-wrong-text'}>Answer: {answerText(item)}</small>}
+  {result!==null&&item.type!=='image_tap'&&answerText(item)&&<small className={result?'is-correct-text':'is-wrong-text'}>Answer: {answerText(item)}</small>}
   {result!==null&&<AnswerMediaPreview draft={draft}/>}
  </div>;
 }
