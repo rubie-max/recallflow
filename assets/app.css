@@ -2798,3 +2798,19 @@ label.split-choice:has(.choice-media)>.im-extras .im-sound[data-playing]{backgro
 @media(hover:hover){.highlight-word:hover:not(:disabled):not([aria-pressed=true]){background:color-mix(in srgb,var(--primary) 10%,transparent)}}
 .highlight-word.highlight-word[data-state=picked]{background:color-mix(in srgb,var(--primary) 24%,transparent);color:var(--foreground);box-shadow:inset 0 -2px 0 var(--primary)}
 .highlight-word:active:not(:disabled){transform:scale(.96)}
+
+/* Show whole pictures inside the 4:3 frame, filling the rest with a blurred copy */
+.question-media-zoom,.feedback-answer-zoom,.flashcard-answer-zoom{position:relative;overflow:hidden;border-radius:14px;isolation:isolate;background:var(--muted)}
+.question-media-zoom::before,.feedback-answer-zoom::before,.flashcard-answer-zoom::before{content:"";position:absolute;inset:-12%;z-index:0;background:var(--zi-src) center/cover no-repeat;filter:blur(18px) brightness(.75) saturate(1.1);pointer-events:none}
+.question-media-zoom>img,.feedback-answer-zoom>img,.flashcard-answer-zoom>img{position:relative;z-index:1;object-fit:contain!important;object-position:50% 50%!important;background:transparent!important}
+.question-media-zoom>.zoomable-image-btn,.feedback-answer-zoom>.zoomable-image-btn,.flashcard-answer-zoom>.zoomable-image-btn{z-index:2}
+.split-feedback .feedback-media{width:min(100%,220px);max-width:220px}
+.flashcard-answer-zoom{width:min(100%,240px)!important}
+.sort-pool:has(.sort-item[data-picture]){display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr))}
+.sort-pool .sort-item[data-picture]{display:flex}
+.sort-pool .sort-item[data-picture]>.sort-chip{width:100%}
+.sort-pool:has(.sort-item[data-picture])>:not(.sort-item){grid-column:1/-1}
+.highlight-word{padding:3px 2px;margin:0 -2px}
+.slider-track input[data-untouched]::-webkit-slider-thumb{background:var(--primary);box-shadow:0 0 0 6px color-mix(in srgb,var(--primary) 22%,transparent),0 2px 8px #0005}
+.slider-track input[data-untouched]::-moz-range-thumb{background:var(--primary);box-shadow:0 0 0 6px color-mix(in srgb,var(--primary) 22%,transparent)}
+.zoomable-image:is(.question-media-zoom,.feedback-answer-zoom,.flashcard-answer-zoom)>img:is(.question-media,.feedback-answer-media,.flashcard-answer-media){background:transparent!important;object-fit:contain!important;object-position:50% 50%!important}

@@ -42,5 +42,5 @@ export function ZoomButton({src,alt='',label='Enlarge image'}:{src:string;alt?:s
 
 // tapImage=false keeps taps on the picture for the surrounding control (e.g. selecting a choice).
 export function ZoomableImage({src,alt='',className='',imgClassName,label='Enlarge image',tapImage=true}:{src:string;alt?:string;className?:string;imgClassName?:string;label?:string;tapImage?:boolean}){
- return <span className={`zoomable-image ${className}`}><img className={imgClassName} src={src} alt={alt} draggable={false} onClick={tapImage?e=>{e.preventDefault();e.stopPropagation();openZoom(src,alt);}:undefined}/><ZoomButton src={src} alt={alt} label={label}/></span>;
+ return <span className={`zoomable-image ${className}`} style={{'--zi-src':`url("${src.replace(/"/g,'%22')}")`} as React.CSSProperties}><img className={imgClassName} src={src} alt={alt} draggable={false} onClick={tapImage?e=>{e.preventDefault();e.stopPropagation();openZoom(src,alt);}:undefined}/><ZoomButton src={src} alt={alt} label={label}/></span>;
 }
