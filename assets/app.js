@@ -29789,6 +29789,7 @@ function PhotoEditor({ image, onCancel, onSave }) {
 }
 
 const sections = [['profile', 'Profile', UserRound], ['account', 'Account', Cloud], ['appearance', 'Appearance', Palette], ['voice', 'Voice', Volume2], ['quiz', 'Quiz', SlidersHorizontal], ['data', 'Data', Database], ['app', 'App', Smartphone]];
+const menuGroups = [['Sync', ['account']], ['Learning', ['quiz', 'voice']], ['App', ['appearance', 'data', 'app']]];
 function Toggle({ icon: Icon, title, detail, checked, onChange }) {
     return React.createElement("label", { className: "settings-switch" },
         React.createElement("span", { className: "settings-switch-icon" },
@@ -30243,7 +30244,8 @@ function useNarrow() {
 }
 function SettingsPage({ items, reports, quizCount, streakDays, theme, onTheme, onQuizDefaults, onOpenTransfer, onResetProgress, onDeleteAll }) {
     const narrow = useNarrow(), [activeSection, setActiveSection] = reactExports.useState('profile'), [openSection, setOpenSection] = reactExports.useState(() => history.state?.rfSettings ?? null);
-    const [prefs] = usePrefs();
+    const [prefs] = usePrefs(), photo = useProfilePhoto(), [sync, setSync] = reactExports.useState(syncStatus);
+    reactExports.useEffect(() => { const on = () => setSync(syncStatus()); window.addEventListener('recallflow:sync-status', on); return () => window.removeEventListener('recallflow:sync-status', on); }, []);
     reactExports.useEffect(() => { if (narrow)
         return; const els = sections.map(([id]) => document.getElementById(`settings-${id}`)).filter(Boolean); const observer = new IntersectionObserver(entries => { const visible = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0]; if (visible)
         setActiveSection(visible.target.id.slice(9)); }, { rootMargin: '-20% 0px -65% 0px' }); els.forEach(el => observer.observe(el)); return () => observer.disconnect(); }, [narrow]);
@@ -30255,6 +30257,14 @@ function SettingsPage({ items, reports, quizCount, streakDays, theme, onTheme, o
     else
         setOpenSection(null); window.scrollTo(0, 0); };
     const summaries = { profile: prefs.name || 'Your name', account: 'Sync and log out', appearance: 'Theme, text size, motion', voice: 'Device voice or Kokoro, speed', quiz: 'Questions, countdown, sound effects', data: 'Import, export, backup, reset', app: 'Install, offline, about' };
+    const quizLength = quizPreferences().count, speechEngine = localStorage.getItem('recallflow_speech_engine') === 'kokoro' ? 'Kokoro AI voice' : 'Device voice', speed = Number(localStorage.getItem(speechEngine === 'Device voice' ? 'recallflow_system_rate' : 'recallflow_kokoro_speed') || 1);
+    const live = {
+        account: sync.state === 'syncing' ? 'Syncing…' : sync.state === 'offline' ? 'Offline' : sync.state === 'error' ? 'Sync problem' : ago(sync.lastSynced),
+        appearance: `${{ light: 'Light', dark: 'Dark', system: 'System' }[theme] || 'Theme'} · ${(textSizes.find((t) => t[0] === prefs.textSize) || [, 'Default'])[1]} text`,
+        voice: `${speechEngine} · ${speed.toFixed(1)}×`,
+        quiz: `${quizLength ? `${quizLength} questions` : 'All due'} · sounds ${prefs.soundEffects === 'off' ? 'off' : prefs.soundEffects === 'custom' ? 'custom' : 'on'}`,
+        data: `${items.length} ${items.length === 1 ? 'question' : 'questions'} · backup & import`,
+    };
     const groups = {
         profile: React.createElement(ProfileSettings, null),
         account: React.createElement(AccountSettings, null),
@@ -30309,16 +30319,27 @@ function SettingsPage({ items, reports, quizCount, streakDays, theme, onTheme, o
                         "Settings"),
                     React.createElement("h1", null, current[1])),
                 React.createElement("div", { className: "settings-content", id: `settings-${current[0]}` }, groups[current[0]]));
+        const row = (id) => { const [, label, Icon] = sections.find(s => s[0] === id); return React.createElement("button", { type: "button", key: id, onClick: () => open(id) },
+            React.createElement("span", { className: "settings-menu-icon", "data-section": id },
+                React.createElement(Icon, { size: 18, "aria-hidden": "true" })),
+            React.createElement("span", { className: "settings-menu-copy" },
+                React.createElement("strong", null, label),
+                React.createElement("small", null, live[id] || summaries[id])),
+            React.createElement(ChevronRight, { size: 18, "aria-hidden": "true" })); };
         return React.createElement("section", { className: "settings-page settings-mobile" },
             React.createElement("header", { className: "settings-hero" },
                 React.createElement("h1", null, "Settings")),
-            React.createElement("nav", { className: "settings-menu", "aria-label": "Settings sections" }, sections.map(([id, label, Icon]) => React.createElement("button", { type: "button", key: id, onClick: () => open(id) },
-                React.createElement("span", { className: "settings-menu-icon", "data-section": id },
-                    React.createElement(Icon, { size: 18, "aria-hidden": "true" })),
-                React.createElement("span", { className: "settings-menu-copy" },
-                    React.createElement("strong", null, label),
-                    React.createElement("small", null, summaries[id])),
-                React.createElement(ChevronRight, { size: 18, "aria-hidden": "true" })))));
+            React.createElement("nav", { "aria-label": "Settings sections", className: "settings-menu-groups" },
+                React.createElement("button", { type: "button", className: "settings-profile-card", onClick: () => open('profile') },
+                    React.createElement("span", { className: "settings-profile-avatar" }, photo ? React.createElement("img", { src: photo, alt: "" }) : (prefs.name || '?').trim().charAt(0).toUpperCase()),
+                    React.createElement("span", { className: "settings-menu-copy" },
+                        React.createElement("strong", null, prefs.name || 'Add your name'),
+                        React.createElement("small", null, "Name & picture")),
+                    React.createElement(ChevronRight, { size: 18, "aria-hidden": "true" })),
+                menuGroups.map(([title, ids]) => React.createElement("div", { className: "settings-menu-group", key: title },
+                    React.createElement("p", { className: "settings-menu-label" }, title),
+                    React.createElement("div", { className: "settings-menu" }, ids.map(row)))),
+                React.createElement("p", { className: "settings-version" }, "RecallFlow \u00B7 Version 2026.10")));
     }
     return React.createElement("section", { className: "settings-page settings-layout" },
         React.createElement("header", { className: "settings-hero" },

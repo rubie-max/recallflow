@@ -14,6 +14,7 @@ import {openPhoto,saveProfilePhoto,profilePhoto,profilePhotoKey} from '../profil
 import {useProfilePhoto,PhotoEditor} from './ProfilePhoto';
 
 const sections:[string,string,any][]=[['profile','Profile',UserRound],['account','Account',Cloud],['appearance','Appearance',Palette],['voice','Voice',Volume2],['quiz','Quiz',SlidersHorizontal],['data','Data',Database],['app','App',Smartphone]];
+const menuGroups:[string,string[]][]=[['Sync',['account']],['Learning',['quiz','voice']],['App',['appearance','data','app']]];
 
 function Toggle({icon:Icon,title,detail,checked,onChange}:any){
  return <label className="settings-switch"><span className="settings-switch-icon"><Icon size={17}/></span><span className="settings-switch-copy"><strong>{title}</strong>{detail&&<small>{detail}</small>}</span><input type="checkbox" role="switch" checked={checked} onChange={e=>onChange(e.target.checked)}/><i aria-hidden="true"/></label>;
@@ -226,13 +227,22 @@ function useNarrow(){
 
 export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,onQuizDefaults,onOpenTransfer,onResetProgress,onDeleteAll}:any){
  const narrow=useNarrow(),[activeSection,setActiveSection]=useState('profile'),[openSection,setOpenSection]=useState<string|null>(()=>history.state?.rfSettings??null);
- const [prefs]=usePrefs();
+ const [prefs]=usePrefs(),photo=useProfilePhoto(),[sync,setSync]=useState(syncStatus);
+ useEffect(()=>{const on=()=>setSync(syncStatus());window.addEventListener('recallflow:sync-status',on);return()=>window.removeEventListener('recallflow:sync-status',on);},[]);
  useEffect(()=>{if(narrow)return;const els=sections.map(([id])=>document.getElementById(`settings-${id}`)).filter(Boolean) as HTMLElement[];const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];if(visible)setActiveSection(visible.target.id.slice(9));},{rootMargin:'-20% 0px -65% 0px'});els.forEach(el=>observer.observe(el));return()=>observer.disconnect();},[narrow]);
  useEffect(()=>{const back=(e:PopStateEvent)=>setOpenSection(e.state?.rfSettings??null);window.addEventListener('popstate',back);return()=>window.removeEventListener('popstate',back);},[]);
  const jump=(id:string)=>{setActiveSection(id);document.getElementById(`settings-${id}`)?.scrollIntoView({behavior:document.documentElement.classList.contains('rf-reduce-motion')?'auto':'smooth',block:'start'});};
  const open=(id:string)=>{history.pushState({...history.state,rfSettings:id},'',location.href);setOpenSection(id);window.scrollTo(0,0);};
  const close=()=>{if(history.state?.rfSettings)history.back();else setOpenSection(null);window.scrollTo(0,0);};
  const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Device voice or Kokoro, speed',quiz:'Questions, countdown, sound effects',data:'Import, export, backup, reset',app:'Install, offline, about'};
+ const quizLength=quizPreferences().count,speechEngine=localStorage.getItem('recallflow_speech_engine')==='kokoro'?'Kokoro AI voice':'Device voice',speed=Number(localStorage.getItem(speechEngine==='Device voice'?'recallflow_system_rate':'recallflow_kokoro_speed')||1);
+ const live:Record<string,string>={
+  account:sync.state==='syncing'?'Syncing…':sync.state==='offline'?'Offline':sync.state==='error'?'Sync problem':ago(sync.lastSynced),
+  appearance:`${({light:'Light',dark:'Dark',system:'System'} as any)[theme]||'Theme'} · ${(textSizes.find((t:any)=>t[0]===prefs.textSize)||[,'Default'])[1]} text`,
+  voice:`${speechEngine} · ${speed.toFixed(1)}×`,
+  quiz:`${quizLength?`${quizLength} questions`:'All due'} · sounds ${prefs.soundEffects==='off'?'off':prefs.soundEffects==='custom'?'custom':'on'}`,
+  data:`${items.length} ${items.length===1?'question':'questions'} · backup & import`,
+ };
  const groups:Record<string,React.ReactNode>={
   profile:<ProfileSettings/>,
   account:<AccountSettings/>,
@@ -255,9 +265,18 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
    <header className="settings-detail-head"><button type="button" className="settings-back" onClick={close}><ChevronLeft size={20}/>Settings</button><h1>{current[1]}</h1></header>
    <div className="settings-content" id={`settings-${current[0]}`}>{groups[current[0]]}</div>
   </section>;
+  const row=(id:string)=>{const [,label,Icon]=sections.find(s=>s[0]===id)!;return <button type="button" key={id} onClick={()=>open(id)}><span className="settings-menu-icon" data-section={id}><Icon size={18} aria-hidden="true"/></span><span className="settings-menu-copy"><strong>{label}</strong><small>{live[id]||summaries[id]}</small></span><ChevronRight size={18} aria-hidden="true"/></button>;};
   return <section className="settings-page settings-mobile">
    <header className="settings-hero"><h1>Settings</h1></header>
-   <nav className="settings-menu" aria-label="Settings sections">{sections.map(([id,label,Icon])=><button type="button" key={id} onClick={()=>open(id)}><span className="settings-menu-icon" data-section={id}><Icon size={18} aria-hidden="true"/></span><span className="settings-menu-copy"><strong>{label}</strong><small>{summaries[id]}</small></span><ChevronRight size={18} aria-hidden="true"/></button>)}</nav>
+   <nav aria-label="Settings sections" className="settings-menu-groups">
+    <button type="button" className="settings-profile-card" onClick={()=>open('profile')}>
+     <span className="settings-profile-avatar">{photo?<img src={photo} alt=""/>:(prefs.name||'?').trim().charAt(0).toUpperCase()}</span>
+     <span className="settings-menu-copy"><strong>{prefs.name||'Add your name'}</strong><small>Name & picture</small></span>
+     <ChevronRight size={18} aria-hidden="true"/>
+    </button>
+    {menuGroups.map(([title,ids])=><div className="settings-menu-group" key={title}><p className="settings-menu-label">{title}</p><div className="settings-menu">{ids.map(row)}</div></div>)}
+    <p className="settings-version">RecallFlow · Version 2026.10</p>
+   </nav>
   </section>;
  }
  return <section className="settings-page settings-layout">

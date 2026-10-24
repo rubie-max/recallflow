@@ -240,3 +240,50 @@ label.split-choice:has(.choice-media)>.im-extras .im-sound[data-playing]{backgro
 .quiz-media-dock.is-picture .zoomable-image-btn.zoomable-image-btn.zoomable-image-btn{top:8px!important;right:8px!important;bottom:auto!important;left:auto!important}
 .split-quiz:not(:has(.split-submit,.split-feedback))::after{display:none}
 .split-quiz:not(:has(.split-submit,.split-feedback)){padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))!important}
+
+/* ===== Settings ===== */
+.settings-menu-groups{display:grid;gap:4px}
+.settings-profile-card{display:grid;grid-template-columns:60px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;padding:14px 16px;border:1px solid color-mix(in srgb,var(--primary) 28%,var(--border));border-radius:20px;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 16%,var(--card)),var(--card) 70%);color:var(--foreground);text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.settings-profile-card:active{transform:scale(.99)}
+.settings-profile-card>svg{color:var(--muted-foreground)}
+.settings-profile-card .settings-menu-copy strong{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.settings-profile-avatar{display:grid;place-items:center;width:60px;height:60px;border-radius:50%;overflow:hidden;background:var(--primary);color:#151515;font-size:24px;font-weight:700;box-shadow:0 0 0 3px var(--card),0 0 0 5px color-mix(in srgb,var(--primary) 45%,transparent)}
+.settings-profile-avatar img{width:100%;height:100%;object-fit:cover}
+.settings-menu-label{margin:18px 8px 8px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted-foreground)}
+.settings-menu-group .settings-menu>button{min-height:62px}
+.settings-menu-group .settings-menu>button:active{background:color-mix(in srgb,var(--primary) 8%,var(--card))}
+.settings-menu-groups .settings-menu-icon{width:38px;height:38px;border-radius:11px;color:#fff;background:var(--tile,var(--primary));box-shadow:inset 0 -2px 0 #0002}
+.settings-menu-groups .settings-menu-icon[data-section]{background:var(--tile)}
+.settings-menu-icon[data-section=account]{--tile:linear-gradient(135deg,#34d399,#059669)}
+.settings-menu-icon[data-section=quiz]{--tile:linear-gradient(135deg,#a5a0ff,#6d63f6)}
+.settings-menu-icon[data-section=voice]{--tile:linear-gradient(135deg,#fbbf24,#ea8a0c)}
+.settings-menu-icon[data-section=appearance]{--tile:linear-gradient(135deg,#f472b6,#db2777)}
+.settings-menu-icon[data-section=data]{--tile:linear-gradient(135deg,#38bdf8,#0284c7)}
+.settings-menu-icon[data-section=app]{--tile:linear-gradient(135deg,#94a3b8,#475569)}
+.settings-page .settings-panel-compact>.settings-switch.settings-switch{border-top:0;margin:0 -4px;padding-top:4px;padding-bottom:4px}
+.settings-page .settings-panel-compact>.settings-switch::before,.settings-page .settings-panel-compact::before{display:none}
+.settings-version{margin:22px 0 4px;text-align:center;font-size:12px;color:var(--muted-foreground)}
+
+.settings-segmented button{transition:background .15s,color .15s,border-color .15s}
+.settings-segmented button[aria-checked="true"]{background:color-mix(in srgb,var(--primary) 18%,var(--card));border-color:color-mix(in srgb,var(--primary) 45%,transparent);color:var(--primary);box-shadow:none}
+.settings-segmented button:active{transform:scale(.97)}
+
+.settings-page select{-webkit-appearance:none;appearance:none;min-height:44px;padding:0 38px 0 14px;border:1px solid var(--border);border-radius:12px;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a7a8af' stroke-width='2.2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;color:var(--foreground);font:inherit;font-size:14px}
+.settings-page select:focus-visible{outline:none;border-color:var(--primary);box-shadow:var(--shadow-focus)}
+
+@media(max-width:819px){
+ .settings-mobile .settings-panel{border-radius:20px}
+ .settings-mobile .settings-heading{gap:12px}
+ .settings-mobile .settings-heading .settings-icon{width:36px;height:36px;border-radius:11px}
+ .settings-mobile .settings-heading h2{font-size:16px}
+ .settings-mobile .settings-label{margin:4px 2px -4px;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-foreground)}
+ .settings-mobile .settings-switch-icon{border-radius:10px}
+}
+#settings-profile{--tile:linear-gradient(135deg,#a5a0ff,#6d63f6)}
+#settings-account{--tile:linear-gradient(135deg,#34d399,#059669)}
+#settings-quiz{--tile:linear-gradient(135deg,#a5a0ff,#6d63f6)}
+#settings-voice{--tile:linear-gradient(135deg,#fbbf24,#ea8a0c)}
+#settings-appearance{--tile:linear-gradient(135deg,#f472b6,#db2777)}
+#settings-data{--tile:linear-gradient(135deg,#38bdf8,#0284c7)}
+#settings-app{--tile:linear-gradient(135deg,#94a3b8,#475569)}
+[id^=settings-] .settings-panel:not(.settings-danger) .settings-heading .settings-icon,[id^=settings-] .settings-link-card .settings-icon{background:var(--tile)!important;color:#fff!important;box-shadow:inset 0 -2px 0 #0002}
