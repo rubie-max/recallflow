@@ -31714,9 +31714,9 @@ function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTit
             React.createElement("div", { className: "quiz-media-panel", hidden: !showVideo }, clip));
     }
     if (!picture && sound && clip) {
-        const block = React.createElement("div", { className: "quiz-media-stack is-video" },
+        const block = React.createElement("div", { className: "quiz-media-dock" },
             clip,
-            React.createElement(SoundPlayer, { ...sound, variant: "overlay", className: "quiz-sound-overlay" }));
+            React.createElement(SoundPlayer, { ...sound, variant: "overlay", className: "quiz-sound-dock" }));
         return className ? React.createElement("div", { className: `quiz-media-group ${className}` }, block) : block;
     }
     const parts = React.createElement(React.Fragment, null,
