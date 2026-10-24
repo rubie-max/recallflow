@@ -30783,7 +30783,7 @@ function ExportPanel({ items, selectedIds, onDone }) {
             setStatus('Sharing did not work here. Use Download instead.');
     } }
     const typeCounts = reactExports.useMemo(() => new Map(questionTypes.map(([id]) => [id, items.filter((x) => itemTypes(x).includes(id)).length])), [items]);
-    const scopes = [['all', 'Everything', plural(items.length, 'question'), Library], ['subject', 'One subject', plural(subjects.length, 'subject'), BookOpen], ['types', 'By type', types.length ? `${types.length} picked` : 'Pick types', LayoutGrid], ...(selectedIds.length ? [['selected', 'Selected', plural(selectedIds.length, 'question'), ListChecks]] : [])];
+    const scopes = [['subject', 'One subject', plural(subjects.length, 'subject'), BookOpen], ['types', 'By type', types.length ? `${types.length} picked` : 'Pick types', LayoutGrid], ['all', 'Everything', plural(items.length, 'question'), Library], ...(selectedIds.length ? [['selected', 'Selected in library', plural(selectedIds.length, 'question'), ListChecks]] : [])];
     const switchRow = (Icon, title, hint, checked, set) => React.createElement("label", { className: "settings-switch" },
         React.createElement("span", { className: "settings-switch-icon" },
             React.createElement(Icon, { size: 17 })),
@@ -30795,10 +30795,11 @@ function ExportPanel({ items, selectedIds, onDone }) {
     return React.createElement("div", { className: "tf-stack" },
         React.createElement("section", { className: "tf-card" },
             React.createElement("h2", { className: "tf-h" }, "What to export"),
-            React.createElement("div", { className: "tf-scope", role: "radiogroup", "aria-label": "Questions to export" }, scopes.map(([id, label, hint, Icon]) => React.createElement("button", { key: id, type: "button", role: "radio", "aria-checked": scope === id, onClick: () => setScope(id) },
-                React.createElement(Icon, { size: 19 }),
-                React.createElement("strong", null, label),
-                React.createElement("small", null, hint)))),
+            React.createElement("div", { className: "tf-scope", role: "radiogroup", "aria-label": "Questions to export" }, scopes.map(([id, label, hint, Icon]) => { const wide = id === 'all' || id === 'selected'; return React.createElement("button", { key: id, type: "button", role: "radio", "aria-checked": scope === id, "data-span": wide ? 'wide' : undefined, "data-kind": id, onClick: () => setScope(id) },
+                React.createElement(Icon, { size: wide ? 22 : 19 }),
+                React.createElement("span", { className: "tf-scope-copy" },
+                    React.createElement("strong", null, label),
+                    React.createElement("small", null, hint))); })),
             scope === 'subject' && React.createElement("div", { className: "tf-chips", role: "radiogroup", "aria-label": "Subject" }, subjects.map(([s, n]) => React.createElement("button", { key: s, type: "button", role: "radio", "aria-checked": subject === s, onClick: () => setSubject(s) },
                 s,
                 React.createElement("b", null, n)))),
