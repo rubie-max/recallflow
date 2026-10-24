@@ -29879,6 +29879,7 @@ function useClipPlayback(ref, src, edit, opts = {}) {
     const wantAnalyser = reactExports.useRef(!!opts.analyser);
     reactExports.useEffect(() => {
         let cancelled = false;
+        // Unconditional poll — works even if ref is attached after this effect runs
         const pollId = window.setInterval(() => {
             if (cancelled)
                 return;
@@ -29923,9 +29924,11 @@ function useClipPlayback(ref, src, edit, opts = {}) {
                 const fallback = opts.durationHint || 120;
                 setDuration(prev => prev > 0 ? prev : fallback);
             }
-            else
+            else {
                 setFailed(true);
+            }
         });
+        // peaks for embedded audio
         if (embedded && el instanceof HTMLAudioElement) {
             const run = () => { void decodePeaks(src, 160).then(m => { if (!cancelled && m?.duration)
                 setDuration(prev => prev || m.duration); }); };
@@ -29949,7 +29952,7 @@ function useClipPlayback(ref, src, edit, opts = {}) {
     reactExports.useEffect(() => () => { graph.current?.ctx.close().catch(() => { }); graph.current = null; }, []);
     const ensureGraph = reactExports.useCallback(() => {
         const el = ref.current;
-        if (!el || !embeddedRef.current)
+        if (!el)
             return null;
         if (graph.current && graph.current.el !== el) {
             graph.current.ctx.close().catch(() => { });
@@ -29988,7 +29991,8 @@ function useClipPlayback(ref, src, edit, opts = {}) {
         const el = ref.current;
         if (!el)
             return;
-        const c = clipRef.current, lvl = levelAt(c, t), g = graph.current;
+        const c = clipRef.current, lvl = levelAt(c, t);
+        const g = ensureGraph();
         if (g && g.el === el) {
             g.gain.gain.setTargetAtTime(lvl, g.ctx.currentTime, 0.015);
             el.muted = false;
@@ -30001,103 +30005,90 @@ function useClipPlayback(ref, src, edit, opts = {}) {
             }
             catch { }
         }
-    }, [ref]);
+    }, [ensureGraph, ref]);
     reactExports.useEffect(() => { const el = ref.current; if (el)
         applyLevel(el.currentTime); }, [clip.muted, clip.volume, clip.gain, clip.fadeIn, clip.fadeOut, clip.trimStart, clip.trimEnd, applyLevel, ref]);
     reactExports.useEffect(() => {
-        let cancelled = false, raf = 0, last = -1, bound = null, pollId = 0, stopId = 0;
-        const visAt = (t) => { const c = clipRef.current; return clamp$3(t, c.trimStart, c.trimEnd); };
-        const step = () => {
-            if (cancelled || !bound)
+        let cancelled = false, raf = 0, last = -1, attached = null;
+        let onPlay, onPause, onEnded, onTime;
+        const attach = (el) => {
+            if (attached === el)
                 return;
-            const el = bound, c = clipRef.current;
-            let t = el.currentTime;
-            if (durRef.current && t < c.trimStart - 0.01) {
-                try {
-                    el.currentTime = c.trimStart;
-                    t = c.trimStart;
-                }
-                catch { }
+            if (attached) {
+                attached.removeEventListener('play', onPlay);
+                attached.removeEventListener('pause', onPause);
+                attached.removeEventListener('ended', onEnded);
+                attached.removeEventListener('timeupdate', onTime);
             }
-            applyLevel(t);
-            setPlaying(!el.paused);
-            const vis = visAt(t);
-            if (!el.paused || Math.abs(vis - last) > 0.03) {
-                last = vis;
-                setAt(vis);
-            }
-            if (durRef.current && t >= c.trimEnd - 0.03) {
-                if (loopRef.current) {
-                    el.currentTime = c.trimStart;
-                    last = c.trimStart;
-                    setAt(c.trimStart);
-                }
-                else {
-                    el.pause();
-                    el.currentTime = c.trimStart;
-                    setAt(c.trimStart);
-                    setPlaying(false);
+            attached = el;
+            const step = () => {
+                if (cancelled || !attached)
                     return;
+                const c = clipRef.current, t = attached.currentTime;
+                // keep playhead and playback inside the trim
+                if (t < c.trimStart - 0.02) {
+                    attached.currentTime = c.trimStart;
                 }
-            }
-            if (!el.paused)
+                if (Math.abs(t - last) > 0.03) {
+                    last = t;
+                    setAt(Math.max(c.trimStart, Math.min(t, c.trimEnd)));
+                }
+                applyLevel(t);
+                if (durRef.current && t >= c.trimEnd - 0.03) {
+                    if (loopRef.current) {
+                        attached.currentTime = c.trimStart;
+                    }
+                    else {
+                        attached.pause();
+                        attached.currentTime = c.trimStart;
+                        setAt(c.trimStart);
+                        setPlaying(false);
+                        return;
+                    }
+                }
+                if (!attached.paused)
+                    raf = requestAnimationFrame(step);
+            };
+            onPlay = () => {
+                const c = clipRef.current;
+                if (durRef.current && attached && attached.currentTime < c.trimStart - 0.01)
+                    attached.currentTime = c.trimStart;
+                setPlaying(true);
+                cancelAnimationFrame(raf);
                 raf = requestAnimationFrame(step);
-        };
-        const onPlay = () => { if (cancelled || !bound)
-            return; const c = clipRef.current, e = bound; if (durRef.current && e.currentTime < c.trimStart - 0.01)
-            try {
-                e.currentTime = c.trimStart;
-            }
-            catch { } setPlaying(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(step); };
-        const onPause = () => { if (cancelled)
-            return; setPlaying(false); cancelAnimationFrame(raf); if (bound) {
-            const v = visAt(bound.currentTime);
-            last = v;
-            setAt(v);
-        } };
-        const onEnded = () => { if (cancelled || !bound)
-            return; setPlaying(false); cancelAnimationFrame(raf); const c = clipRef.current; bound.currentTime = c.trimStart; last = c.trimStart; setAt(c.trimStart); };
-        const onTime = () => { if (cancelled || !bound || !bound.paused)
-            return; const v = visAt(bound.currentTime); last = v; setAt(v); };
-        const detach = () => {
-            if (!bound)
-                return;
-            const el = bound;
-            bound = null;
-            cancelAnimationFrame(raf);
-            el.removeEventListener('play', onPlay);
-            el.removeEventListener('pause', onPause);
-            el.removeEventListener('ended', onEnded);
-            el.removeEventListener('timeupdate', onTime);
-        };
-        const attach = () => {
-            const el = ref.current;
-            if (!el || el === bound)
-                return !!el;
-            detach();
-            bound = el;
+            };
+            onPause = () => { setPlaying(false); cancelAnimationFrame(raf); if (attached)
+                setAt(attached.currentTime); };
+            onEnded = () => { setPlaying(false); cancelAnimationFrame(raf); const c = clipRef.current; if (attached) {
+                attached.currentTime = c.trimStart;
+                setAt(c.trimStart);
+            } };
+            onTime = () => { if (attached && attached.paused)
+                setAt(attached.currentTime); };
             el.addEventListener('play', onPlay);
             el.addEventListener('pause', onPause);
             el.addEventListener('ended', onEnded);
             el.addEventListener('timeupdate', onTime);
             if (!el.paused)
                 onPlay();
-            else {
-                const v = visAt(el.currentTime);
-                last = v;
-                setAt(v);
-            }
-            return true;
         };
-        if (!attach())
-            pollId = window.setInterval(() => { if (attach())
-                window.clearInterval(pollId); }, 150);
-        stopId = window.setTimeout(() => window.clearInterval(pollId), 30000);
+        const tryAttach = () => { if (!cancelled && ref.current)
+            attach(ref.current); };
+        tryAttach();
+        const poll = window.setInterval(tryAttach, 150);
+        const stop = window.setTimeout(() => window.clearInterval(poll), 8000);
         return () => {
             cancelled = true;
-            window.clearInterval(pollId);
-            window.clearTimeout(stopId);
-            detach();
+            cancelAnimationFrame(raf);
+            window.clearInterval(poll);
+            window.clearTimeout(stop);
+            if (attached && onPlay) {
+                attached.removeEventListener('play', onPlay);
+                attached.removeEventListener('pause', onPause);
+                attached.removeEventListener('ended', onEnded);
+                attached.removeEventListener('timeupdate', onTime);
+                attached.pause();
+            }
         };
     }, [src, applyLevel, ref]);
     const seek = reactExports.useCallback((t, free = false) => {
@@ -30262,7 +30253,7 @@ function useWaveStage(canvas, peaks, duration, start, end, at) {
             g.fillRect(i * bw + bw * 0.2, mid - bh, Math.max(1, bw * 0.6), bh * 2);
         }
         if (duration) {
-            const t = clamp$3(at, start, end), x = clamp$3(t / duration, 0, 1) * w;
+            const x = clamp$3(Math.max(start, Math.min(at, end)) / duration, 0, 1) * w;
             g.fillStyle = '#fff';
             g.fillRect(x - 1, 0, 2, h);
         }
@@ -30274,7 +30265,7 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
     const stageEl = reactExports.useRef(null), frameEl = reactExports.useRef(null), strip = reactExports.useRef(null), waveStage = reactExports.useRef(null), root = reactExports.useRef(null);
     const [edit, setEdit] = reactExports.useState(initial);
     const [tab, setTab] = reactExports.useState(kind === 'video' ? 'crop' : 'trim');
-    const [loop, setLoop] = reactExports.useState(false), [dragging, setDragging] = reactExports.useState(null), [menu, setMenu] = reactExports.useState(false), [moving, setMoving] = reactExports.useState(false), [slow, setSlow] = reactExports.useState(false);
+    const [loop, setLoop] = reactExports.useState(false), [dragging, setDragging] = reactExports.useState(null), [menu, setMenu] = reactExports.useState(false), [moving, setMoving] = reactExports.useState(false), [slow, setSlow] = reactExports.useState(false), [rate, setRate] = reactExports.useState(1);
     const [size, setSize] = reactExports.useState({ w: 0, h: 0 });
     const [job, setJob] = reactExports.useState(null);
     const jobAbort = reactExports.useRef(null);
@@ -30334,6 +30325,8 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
             catch { }
         } document.body.style.overflow = ov; prev?.focus?.(); };
     }, []);
+    reactExports.useEffect(() => { const el = media.current; if (el)
+        el.playbackRate = rate; }, [rate, src]);
     const flash = (text, k = 'info') => setNote({ text, kind: k });
     /* edits */
     const patch = (p, sound = false) => { setEdit(prev => ({ ...normalizeEdit(prev, duration), ...p })); if (sound)
@@ -30516,7 +30509,7 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
         }
     }
     const exportWav = () => run('Rendering…', async () => { saveBlob(await exportTrimmedWav(src, e), `${stem}-edited.wav`); flash('WAV saved.'); });
-    const exportWebm = () => run('Compressing…', async (signal, progress) => { const blob = await exportTrimmedAudio(src, e, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'audio')}`); flash('Edited clip saved.'); });
+    const exportWebm = () => run('Compressing… real-time', async (signal, progress) => { const blob = await exportTrimmedAudio(src, e, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'audio')}`); flash('Compressed clip saved.'); });
     const exportVideo = () => run('Exporting video… keep this tab visible', async (signal, progress) => { const blob = await exportTrimmedVideo(src, edit, { onProgress: progress, signal }); saveBlob(blob, `${stem}-edited.${extFor(blob.type, 'video')}`); flash('Edited video saved.'); });
     const bake = () => {
         if (!onReplace)
@@ -30525,9 +30518,9 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
             flash(`Keep the selection under ${fmtTime(maxSeconds)}.`, 'error');
             return;
         }
-        void run('Compressing…', async (signal, progress) => {
+        void run('Saving…', async () => {
             const buf = await renderEditedAudio(src, e, { mono: true, sampleRate: 24000 });
-            const blob = await encodeAudioBuffer(buf, { bitrate: 40000, onProgress: progress, signal });
+            const blob = audioBufferToWav(buf);
             await onReplace(await blobToDataUrl(blob), buf.duration);
             playPreset('go');
         });
@@ -30554,7 +30547,7 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
     const vol = Math.round((e.muted ? 0 : e.volume) * 100), maxFade = Math.max(0.1, Math.min(10, len / 2));
     const selFmt = len < 10 ? fmtFine : fmtTime;
     const tabs = [...(kind === 'video' ? [{ id: 'crop', label: 'Crop', icon: React.createElement(Crop, { size: 14 }) }] : []), { id: 'trim', label: 'Trim', icon: React.createElement(Scissors, { size: 14 }) }, { id: 'sound', label: 'Sound', icon: React.createElement(Volume2, { size: 14 }) }, { id: 'fades', label: 'Fades', icon: React.createElement(AudioLines, { size: 14 }) }];
-    const hint = job ? '' : bakeMode ? `Pick up to ${fmtTime(maxSeconds || 60)} — only the selection is kept` : tab === 'crop' ? 'Drag to move · pinch or slide to zoom · tap to play' : tab === 'trim' ? (dragging ? `Release to set ${dragging === 'start' ? 'the start' : dragging === 'end' ? 'the end' : 'the selection'}` : 'Drag the handles to trim · tap to play') : tab === 'sound' ? (e.gain !== 1 ? `${e.gain > 1 ? 'Boosted' : 'Lowered'} ${e.gain.toFixed(1)}× · applies to uploaded clips and exports` : 'Volume applies when the question plays') : 'Fades are shown on the timeline';
+    const hint = job ? '' : bakeMode ? `Pick up to ${fmtTime(maxSeconds || 60)} — only the selection is kept` : tab === 'crop' ? 'Drag to move · pinch or slide to zoom · tap to play' : tab === 'trim' ? (dragging === 'seek' ? 'Release to seek' : dragging ? `Release to set ${dragging === 'start' ? 'the start' : dragging === 'end' ? 'the end' : 'the selection'}` : 'Drag the white line to seek · drag handles to trim') : tab === 'sound' ? (e.muted ? 'Muted' : `${vol}% volume${e.gain !== 1 ? ` · ${e.gain.toFixed(2)}× gain` : ''}`) : 'Fades are shown on the timeline';
     const sq = (icon, label, onClick, o = {}) => React.createElement("button", { type: "button", disabled: o.disabled, "aria-pressed": o.on, "aria-label": o.aria, onClick: onClick },
         icon,
         React.createElement("span", null, label));
@@ -30619,20 +30612,40 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
                         React.createElement("div", { className: "me-range", style: { left: `${left}%`, width: `${right - left}%` }, onPointerDown: ev => tlDown('move', ev) },
                             e.fadeIn > 0 && React.createElement("span", { className: "me-fade is-in", style: { width: `${e.fadeIn / len * 100}%` } }),
                             e.fadeOut > 0 && React.createElement("span", { className: "me-fade is-out", style: { width: `${e.fadeOut / len * 100}%` } })),
-                        React.createElement("span", { className: "me-playhead", style: { left: `${clamp$3(Math.max(e.trimStart, Math.min(at, e.trimEnd)) / duration * 100, 0, 100)}%` } }),
+                        React.createElement("button", { type: "button", className: "me-playhead", style: { left: `${clamp$3(Math.max(e.trimStart, Math.min(at, e.trimEnd)) / duration * 100, 0, 100)}%` }, "aria-label": "Playhead. Drag to seek", onPointerDown: ev => tlDown('seek', ev) }),
                         React.createElement("button", { type: "button", className: `me-handle${dragging === 'start' ? ' is-active' : ''}`, style: { left: `${left}%` }, "aria-label": `Trim start ${fmtFine(e.trimStart)}. Arrow keys adjust`, onKeyDown: ev => handleKey('start', ev), onPointerDown: ev => tlDown('start', ev) }),
                         React.createElement("button", { type: "button", className: `me-handle${dragging === 'end' ? ' is-active' : ''}`, style: { left: `${right}%` }, "aria-label": `Trim end ${fmtFine(e.trimEnd)}. Arrow keys adjust`, onKeyDown: ev => handleKey('end', ev), onPointerDown: ev => tlDown('end', ev) }),
                         showStartBubble && React.createElement("b", { className: `me-bubble${dragging === 'start' ? ' is-active' : ''}`, style: { ...bubbleStyle(left), ...(showEndBubble && right - left < 14 ? { bottom: 'calc(100% + 26px)' } : {}) } }, fmtFine(e.trimStart)),
                         showEndBubble && React.createElement("b", { className: `me-bubble${dragging === 'end' ? ' is-active' : ''}`, style: bubbleStyle(right) }, fmtFine(e.trimEnd)))),
                 React.createElement("div", { className: "me-ruler", "aria-hidden": "true" },
                     React.createElement("span", null, "0:00"),
-                    React.createElement("span", null, duration ? (duration < 10 ? fmtFine(duration) : fmtTime(duration)) : '–:––'))),
-            tab === 'sound' && React.createElement("div", { className: "me-row" },
-                React.createElement("button", { type: "button", className: "me-mute", "aria-pressed": e.muted, "aria-label": e.muted ? 'Unmute' : 'Mute', onClick: () => patch({ muted: !e.muted }) }, e.muted || vol === 0 ? React.createElement(VolumeX, { size: 18 }) : React.createElement(Volume2, { size: 18 })),
-                React.createElement("input", { type: "range", min: 0, max: 100, step: 5, value: vol, "aria-label": "Volume", onChange: ev => patch({ volume: Number(ev.target.value) / 100, muted: false }) }),
-                React.createElement("span", { className: "me-val" },
-                    vol,
-                    "%")),
+                    React.createElement("span", null, duration ? (duration < 10 ? fmtFine(duration) : fmtTime(duration)) : '–:––')),
+                React.createElement("div", { className: "me-row", style: { marginTop: 8 } },
+                    React.createElement("label", { className: "me-lab" },
+                        "Start",
+                        React.createElement("input", { type: "number", min: 0, max: Math.max(0, e.trimEnd - MIN_LEN), step: 0.1, value: Number(e.trimStart.toFixed(1)), disabled: !duration, "aria-label": "Trim start seconds", onChange: ev => setStart(Number(ev.target.value) || 0), style: { width: 72, marginLeft: 6 } })),
+                    React.createElement("label", { className: "me-lab" },
+                        "End",
+                        React.createElement("input", { type: "number", min: e.trimStart + MIN_LEN, max: duration || 0, step: 0.1, value: Number(e.trimEnd.toFixed(1)), disabled: !duration, "aria-label": "Trim end seconds", onChange: ev => setEnd(Number(ev.target.value) || 0), style: { width: 72, marginLeft: 6 } })),
+                    React.createElement("span", { className: "me-val" },
+                        fmtFine(len),
+                        " selected")),
+                React.createElement("div", { className: "me-pills", role: "group", "aria-label": "Playback speed", style: { marginTop: 6 } }, [0.5, 0.75, 1, 1.25, 1.5, 2].map(r => React.createElement("button", { key: r, type: "button", role: "radio", "aria-checked": rate === r, onClick: () => setRate(r) },
+                    r,
+                    "\u00D7")))),
+            tab === 'sound' && React.createElement(React.Fragment, null,
+                React.createElement("div", { className: "me-row" },
+                    React.createElement("button", { type: "button", className: "me-mute", "aria-pressed": e.muted, "aria-label": e.muted ? 'Unmute' : 'Mute', onClick: () => patch({ muted: !e.muted }) }, e.muted || vol === 0 ? React.createElement(VolumeX, { size: 18 }) : React.createElement(Volume2, { size: 18 })),
+                    React.createElement("input", { type: "range", min: 0, max: 100, step: 5, value: vol, "aria-label": "Volume", onChange: ev => patch({ volume: Number(ev.target.value) / 100, muted: false }) }),
+                    React.createElement("span", { className: "me-val" },
+                        vol,
+                        "%")),
+                React.createElement("label", { className: "me-row" },
+                    React.createElement("span", { className: "me-lab" }, "Gain"),
+                    React.createElement("input", { type: "range", min: 25, max: 400, step: 5, value: Math.round(e.gain * 100), "aria-label": "Gain", onChange: ev => patch({ gain: Number(ev.target.value) / 100, muted: false }) }),
+                    React.createElement("span", { className: "me-val" },
+                        e.gain.toFixed(2),
+                        "\u00D7"))),
             tab === 'fades' && React.createElement(React.Fragment, null,
                 React.createElement("label", { className: "me-row" },
                     React.createElement("span", { className: "me-lab" }, "In"),
@@ -30658,14 +30671,15 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
                         React.createElement(Download, { size: 16 }),
                         React.createElement("span", null,
                             "Edited clip \u00B7 WAV ",
-                            React.createElement("small", null, "instant, larger file"))),
+                            React.createElement("small", null, "instant"))),
                     React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: exportWebm },
                         React.createElement(Download, { size: 16 }),
                         React.createElement("span", null,
                             "Edited clip \u00B7 compressed ",
                             React.createElement("small", null,
-                                "takes about ",
-                                fmtTime(len)))),
+                                "real-time, slower (~",
+                                fmtTime(len),
+                                ")"))),
                     canBake && !bakeMode && React.createElement("button", { type: "button", role: "menuitem", disabled: !canRender || !duration, onClick: bake },
                         React.createElement(Save, { size: 16 }),
                         React.createElement("span", null,
@@ -30701,7 +30715,7 @@ function MediaClipEditor({ src, kind, title, initial, onSave, onCancel, onReplac
                     "%"),
                 React.createElement("button", { type: "button", onClick: () => jobAbort.current?.abort() }, "Cancel")),
             note && React.createElement("p", { className: `me-note is-${note.kind}`, role: "status" }, note.text),
-            !note && peaksInfo === null && tab === 'sound' && React.createElement("p", { className: "me-note" }, embedded ? 'This file could not be analysed, so normalize and export are off.' : 'Normalize and export need an uploaded clip.'),
+            !note && peaksInfo === null && tab === 'sound' && React.createElement("p", { className: "me-note" }, embedded ? 'This file could not be analysed, so normalize and file export are off. Volume still works.' : 'Normalize and file export need an uploaded clip. Volume, mute and gain work on links.'),
             hint && React.createElement("small", { className: "me-hint" }, hint))), document.body);
 }
 
