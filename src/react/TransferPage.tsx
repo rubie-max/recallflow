@@ -43,7 +43,7 @@ function ExportPanel({items,selectedIds,onDone}:any){
  return <div className="tf-stack">
   <section className="tf-card">
    <h2 className="tf-h">What to export</h2>
-   <div className="tf-scope" role="radiogroup" aria-label="Questions to export">{scopes.map(([id,label,hint,Icon])=>{const wide=id==='all'||id==='selected';return <button key={id} type="button" role="radio" aria-checked={scope===id} data-span={wide?'wide':undefined} data-kind={id} onClick={()=>setScope(id)}><Icon size={wide?22:19}/><span className="tf-scope-copy"><strong>{label}</strong><small>{hint}</small></span></button>;})}</div>
+   <div className="tf-scope" role="radiogroup" aria-label="Questions to export">{scopes.map(([id,label,hint,Icon])=>{const wide=id==='all'||id==='selected';return <button key={id} type="button" role="radio" aria-checked={scope===id} data-span={wide?'wide':undefined} onClick={()=>setScope(id)}><span className="tf-scope-icon" aria-hidden="true"><Icon size={19}/></span><span className="tf-scope-copy"><strong>{label}</strong><small>{hint}</small></span></button>;})}</div>
    {scope==='subject'&&<div className="tf-chips" role="radiogroup" aria-label="Subject">{subjects.map(([s,n])=><button key={s} type="button" role="radio" aria-checked={subject===s} onClick={()=>setSubject(s)}>{s}<b>{n}</b></button>)}</div>}
    {scope==='types'&&<div className="tf-chips" role="group" aria-label="Question types">{questionTypes.map(([id,label]:any)=>{const n=typeCounts.get(id)||0;return n>0&&<button key={id} type="button" aria-pressed={types.includes(id)} onClick={()=>setTypes(t=>t.includes(id)?t.filter(x=>x!==id):[...t,id])}>{types.includes(id)&&<Check size={13}/>}{label}<b>{n}</b></button>;})}</div>}
   </section>
