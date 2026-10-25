@@ -4,16 +4,18 @@ import {ZoomableImage} from './ImageViewer';
 import {SoundPlayer} from './QuestionSound';
 import {VideoPlayer} from './QuestionVideo';
 
-type Props={image?:string;imageAlt?:string;audio?:string;audioEdit?:any;displayName?:string;fileTitle?:string;video?:string;videoEdit?:any;videoClass?:string;preview?:boolean;kind?:'question'|'answer';className?:string;zoomClass?:string;imgClass?:string};
+type Props={image?:string;imageAlt?:string;audio?:string;audioEdit?:any;displayName?:string;fileTitle?:string;video?:string;videoEdit?:any;videoClass?:string;preview?:boolean;kind?:'question'|'answer';className?:string;zoomClass?:string;imgClass?:string;soundBar?:boolean};
 
-export function QuestionMedia({image,imageAlt,audio,audioEdit,displayName,fileTitle,video,videoEdit,videoClass='',preview=false,kind='question',className='',zoomClass='question-media-zoom',imgClass='question-media'}:Props){
+export function QuestionMedia({image,imageAlt,audio,audioEdit,displayName,fileTitle,video,videoEdit,videoClass='',preview=false,kind='question',className='',zoomClass='question-media-zoom',imgClass='question-media',soundBar=false}:Props){
  const [tab,setTab]=useState<'picture'|'video'>('picture');
  const root=useRef<HTMLDivElement>(null);
  const sound=audio?{src:audio,edit:audioEdit,displayName:displayName||(kind==='answer'?'Answer sound':undefined),fileTitle,label:`Play ${kind} sound`}:null;
  const picture=image?<ZoomableImage className={zoomClass} imgClassName={imgClass} src={image} alt={imageAlt||(kind==='answer'?'Answer illustration':'Question illustration')} label={`Enlarge ${kind} image`}/>:null;
  const clip=video?<VideoPlayer src={video} edit={videoEdit} className={`quiz-video ${videoClass}`.trim()} label={`${preview?'Preview':'Play'} ${kind} video`}/>:null;
- const pictureBlock=picture&&sound?<div className="quiz-media-dock is-picture">{picture}<SoundPlayer {...sound} variant="overlay" className="quiz-sound-dock"/></div>:picture;
+ const bar=sound&&soundBar?<SoundPlayer {...sound} displayName={sound.displayName||'Listen'} variant="card" className="quiz-sound quiz-sound-bar"/>:null;
+ const pictureBlock=picture&&sound?bar?<>{bar}{picture}</>:<div className="quiz-media-dock is-picture">{picture}<SoundPlayer {...sound} variant="overlay" className="quiz-sound-dock"/></div>:picture;
  if(!picture&&!sound&&!clip)return null;
+ if(kind==='answer'&&picture&&sound&&!clip)return <div className={`answer-media-card ${className}`.trim()}>{picture}<SoundPlayer {...sound} variant="card" className="answer-media-sound"/></div>;
  if(picture&&clip){
   const showVideo=tab==='video';
   const choose=(next:'picture'|'video')=>{root.current?.querySelectorAll('video,audio').forEach(m=>(m as HTMLMediaElement).pause());setTab(next);};
@@ -30,6 +32,6 @@ export function QuestionMedia({image,imageAlt,audio,audioEdit,displayName,fileTi
   const block=<div className="quiz-media-dock">{clip}<SoundPlayer {...sound} variant="overlay" className="quiz-sound-dock"/></div>;
   return className?<div className={`quiz-media-group ${className}`}>{block}</div>:block;
  }
- const parts=<>{pictureBlock}{!picture&&sound&&<SoundPlayer {...sound} variant={kind==='answer'?'card':'pulse'} className={kind==='answer'?'quiz-sound feedback-sound':'quiz-sound'}/>}{clip}</>;
+ const parts=<>{pictureBlock}{!picture&&sound&&(bar||<SoundPlayer {...sound} variant={kind==='answer'?'card':'pulse'} className={kind==='answer'?'quiz-sound feedback-sound':'quiz-sound'}/>)}{clip}</>;
  return className?<div className={`quiz-media-group ${className}`}>{parts}</div>:parts;
 }

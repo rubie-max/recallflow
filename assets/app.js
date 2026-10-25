@@ -31463,6 +31463,14 @@ function MistakesPanel({ reports, items, onPractice, onEdit }) {
                 React.createElement("span", null, subjects[0] ? `Most mistakes (${subjects[0][1]})` : 'No open mistakes'))),
         ledger.open.length > 0 ? React.createElement(React.Fragment, null,
             React.createElement("p", { className: "report-muted" }, "A question is fixed after you answer it right twice in a row. The dots show how close each one is."),
+            practicable.length > 0 && React.createElement("button", { type: "button", className: "mx-practice-all", onClick: () => onPractice(practicable.map(e => e.last)) },
+                React.createElement(Target, { size: 17 }),
+                "Practice ",
+                practicable.length === ledger.open.length ? 'all' : 'these',
+                " ",
+                practicable.length,
+                " ",
+                practicable.length === 1 ? 'mistake' : 'mistakes'),
             React.createElement("div", { className: "mx-tools" },
                 subjects.length > 1 && React.createElement("div", { className: "mx-chips", role: "radiogroup", "aria-label": "Subject" },
                     React.createElement("button", { type: "button", role: "radio", "aria-checked": !subject, onClick: () => setSubject('') },
@@ -31513,15 +31521,7 @@ function MistakesPanel({ reports, items, onPractice, onEdit }) {
                         React.createElement("button", { type: "button", className: "is-soft", onClick: () => onEdit(item) },
                             React.createElement(Pencil, { size: 13 }),
                             "Edit")) : React.createElement("p", { className: "mx-gone" }, "No longer in your question bank."));
-            })),
-            practicable.length > 0 && React.createElement("button", { type: "button", className: "mx-practice-all", onClick: () => onPractice(practicable.map(e => e.last)) },
-                React.createElement(Target, { size: 17 }),
-                "Practice ",
-                practicable.length === ledger.open.length ? 'all' : 'these',
-                " ",
-                practicable.length,
-                " ",
-                practicable.length === 1 ? 'mistake' : 'mistakes')) : React.createElement("div", { className: "mx-allclear" },
+            }))) : React.createElement("div", { className: "mx-allclear" },
             React.createElement(Trophy, { size: 22 }),
             React.createElement("div", null,
                 React.createElement("strong", null, "All mistakes fixed"),
@@ -32054,6 +32054,18 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
         return React.createElement(DriveShareLegacyNotice, { kind: "sound" });
     const f = selLen > 0 && selLen < 10 ? fmtFine : fmtTime;
     const cur = known ? f(Math.max(0, at - clip.trimStart)) : '0:00', total = known ? f(selLen) : '–:––';
+    if (variant === 'icon')
+        return React.createElement("div", { className: `sp sp-icon ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
+            React.createElement("span", { className: "sp-icon-waves", "aria-hidden": "true" },
+                React.createElement("i", null),
+                React.createElement("i", null),
+                React.createElement("i", null)),
+            React.createElement("button", { type: "button", className: "sp-icon-play", "aria-label": failed ? 'This sound could not play' : playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 24, fill: "currentColor" }) : React.createElement(Play, { size: 24, fill: "currentColor" })),
+            React.createElement("span", { className: "sp-icon-waves is-right", "aria-hidden": "true" },
+                React.createElement("i", null),
+                React.createElement("i", null),
+                React.createElement("i", null)),
+            React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
     if (variant === 'pulse') {
         const ratio = (x) => { const r = bar.current?.getBoundingClientRect(); return r && r.width ? clamp$1((x - r.left) / r.width, 0, 1) : 0; };
         const shown = drag ?? played, secs = (v) => fmtTime(Math.round(v));
@@ -32455,17 +32467,24 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         clip);
 }
 
-function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTitle, video, videoEdit, videoClass = '', preview = false, kind = 'question', className = '', zoomClass = 'question-media-zoom', imgClass = 'question-media' }) {
+function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTitle, video, videoEdit, videoClass = '', preview = false, kind = 'question', className = '', zoomClass = 'question-media-zoom', imgClass = 'question-media', soundBar = false }) {
     const [tab, setTab] = reactExports.useState('picture');
     const root = reactExports.useRef(null);
     const sound = audio ? { src: audio, edit: audioEdit, displayName: displayName || (kind === 'answer' ? 'Answer sound' : undefined), fileTitle, label: `Play ${kind} sound` } : null;
     const picture = image ? React.createElement(ZoomableImage, { className: zoomClass, imgClassName: imgClass, src: image, alt: imageAlt || (kind === 'answer' ? 'Answer illustration' : 'Question illustration'), label: `Enlarge ${kind} image` }) : null;
     const clip = video ? React.createElement(VideoPlayer, { src: video, edit: videoEdit, className: `quiz-video ${videoClass}`.trim(), label: `${preview ? 'Preview' : 'Play'} ${kind} video` }) : null;
-    const pictureBlock = picture && sound ? React.createElement("div", { className: "quiz-media-dock is-picture" },
+    const bar = sound && soundBar ? React.createElement(SoundPlayer, { ...sound, displayName: sound.displayName || 'Listen', variant: "card", className: "quiz-sound quiz-sound-bar" }) : null;
+    const pictureBlock = picture && sound ? bar ? React.createElement(React.Fragment, null,
+        bar,
+        picture) : React.createElement("div", { className: "quiz-media-dock is-picture" },
         picture,
         React.createElement(SoundPlayer, { ...sound, variant: "overlay", className: "quiz-sound-dock" })) : picture;
     if (!picture && !sound && !clip)
         return null;
+    if (kind === 'answer' && picture && sound && !clip)
+        return React.createElement("div", { className: `answer-media-card ${className}`.trim() },
+            picture,
+            React.createElement(SoundPlayer, { ...sound, variant: "card", className: "answer-media-sound" }));
     if (picture && clip) {
         const showVideo = tab === 'video';
         const choose = (next) => { root.current?.querySelectorAll('video,audio').forEach(m => m.pause()); setTab(next); };
@@ -32488,7 +32507,7 @@ function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTit
     }
     const parts = React.createElement(React.Fragment, null,
         pictureBlock,
-        !picture && sound && React.createElement(SoundPlayer, { ...sound, variant: kind === 'answer' ? 'card' : 'pulse', className: kind === 'answer' ? 'quiz-sound feedback-sound' : 'quiz-sound' }),
+        !picture && sound && (bar || React.createElement(SoundPlayer, { ...sound, variant: kind === 'answer' ? 'card' : 'pulse', className: kind === 'answer' ? 'quiz-sound feedback-sound' : 'quiz-sound' })),
         clip);
     return className ? React.createElement("div", { className: `quiz-media-group ${className}` }, parts) : parts;
 }
@@ -34955,21 +34974,29 @@ function IndexPage() {
                                     " ",
                                     current.topic)),
                             React.createElement("span", { className: "split-type-badge" }, typeLabel(current?.type))),
-                        current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.audio, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit }),
+                        current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.type !== "flashcard" ? current.audio : undefined, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit, soundBar: current.type === "fill_blank_options" || current.type === "image_tap" }),
                         current?.type === "flashcard" ? React.createElement("div", { className: "flashcard-stage" },
                             React.createElement("div", { className: "flashcard-speech" },
                                 React.createElement(SpeechButton, { questionId: current.id, role: revealed ? "answer" : "question", text: revealed ? current.answer : current.prompt, label: revealed ? "Read flashcard answer" : "Read flashcard question" })),
-                            React.createElement("button", { className: `${styles$1.flipCard} ${revealed ? styles$1.flipped : ""}`, onClick: () => result === null && setRevealed(v => !v), "aria-label": revealed ? "Show question" : "Reveal answer" },
+                            React.createElement("div", { role: "button", tabIndex: 0, className: `${styles$1.flipCard} ${revealed ? styles$1.flipped : ""}`, onClick: () => result === null && setRevealed(v => !v), onKeyDown: e => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+                                    e.preventDefault();
+                                    if (result === null)
+                                        setRevealed(v => !v);
+                                } }, "aria-label": revealed ? "Show question" : "Reveal answer" },
                                 React.createElement("div", { className: styles$1.flipInner },
                                     React.createElement("div", { className: styles$1.flipFront, "aria-hidden": revealed },
                                         React.createElement("span", null, "QUESTION"),
-                                        React.createElement("strong", null, current.prompt || "What does the picture show?")),
+                                        React.createElement("strong", null, current.prompt || "What does the picture show?"),
+                                        current.audio && React.createElement("div", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
+                                            React.createElement(SoundPlayer, { edit: current.audioEdit, src: current.audio, variant: "icon", label: "Play question sound" }))),
                                     React.createElement("div", { className: styles$1.flipBack, "aria-hidden": !revealed },
                                         React.createElement("span", null, "ANSWER"),
-                                        current.answerImage && React.createElement(ZoomableImage, { className: "flashcard-answer-zoom", imgClassName: "flashcard-answer-media", src: current.answerImage, alt: "Answer illustration", label: "Enlarge answer image", tapImage: false }),
-                                        current.answerVideo && React.createElement(VideoPlayer, { edit: current.answerVideoEdit, src: current.answerVideo, className: "is-compact quiz-video", label: "Play answer video" }),
-                                        current.answerAudio && React.createElement(SoundPlayer, { edit: current.answerAudioEdit, src: current.answerAudio, variant: "card", displayName: "Answer sound", className: "quiz-sound", label: "Play answer sound" }),
+                                        React.createElement("div", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
+                                            current.answerImage && React.createElement(ZoomableImage, { className: "flashcard-answer-zoom", imgClassName: "flashcard-answer-media", src: current.answerImage, alt: "Answer illustration", label: "Enlarge answer image", tapImage: false }),
+                                            current.answerVideo && React.createElement(VideoPlayer, { edit: current.answerVideoEdit, src: current.answerVideo, className: "is-compact quiz-video", label: "Play answer video" })),
                                         React.createElement("strong", null, current.answer),
+                                        current.answerAudio && React.createElement("div", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
+                                            React.createElement(SoundPlayer, { edit: current.answerAudioEdit, src: current.answerAudio, variant: "icon", label: "Play answer sound" })),
                                         React.createElement("small", null, "Tap to see question"))))) : React.createElement("div", { className: "question-with-speech" },
                             React.createElement("h1", null, current?.type === "fill_blank_options" ? "Choose the missing words." : current?.type === "fill_blank" ? (isMultiBlank(current) ? "Fill in the missing words." : "Fill in the missing word.") : current?.type === "cloze" ? "Fill in the missing words." : current?.prompt || (current?.type === "image_tap" ? "Tap the right place on the picture." : "Look at the picture.")),
                             current && React.createElement(SpeechButton, { questionId: current.id, text: current.prompt, spokenText: current.type === "fill_blank" ? current.prompt.replace(/_{2,}/g, "blank") : undefined }))),

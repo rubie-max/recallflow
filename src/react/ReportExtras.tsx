@@ -26,6 +26,7 @@ export function MistakesPanel({reports,items,onPractice,onEdit}:{reports:any[];i
   </div>
   {ledger.open.length>0?<>
    <p className="report-muted">A question is fixed after you answer it right twice in a row. The dots show how close each one is.</p>
+   {practicable.length>0&&<button type="button" className="mx-practice-all" onClick={()=>onPractice(practicable.map(e=>e.last))}><Target size={17}/>Practice {practicable.length===ledger.open.length?'all':'these'} {practicable.length} {practicable.length===1?'mistake':'mistakes'}</button>}
    <div className="mx-tools">
     {subjects.length>1&&<div className="mx-chips" role="radiogroup" aria-label="Subject"><button type="button" role="radio" aria-checked={!subject} onClick={()=>setSubject('')}>All <b>{ledger.open.length}</b></button>{subjects.map(([s,n])=><button key={s} type="button" role="radio" aria-checked={subject===s} onClick={()=>setSubject(s)}>{s} <b>{n}</b></button>)}</div>}
     <label className="mx-sort">Sort<select value={sort} onChange={e=>setSort(e.target.value as any)}><option value="recent">Newest first</option><option value="most">Most missed</option><option value="close">Closest to fixed</option></select></label>
@@ -40,7 +41,6 @@ export function MistakesPanel({reports,items,onPractice,onEdit}:{reports:any[];i
     </div>
     {item?<div className="mx-actions"><button type="button" onClick={()=>onPractice([q])}><Play size={13} fill="currentColor"/>Practice</button><button type="button" className="is-soft" onClick={()=>onEdit(item)}><Pencil size={13}/>Edit</button></div>:<p className="mx-gone">No longer in your question bank.</p>}
    </li>;})}</ul>
-   {practicable.length>0&&<button type="button" className="mx-practice-all" onClick={()=>onPractice(practicable.map(e=>e.last))}><Target size={17}/>Practice {practicable.length===ledger.open.length?'all':'these'} {practicable.length} {practicable.length===1?'mistake':'mistakes'}</button>}
   </>:<div className="mx-allclear"><Trophy size={22}/><div><strong>All mistakes fixed</strong><small>Nothing left to revisit. Nice work.</small></div></div>}
   {ledger.cleared.length>0&&<div className="mx-cleared">
    <button type="button" aria-expanded={showCleared} onClick={()=>setShowCleared(v=>!v)}><CheckCircle2 size={16}/>Fixed questions <b>{ledger.cleared.length}</b><ChevronDown size={16} className="mx-chev"/></button>

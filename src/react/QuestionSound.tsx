@@ -58,7 +58,7 @@ function useLiveLevels(levels:(bars:number)=>number[]|null,bars:number,on:boolea
 }
 
 /* ───────── player ───────── */
-export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media'|'card'|'pulse';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number}){
+export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media'|'card'|'pulse'|'icon';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number}){
  const audio=useRef<HTMLAudioElement>(null),wave=useRef<HTMLDivElement>(null),bar=useRef<HTMLDivElement>(null);
  const [drag,setDrag]=useState<number|null>(null),dragging=useRef(false);
  const pb=useClipPlayback(audio,src,edit,{durationHint,analyser:variant==='overlay'});
@@ -73,6 +73,12 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
  if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
  const f=selLen>0&&selLen<10?fmtFine:fmtTime;
  const cur=known?f(Math.max(0,at-clip.trimStart)):'0:00',total=known?f(selLen):'–:––';
+ if(variant==='icon')return <div className={`sp sp-icon ${className}`.trim()} data-playing={playing||undefined} data-failed={failed||undefined}>
+  <span className="sp-icon-waves" aria-hidden="true"><i/><i/><i/></span>
+  <button type="button" className="sp-icon-play" aria-label={failed?'This sound could not play':playing?'Pause sound':label} onClick={pb.toggle}>{playing?<Pause size={24} fill="currentColor"/>:<Play size={24} fill="currentColor"/>}</button>
+  <span className="sp-icon-waves is-right" aria-hidden="true"><i/><i/><i/></span>
+  <audio key={src} ref={audio} src={playbackSrc(src)} preload="metadata" onError={()=>{}}/>
+ </div>;
  if(variant==='pulse'){
   const ratio=(x:number)=>{const r=bar.current?.getBoundingClientRect();return r&&r.width?clamp((x-r.left)/r.width,0,1):0;};
   const shown=drag??played,secs=(v:number)=>fmtTime(Math.round(v));
