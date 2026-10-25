@@ -33328,26 +33328,33 @@ function InlineImage({ label, hint, image, onPick, onLink, onRemove, onView, onE
         fileInput);
 }
 function PreviewQuestionMedia({ draft }) {
-    const audio = draft.audio;
-    return React.createElement(QuestionMedia, { preview: true, image: draft.type !== 'image_tap' ? draft.image : undefined, audio: audio, audioEdit: draft.audioEdit, displayName: audio ? soundDisplayName(audio, draft.audioName) : undefined, fileTitle: audio ? soundFileTitle(audio, draft.audioName) : undefined, video: draft.video, videoEdit: draft.videoEdit, videoClass: "is-compact" });
+    const audio = draft.type !== 'flashcard' ? draft.audio : undefined;
+    return React.createElement(QuestionMedia, { preview: true, image: draft.type !== 'image_tap' ? draft.image : undefined, audio: audio, audioEdit: draft.audioEdit, displayName: audio ? soundDisplayName(audio, draft.audioName) : undefined, fileTitle: audio ? soundFileTitle(audio, draft.audioName) : undefined, video: draft.video, videoEdit: draft.videoEdit, videoClass: "is-compact", soundBar: draft.type === 'fill_blank_options' || draft.type === 'image_tap' });
 }
 function FlashcardEditorPreview({ draft }) {
     const [showBack, setShowBack] = reactExports.useState(false);
     return React.createElement("div", { className: "editor-question-preview" },
         React.createElement("small", null, "Flashcard \u00B7 tap to flip"),
         React.createElement(PreviewQuestionMedia, { draft: draft }),
-        React.createElement("button", { type: "button", className: "editor-flashcard-preview", "aria-pressed": showBack, "aria-label": showBack ? 'Show flashcard front' : 'Show flashcard back', onClick: () => setShowBack(value => !value) },
+        React.createElement("div", { role: "button", tabIndex: 0, className: "editor-flashcard-preview", "aria-pressed": showBack, "aria-label": showBack ? 'Show flashcard front' : 'Show flashcard back', onClick: () => setShowBack(value => !value), onKeyDown: e => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                setShowBack(value => !value);
+            } } },
             React.createElement("span", { className: `editor-flashcard-preview-inner${showBack ? ' is-back' : ''}` },
                 React.createElement("span", { className: "editor-flashcard-preview-face editor-flashcard-front" },
                     React.createElement("small", null, "FRONT \u00B7 QUESTION"),
                     React.createElement("strong", null, draft.prompt || 'Your question appears here'),
+                    draft.audio && React.createElement("span", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
+                        React.createElement(SoundPlayer, { src: draft.audio, edit: draft.audioEdit, variant: "icon", label: "Preview question sound" })),
                     React.createElement("em", null, "Tap to reveal the answer")),
                 React.createElement("span", { className: "editor-flashcard-preview-face editor-flashcard-back" },
                     React.createElement("small", null, "BACK \u00B7 ANSWER"),
-                    draft.answerImage && React.createElement("img", { className: "editor-flashcard-answer-image", src: draft.answerImage, alt: "" }),
-                    draft.answerVideo && React.createElement(VideoPlayer, { src: draft.answerVideo, edit: draft.answerVideoEdit, className: "is-compact", label: "Preview answer video" }),
-                    draft.answerAudio && React.createElement(SoundPlayer, { src: draft.answerAudio, edit: draft.answerAudioEdit, className: "is-compact", label: "Preview answer sound" }),
+                    React.createElement("span", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
+                        draft.answerImage && React.createElement("img", { className: "editor-flashcard-answer-image", src: draft.answerImage, alt: "" }),
+                        draft.answerVideo && React.createElement(VideoPlayer, { src: draft.answerVideo, edit: draft.answerVideoEdit, className: "is-compact", label: "Preview answer video" })),
                     React.createElement("strong", null, draft.answer || 'Your answer appears here'),
+                    draft.answerAudio && React.createElement("span", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
+                        React.createElement(SoundPlayer, { src: draft.answerAudio, edit: draft.answerAudioEdit, variant: "icon", label: "Preview answer sound" })),
                     React.createElement("em", null, "Tap to see the question")))));
 }
 function AnswerMediaPreview({ draft }) {
@@ -33383,14 +33390,16 @@ function StandardPreview({ draft }) {
         React.createElement("small", null, typeLabel(type)),
         React.createElement(PreviewQuestionMedia, { draft: draft }),
         React.createElement("h3", null, ['fill_blank', 'cloze', 'fill_blank_options'].includes(type) ? (gaps > 1 ? 'Fill in the missing words.' : 'Fill in the missing word.') : draft.prompt || 'Your question appears here'),
-        ['single_choice', 'true_false', 'multi_select'].includes(type) && React.createElement("div", { className: "editor-preview-options" },
+        ['single_choice', 'true_false', 'multi_select'].includes(type) && React.createElement("div", { className: `editor-preview-options${type === 'true_false' ? ' is-true-false' : ''}` },
             options.map((x, i) => { const picked = type === 'multi_select' ? value.includes(x) : value === x, isCorrect = type === 'multi_select' ? answerList.includes(x) : draft.answer === x; return React.createElement("div", { className: "editor-preview-option-wrap", key: i },
-                React.createElement("button", { type: "button", className: `editor-preview-option${picked ? ' is-selected' : ''}${revealed && isCorrect ? ' is-correct' : ''}${revealed && picked && !isCorrect ? ' is-wrong' : ''}`, "aria-pressed": picked, onClick: () => !revealed && setValue((old) => type === 'multi_select' ? (old.includes(x) ? old.filter((v) => v !== x) : [...old, x]) : x) },
+                React.createElement("button", { type: "button", className: `editor-preview-option${picked ? ' is-selected' : ''}${revealed && isCorrect ? ' is-correct' : ''}${revealed && picked && !isCorrect ? ' is-wrong' : ''}`, "data-value": type === 'true_false' ? x.toLowerCase() : undefined, "aria-pressed": picked, onClick: () => !revealed && setValue((old) => type === 'multi_select' ? (old.includes(x) ? old.filter((v) => v !== x) : [...old, x]) : x) }, type === 'true_false' ? React.createElement(React.Fragment, null,
+                    React.createElement("span", { className: "editor-tf-icon", "aria-hidden": "true" }, x === 'True' ? React.createElement(Check, { size: 24 }) : React.createElement(X, { size: 24 })),
+                    React.createElement("span", null, x)) : React.createElement(React.Fragment, null,
                     item.optionImages?.[x] && React.createElement("img", { src: item.optionImages[x], alt: "" }),
                     React.createElement("span", null,
                         String.fromCharCode(65 + i),
-                        isPictureLabel(x) && (item.optionImages?.[x] || item.optionMedia?.[x]) ? '' : ` · ${x}`)),
-                React.createElement(ItemExtras, { item: item, text: x })); }),
+                        isPictureLabel(x) && (item.optionImages?.[x] || item.optionMedia?.[x]) ? '' : ` · ${x}`))),
+                type !== 'true_false' && React.createElement(ItemExtras, { item: item, text: x })); }),
             check),
         ['fill_blank', 'cloze'].includes(type) && React.createElement(InlineBlankAnswer, { key: round, item: item, value: value, onChange: setValue, disabled: revealed, onGrade: grade }),
         type === 'fill_blank_options' && (item.blanks?.length ? React.createElement(WordBankAnswer, { key: round, item: item, value: value, onChange: setValue, disabled: revealed, onGrade: grade }) : React.createElement("p", { className: "extra-note" }, "Add ___ to the sentence to create a gap.")),
@@ -35415,7 +35424,7 @@ function IndexPage() {
                 React.createElement("div", { className: styles$1.pageTitle },
                     React.createElement("div", null,
                         React.createElement("h1", null, "Reports"))),
-                React.createElement("div", { className: "reports-view-tabs", role: "tablist", "aria-label": "Report sections" }, [["overview", "Overview", LayoutDashboard], ["history", "History", History], ["progress", "Progress", ChartNoAxesColumnIncreasing], ["memory", "Memory", Brain], ["mistakes", "Mistakes", CircleX], ["activity", "Activity", CalendarDays], ["insights", "Insights", Lightbulb]].map(([id, label, Icon]) => React.createElement("button", { key: id, role: "tab", "aria-selected": reportView === id, onClick: () => setReportView(id) },
+                React.createElement("div", { className: "reports-view-tabs", role: "tablist", "aria-label": "Report sections" }, [["overview", "Overview", LayoutDashboard], ["history", "History", History], ["progress", "Progress", ChartNoAxesColumnIncreasing], ["memory", "Memory", Brain], ["mistakes", "Mistakes", CircleX], ["activity", "Activity", CalendarDays], ["insights", "Insights", Lightbulb]].map(([id, label, Icon]) => React.createElement("button", { key: id, role: "tab", "aria-selected": reportView === id, onClick: e => { setReportView(id); e.currentTarget.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" }); } },
                     React.createElement(Icon, { size: 17, "aria-hidden": "true" }),
                     React.createElement("span", null, label)))),
                 !!reportHistory.length && ["overview", "history", "progress", "insights"].includes(reportView) && React.createElement(RangePicker, { value: reportRange, onChange: setReportRange }),
