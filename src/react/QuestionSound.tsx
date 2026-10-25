@@ -91,14 +91,14 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
     <button type="button" className="sp-pulse-play" aria-label={playing?'Pause sound':label} onClick={pb.toggle}>{playing?<Pause size={20} fill="currentColor"/>:<Play size={20} fill="currentColor"/>}</button>
    </div>
    <div className="sp-pulse-body">
-    <div className="sp-pulse-top"><span className="sp-pulse-title">{failed?'This sound could not play':'Listen carefully'}</span><span className="sp-pulse-time">{nowAt} / {len}</span></div>
+    <div className="sp-pulse-top"><span className="sp-pulse-title">{failed?'This sound could not play':'Listen carefully'}</span></div>
     <div ref={bar} className="sp-pulse-bar" role="slider" aria-label="Seek" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(shown*100)} tabIndex={known?0:-1} data-dragging={drag!==null||undefined}
      onPointerDown={e=>{if(!known)return;e.preventDefault();try{e.currentTarget.setPointerCapture(e.pointerId);}catch{}dragging.current=true;setDrag(ratio(e.clientX));}}
      onPointerMove={e=>{if(dragging.current)setDrag(ratio(e.clientX));}} onPointerUp={end} onPointerCancel={()=>{dragging.current=false;setDrag(null);}}
      onKeyDown={e=>{if(e.key==='ArrowLeft'){e.preventDefault();pb.seek(at-1);}else if(e.key==='ArrowRight'){e.preventDefault();pb.seek(at+1);}else if(e.key===' '){e.preventDefault();pb.toggle();}}}>
      <i style={{width:`${shown*100}%`}}/><b style={{left:`${shown*100}%`}}/>
     </div>
-    <div className="sp-pulse-actions"><button type="button" className="sp-pulse-replay" disabled={!known} onClick={replay}><RotateCcw size={13}/>Replay</button></div>
+    <div className="sp-pulse-actions"><button type="button" className="sp-pulse-replay" disabled={!known} onClick={replay}><RotateCcw size={13}/>Replay</button><span className="sp-pulse-time">{nowAt} / {len}</span></div>
    </div>
    <audio key={src} ref={audio} src={playbackSrc(src)} preload="metadata" onError={()=>{}}/>
   </div>;

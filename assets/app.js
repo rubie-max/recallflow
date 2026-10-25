@@ -31898,14 +31898,19 @@ function ImageTapAnswer({ item, disabled, onGrade }) {
                         spots.length,
                         " named"))),
         React.createElement(TapCanvas, { image: item.image, alt: item.imageAlt || 'Question picture', boardRef: board, zoomed: zoomed, onZoom: () => setZoomed(z => !z), locked: disabled || mode === 'name', role: mode === 'find' ? 'button' : undefined, tabIndex: disabled || mode === 'name' ? -1 : 0, "aria-label": mode === 'find' ? `Picture. Tap to place your pin${ask && !single ? ` for ${ask}` : ''}; arrow keys move it.` : 'Picture with numbered pins', onClick: place, onKeyDown: key },
-            disabled && spots.map((s, i) => React.createElement(TapTarget, { key: 't' + i, spot: s, state: results[i] ? 'correct' : 'wrong', label: !single || mode === 'name' ? s.label : undefined })),
-            mode === 'find' && pins.map((p, i) => p && React.createElement("span", { key: 'p' + i, className: "tap-pin", "data-current": !disabled && !single && i === cur || undefined, "data-state": disabled ? (results[i] ? 'correct' : 'wrong') : undefined, style: { left: `${p.x * 100}%`, top: `${p.y * 100}%` }, "aria-hidden": "true" }, !single && !(disabled && results[i]) && React.createElement("em", null, spots[i].label))),
+            disabled && mode === 'find' && spots.map((s, i) => React.createElement(TapTarget, { key: 't' + i, spot: s, state: results[i] ? 'correct' : 'wrong', label: single ? undefined : String(i + 1) })),
+            mode === 'find' && pins.map((p, i) => p && !(disabled && results[i]) && React.createElement("span", { key: 'p' + i, className: "tap-pin", "data-current": !disabled && !single && i === cur || undefined, "data-state": disabled ? 'wrong' : undefined, style: { left: `${p.x * 100}%`, top: `${p.y * 100}%` }, "aria-hidden": "true" }, !single && !disabled && React.createElement("em", null, spots[i].label))),
             mode === 'name' && spots.map((s, i) => React.createElement("button", { type: "button", key: 'n' + i, className: "tap-marker", "aria-pressed": !disabled && cur === i, "data-state": disabled ? (results[i] ? 'correct' : 'wrong') : names[i] ? 'named' : undefined, disabled: disabled, "aria-label": `Pin ${i + 1}${names[i] ? `: ${names[i]}` : ''}`, style: { left: `${s.x * 100}%`, top: `${s.y * 100}%` }, onClick: e => { e.stopPropagation(); setCur(i); } },
                 React.createElement("span", null, i + 1),
-                (names[i] || disabled) && React.createElement("em", null, disabled && !results[i] ? React.createElement(React.Fragment, null,
-                    React.createElement("s", null, names[i] || '—'),
-                    " ",
-                    s.label) : names[i])))),
+                names[i] && !disabled && React.createElement("em", null, names[i])))),
+        disabled && !single && React.createElement("ol", { className: "tap-review", "aria-label": "Your answers" }, spots.map((s, i) => React.createElement("li", { key: i, "data-state": results[i] ? 'correct' : 'wrong' },
+            React.createElement("b", null, i + 1),
+            React.createElement("span", null,
+                s.label,
+                !results[i] && React.createElement("small", null, mode === 'name' ? (names[i] ? React.createElement(React.Fragment, null,
+                    "You said ",
+                    React.createElement("s", null, names[i])) : 'Not named') : 'Missed')),
+            results[i] ? React.createElement(Check, { size: 16, "aria-label": "Right" }) : React.createElement(X, { size: 16, "aria-label": "Wrong" })))),
         !disabled && !single && mode === 'find' && React.createElement("div", { className: "tap-queue", role: "group", "aria-label": "Places to find" }, order.map(i => React.createElement("button", { type: "button", key: i, "aria-pressed": cur === i, "data-done": !!pins[i] || undefined, onClick: () => setCur(i) },
             pins[i] && React.createElement(Check, { size: 13, "aria-hidden": "true" }),
             spots[i].label))),
@@ -31916,7 +31921,7 @@ function ImageTapAnswer({ item, disabled, onGrade }) {
             right === spots.length ? React.createElement(Check, { size: 18 }) : React.createElement(X, { size: 18 }),
             React.createElement("div", null,
                 React.createElement("strong", null, single ? (right ? 'You found it' : 'Not quite') : right === spots.length ? (mode === 'name' ? 'All named' : 'All found') : `${right} of ${spots.length} right`),
-                React.createElement("span", null, single ? (right ? 'Right on the spot.' : 'The ringed spot is the right place.') : right === spots.length ? 'Every place is right.' : 'Green rings are right, red ones were missed.'))),
+                React.createElement("span", null, single ? (right ? 'Right on the spot.' : 'The ringed spot is the right place.') : right === spots.length ? 'Every place is right.' : mode === 'name' ? 'Numbers match the list below.' : 'Rings show the right places; red dots are your misses.'))),
         !disabled && React.createElement(Button, { className: "split-submit", disabled: done < spots.length, onClick: () => onGrade(given) }, "Check"));
 }
 function SliderAnswer({ item, disabled, onGrade }) {
@@ -31924,7 +31929,7 @@ function SliderAnswer({ item, disabled, onGrade }) {
     const decimals = Math.min(6, (String(step).split('.')[1] || '').length), snap = (v) => Number(clamp$2(min + Math.round((v - min) / step) * step, min, max).toFixed(decimals));
     const [value, setValue] = reactExports.useState(null), shown = value ?? snap((min + max) / 2);
     const answer = Number(item.answer), tolerance = Number(item.numericTolerance) || 0, span = max - min || 1;
-    const pct = (v) => clamp$2((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    const pct = (v) => clamp$2((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals, useGrouping: Math.abs(v) >= 10000 });
     const right = disabled && value !== null && Math.abs(value - answer) <= tolerance + 1e-9;
     const unit = item.unit ? React.createElement("small", null, item.unit) : null;
     return React.createElement("div", { className: "extra-answer slider-answer" },
@@ -32082,11 +32087,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
                 React.createElement("button", { type: "button", className: "sp-pulse-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 20, fill: "currentColor" }) : React.createElement(Play, { size: 20, fill: "currentColor" }))),
             React.createElement("div", { className: "sp-pulse-body" },
                 React.createElement("div", { className: "sp-pulse-top" },
-                    React.createElement("span", { className: "sp-pulse-title" }, failed ? 'This sound could not play' : 'Listen carefully'),
-                    React.createElement("span", { className: "sp-pulse-time" },
-                        nowAt,
-                        " / ",
-                        len)),
+                    React.createElement("span", { className: "sp-pulse-title" }, failed ? 'This sound could not play' : 'Listen carefully')),
                 React.createElement("div", { ref: bar, className: "sp-pulse-bar", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(shown * 100), tabIndex: known ? 0 : -1, "data-dragging": drag !== null || undefined, onPointerDown: e => { if (!known)
                         return; e.preventDefault(); try {
                         e.currentTarget.setPointerCapture(e.pointerId);
@@ -32109,7 +32110,11 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
                 React.createElement("div", { className: "sp-pulse-actions" },
                     React.createElement("button", { type: "button", className: "sp-pulse-replay", disabled: !known, onClick: replay },
                         React.createElement(RotateCcw, { size: 13 }),
-                        "Replay"))),
+                        "Replay"),
+                    React.createElement("span", { className: "sp-pulse-time" },
+                        nowAt,
+                        " / ",
+                        len))),
             React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
     }
     if (variant === 'card' || variant === 'media') {
@@ -33329,7 +33334,7 @@ function InlineImage({ label, hint, image, onPick, onLink, onRemove, onView, onE
 }
 function PreviewQuestionMedia({ draft }) {
     const audio = draft.type !== 'flashcard' ? draft.audio : undefined;
-    return React.createElement(QuestionMedia, { preview: true, image: draft.type !== 'image_tap' ? draft.image : undefined, audio: audio, audioEdit: draft.audioEdit, displayName: audio ? soundDisplayName(audio, draft.audioName) : undefined, fileTitle: audio ? soundFileTitle(audio, draft.audioName) : undefined, video: draft.video, videoEdit: draft.videoEdit, videoClass: "is-compact", soundBar: draft.type === 'fill_blank_options' || draft.type === 'image_tap' });
+    return React.createElement(QuestionMedia, { preview: true, image: draft.type !== 'image_tap' && draft.type !== 'flashcard' ? draft.image : undefined, audio: audio, audioEdit: draft.audioEdit, displayName: audio ? soundDisplayName(audio, draft.audioName) : undefined, fileTitle: audio ? soundFileTitle(audio, draft.audioName) : undefined, video: draft.video, videoEdit: draft.videoEdit, videoClass: "is-compact", soundBar: draft.type === 'fill_blank_options' || draft.type === 'image_tap' });
 }
 function FlashcardEditorPreview({ draft }) {
     const [showBack, setShowBack] = reactExports.useState(false);
@@ -33343,6 +33348,7 @@ function FlashcardEditorPreview({ draft }) {
             React.createElement("span", { className: `editor-flashcard-preview-inner${showBack ? ' is-back' : ''}` },
                 React.createElement("span", { className: "editor-flashcard-preview-face editor-flashcard-front" },
                     React.createElement("small", null, "FRONT \u00B7 QUESTION"),
+                    draft.image && React.createElement("img", { className: "editor-flashcard-question-image", src: draft.image, alt: "" }),
                     React.createElement("strong", null, draft.prompt || 'Your question appears here'),
                     draft.audio && React.createElement("span", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
                         React.createElement(SoundPlayer, { src: draft.audio, edit: draft.audioEdit, variant: "icon", label: "Preview question sound" })),
@@ -34983,7 +34989,7 @@ function IndexPage() {
                                     " ",
                                     current.topic)),
                             React.createElement("span", { className: "split-type-badge" }, typeLabel(current?.type))),
-                        current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.type !== "flashcard" ? current.audio : undefined, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit, soundBar: current.type === "fill_blank_options" || current.type === "image_tap" }),
+                        current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" && current.type !== "flashcard" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.type !== "flashcard" ? current.audio : undefined, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit, soundBar: current.type === "fill_blank_options" || current.type === "image_tap" }),
                         current?.type === "flashcard" ? React.createElement("div", { className: "flashcard-stage" },
                             React.createElement("div", { className: "flashcard-speech" },
                                 React.createElement(SpeechButton, { questionId: current.id, role: revealed ? "answer" : "question", text: revealed ? current.answer : current.prompt, label: revealed ? "Read flashcard answer" : "Read flashcard question" })),
@@ -34995,6 +35001,8 @@ function IndexPage() {
                                 React.createElement("div", { className: styles$1.flipInner },
                                     React.createElement("div", { className: styles$1.flipFront, "aria-hidden": revealed },
                                         React.createElement("span", null, "QUESTION"),
+                                        current.image && React.createElement("div", { className: "flashcard-media flashcard-question-picture" },
+                                            React.createElement(ZoomableImage, { className: "flashcard-question-zoom", imgClassName: "flashcard-question-media", src: current.image, alt: current.imageAlt || "Question picture", label: "Enlarge question image", tapImage: false })),
                                         React.createElement("strong", null, current.prompt || "What does the picture show?"),
                                         current.audio && React.createElement("div", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
                                             React.createElement(SoundPlayer, { edit: current.audioEdit, src: current.audio, variant: "icon", label: "Play question sound" }))),
@@ -35030,7 +35038,7 @@ function IndexPage() {
                                     isPictureLabel(o) && current.optionImages?.[o] ? React.createElement("span", { className: "visually-hidden" }, o) : o),
                                 React.createElement(ItemExtras, { item: current, text: o }),
                                 React.createElement("span", { className: "split-choice-indicator", "aria-hidden": "true" }))),
-                            !revealed && React.createElement(Button, { className: "split-submit", disabled: !selected.length, onClick: () => grade() }, "Check selections")) : current?.type === "true_false" ? React.createElement("div", { className: "tf-buttons", role: "group", "aria-label": "Choose an answer" }, ["False", "True"].map(o => { const picked = revealed && answer === o, showAnswer = revealed && result === false && !picked && gradeQuestion(current, o), state = !revealed ? undefined : picked ? (result ? "correct" : "wrong") : "faded"; return React.createElement("button", { key: o, type: "button", className: "tf-button", "data-value": o.toLowerCase(), "data-state": state, disabled: revealed, "aria-label": picked ? `${o}, your answer, ${result ? "correct" : "wrong"}` : showAnswer ? `${o}, correct answer` : o, onClick: () => { setAnswer(o); grade(undefined, o); } },
+                            !revealed && React.createElement(Button, { className: "split-submit", disabled: !selected.length, onClick: () => grade() }, "Check selections")) : current?.type === "true_false" ? React.createElement("div", { className: "tf-buttons", role: "group", "aria-label": "Choose an answer" }, ["True", "False"].map(o => { const picked = revealed && answer === o, showAnswer = revealed && result === false && !picked && gradeQuestion(current, o), state = !revealed ? undefined : picked ? (result ? "correct" : "wrong") : "faded"; return React.createElement("button", { key: o, type: "button", className: "tf-button", "data-value": o.toLowerCase(), "data-state": state, disabled: revealed, "aria-label": picked ? `${o}, your answer, ${result ? "correct" : "wrong"}` : showAnswer ? `${o}, correct answer` : o, onClick: () => { setAnswer(o); grade(undefined, o); } },
                             React.createElement("span", { className: "tf-circle" }, o === "True" ? React.createElement(Check, { size: 32, strokeWidth: 3 }) : React.createElement(X, { size: 32, strokeWidth: 3 })),
                             picked ? React.createElement("span", { className: "tf-chip", "data-kind": result ? "correct" : "wrong" },
                                 result ? React.createElement(Check, { size: 12, strokeWidth: 3.6 }) : React.createElement(X, { size: 12, strokeWidth: 3.6 }),

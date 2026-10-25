@@ -1892,6 +1892,8 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 /* RecallFlow audio/video editor UI — dark theme, mobile-first */
 :root,.dark{
 --background:#17181d;--foreground:#f2f0ea;--surface:#22242b;--card:#1e2026;
+--surface-foreground:#f2f0ea;--card-foreground:#f2f0ea;--sidebar:#202229;--sidebar-foreground:#f2f0ea;--popup:#23252c;--popup-foreground:#f2f0ea;
+--secondary:#2b2d35;--secondary-foreground:#f2f0ea;--accent:#302f52;--accent-foreground:#d8d5ff;
 --primary:#8b84ff;--primary-foreground:#17181d;--muted:#292b32;--muted-foreground:#a7a8af;
 --error:#e77d79;--ok:#7fd8b0;--warn:#f0b86e;--border:#383a43;--shadow-lg:0 16px 40px #00000059;
 --font-family-base:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -2823,6 +2825,7 @@ label.split-choice:has(.choice-media)>.im-extras .im-sound[data-playing]{backgro
 .quiz-answer-card[data-type=true_false] .tf-button[data-value=true] .tf-circle{background:color-mix(in srgb,var(--success) 18%,transparent)}
 .quiz-answer-card[data-type=true_false] .tf-button[data-value=false] .tf-circle{background:color-mix(in srgb,var(--error) 18%,transparent)}
 .quiz-answer-card[data-type=true_false] .tf-circle svg{width:24px;height:24px}
+.quiz-answer-card[data-type=true_false] .tf-label{margin:0;color:var(--foreground);font-size:14px}
 .quiz-answer-card[data-type=true_false] .tf-button:active:not(:disabled){transform:scale(.97)}
 .quiz-answer-card[data-type=true_false] .tf-button:active:not(:disabled) .tf-circle{transform:none}
 .quiz-answer-card[data-type=true_false] .tf-button:focus-visible{border-color:var(--primary);box-shadow:var(--shadow-focus)}
@@ -3402,3 +3405,47 @@ section[class*=reportsPage]>*,.report-content-card>*{min-width:0;max-width:100%}
 .editor-tf-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:50%}
 [data-value=true] .editor-tf-icon{background:color-mix(in srgb,var(--success) 18%,transparent);color:var(--success)}
 [data-value=false] .editor-tf-icon{background:color-mix(in srgb,var(--error) 18%,transparent);color:var(--error)}
+
+/* Sound-only player: title gets the full row, time sits beside Replay */
+.sp.sp-pulse{gap:28px;padding-left:30px}
+.sp-pulse-actions{align-items:center;justify-content:space-between}
+
+/* Flashcard question picture inside the card */
+.flashcard-question-picture{width:100%}
+.flashcard-question-zoom{position:relative;display:block!important;width:100%!important;margin:0!important;overflow:hidden;border-radius:14px;isolation:isolate;background:var(--muted)}
+.flashcard-question-zoom::before{content:"";position:absolute;inset:-12%;z-index:0;background:var(--zi-src) center/cover no-repeat;filter:blur(18px) brightness(.75) saturate(1.1);pointer-events:none}
+.flashcard-question-zoom>img{position:relative;z-index:1;display:block;width:100%!important;height:150px!important;object-fit:contain!important;background:transparent!important;border-radius:0!important;margin:0!important}
+.flashcard-question-zoom>.zoomable-image-btn{z-index:2}
+[class*=flipFront]:has(.flashcard-question-picture)>strong{font-size:17px;line-height:1.35}
+.editor-flashcard-question-image{display:block;width:100%;max-height:130px;object-fit:contain;border-radius:10px}
+
+/* Flashcard grade buttons: solid, with a fade so the card never shows through */
+@media(max-width:819px){
+ .split-flash-actions>[class*=two]::before{content:"";position:absolute;z-index:-1;left:-16px;right:-16px;top:-24px;bottom:calc(-16px - env(safe-area-inset-bottom));background:linear-gradient(to bottom,transparent,var(--background) 40%);pointer-events:none}
+ .split-flash-actions>[class*=two]>button[class*=outline]{background:var(--card)}
+ .split-feedback .feedback-media{width:calc(100% + 44px)!important;max-width:none!important;margin-left:-44px!important}
+}
+
+/* Feedback panel media: full width, height kept small */
+.split-feedback :not(.answer-media-card)>.feedback-answer-zoom{display:block!important;width:100%!important;margin:0!important}
+.split-feedback :not(.answer-media-card)>.feedback-answer-zoom>img{width:100%!important;height:128px!important;aspect-ratio:auto!important;object-fit:contain!important}
+.split-feedback .feedback-media .quiz-video{width:200px!important;max-width:100%!important;margin:0 auto!important}
+.answer-media-sound .sp-card-name{display:none}
+.answer-media-sound .sp-card-top{justify-content:flex-end}
+
+/* Picture answer tiles: zoom button on the picture corner, clear of the label */
+label.split-choice:has(.choice-media) .choice-media-zoom{position:relative!important}
+label.split-choice:has(.choice-media) .zoomable-image-btn.zoomable-image-btn{top:6px!important;right:6px!important;bottom:auto!important;left:auto!important;width:30px!important;height:30px!important;border:0!important;border-radius:9px!important;background:rgba(12,12,16,.72)!important;color:#fff!important}
+label.split-choice:has(.choice-media) .split-choice-text>span:not(.zoomable-image):not(.visually-hidden){padding-right:0}
+
+/* Tap the picture results: numbers on the picture, names in a list */
+.tap-target em{top:50%;margin:0;transform:translate(-50%,-50%);padding:0;background:none;font-size:12px;font-weight:800;text-shadow:0 1px 3px #000}
+.tap-review{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:6px}
+.tap-review li{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:var(--surface);font-size:14px;font-weight:600}
+.tap-review li>b{display:grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;background:var(--success);color:#fff;font-size:12px}
+.tap-review li[data-state=wrong]>b{background:var(--error)}
+.tap-review li>span{flex:1;min-width:0;display:grid;gap:1px;overflow-wrap:anywhere}
+.tap-review small{font-size:12px;font-weight:500;color:var(--muted-foreground)}
+.tap-review s{color:var(--error)}
+.tap-review li>svg{flex:none;color:var(--success)}
+.tap-review li[data-state=wrong]>svg{color:var(--error)}
