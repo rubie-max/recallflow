@@ -1042,3 +1042,48 @@ section[class*=reportsPage]>div[class*=pageTitle]{margin-bottom:0!important}
 .fc-speech .speech-control{flex-direction:row-reverse}
 .fc-face>small{text-align:center;margin-top:auto}
 [class*=flipCard]:not([class*=flipped]) [class*=flipBack] :is(.fc-tabs,.fc-window,.fc-speech),[class*=flipped] [class*=flipFront] :is(.fc-tabs,.fc-window,.fc-speech){pointer-events:none}
+
+/* Daily reminder settings. */
+.settings-reminder .settings-switch-list{margin-top:2px}
+.settings-reminder-time{display:grid;gap:10px}
+.settings-reminder-time>label{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.settings-reminder-time>label .settings-label{margin:0!important}
+.settings-reminder-time input[type=time]{min-height:44px;min-width:132px;padding:0 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--foreground);font:650 16px var(--font-family-base);color-scheme:light}
+body.dark .settings-reminder-time input[type=time]{color-scheme:dark}
+.settings-reminder-time input[type=time]:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.settings-reminder-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.settings-reminder-quick button,.settings-reminder-days button{border:1px solid var(--border);background:var(--surface);color:var(--muted-foreground);font-family:var(--font-family-base);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.settings-reminder-quick button{display:grid;gap:2px;justify-items:center;min-width:0;min-height:48px;padding:6px 2px;border-radius:12px;font-size:12px;font-weight:650}
+.settings-reminder-quick small{font-size:10.5px;font-weight:500;opacity:.8}
+.settings-reminder-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.settings-reminder-days button{aspect-ratio:1;max-height:44px;min-width:0;border-radius:50%;font-size:13px;font-weight:700}
+.settings-reminder-quick button[aria-pressed=true],.settings-reminder-days button[aria-pressed=true]{background:color-mix(in srgb,var(--primary) 18%,var(--card));border-color:color-mix(in srgb,var(--primary) 45%,transparent);color:var(--primary)}
+.settings-reminder-quick button:active,.settings-reminder-days button:active{transform:scale(.96)}
+.settings-reminder-test.settings-reminder-test{width:100%;justify-self:stretch;justify-content:center;min-height:42px;border-radius:12px;font-size:13.5px}
+.settings-reminder-status{display:flex;align-items:flex-start;gap:9px;margin:0;padding:11px 12px;border-radius:12px;font-size:12.5px;line-height:1.5;color:var(--foreground)}
+.settings-reminder-status>svg{flex:0 0 auto;margin-top:2px}
+.settings-reminder-status[data-tone=ok]{background:color-mix(in srgb,var(--success) 12%,var(--card))}
+.settings-reminder-status[data-tone=ok]>svg{color:var(--success)}
+.settings-reminder-status[data-tone=warn]{background:color-mix(in srgb,var(--warning) 12%,var(--card))}
+.settings-reminder-status[data-tone=warn]>svg{color:var(--warning)}
+.settings-reminder-status[data-tone=error]{background:color-mix(in srgb,var(--error) 12%,var(--card))}
+.settings-reminder-status[data-tone=error]>svg{color:var(--error)}
+
+/* Undo after delete. */
+.rf-undo-bar{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));z-index:60;transform:translateX(-50%);display:flex;align-items:center;gap:10px;width:min(440px,calc(100% - 24px));box-sizing:border-box;padding:8px 8px 8px 14px;border-radius:14px;background:var(--foreground);color:var(--background);box-shadow:0 10px 30px #0004;font-size:14px;font-weight:550;animation:rf-undo-in .2s ease-out}
+.rf-undo-bar>span{flex:1;min-width:0}
+.rf-undo-bar>button{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 12px;border:0;border-radius:10px;background:color-mix(in srgb,var(--background) 14%,transparent);color:inherit;font:700 14px var(--font-family-base);cursor:pointer}
+.rf-undo-bar>button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+@keyframes rf-undo-in{from{opacity:0;transform:translate(-50%,8px)}}
+.rf-reduce-motion .rf-undo-bar{animation:none}
+@media(min-width:820px){.rf-undo-bar{bottom:24px}}
+
+/* Countdown in light mode: same layout, paper background. */
+body:not(.dark) .quiz-countdown-focus{background:var(--background);color:var(--foreground)}
+body:not(.dark) .quiz-countdown-focus:before{background:radial-gradient(ellipse 260px 300px at 50% 49%,color-mix(in srgb,var(--primary) 20%,transparent),color-mix(in srgb,var(--primary) 6%,transparent) 55%,transparent 85%)}
+body:not(.dark) .quiz-countdown-focus h1,body:not(.dark) .quiz-countdown-focus strong{color:var(--foreground)}
+body:not(.dark) .quiz-countdown-focus strong{text-shadow:none}
+body:not(.dark) .countdown-brand>svg{color:var(--primary)}
+body:not(.dark) .quiz-countdown-focus header button,body:not(.dark) .quiz-countdown-focus .countdown-total{color:var(--muted-foreground)}
+body:not(.dark) .quiz-countdown-focus .countdown-motto{color:var(--accent-foreground)}
+body:not(.dark) .quiz-countdown-focus header button:focus-visible{outline-color:var(--primary)}

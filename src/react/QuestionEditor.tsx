@@ -10,7 +10,7 @@ import {ExtraAnswer} from './ExtraAnswers';
 import {ListRecallEditor,CategorizeEditor,HighlightEditor,ImageTapEditor,SliderEditor} from './ExtraEditors';
 import {SoundField,SoundPlayer,soundDisplayName,soundFileTitle} from './QuestionSound';
 import {VideoField,VideoPlayer} from './QuestionVideo';
-import {QuestionMedia} from './QuestionMedia';
+import {QuestionMedia,AnswerMediaToggle} from './QuestionMedia';
 import {Button} from './components/Button';
 import {SpeechButton} from './KokoroPanel';
 import {storeImage} from '../sync.js';
@@ -131,7 +131,7 @@ function FlashcardEditorPreview({draft}:any){
 }
 
 function AnswerMediaPreview({draft}:any){
- return <QuestionMedia preview kind="answer" className="feedback-media" zoomClass="feedback-answer-zoom" imgClass="feedback-answer-media" image={draft.answerImage} audio={draft.answerAudio} audioEdit={draft.answerAudioEdit} video={draft.answerVideo} videoEdit={draft.answerVideoEdit} videoClass="is-compact"/>;
+ return <AnswerMediaToggle image={draft.answerImage} imageAlt={draft.imageAlt} audio={draft.answerAudio} audioEdit={draft.answerAudioEdit} video={draft.answerVideo} videoEdit={draft.answerVideoEdit}/>;
 }
 
 // The preview uses the same answer components as the quiz, so pictures, sounds, videos and blanks look exactly as learners see them.

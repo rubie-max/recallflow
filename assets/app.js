@@ -17476,7 +17476,7 @@ const createLucideIcon = (iconName, iconNode) => {
  */
 
 
-const __iconNode$29 = [
+const __iconNode$2b = [
   [
     "path",
     {
@@ -17485,7 +17485,37 @@ const __iconNode$29 = [
     }
   ]
 ];
-const Activity = createLucideIcon("Activity", __iconNode$29);
+const Activity = createLucideIcon("Activity", __iconNode$2b);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$2a = [
+  ["path", { d: "M12 5v14", key: "s699le" }],
+  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+];
+const ArrowDown = createLucideIcon("ArrowDown", __iconNode$2a);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$29 = [
+  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
+  ["path", { d: "M4 7h16", key: "6tx8e3" }],
+  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
+  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+];
+const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$29);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17496,10 +17526,11 @@ const Activity = createLucideIcon("Activity", __iconNode$29);
 
 
 const __iconNode$28 = [
-  ["path", { d: "M12 5v14", key: "s699le" }],
-  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+  ["path", { d: "M3 19V5", key: "rwsyhb" }],
+  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
+  ["path", { d: "M7 12h14", key: "uoisry" }]
 ];
-const ArrowDown = createLucideIcon("ArrowDown", __iconNode$28);
+const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$28);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17510,12 +17541,10 @@ const ArrowDown = createLucideIcon("ArrowDown", __iconNode$28);
 
 
 const __iconNode$27 = [
-  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
-  ["path", { d: "M4 7h16", key: "6tx8e3" }],
-  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
-  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
+  ["path", { d: "M19 12H5", key: "x3x0zl" }]
 ];
-const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$27);
+const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$27);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17526,11 +17555,11 @@ const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$27);
 
 
 const __iconNode$26 = [
-  ["path", { d: "M3 19V5", key: "rwsyhb" }],
-  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
-  ["path", { d: "M7 12h14", key: "uoisry" }]
+  ["path", { d: "M17 12H3", key: "8awo09" }],
+  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
+  ["path", { d: "M21 5v14", key: "nzette" }]
 ];
-const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$26);
+const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$26);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17541,10 +17570,10 @@ const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$26);
 
 
 const __iconNode$25 = [
-  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
-  ["path", { d: "M19 12H5", key: "x3x0zl" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$25);
+const ArrowRight = createLucideIcon("ArrowRight", __iconNode$25);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17555,11 +17584,12 @@ const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$25);
 
 
 const __iconNode$24 = [
-  ["path", { d: "M17 12H3", key: "8awo09" }],
-  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
-  ["path", { d: "M21 5v14", key: "nzette" }]
+  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
+  ["path", { d: "M17 20V4", key: "1ejh1v" }],
+  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
+  ["path", { d: "M7 4v16", key: "1glfcx" }]
 ];
-const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$24);
+const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$24);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17570,10 +17600,10 @@ const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$24);
 
 
 const __iconNode$23 = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
+  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
+  ["path", { d: "M12 19V5", key: "x0mq9r" }]
 ];
-const ArrowRight = createLucideIcon("ArrowRight", __iconNode$23);
+const ArrowUp = createLucideIcon("ArrowUp", __iconNode$23);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17584,12 +17614,14 @@ const ArrowRight = createLucideIcon("ArrowRight", __iconNode$23);
 
 
 const __iconNode$22 = [
-  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
-  ["path", { d: "M17 20V4", key: "1ejh1v" }],
-  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
-  ["path", { d: "M7 4v16", key: "1glfcx" }]
+  ["path", { d: "M2 10v3", key: "1fnikh" }],
+  ["path", { d: "M6 6v11", key: "11sgs0" }],
+  ["path", { d: "M10 3v18", key: "yhl04a" }],
+  ["path", { d: "M14 8v7", key: "3a1oy3" }],
+  ["path", { d: "M18 5v13", key: "123xd1" }],
+  ["path", { d: "M22 10v3", key: "154ddg" }]
 ];
-const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$22);
+const AudioLines = createLucideIcon("AudioLines", __iconNode$22);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17600,10 +17632,18 @@ const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$22);
 
 
 const __iconNode$21 = [
-  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
-  ["path", { d: "M12 19V5", key: "x0mq9r" }]
+  ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
+  ["path", { d: "M22 8c0-2.3-.8-4.3-2-6", key: "5bb3ad" }],
+  [
+    "path",
+    {
+      d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
+      key: "11g9vi"
+    }
+  ],
+  ["path", { d: "M4 2C2.8 3.7 2 5.7 2 8", key: "tap9e0" }]
 ];
-const ArrowUp = createLucideIcon("ArrowUp", __iconNode$21);
+const BellRing = createLucideIcon("BellRing", __iconNode$21);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17614,14 +17654,16 @@ const ArrowUp = createLucideIcon("ArrowUp", __iconNode$21);
 
 
 const __iconNode$20 = [
-  ["path", { d: "M2 10v3", key: "1fnikh" }],
-  ["path", { d: "M6 6v11", key: "11sgs0" }],
-  ["path", { d: "M10 3v18", key: "yhl04a" }],
-  ["path", { d: "M14 8v7", key: "3a1oy3" }],
-  ["path", { d: "M18 5v13", key: "123xd1" }],
-  ["path", { d: "M22 10v3", key: "154ddg" }]
+  ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
+  [
+    "path",
+    {
+      d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
+      key: "11g9vi"
+    }
+  ]
 ];
-const AudioLines = createLucideIcon("AudioLines", __iconNode$20);
+const Bell = createLucideIcon("Bell", __iconNode$20);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -20887,9 +20929,133 @@ function KokoroPanel() {
         engine === 'system' ? React.createElement(SystemVoiceSettings, null) : React.createElement(KokoroSettings, null));
 }
 
+const REMINDER_DAY_NAMES=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const EVERY_DAY=[0,1,2,3,4,5,6];
+const WEEKDAYS$1=[1,2,3,4,5];
+const reminderDefaults={reminder:false,reminderTime:'19:00',reminderDays:EVERY_DAY,reminderOnlyDue:true,reminderSkipDone:true};
+const REMINDER_TAG='rf-reminder';
+const REMINDER_CACHE='recallflow-reminder';
+const REMINDER_KEY='./__rf-reminder';
+
+function validReminderTime(time){return typeof time==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(time);}
+function cleanReminderDays(days){
+ if(!Array.isArray(days))return [...EVERY_DAY];
+ return [...new Set(days.map(Number).filter(d=>Number.isInteger(d)&&d>=0&&d<=6))].sort((a,b)=>a-b);
+}
+function cleanReminderSettings(v={}){
+ return {
+  reminder:v.reminder===true,
+  reminderTime:validReminderTime(v.reminderTime)?v.reminderTime:reminderDefaults.reminderTime,
+  reminderDays:cleanReminderDays(v.reminderDays),
+  reminderOnlyDue:v.reminderOnlyDue!==false,
+  reminderSkipDone:v.reminderSkipDone!==false,
+ };
+}
+
+// Times and days are India Standard Time, like every other date in the app.
+// Keep in step with reminderDue in sw.js; reminder-tests.mjs compares the two.
+function reminderDue({now=new Date(),settings,lastShown='',dueCount=0,practisedDay=''}){
+ const s=cleanReminderSettings(settings);
+ if(!s.reminder||!s.reminderDays.length)return false;
+ const clock=istClock(now),day=localDay(now);
+ if(!s.reminderDays.includes(clock.getUTCDay()))return false;
+ const [h,m]=s.reminderTime.split(':').map(Number);
+ if(clock.getUTCHours()*60+clock.getUTCMinutes()<h*60+m)return false;
+ if(lastShown===day)return false;
+ if(s.reminderOnlyDue&&!(dueCount>0))return false;
+ if(s.reminderSkipDone&&practisedDay===day)return false;
+ return true;
+}
+
+function reminderMessage(dueCount){
+ return dueCount>0
+  ?{title:`${dueCount} ${dueCount===1?'question':'questions'} due`,body:'A few minutes now keeps your streak going.'}
+  :{title:'Time to practise',body:'Nothing is due, but a quick round keeps it fresh.'};
+}
+
+function reminderDaysLabel(days){
+ const d=cleanReminderDays(days);
+ if(d.length===7)return 'every day';
+ if(d.join()===WEEKDAYS$1.join())return 'weekdays';
+ if(d.join()==='0,6')return 'weekends';
+ if(!d.length)return 'no days';
+ return d.map(i=>REMINDER_DAY_NAMES[i]).join(', ');
+}
+
+function formatReminderTime(time){
+ if(!validReminderTime(time))return time;
+ const [h,m]=time.split(':').map(Number);
+ return `${h%12||12}:${String(m).padStart(2,'0')} ${h<12?'am':'pm'}`;
+}
+
+// Milliseconds from `now` until the reminder time next comes round on an allowed day.
+function msUntilNextReminder(now,settings){
+ const s=cleanReminderSettings(settings);
+ if(!s.reminder||!s.reminderDays.length)return null;
+ const [h,m]=s.reminderTime.split(':').map(Number);
+ const clock=istClock(now),minuteNow=clock.getUTCHours()*60+clock.getUTCMinutes();
+ for(let add=0;add<8;add++){
+  const dow=(clock.getUTCDay()+add)%7,mins=add*1440+h*60+m-minuteNow;
+  if(s.reminderDays.includes(dow)&&mins>0)return mins*60000-clock.getUTCSeconds()*1000;
+ }
+ return null;
+}
+
+/* ───────── browser side ───────── */
+
+function reminderSupport(){
+ if(typeof window==='undefined'||!('Notification' in window)||!('serviceWorker' in navigator))return 'none';
+ if(Notification.permission==='denied')return 'blocked';
+ return 'ok';
+}
+
+async function readState(){
+ try{const cache=await caches.open(REMINDER_CACHE),hit=await cache.match(REMINDER_KEY);return hit?await hit.json():{};}catch{return {};}
+}
+async function writeState(state){
+ try{const cache=await caches.open(REMINDER_CACHE);await cache.put(REMINDER_KEY,new Response(JSON.stringify(state),{headers:{'Content-Type':'application/json'}}));}catch{}
+}
+
+// The service worker reads this to decide on a reminder while the app is closed.
+async function saveReminderState({settings,dueCount,practisedDay}){
+ const old=await readState();
+ await writeState({...old,settings:cleanReminderSettings(settings),dueCount,practisedDay});
+}
+async function markReminderShown(day=localDay()){const old=await readState();await writeState({...old,lastShown:day});}
+async function lastReminderShown(){return (await readState()).lastShown||'';}
+
+async function askReminderPermission(){
+ if(reminderSupport()==='none')return 'unsupported';
+ if(Notification.permission==='granted')return 'granted';
+ try{return await Notification.requestPermission();}catch{return 'denied';}
+}
+
+// Returns how reminders can arrive on this device: 'closed' (also while the app is closed), 'open' (only while it is open), or a problem.
+async function registerReminderSync(on){
+ const support=reminderSupport();
+ if(support!=='ok')return support;
+ if(on&&Notification.permission!=='granted')return 'permission';
+ try{
+  const reg=await navigator.serviceWorker.ready;
+  const periodic=reg.periodicSync;
+  if(!periodic)return 'open';
+  if(!on){await periodic.unregister(REMINDER_TAG).catch(()=>{});return 'open';}
+  const state=await navigator.permissions?.query({name:'periodic-background-sync'}).catch(()=>null);
+  if(state&&state.state!=='granted')return 'install';
+  await periodic.register(REMINDER_TAG,{minInterval:60*60*1000});
+  return 'closed';
+ }catch{return 'open';}
+}
+
+async function showReminder(dueCount,{test=false}={}){
+ const reg=await navigator.serviceWorker.ready;
+ const msg=test?{title:'Reminders are on',body:'This is how your daily reminder will look.'}:reminderMessage(dueCount);
+ await reg.showNotification(msg.title,{body:msg.body,icon:'./public/icon-192.png',badge:'./public/icon-192.png',tag:REMINDER_TAG,data:{url:'./#/home'}});
+}
+
 const appPreferencesKey='recallflow_app_preferences_v1';
 const textSizes=[['small','Small',.92],['default','Default',1],['large','Large',1.1],['larger','Larger',1.2]];
-const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default'};
+const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default',...reminderDefaults};
 const soundEffectModes=['default','custom','off'];
 
 function validateAppPreferences(value){
@@ -20904,6 +21070,7 @@ function validateAppPreferences(value){
     autoAdvance:v.autoAdvance===true,
     confirmExit:v.confirmExit!==false,
     soundEffects:soundEffectModes.includes(v.soundEffects)?v.soundEffects:'default',
+    ...cleanReminderSettings(v),
   };
 }
 function appPreferences(){try{return validateAppPreferences(JSON.parse(localStorage.getItem(appPreferencesKey)||'{}'));}catch{return {...appDefaults};}}
@@ -30077,6 +30244,87 @@ function SoundEffects() {
             React.createElement("p", { className: "settings-hint" }, "Short clips work best (under 400 KB). Empty slots use the default chime.")),
         error && React.createElement("p", { className: "settings-error", role: "alert" }, error));
 }
+const reminderStatus = {
+    closed: ['ok', p => `Arrives around ${formatReminderTime(p.reminderTime)} (India time) on ${reminderDaysLabel(p.reminderDays)}, even when RecallFlow is closed. Your phone picks the exact moment, so it can come a little late.`],
+    install: ['warn', () => 'Install RecallFlow on your home screen (Settings → App) so reminders arrive when it’s closed. Until then they only come while it’s open in the background.'],
+    open: ['warn', () => 'This browser only delivers reminders while RecallFlow is open in the background. For reminders when it’s closed, install it with Chrome on Android.'],
+    permission: ['warn', () => 'Notifications aren’t allowed on this device yet. Turn the switch off and on again to allow them.'],
+    blocked: ['error', () => 'Notifications are blocked for RecallFlow. Allow them in your browser’s site settings, then turn this on again.'],
+    none: ['error', () => 'This browser can’t show notifications.'],
+};
+function ReminderSettings() {
+    const [prefs, update] = usePrefs(), [mode, setMode] = reactExports.useState(''), [error, setError] = reactExports.useState(''), [busy, setBusy] = reactExports.useState(false), [sent, setSent] = reactExports.useState(false);
+    reactExports.useEffect(() => { if (prefs.reminder)
+        registerReminderSync(true).then(setMode);
+    else {
+        const s = reminderSupport();
+        setMode(s === 'ok' ? '' : s);
+    } }, [prefs.reminder]);
+    async function toggle(on) {
+        setError('');
+        setSent(false);
+        if (!on) {
+            update({ reminder: false });
+            void registerReminderSync(false);
+            return;
+        }
+        setBusy(true);
+        try {
+            const permission = await askReminderPermission();
+            if (permission === 'unsupported') {
+                setMode('none');
+                return;
+            }
+            if (permission !== 'granted') {
+                setMode('blocked');
+                setError(permission === 'denied' ? 'Permission was refused, so reminders can’t be sent.' : 'Allow notifications to turn reminders on.');
+                return;
+            }
+            update({ reminder: true });
+        }
+        finally {
+            setBusy(false);
+        }
+    }
+    async function test() { setError(''); try {
+        await showReminder(0, { test: true });
+        setSent(true);
+    }
+    catch {
+        setError('The test notification could not be shown.');
+    } }
+    const days = prefs.reminderDays, setDays = (d) => update({ reminderDays: d });
+    const preset = days.length === 7 ? 'every' : days.join() === WEEKDAYS$1.join() ? 'weekdays' : 'custom';
+    const [tone, text] = reminderStatus[mode] || [];
+    return React.createElement(Panel, { icon: BellRing, title: "Daily reminder", detail: "A nudge to practise at a time that suits you.", className: "settings-reminder" },
+        React.createElement(Toggle, { icon: Bell, title: "Remind me to practise", detail: busy ? 'Asking for permission…' : prefs.reminder ? `On · ${formatReminderTime(prefs.reminderTime)}, ${reminderDaysLabel(days)}` : 'Sends a notification to this device.', checked: prefs.reminder, onChange: toggle }),
+        prefs.reminder && React.createElement(React.Fragment, null,
+            React.createElement("div", { className: "settings-reminder-time" },
+                React.createElement("label", null,
+                    React.createElement("span", { className: "settings-label" }, "Time"),
+                    React.createElement("input", { type: "time", value: prefs.reminderTime, step: 300, onChange: e => { if (validReminderTime(e.target.value))
+                            update({ reminderTime: e.target.value }); } })),
+                React.createElement("div", { className: "settings-reminder-quick", role: "group", "aria-label": "Quick times" }, [['08:00', 'Morning'], ['13:00', 'Afternoon'], ['19:00', 'Evening'], ['21:30', 'Night']].map(([t, label]) => React.createElement("button", { key: t, type: "button", "aria-pressed": prefs.reminderTime === t, onClick: () => update({ reminderTime: t }) },
+                    label,
+                    React.createElement("small", null, formatReminderTime(t)))))),
+            React.createElement("p", { className: "settings-label" }, "Days"),
+            React.createElement("div", { className: "settings-segmented", role: "radiogroup", "aria-label": "Reminder days" },
+                React.createElement("button", { role: "radio", "aria-checked": preset === 'every', onClick: () => setDays(EVERY_DAY) }, "Every day"),
+                React.createElement("button", { role: "radio", "aria-checked": preset === 'weekdays', onClick: () => setDays(WEEKDAYS$1) }, "Weekdays"),
+                React.createElement("button", { role: "radio", "aria-checked": preset === 'custom', onClick: () => preset !== 'custom' && setDays([1, 3, 5]) }, "Custom")),
+            React.createElement("div", { className: "settings-reminder-days", role: "group", "aria-label": "Pick days" }, REMINDER_DAY_NAMES.map((name, i) => React.createElement("button", { key: name, type: "button", "aria-pressed": days.includes(i), "aria-label": name, onClick: () => setDays(days.includes(i) ? days.filter((d) => d !== i) : [...days, i]) }, name[0]))),
+            !days.length && React.createElement("p", { className: "settings-warning" }, "Pick at least one day, or no reminders will be sent."),
+            React.createElement("div", { className: "settings-switch-list" },
+                React.createElement(Toggle, { icon: ListChecks, title: "Only when questions are due", detail: "Stay quiet on days with nothing to review.", checked: prefs.reminderOnlyDue, onChange: (v) => update({ reminderOnlyDue: v }) }),
+                React.createElement(Toggle, { icon: CircleCheck, title: "Skip if I\u2019ve already practised", detail: "No reminder once today\u2019s streak is safe.", checked: prefs.reminderSkipDone, onChange: (v) => update({ reminderSkipDone: v }) })),
+            React.createElement(Button, { variant: "outline", size: "sm", className: "settings-reminder-test", onClick: test, disabled: mode === 'blocked' || mode === 'none' },
+                React.createElement(Send, { size: 15 }),
+                sent ? 'Sent — check your notifications' : 'Send a test notification')),
+        text && (prefs.reminder || tone === 'error') && React.createElement("p", { className: "settings-reminder-status", "data-tone": tone, role: "status" },
+            tone === 'ok' ? React.createElement(CircleCheck, { size: 15 }) : tone === 'warn' ? React.createElement(Info, { size: 15 }) : React.createElement(TriangleAlert, { size: 15 }),
+            React.createElement("span", null, text(prefs))),
+        error && React.createElement("p", { className: "settings-error", role: "alert" }, error));
+}
 function bytesOf() { let total = 0; try {
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i) || '';
@@ -30380,13 +30628,13 @@ function SettingsPage({ items, reports, quizCount, streakDays, theme, onTheme, o
         history.back();
     else
         setOpenSection(null); window.scrollTo(0, 0); };
-    const summaries = { profile: prefs.name || 'Your name', account: 'Sync and log out', appearance: 'Theme, text size, motion', voice: 'Device voice or Kokoro, speed', quiz: 'Questions, countdown, sound effects', data: 'Import, export, backup, reset', app: 'Install, offline, about' };
+    const summaries = { profile: prefs.name || 'Your name', account: 'Sync and log out', appearance: 'Theme, text size, motion', voice: 'Device voice or Kokoro, speed', quiz: 'Questions, reminder, sound effects', data: 'Import, export, backup, reset', app: 'Install, offline, about' };
     const quizLength = quizPreferences().count, speechEngine = localStorage.getItem('recallflow_speech_engine') === 'kokoro' ? 'Kokoro AI voice' : 'Device voice', speed = Number(localStorage.getItem(speechEngine === 'Device voice' ? 'recallflow_system_rate' : 'recallflow_kokoro_speed') || 1);
     const live = {
         account: sync.state === 'syncing' ? 'Syncing…' : sync.state === 'offline' ? 'Offline' : sync.state === 'error' ? 'Sync problem' : ago$2(sync.lastSynced),
         appearance: `${{ light: 'Light', dark: 'Dark', system: 'System' }[theme] || 'Theme'} · ${(textSizes.find((t) => t[0] === prefs.textSize) || [, 'Default'])[1]} text`,
         voice: `${speechEngine} · ${speed.toFixed(1)}×`,
-        quiz: `${quizLength ? `${quizLength} questions` : 'All due'} · sounds ${prefs.soundEffects === 'off' ? 'off' : prefs.soundEffects === 'custom' ? 'custom' : 'on'}`,
+        quiz: `${quizLength ? `${quizLength} questions` : 'All due'} · ${prefs.reminder ? `reminder ${formatReminderTime(prefs.reminderTime)}` : `sounds ${prefs.soundEffects === 'off' ? 'off' : prefs.soundEffects === 'custom' ? 'custom' : 'on'}`}`,
         data: `${items.length} ${items.length === 1 ? 'question' : 'questions'} · backup & import`,
     };
     const groups = {
@@ -30398,6 +30646,7 @@ function SettingsPage({ items, reports, quizCount, streakDays, theme, onTheme, o
             React.createElement(VoiceBehaviour, null)),
         quiz: React.createElement(React.Fragment, null,
             React.createElement(QuizDefaults, { onSaved: onQuizDefaults }),
+            React.createElement(ReminderSettings, null),
             React.createElement(SoundEffects, null)),
         data: React.createElement(React.Fragment, null,
             React.createElement(Panel, { icon: Database, title: "Storage", detail: "A copy on this device, so it works offline." },
@@ -32627,6 +32876,21 @@ function ActivityPanel({ reports, streakDays }) {
                 React.createElement("i", { style: { width: `${pct}%` } })); }))));
 }
 
+// Remove items by id, remembering where each one was so it can be put back.
+function removeWithPositions(items,ids){
+ const remove=new Set(ids),kept=[],removed=[];
+ items.forEach((item,index)=>remove.has(item.id)?removed.push({item,index}):kept.push(item));
+ return {kept,removed};
+}
+
+// Put removed items back at their old positions. Items added since keep their place;
+// an id that already exists again is not duplicated.
+function restoreRemoved(items,removed){
+ const out=[...items],have=new Set(items.map(x=>x.id));
+ [...removed].sort((a,b)=>a.index-b.index).forEach(({item,index})=>{if(have.has(item.id))return;out.splice(Math.min(index,out.length),0,item);have.add(item.id);});
+ return out;
+}
+
 // Answer areas for the newer question types. Each keeps its own answer and reports it through onGrade.
 const clamp$1 = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
 function ListRecallAnswer({ item, disabled, onGrade }) {
@@ -33592,7 +33856,7 @@ function FlashcardEditorPreview({ draft }) {
                     React.createElement("em", null, "Tap to see the question")))));
 }
 function AnswerMediaPreview({ draft }) {
-    return React.createElement(QuestionMedia, { preview: true, kind: "answer", className: "feedback-media", zoomClass: "feedback-answer-zoom", imgClass: "feedback-answer-media", image: draft.answerImage, audio: draft.answerAudio, audioEdit: draft.answerAudioEdit, video: draft.answerVideo, videoEdit: draft.answerVideoEdit, videoClass: "is-compact" });
+    return React.createElement(AnswerMediaToggle, { image: draft.answerImage, imageAlt: draft.imageAlt, audio: draft.answerAudio, audioEdit: draft.answerAudioEdit, video: draft.answerVideo, videoEdit: draft.answerVideoEdit });
 }
 // The preview uses the same answer components as the quiz, so pictures, sounds, videos and blanks look exactly as learners see them.
 function QuestionTypePreview({ draft }) {
@@ -34548,6 +34812,35 @@ function IndexPage() {
         return () => window.removeEventListener("recallflow:remote-update", reload);
     }, []);
     const due = reactExports.useMemo(() => items.filter(x => !x.due || x.due <= today()), [items]);
+    const [undoLabel, setUndoLabel] = reactExports.useState(""), pendingDelete = reactExports.useRef(null);
+    function finishPendingDelete() { const p = pendingDelete.current; if (!p)
+        return; window.clearTimeout(p.timer); pendingDelete.current = null; p.removed.forEach(r => void kokoroVoice.deleteQuestion(r.item.id)); setUndoLabel(""); }
+    function undoDelete() { const p = pendingDelete.current; if (!p)
+        return; window.clearTimeout(p.timer); pendingDelete.current = null; setItems(xs => restoreRemoved(xs, p.removed)); setUndoLabel(""); setMessage(`${p.removed.length === 1 ? "Question" : `${p.removed.length} questions`} restored.`); }
+    reactExports.useEffect(() => { window.addEventListener("pagehide", finishPendingDelete); return () => window.removeEventListener("pagehide", finishPendingDelete); }, []);
+    const [reminderTick, setReminderTick] = reactExports.useState(0);
+    reactExports.useEffect(() => {
+        if (!loaded)
+            return;
+        const practisedDay = () => streakDays.includes(localDay()) ? localDay() : "";
+        void saveReminderState({ settings: prefs, dueCount: due.length, practisedDay: practisedDay() });
+        if (!prefs.reminder || reminderSupport() !== "ok" || Notification.permission !== "granted")
+            return;
+        const wait = msUntilNextReminder(new Date(), prefs);
+        if (wait == null)
+            return;
+        const timer = window.setTimeout(async () => {
+            try {
+                if (document.visibilityState !== "visible" && reminderDue({ settings: prefs, lastShown: await lastReminderShown(), dueCount: due.length, practisedDay: practisedDay() })) {
+                    await showReminder(due.length);
+                    await markReminderShown();
+                }
+            }
+            catch { }
+            setReminderTick(t => t + 1);
+        }, Math.min(wait, 2147483647));
+        return () => window.clearTimeout(timer);
+    }, [loaded, prefs, due.length, streakDays, reminderTick]);
     const current = review?.[idx];
     reactExports.useEffect(() => {
         if (!review || idx >= review.length)
@@ -34963,8 +35256,19 @@ function IndexPage() {
             setSavingQuestion(false);
         }
     }
-    function deleteQuestion(id) { setItems(xs => xs.filter(x => x.id !== id)); void kokoroVoice.deleteQuestion(id); setMessage("Question deleted."); }
-    function deleteQuestions(ids) { const remove = new Set(ids); setItems(xs => xs.filter(x => !remove.has(x.id))); ids.forEach(id => void kokoroVoice.deleteQuestion(id)); setMessage(`${ids.length} ${ids.length === 1 ? "question" : "questions"} deleted.`); }
+    function removeForever(ids) { const remove = new Set(ids); setItems(xs => xs.filter(x => !remove.has(x.id))); ids.forEach(id => void kokoroVoice.deleteQuestion(id)); }
+    function deleteQuestion(id) { deleteQuestions([id]); }
+    function deleteQuestions(ids) {
+        const { kept, removed } = removeWithPositions(items, ids);
+        if (!removed.length)
+            return;
+        finishPendingDelete();
+        setItems(kept);
+        setMessage("");
+        const label = `${removed.length === 1 ? "Question" : `${removed.length} questions`} deleted`;
+        pendingDelete.current = { removed, timer: window.setTimeout(finishPendingDelete, 6000) };
+        setUndoLabel(label);
+    }
     reactExports.useEffect(() => {
         if (!cardMenuId)
             return;
@@ -35545,7 +35849,7 @@ function IndexPage() {
                             count,
                             " ",
                             count === 1 ? "question" : "questions",
-                            "? This cannot be undone."),
+                            "? You can undo this for a few seconds."),
                         React.createElement("div", null,
                             React.createElement(Button, { variant: "destructive", onClick: () => { deleteQuestions(selectedQuestionIds); exitSelection(); } },
                                 "Delete ",
@@ -35616,7 +35920,7 @@ function IndexPage() {
                             React.createElement(Pencil, { size: 14 }),
                             " Edit")),
                     deleteId === x.id && React.createElement("div", { className: "library-delete-confirm", role: "group", "aria-label": "Confirm question deletion" },
-                        React.createElement("p", null, "Delete this question? This cannot be undone."),
+                        React.createElement("p", null, "Delete this question? You can undo this for a few seconds."),
                         React.createElement("div", null,
                             React.createElement(Button, { variant: "destructive", onClick: () => { deleteQuestion(x.id); setDeleteId(null); } }, "Delete question"),
                             React.createElement(Button, { variant: "outline", onClick: () => setDeleteId(null) }, "Cancel")))); })),
@@ -35825,8 +36129,14 @@ function IndexPage() {
                             ", so there\u2019s nothing to analyse yet.")))),
                 message && React.createElement("p", { className: styles$1.note }, message)),
             tab === "settings" && React.createElement(SettingsPage, { items: items, reports: reportHistory, quizCount: quizCount, streakDays: streakDays, theme: themeChoice, onTheme: chooseTheme, onQuizDefaults: setQuizDefaults, onOpenTransfer: () => openTransfer("import"), onResetProgress: resetProgress, onDeleteAll: deleteEverything }),
-            tab === "transfer" && React.createElement(TransferPage, { key: transferTab + transferSelection.join(), items: items, selectedIds: transferSelection, initial: transferTab, onImport: importItems, onUndo: (ids) => deleteQuestions(ids), onBack: () => { setTab("library"); window.scrollTo({ top: 0 }); } }),
+            tab === "transfer" && React.createElement(TransferPage, { key: transferTab + transferSelection.join(), items: items, selectedIds: transferSelection, initial: transferTab, onImport: importItems, onUndo: (ids) => removeForever(ids), onBack: () => { setTab("library"); window.scrollTo({ top: 0 }); } }),
             tab === "streak" && React.createElement(StreakPage, { days: streakDays, reports: reportHistory, onBack: () => setTab("home"), onQuiz: startReview })),
+        undoLabel && React.createElement("div", { className: "rf-undo-bar", role: "status", "aria-live": "polite" },
+            React.createElement(Trash2, { size: 16, "aria-hidden": "true" }),
+            React.createElement("span", null, undoLabel),
+            React.createElement("button", { type: "button", onClick: undoDelete },
+                React.createElement(RotateCcw, { size: 15 }),
+                "Undo")),
         React.createElement("nav", { className: styles$1.nav },
             React.createElement("button", { className: tab === "home" ? styles$1.active : "", onClick: () => setTab("home") },
                 React.createElement(House, null),

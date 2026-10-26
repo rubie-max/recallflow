@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight,Music,Play,Upload} from 'lucide-react';
+import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight,Music,Play,Upload,Bell,BellRing,ListChecks} from 'lucide-react';
 import {customSounds,saveCustomSound,readSoundFile,playFeedback} from '../feedback-sounds.js';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
@@ -13,6 +13,7 @@ import {passwordProblem,MIN_PASSWORD,MAX_PASSWORD} from '../backup-password.js';
 import {openPhoto,saveProfilePhoto,profilePhoto,profilePhotoKey} from '../profile-photo.js';
 import {useProfilePhoto,PhotoEditor} from './ProfilePhoto';
 import {localDay,APP_TIME_ZONE} from '../streak-stats.js';
+import {REMINDER_DAY_NAMES,EVERY_DAY,WEEKDAYS,validReminderTime,formatReminderTime,reminderDaysLabel,reminderSupport,askReminderPermission,registerReminderSync,showReminder} from '../reminders.js';
 
 const sections:[string,string,any][]=[['profile','Profile',UserRound],['account','Account',Cloud],['appearance','Appearance',Palette],['voice','Voice',Volume2],['quiz','Quiz',SlidersHorizontal],['data','Data',Database],['app','App',Smartphone]];
 const menuGroups:[string,string[]][]=[['Sync',['account']],['Learning',['quiz','voice']],['App',['appearance','data','app']]];
@@ -100,6 +101,54 @@ function SoundEffects(){
   <div className="settings-segmented" role="radiogroup" aria-label="Sound effects">{[['default','Default'],['custom','Custom'],['off','Off']].map(([id,label])=><button key={id} role="radio" aria-checked={prefs.soundEffects===id} onClick={()=>{update({soundEffects:id});if(id!=='off')playFeedback('correct',id);}}>{label}</button>)}</div>
   {prefs.soundEffects==='default'&&<div className="settings-sound-preview"><button type="button" className="settings-sound-btn" onClick={()=>playFeedback('correct','default')}><Play size={14}/>Correct</button><button type="button" className="settings-sound-btn" onClick={()=>playFeedback('incorrect','default')}><Play size={14}/>Incorrect</button></div>}
   {prefs.soundEffects==='custom'&&<div className="settings-sound-list">{row('correct','Correct answer')}{row('incorrect','Wrong answer')}<p className="settings-hint">Short clips work best (under 400 KB). Empty slots use the default chime.</p></div>}
+  {error&&<p className="settings-error" role="alert">{error}</p>}
+ </Panel>;
+}
+
+const reminderStatus:Record<string,[string,(p:any)=>string]>={
+ closed:['ok',p=>`Arrives around ${formatReminderTime(p.reminderTime)} (India time) on ${reminderDaysLabel(p.reminderDays)}, even when RecallFlow is closed. Your phone picks the exact moment, so it can come a little late.`],
+ install:['warn',()=>'Install RecallFlow on your home screen (Settings → App) so reminders arrive when it’s closed. Until then they only come while it’s open in the background.'],
+ open:['warn',()=>'This browser only delivers reminders while RecallFlow is open in the background. For reminders when it’s closed, install it with Chrome on Android.'],
+ permission:['warn',()=>'Notifications aren’t allowed on this device yet. Turn the switch off and on again to allow them.'],
+ blocked:['error',()=>'Notifications are blocked for RecallFlow. Allow them in your browser’s site settings, then turn this on again.'],
+ none:['error',()=>'This browser can’t show notifications.'],
+};
+function ReminderSettings(){
+ const [prefs,update]=usePrefs(),[mode,setMode]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false),[sent,setSent]=useState(false);
+ useEffect(()=>{if(prefs.reminder)registerReminderSync(true).then(setMode);else{const s=reminderSupport();setMode(s==='ok'?'':s);}},[prefs.reminder]);
+ async function toggle(on:boolean){
+  setError('');setSent(false);
+  if(!on){update({reminder:false});void registerReminderSync(false);return;}
+  setBusy(true);
+  try{
+   const permission=await askReminderPermission();
+   if(permission==='unsupported'){setMode('none');return;}
+   if(permission!=='granted'){setMode('blocked');setError(permission==='denied'?'Permission was refused, so reminders can’t be sent.':'Allow notifications to turn reminders on.');return;}
+   update({reminder:true});
+  }finally{setBusy(false);}
+ }
+ async function test(){setError('');try{await showReminder(0,{test:true});setSent(true);}catch{setError('The test notification could not be shown.');}}
+ const days=prefs.reminderDays,setDays=(d:number[])=>update({reminderDays:d});
+ const preset=days.length===7?'every':days.join()===WEEKDAYS.join()?'weekdays':'custom';
+ const [tone,text]=reminderStatus[mode]||[];
+ return <Panel icon={BellRing} title="Daily reminder" detail="A nudge to practise at a time that suits you." className="settings-reminder">
+  <Toggle icon={Bell} title="Remind me to practise" detail={busy?'Asking for permission…':prefs.reminder?`On · ${formatReminderTime(prefs.reminderTime)}, ${reminderDaysLabel(days)}`:'Sends a notification to this device.'} checked={prefs.reminder} onChange={toggle}/>
+  {prefs.reminder&&<>
+   <div className="settings-reminder-time">
+    <label><span className="settings-label">Time</span><input type="time" value={prefs.reminderTime} step={300} onChange={e=>{if(validReminderTime(e.target.value))update({reminderTime:e.target.value});}}/></label>
+    <div className="settings-reminder-quick" role="group" aria-label="Quick times">{[['08:00','Morning'],['13:00','Afternoon'],['19:00','Evening'],['21:30','Night']].map(([t,label])=><button key={t} type="button" aria-pressed={prefs.reminderTime===t} onClick={()=>update({reminderTime:t})}>{label}<small>{formatReminderTime(t)}</small></button>)}</div>
+   </div>
+   <p className="settings-label">Days</p>
+   <div className="settings-segmented" role="radiogroup" aria-label="Reminder days"><button role="radio" aria-checked={preset==='every'} onClick={()=>setDays(EVERY_DAY)}>Every day</button><button role="radio" aria-checked={preset==='weekdays'} onClick={()=>setDays(WEEKDAYS)}>Weekdays</button><button role="radio" aria-checked={preset==='custom'} onClick={()=>preset!=='custom'&&setDays([1,3,5])}>Custom</button></div>
+   <div className="settings-reminder-days" role="group" aria-label="Pick days">{REMINDER_DAY_NAMES.map((name,i)=><button key={name} type="button" aria-pressed={days.includes(i)} aria-label={name} onClick={()=>setDays(days.includes(i)?days.filter((d:number)=>d!==i):[...days,i])}>{name[0]}</button>)}</div>
+   {!days.length&&<p className="settings-warning">Pick at least one day, or no reminders will be sent.</p>}
+   <div className="settings-switch-list">
+    <Toggle icon={ListChecks} title="Only when questions are due" detail="Stay quiet on days with nothing to review." checked={prefs.reminderOnlyDue} onChange={(v:boolean)=>update({reminderOnlyDue:v})}/>
+    <Toggle icon={CircleCheck} title="Skip if I’ve already practised" detail="No reminder once today’s streak is safe." checked={prefs.reminderSkipDone} onChange={(v:boolean)=>update({reminderSkipDone:v})}/>
+   </div>
+   <Button variant="outline" size="sm" className="settings-reminder-test" onClick={test} disabled={mode==='blocked'||mode==='none'}><Send size={15}/>{sent?'Sent — check your notifications':'Send a test notification'}</Button>
+  </>}
+  {text&&(prefs.reminder||tone==='error')&&<p className="settings-reminder-status" data-tone={tone} role="status">{tone==='ok'?<CircleCheck size={15}/>:tone==='warn'?<Info size={15}/>:<TriangleAlert size={15}/>}<span>{text(prefs)}</span></p>}
   {error&&<p className="settings-error" role="alert">{error}</p>}
  </Panel>;
 }
@@ -235,13 +284,13 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
  const jump=(id:string)=>{setActiveSection(id);document.getElementById(`settings-${id}`)?.scrollIntoView({behavior:document.documentElement.classList.contains('rf-reduce-motion')?'auto':'smooth',block:'start'});};
  const open=(id:string)=>{history.pushState({...history.state,rfSettings:id},'',location.href);setOpenSection(id);window.scrollTo(0,0);};
  const close=()=>{if(history.state?.rfSettings)history.back();else setOpenSection(null);window.scrollTo(0,0);};
- const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Device voice or Kokoro, speed',quiz:'Questions, countdown, sound effects',data:'Import, export, backup, reset',app:'Install, offline, about'};
+ const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Device voice or Kokoro, speed',quiz:'Questions, reminder, sound effects',data:'Import, export, backup, reset',app:'Install, offline, about'};
  const quizLength=quizPreferences().count,speechEngine=localStorage.getItem('recallflow_speech_engine')==='kokoro'?'Kokoro AI voice':'Device voice',speed=Number(localStorage.getItem(speechEngine==='Device voice'?'recallflow_system_rate':'recallflow_kokoro_speed')||1);
  const live:Record<string,string>={
   account:sync.state==='syncing'?'Syncing…':sync.state==='offline'?'Offline':sync.state==='error'?'Sync problem':ago(sync.lastSynced),
   appearance:`${({light:'Light',dark:'Dark',system:'System'} as any)[theme]||'Theme'} · ${(textSizes.find((t:any)=>t[0]===prefs.textSize)||[,'Default'])[1]} text`,
   voice:`${speechEngine} · ${speed.toFixed(1)}×`,
-  quiz:`${quizLength?`${quizLength} questions`:'All due'} · sounds ${prefs.soundEffects==='off'?'off':prefs.soundEffects==='custom'?'custom':'on'}`,
+  quiz:`${quizLength?`${quizLength} questions`:'All due'} · ${prefs.reminder?`reminder ${formatReminderTime(prefs.reminderTime)}`:`sounds ${prefs.soundEffects==='off'?'off':prefs.soundEffects==='custom'?'custom':'on'}`}`,
   data:`${items.length} ${items.length===1?'question':'questions'} · backup & import`,
  };
  const groups:Record<string,React.ReactNode>={
@@ -249,7 +298,7 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
   account:<AccountSettings/>,
   appearance:<AppearanceSettings theme={theme} onTheme={onTheme}/>,
   voice:<><KokoroPanel/><VoiceBehaviour/></>,
-  quiz:<><QuizDefaults onSaved={onQuizDefaults}/><SoundEffects/></>,
+  quiz:<><QuizDefaults onSaved={onQuizDefaults}/><ReminderSettings/><SoundEffects/></>,
   data:<>
    <Panel icon={Database} title="Storage" detail="A copy on this device, so it works offline."><StorageMeter items={items}/></Panel>
    <button className="settings-link-card" onClick={onOpenTransfer}><span className="settings-icon"><ArrowLeftRight size={19}/></span><span><strong>Import & export questions</strong><small>CSV, Anki, JSON or plain text</small></span><ArrowRight size={18}/></button>
