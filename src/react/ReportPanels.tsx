@@ -39,6 +39,13 @@ export function blocksSwipe(el:HTMLElement|null){
   return false;
 }
 
+export function ScoreRing({pct,size=40,stroke=4,tone,children}:{pct:number;size?:number;stroke?:number;tone?:'brand'|'good';children?:React.ReactNode}){
+  const r=(size-stroke)/2,c=2*Math.PI*r,p=Math.max(0,Math.min(100,pct||0));
+  return <span className="rx-ring" data-tone={tone||(p>=80?'good':p>=50?'ok':'low')} style={{width:size,height:size}}>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true"><circle cx={size/2} cy={size/2} r={r} strokeWidth={stroke} className="rx-ring-track"/><circle cx={size/2} cy={size/2} r={r} strokeWidth={stroke} className="rx-ring-fill" strokeDasharray={`${p/100*c} ${c}`}/></svg>
+    <span className="rx-ring-label">{children}</span></span>;
+}
+
 export function RangePicker({value,onChange}:{value:number;onChange:(days:number)=>void}){
   return <div className="rx-range" role="radiogroup" aria-label="Time range">{REPORT_RANGES.map(([days,label])=><button key={days} type="button" role="radio" aria-checked={value===days} onClick={()=>onChange(days as number)}>{label}</button>)}</div>;
 }
@@ -54,7 +61,8 @@ function Delta({now,before,days,unit='',lowerIsBetter=false,format=(n:number)=>S
 export function OverviewStats({now,before,days,mastered,total}:{now:Summary;before:Summary;days:number;mastered:number;total:number}){
   const prev=before.quizzes?before:null;
   return <section className="rx-overview" aria-label="Summary">
-    <div className="rx-lead"><span>ACCURACY</span><strong>{now.accuracy??0}%</strong><small>{now.answers} {now.answers===1?'answer':'answers'} in {now.quizzes} {now.quizzes===1?'quiz':'quizzes'}{days?` · last ${days} days`:''}</small><Delta now={now.accuracy} before={prev?.accuracy??null} days={days} unit=" pts"/></div>
+    <div className="rx-lead"><ScoreRing pct={now.accuracy??0} size={92} stroke={10} tone="brand"><strong>{now.accuracy??0}%</strong><small>accuracy</small></ScoreRing>
+      <div className="rx-lead-copy"><Delta now={now.accuracy} before={prev?.accuracy??null} days={days} unit=" pts"/><span>{now.answers} {now.answers===1?'answer':'answers'} in {now.quizzes} {now.quizzes===1?'quiz':'quizzes'}</span><small>{days?`Last ${days} days`:'All time'}</small></div></div>
     <div className="rx-tiles">
       <div><span>Quizzes</span><strong>{now.quizzes}</strong>{prev||!days?<Delta now={now.quizzes} before={prev?.quizzes??null} days={days}/>:<small className="rx-note">None in the {periodName(days)}</small>}</div>
       <div><span>Study time</span><strong>{formatDuration(now.seconds)}</strong><Delta now={now.seconds} before={prev?.seconds??null} days={days} format={formatDuration}/></div>
@@ -90,7 +98,7 @@ export function AccuracyChart({series}:{series:Day[]}){
       {average!=null&&points.length>1&&<line x1={L} x2={W-R} y1={y(average)} y2={y(average)} className="rx-average"/>}
       {area&&<path d={area} fill="url(#rx-area-fill)"/>}
       {points.length>1&&<path d={line} className="rx-line"/>}
-      {points.map(p=><circle key={p.s.day} cx={p.x} cy={p.y} r={n>45?2.4:3.6} className="rx-dot"><title>{`${shortDate(p.s.day)}: ${p.s.accuracy}% · ${p.s.correct}/${p.s.answers} correct`}</title></circle>)}
+      {points.map(p=><circle key={p.s.day} cx={p.x} cy={p.y} r={n>45?2.4:3.6} className="rx-dot" data-level={p.s.accuracy!>=80?'good':p.s.accuracy!>=50?'ok':'low'}><title>{`${shortDate(p.s.day)}: ${p.s.accuracy}% · ${p.s.correct}/${p.s.answers} correct`}</title></circle>)}
       {n>0&&labels.map((i,k)=><text key={i} x={x(i)} y={H-7} textAnchor={labels.length===1?'middle':k===0?'start':k===labels.length-1?'end':'middle'} className="rx-axis">{shortDate(series[i].day)}</text>)}
     </svg>
     <div className="rx-chart-legend"><span><i className="rx-key-line"/>Accuracy</span><span><i className="rx-key-bar"/>Answers</span>{average!=null&&points.length>1&&<span><i className="rx-key-average"/>Average {average}%</span>}</div>
@@ -101,10 +109,10 @@ export function MemoryPanel({counts,forecast,onStart}:{counts:Record<string,numb
   const total=Object.values(counts).reduce((a,b)=>a+b,0),strong=counts.familiar+counts.mastered,max=Math.max(1,...forecast.days.map(d=>d.count)),dueNow=forecast.days[0]?.count||0;
   return <>
     <section className="report-content-card">
-      <div className="report-content-heading"><div><p>MEMORY STRENGTH</p><h2>How well you know them</h2></div><strong title="Familiar or mastered">{total?Math.round(strong/total*100):0}%</strong></div>
+      <div className="report-content-heading"><div><p>MEMORY STRENGTH</p><h2>How well you know them</h2></div><ScoreRing pct={total?strong/total*100:0} size={64} stroke={7} tone="good"><strong title="Familiar or mastered">{total?Math.round(strong/total*100):0}%</strong></ScoreRing></div>
       <p className="report-muted">Each correct answer pushes a question’s next review further away. The further away it is, the stronger you know it.</p>
       <div className="rx-stack" role="img" aria-label={MASTERY_LEVELS.map(([id,label])=>`${label} ${counts[id]}`).join(', ')}>{MASTERY_LEVELS.map(([id])=>counts[id]?<i key={id} data-level={id} style={{flexGrow:counts[id]}}/>:null)}</div>
-      <ul className="rx-levels">{MASTERY_LEVELS.map(([id,label,hint])=><li key={id} data-level={id}><i aria-hidden="true"/><span><b>{label}</b><small>{hint}</small></span><strong>{counts[id]}</strong></li>)}</ul>
+      <ul className="rx-levels">{MASTERY_LEVELS.map(([id,label,hint])=><li key={id} data-level={id}><i aria-hidden="true"/><span><b>{label}</b><small>{hint}</small></span><em>{total?Math.round(counts[id]/total*100):0}%</em><strong>{counts[id]}</strong></li>)}</ul>
     </section>
     <section className="report-content-card">
       <div className="report-content-heading"><div><p>COMING UP</p><h2>Reviews this week</h2></div><strong>{forecast.days.reduce((a,d)=>a+d.count,0)}</strong></div>

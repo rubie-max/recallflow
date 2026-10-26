@@ -34,7 +34,7 @@ export function MistakesPanel({reports,items,onPractice,onEdit}:{reports:any[];i
    <ul className="mx-list">{list.map(e=>{const item=byId.get(e.id),q=e.last;return <li key={e.id} className="mx-item">
     <div className="mx-item-top"><span className="mx-place">{[q.subject,q.topic].filter(Boolean).join(' › ')||'General'}</span><span className="mx-type">{typeLabel(q.type)}</span></div>
     <strong className="mx-prompt">{q.prompt||'Picture question'}</strong>
-    <div className="mx-answers"><p data-kind="wrong"><XCircle size={14}/><span><small>Your answer</small>{q.user_answer||'No answer'}</span></p><p data-kind="right"><CheckCircle2 size={14}/><span><small>Correct</small>{q.correct_answer||'—'}</span></p></div>
+    <div className="mx-answers"><p data-kind="wrong"><XCircle size={14}/><span><small>You said</small>{q.user_answer||'No answer'}</span></p><p data-kind="right"><CheckCircle2 size={14}/><span><small>Correct</small>{q.correct_answer||'—'}</span></p></div>
     <div className="mx-item-foot">
      <span className="mx-progress" title={`${e.streak} of 2 right answers in a row`}><i data-on={e.streak>=1||undefined}/><i data-on={e.streak>=2||undefined}/><em>{e.streak?'1 more to fix':'2 to fix'}</em></span>
      <span className="mx-meta">Missed {e.misses}× · {ago(e.lastMissed)}</span>

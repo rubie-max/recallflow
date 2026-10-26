@@ -89,6 +89,12 @@ export function activityStats(reports){
 
 export function formatDuration(seconds){seconds=Math.round(seconds||0);if(seconds<60)return `${seconds}s`;const minutes=Math.round(seconds/60);return minutes<60?`${minutes}m`:`${Math.floor(minutes/60)}h ${minutes%60}m`;}
 
+export function groupByDay(reports){
+  const groups=new Map();
+  for(const r of reports){const day=reportDay(r);if(!groups.has(day))groups.set(day,[]);groups.get(day).push(r);}
+  return [...groups];
+}
+
 export const REPORT_ORDER=['overview','progress','mistakes','memory','history','activity','insights'];
 export function swipeTarget(order,current,dx,dy,min=60){
   if(Math.abs(dx)<min||Math.abs(dx)<Math.abs(dy)*1.5)return null;

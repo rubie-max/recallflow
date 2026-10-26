@@ -20006,7 +20006,7 @@ const Input = reactExports.forwardRef(({ className, ...props }, ref) => {
 });
 Input.displayName = "Input";
 
-var styles$1 = {"shell":"rf__index_shell","main":"rf__index_main","mini":"rf__index_mini","intro":"rf__index_intro","pageTitle":"rf__index_pageTitle","finish":"rf__index_finish","hero":"rf__index_hero","heroCopy":"rf__index_heroCopy","eyebrow":"rf__index_eyebrow","streakCard":"rf__index_streakCard","streakOpen":"rf__index_streakOpen","streakTop":"rf__index_streakTop","week":"rf__index_week","dayMissed":"rf__index_dayMissed","dayDone":"rf__index_dayDone","dayToday":"rf__index_dayToday","streakHint":"rf__index_streakHint","homeStats":"rf__index_homeStats","nav":"rf__index_nav","active":"rf__index_active","plus":"rf__index_plus","quizNav":"rf__index_quizNav","note":"rf__index_note","reviewPage":"rf__index_reviewPage","track":"rf__index_track","flipCard":"rf__index_flipCard","flipInner":"rf__index_flipInner","flipped":"rf__index_flipped","flipFront":"rf__index_flipFront","flipBack":"rf__index_flipBack","two":"rf__index_two","options":"rf__index_options","answerArea":"rf__index_answerArea","feedbackGood":"rf__index_feedbackGood","feedbackBad":"rf__index_feedbackBad","feedbackIcon":"rf__index_feedbackIcon","feedbackCopy":"rf__index_feedbackCopy","finishBadge":"rf__index_finishBadge","scoreRing":"rf__index_scoreRing","finishStats":"rf__index_finishStats","reportsPage":"rf__index_reportsPage","reportList":"rf__index_reportList","reportCard":"rf__index_reportCard","reportHead":"rf__index_reportHead","reportDate":"rf__index_reportDate","reportScore":"rf__index_reportScore","reportDetails":"rf__index_reportDetails","reportMiniStats":"rf__index_reportMiniStats","reportQuestions":"rf__index_reportQuestions","reportQuestionGood":"rf__index_reportQuestionGood","reportQuestionBad":"rf__index_reportQuestionBad","emptyReports":"rf__index_emptyReports","homeStreakBadge":"rf__index_homeStreakBadge","homeTileDone":"rf__index_homeTileDone","homeMain":"rf__index_homeMain","headerRight":"rf__index_headerRight","homeTheme":"rf__index_homeTheme","themeSwitch":"rf__index_themeSwitch","themeDark":"rf__index_themeDark","profilePlaceholder":"rf__index_profilePlaceholder","homeQuizIcon":"rf__index_homeQuizIcon","homeQuizTitle":"rf__index_homeQuizTitle","homeTileUpcoming":"rf__index_homeTileUpcoming","homeTileToday":"rf__index_homeTileToday","homeTileCompletedToday":"rf__index_homeTileCompletedToday","daySkipped":"rf__index_daySkipped","quickQuizOptions":"rf__index_quickQuizOptions","reportSectionTitle":"rf__index_reportSectionTitle"};
+var styles$1 = {"shell":"rf__index_shell","main":"rf__index_main","mini":"rf__index_mini","intro":"rf__index_intro","pageTitle":"rf__index_pageTitle","finish":"rf__index_finish","hero":"rf__index_hero","heroCopy":"rf__index_heroCopy","eyebrow":"rf__index_eyebrow","streakCard":"rf__index_streakCard","streakOpen":"rf__index_streakOpen","streakTop":"rf__index_streakTop","week":"rf__index_week","dayMissed":"rf__index_dayMissed","dayDone":"rf__index_dayDone","dayToday":"rf__index_dayToday","streakHint":"rf__index_streakHint","homeStats":"rf__index_homeStats","nav":"rf__index_nav","active":"rf__index_active","plus":"rf__index_plus","quizNav":"rf__index_quizNav","note":"rf__index_note","reviewPage":"rf__index_reviewPage","track":"rf__index_track","flipCard":"rf__index_flipCard","flipInner":"rf__index_flipInner","flipped":"rf__index_flipped","flipFront":"rf__index_flipFront","flipBack":"rf__index_flipBack","two":"rf__index_two","options":"rf__index_options","answerArea":"rf__index_answerArea","feedbackGood":"rf__index_feedbackGood","feedbackBad":"rf__index_feedbackBad","feedbackIcon":"rf__index_feedbackIcon","feedbackCopy":"rf__index_feedbackCopy","finishBadge":"rf__index_finishBadge","scoreRing":"rf__index_scoreRing","finishStats":"rf__index_finishStats","reportsPage":"rf__index_reportsPage","reportList":"rf__index_reportList","reportCard":"rf__index_reportCard","reportHead":"rf__index_reportHead","reportDetails":"rf__index_reportDetails","reportMiniStats":"rf__index_reportMiniStats","reportQuestions":"rf__index_reportQuestions","reportQuestionGood":"rf__index_reportQuestionGood","reportQuestionBad":"rf__index_reportQuestionBad","emptyReports":"rf__index_emptyReports","homeStreakBadge":"rf__index_homeStreakBadge","homeTileDone":"rf__index_homeTileDone","homeMain":"rf__index_homeMain","headerRight":"rf__index_headerRight","homeTheme":"rf__index_homeTheme","themeSwitch":"rf__index_themeSwitch","themeDark":"rf__index_themeDark","profilePlaceholder":"rf__index_profilePlaceholder","homeQuizIcon":"rf__index_homeQuizIcon","homeQuizTitle":"rf__index_homeQuizTitle","homeTileUpcoming":"rf__index_homeTileUpcoming","homeTileToday":"rf__index_homeTileToday","homeTileCompletedToday":"rf__index_homeTileCompletedToday","daySkipped":"rf__index_daySkipped","quickQuizOptions":"rf__index_quickQuizOptions","reportSectionTitle":"rf__index_reportSectionTitle"};
 
 // Only generated audio lives here; other RecallFlow data stays in localStorage.
 let database;
@@ -31274,6 +31274,12 @@ function activityStats(reports){
 
 function formatDuration(seconds){seconds=Math.round(seconds||0);if(seconds<60)return `${seconds}s`;const minutes=Math.round(seconds/60);return minutes<60?`${minutes}m`:`${Math.floor(minutes/60)}h ${minutes%60}m`;}
 
+function groupByDay(reports){
+  const groups=new Map();
+  for(const r of reports){const day=reportDay(r);if(!groups.has(day))groups.set(day,[]);groups.get(day).push(r);}
+  return [...groups];
+}
+
 const REPORT_ORDER=['overview','progress','mistakes','memory','history','activity','insights'];
 function swipeTarget(order,current,dx,dy,min=60){
   if(Math.abs(dx)<min||Math.abs(dx)<Math.abs(dy)*1.5)return null;
@@ -31488,7 +31494,7 @@ function MistakesPanel({ reports, items, onPractice, onEdit }) {
                         React.createElement("p", { "data-kind": "wrong" },
                             React.createElement(CircleX, { size: 14 }),
                             React.createElement("span", null,
-                                React.createElement("small", null, "Your answer"),
+                                React.createElement("small", null, "You said"),
                                 q.user_answer || 'No answer')),
                         React.createElement("p", { "data-kind": "right" },
                             React.createElement(CircleCheck, { size: 14 }),
@@ -32546,6 +32552,14 @@ function blocksSwipe(el) {
     }
     return false;
 }
+function ScoreRing({ pct, size = 40, stroke = 4, tone, children }) {
+    const r = (size - stroke) / 2, c = 2 * Math.PI * r, p = Math.max(0, Math.min(100, pct || 0));
+    return React.createElement("span", { className: "rx-ring", "data-tone": tone || (p >= 80 ? 'good' : p >= 50 ? 'ok' : 'low'), style: { width: size, height: size } },
+        React.createElement("svg", { width: size, height: size, viewBox: `0 0 ${size} ${size}`, "aria-hidden": "true" },
+            React.createElement("circle", { cx: size / 2, cy: size / 2, r: r, strokeWidth: stroke, className: "rx-ring-track" }),
+            React.createElement("circle", { cx: size / 2, cy: size / 2, r: r, strokeWidth: stroke, className: "rx-ring-fill", strokeDasharray: `${p / 100 * c} ${c}` })),
+        React.createElement("span", { className: "rx-ring-label" }, children));
+}
 function RangePicker({ value, onChange }) {
     return React.createElement("div", { className: "rx-range", role: "radiogroup", "aria-label": "Time range" }, REPORT_RANGES.map(([days, label]) => React.createElement("button", { key: days, type: "button", role: "radio", "aria-checked": value === days, onClick: () => onChange(days) }, label)));
 }
@@ -32570,20 +32584,22 @@ function OverviewStats({ now, before, days, mastered, total }) {
     const prev = before.quizzes ? before : null;
     return React.createElement("section", { className: "rx-overview", "aria-label": "Summary" },
         React.createElement("div", { className: "rx-lead" },
-            React.createElement("span", null, "ACCURACY"),
-            React.createElement("strong", null,
-                now.accuracy ?? 0,
-                "%"),
-            React.createElement("small", null,
-                now.answers,
-                " ",
-                now.answers === 1 ? 'answer' : 'answers',
-                " in ",
-                now.quizzes,
-                " ",
-                now.quizzes === 1 ? 'quiz' : 'quizzes',
-                days ? ` · last ${days} days` : ''),
-            React.createElement(Delta, { now: now.accuracy, before: prev?.accuracy ?? null, days: days, unit: " pts" })),
+            React.createElement(ScoreRing, { pct: now.accuracy ?? 0, size: 92, stroke: 10, tone: "brand" },
+                React.createElement("strong", null,
+                    now.accuracy ?? 0,
+                    "%"),
+                React.createElement("small", null, "accuracy")),
+            React.createElement("div", { className: "rx-lead-copy" },
+                React.createElement(Delta, { now: now.accuracy, before: prev?.accuracy ?? null, days: days, unit: " pts" }),
+                React.createElement("span", null,
+                    now.answers,
+                    " ",
+                    now.answers === 1 ? 'answer' : 'answers',
+                    " in ",
+                    now.quizzes,
+                    " ",
+                    now.quizzes === 1 ? 'quiz' : 'quizzes'),
+                React.createElement("small", null, days ? `Last ${days} days` : 'All time'))),
         React.createElement("div", { className: "rx-tiles" },
             React.createElement("div", null,
                 React.createElement("span", null, "Quizzes"),
@@ -32652,7 +32668,7 @@ function AccuracyChart({ series }) {
             average != null && points.length > 1 && React.createElement("line", { x1: L, x2: W - R, y1: y(average), y2: y(average), className: "rx-average" }),
             area && React.createElement("path", { d: area, fill: "url(#rx-area-fill)" }),
             points.length > 1 && React.createElement("path", { d: line, className: "rx-line" }),
-            points.map(p => React.createElement("circle", { key: p.s.day, cx: p.x, cy: p.y, r: n > 45 ? 2.4 : 3.6, className: "rx-dot" },
+            points.map(p => React.createElement("circle", { key: p.s.day, cx: p.x, cy: p.y, r: n > 45 ? 2.4 : 3.6, className: "rx-dot", "data-level": p.s.accuracy >= 80 ? 'good' : p.s.accuracy >= 50 ? 'ok' : 'low' },
                 React.createElement("title", null, `${shortDate(p.s.day)}: ${p.s.accuracy}% · ${p.s.correct}/${p.s.answers} correct`))),
             n > 0 && labels.map((i, k) => React.createElement("text", { key: i, x: x(i), y: H - 7, textAnchor: labels.length === 1 ? 'middle' : k === 0 ? 'start' : k === labels.length - 1 ? 'end' : 'middle', className: "rx-axis" }, shortDate(series[i].day)))),
         React.createElement("div", { className: "rx-chart-legend" },
@@ -32676,9 +32692,10 @@ function MemoryPanel({ counts, forecast, onStart }) {
                 React.createElement("div", null,
                     React.createElement("p", null, "MEMORY STRENGTH"),
                     React.createElement("h2", null, "How well you know them")),
-                React.createElement("strong", { title: "Familiar or mastered" },
-                    total ? Math.round(strong / total * 100) : 0,
-                    "%")),
+                React.createElement(ScoreRing, { pct: total ? strong / total * 100 : 0, size: 64, stroke: 7, tone: "good" },
+                    React.createElement("strong", { title: "Familiar or mastered" },
+                        total ? Math.round(strong / total * 100) : 0,
+                        "%"))),
             React.createElement("p", { className: "report-muted" }, "Each correct answer pushes a question\u2019s next review further away. The further away it is, the stronger you know it."),
             React.createElement("div", { className: "rx-stack", role: "img", "aria-label": MASTERY_LEVELS.map(([id, label]) => `${label} ${counts[id]}`).join(', ') }, MASTERY_LEVELS.map(([id]) => counts[id] ? React.createElement("i", { key: id, "data-level": id, style: { flexGrow: counts[id] } }) : null)),
             React.createElement("ul", { className: "rx-levels" }, MASTERY_LEVELS.map(([id, label, hint]) => React.createElement("li", { key: id, "data-level": id },
@@ -32686,6 +32703,9 @@ function MemoryPanel({ counts, forecast, onStart }) {
                 React.createElement("span", null,
                     React.createElement("b", null, label),
                     React.createElement("small", null, hint)),
+                React.createElement("em", null,
+                    total ? Math.round(counts[id] / total * 100) : 0,
+                    "%"),
                 React.createElement("strong", null, counts[id]))))),
         React.createElement("section", { className: "report-content-card" },
             React.createElement("div", { className: "report-content-heading" },
@@ -34116,21 +34136,27 @@ function clearSavedQuiz() { try {
     localStorage.removeItem(PROGRESS_KEY);
 }
 catch { } }
-function ReportHistoryCard({ report: r, index: i, openId, setOpenId, items, retry, copy }) {
+const dayHeading = (day) => { const t = localDay(), y = localDay(new Date(Date.now() - 864e5)); return day === t ? "Today" : day === y ? "Yesterday" : new Date(day + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" }); };
+function ReportHistoryCard({ report: r, index: i, openId, setOpenId, items, retry, copy, grouped }) {
     return React.createElement("article", { className: styles$1.reportCard },
-        React.createElement("button", { className: styles$1.reportHead, onClick: () => setOpenId(openId === r.id ? null : r.id), "aria-expanded": openId === r.id },
-            React.createElement("div", { className: styles$1.reportDate },
-                React.createElement("span", null, r.mode === "retry_mistakes" ? "RETRY" : i === 0 ? "LATEST" : "QUIZ"),
-                React.createElement("strong", null, new Date(r.date).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })),
-                React.createElement("small", null, new Date(r.date).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }))),
-            React.createElement("div", { className: `${styles$1.reportScore} rx-score`, "data-level": r.accuracy >= 80 ? "good" : r.accuracy >= 50 ? "ok" : "low" },
-                React.createElement("strong", null,
-                    r.accuracy,
-                    "%"),
-                React.createElement("span", null,
+        React.createElement("button", { className: `${styles$1.reportHead} rx-qhead`, onClick: () => setOpenId(openId === r.id ? null : r.id), "aria-expanded": openId === r.id },
+            React.createElement(ScoreRing, { pct: r.accuracy }, r.accuracy),
+            React.createElement("span", { className: "rx-qmain" },
+                React.createElement("b", null,
+                    r.mode === "retry_mistakes" ? "Retake" : i === 0 ? "Latest quiz" : "Quiz",
+                    " \u00B7 ",
+                    r.total,
+                    " ",
+                    r.total === 1 ? "question" : "questions"),
+                React.createElement("small", null,
+                    grouped ? "" : dayHeading(localDay(new Date(r.date))) + ", ",
+                    new Date(r.date).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }),
+                    " \u00B7 ",
+                    formatDuration(r.duration_seconds),
+                    " \u00B7 ",
                     r.correct,
-                    "/",
-                    r.total))),
+                    " right")),
+            React.createElement(ChevronDown, { size: 16, className: "rx-qchev", "aria-hidden": "true" })),
         openId === r.id && React.createElement("div", { className: styles$1.reportDetails },
             React.createElement("div", { className: styles$1.reportMiniStats },
                 React.createElement("div", null,
@@ -34246,6 +34272,7 @@ function IndexPage() {
     } });
     const [openReportId, setOpenReportId] = reactExports.useState(null);
     const [reportView, setReportView] = reactExports.useState("overview");
+    const [insightBy, setInsightBy] = reactExports.useState("subject");
     const [reportDir, setReportDir] = reactExports.useState("");
     const reportSwipe = reactExports.useRef(null);
     const showReport = (id) => { setReportDir(REPORT_ORDER.indexOf(id) > REPORT_ORDER.indexOf(reportView) ? "next" : "prev"); setReportView(id); };
@@ -35488,28 +35515,24 @@ function IndexPage() {
                                 React.createElement("button", { onClick: () => setReportView("progress") },
                                     React.createElement(ChartNoAxesColumnIncreasing, null),
                                     React.createElement("span", null,
-                                        React.createElement("b", null, "Track progress"),
-                                        React.createElement("small", null, "See how accuracy changes")),
+                                        React.createElement("b", null, "Progress"),
+                                        React.createElement("small", null, "Accuracy trend")),
                                     React.createElement(ArrowRight, null)),
                                 React.createElement("button", { onClick: () => setReportView("mistakes") },
                                     React.createElement(CircleX, null),
                                     React.createElement("span", null,
-                                        React.createElement("b", null, "Review mistakes"),
+                                        React.createElement("b", null, "Mistakes"),
                                         React.createElement("small", null,
                                             missedQuestions.length,
-                                            " ",
-                                            missedQuestions.length === 1 ? "question" : "questions",
-                                            " to revisit")),
+                                            " to fix")),
                                     React.createElement(ArrowRight, null)),
                                 React.createElement("button", { onClick: () => setReportView("memory") },
                                     React.createElement(Brain, null),
                                     React.createElement("span", null,
-                                        React.createElement("b", null, "Memory strength"),
+                                        React.createElement("b", null, "Memory"),
                                         React.createElement("small", null,
                                             forecast.days[0]?.count || 0,
-                                            " due today \u00B7 ",
-                                            memoryCounts.mastered,
-                                            " mastered")),
+                                            " due today")),
                                     React.createElement(ArrowRight, null)))),
                         reportView === "history" && React.createElement(React.Fragment, null,
                             React.createElement("div", { className: "rx-history-tools" },
@@ -35524,7 +35547,9 @@ function IndexPage() {
                                     " in ",
                                     rangeLabel,
                                     " \u00B7 Select one for answers")),
-                            historyReports.length ? React.createElement("div", { className: styles$1.reportList }, historyReports.map((r, i) => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: reportHistory.indexOf(r), openId: openReportId, setOpenId: setOpenReportId, items: items, retry: retryMistakes, copy: copySavedReport }))) : React.createElement("div", { className: "report-inline-empty" },
+                            historyReports.length ? React.createElement("div", { className: "rx-days" }, groupByDay(historyReports).map(([day, list]) => React.createElement("section", { key: day, className: "rx-day" },
+                                React.createElement("h3", null, dayHeading(day)),
+                                React.createElement("div", { className: styles$1.reportList }, list.map(r => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: reportHistory.indexOf(r), grouped: true, openId: openReportId, setOpenId: setOpenReportId, items: items, retry: retryMistakes, copy: copySavedReport })))))) : React.createElement("div", { className: "report-inline-empty" },
                                 "Nothing here for ",
                                 rangeLabel,
                                 ".")),
@@ -35535,7 +35560,8 @@ function IndexPage() {
                                     React.createElement("h2", null, "Your progress")),
                                 React.createElement("strong", { title: "Latest quiz" },
                                     reportHistory[0]?.accuracy ?? 0,
-                                    "%")),
+                                    "%",
+                                    React.createElement("small", null, "latest quiz"))),
                             React.createElement("p", { className: "report-muted" },
                                 "Accuracy for each day in ",
                                 rangeLabel,
@@ -35557,30 +35583,36 @@ function IndexPage() {
                             (() => { const days = rangeSeries.filter(d => d.accuracy != null && d.answers >= 3); if (days.length < 2)
                                 return null; const best = days.reduce((a, b) => b.accuracy > a.accuracy || (b.accuracy === a.accuracy && b.answers > a.answers) ? b : a), half = Math.floor(days.length / 2), avg = (xs) => Math.round(xs.reduce((n, d) => n + d.correct, 0) / Math.max(1, xs.reduce((n, d) => n + d.answers, 0)) * 100), change = avg(days.slice(half)) - avg(days.slice(0, half)); return React.createElement("div", { className: "rx-callouts" },
                                 React.createElement("p", null,
-                                    React.createElement("b", null, "Best day"),
-                                    new Date(best.day + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }),
-                                    " \u00B7 ",
-                                    best.accuracy,
-                                    "% on ",
-                                    best.answers,
-                                    " answers"),
-                                React.createElement("p", null,
-                                    React.createElement("b", null, "Trend"),
-                                    change > 0 ? `Up ${change} points in your more recent study days` : change < 0 ? `Down ${-change} points in your more recent study days` : "Holding steady")); })()),
+                                    React.createElement("i", null,
+                                        React.createElement(Star, { size: 15 })),
+                                    React.createElement("span", null,
+                                        React.createElement("b", null, "Best day"),
+                                        new Date(best.day + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }),
+                                        " \u00B7 ",
+                                        best.accuracy,
+                                        "% on ",
+                                        best.answers,
+                                        " answers")),
+                                React.createElement("p", { "data-trend": change > 0 ? "up" : change < 0 ? "down" : "flat" },
+                                    React.createElement("i", null, change < 0 ? React.createElement(TrendingDown, { size: 15 }) : React.createElement(TrendingUp, { size: 15 })),
+                                    React.createElement("span", null,
+                                        React.createElement("b", null, "Trend"),
+                                        change > 0 ? `Up ${change} points in your more recent study days` : change < 0 ? `Down ${-change} points in your more recent study days` : "Holding steady"))); })()),
                         reportView === "mistakes" && React.createElement(MistakesPanel, { reports: reportHistory, items: items, onPractice: results => retryMistakes(results), onEdit: item => openAdd(item) }),
                         reportView === "activity" && React.createElement(ActivityPanel, { reports: reportHistory, streakDays: streakDays }),
                         reportView === "insights" && (rangeAnalytics.total ? React.createElement(React.Fragment, null,
                             React.createElement("section", { className: "report-content-card" },
                                 React.createElement("div", { className: "report-content-heading" },
                                     React.createElement("div", null,
-                                        React.createElement("p", null, "WHERE YOU\u2019RE STRONG"),
-                                        React.createElement("h2", null, "Learning insights")),
+                                        React.createElement("p", null, "WEAKEST FIRST"),
+                                        React.createElement("h2", null, "Where to focus")),
                                     React.createElement(Sparkles, null)),
                                 React.createElement("p", { className: "report-muted" },
                                     "Accuracy by subject, topic and question type in ",
                                     rangeLabel,
                                     ", weakest first. Tap Practice to drill one area."),
-                                Object.entries(rangeAnalytics.groups).map(([key, groups]) => { const rows = Object.entries(groups).sort(([, a], [, b]) => a.correct / a.total - b.correct / b.total); return rows.length ? React.createElement("div", { className: "report-insight-group", key: key },
+                                React.createElement("div", { className: "rx-range rx-insight-by", role: "radiogroup", "aria-label": "Group by" }, [["subject", "Subject"], ["topic", "Topic"], ["type", "Type"]].map(([id, label]) => React.createElement("button", { key: id, type: "button", role: "radio", "aria-checked": insightBy === id, onClick: () => setInsightBy(id) }, label))),
+                                [[insightBy, rangeAnalytics.groups[insightBy]]].map(([key, groups]) => { const rows = Object.entries(groups).sort(([, a], [, b]) => a.correct / a.total - b.correct / b.total); return rows.length ? React.createElement("div", { className: "report-insight-group", key: key },
                                     React.createElement("h3", null,
                                         "By ",
                                         key === "type" ? "question type" : key),
