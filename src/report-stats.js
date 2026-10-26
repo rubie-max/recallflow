@@ -88,3 +88,10 @@ export function activityStats(reports){
 }
 
 export function formatDuration(seconds){seconds=Math.round(seconds||0);if(seconds<60)return `${seconds}s`;const minutes=Math.round(seconds/60);return minutes<60?`${minutes}m`:`${Math.floor(minutes/60)}h ${minutes%60}m`;}
+
+export const REPORT_ORDER=['overview','progress','mistakes','memory','history','activity','insights'];
+export function swipeTarget(order,current,dx,dy,min=60){
+  if(Math.abs(dx)<min||Math.abs(dx)<Math.abs(dy)*1.5)return null;
+  const i=order.indexOf(current);if(i<0)return null;
+  return order[i+(dx<0?1:-1)]??null;
+}

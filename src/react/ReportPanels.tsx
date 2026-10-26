@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {TrendingUp,TrendingDown,Play} from 'lucide-react';
+import {TrendingUp,TrendingDown,Play,ChevronDown,History,CalendarDays,Lightbulb} from 'lucide-react';
 import {Button} from './components/Button';
 import {REPORT_RANGES,MASTERY_LEVELS,formatDuration} from '../report-stats.js';
 
@@ -10,6 +10,34 @@ type QuestionStat={id:string;prompt:string;subject?:string;topic?:string;attempt
 const shortDate=(day:string)=>new Date(day+'T00:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'});
 const weekday=(day:string)=>new Date(day+'T00:00:00Z').toLocaleDateString(undefined,{weekday:'short',timeZone:'UTC'});
 const periodName=(days:number)=>days===7?'last week':`previous ${days} days`;
+
+const REPORT_MAIN=[['overview','Overview'],['progress','Progress'],['mistakes','Mistakes'],['memory','Memory']] as const;
+const REPORT_MORE=[['history','History',History],['activity','Activity',CalendarDays],['insights','Insights',Lightbulb]] as const;
+type ReportView=typeof REPORT_MAIN[number][0]|typeof REPORT_MORE[number][0];
+
+export function ReportTabs({value,onChange}:{value:ReportView;onChange:(v:ReportView)=>void}){
+  const [open,setOpen]=useState(false),ref=useRef<HTMLDivElement>(null);
+  const extra=REPORT_MORE.find(([id])=>id===value);
+  useEffect(()=>{if(!open)return;
+    const away=(e:PointerEvent)=>{if(!ref.current?.contains(e.target as Node))setOpen(false);};
+    const esc=(e:KeyboardEvent)=>{if(e.key==='Escape')setOpen(false);};
+    document.addEventListener('pointerdown',away);document.addEventListener('keydown',esc);
+    return()=>{document.removeEventListener('pointerdown',away);document.removeEventListener('keydown',esc);};},[open]);
+  const pick=(id:ReportView)=>{setOpen(false);onChange(id);};
+  return <div className="rt-tabs" ref={ref} role="tablist" aria-label="Report sections">
+    {REPORT_MAIN.map(([id,label])=><button key={id} type="button" role="tab" aria-selected={value===id} onClick={()=>pick(id)}>{label}</button>)}
+    <button type="button" role="tab" className="rt-more" aria-selected={!!extra} aria-haspopup="menu" aria-expanded={open} onClick={()=>setOpen(v=>!v)}>{extra?extra[1]:'More'}<ChevronDown size={14} aria-hidden="true"/></button>
+    {open&&<div className="rt-menu" role="menu">{REPORT_MORE.map(([id,label,Icon])=><button key={id} type="button" role="menuitemradio" aria-checked={value===id} onClick={()=>pick(id)}><Icon size={16} aria-hidden="true"/>{label}</button>)}</div>}
+  </div>;
+}
+
+export function blocksSwipe(el:HTMLElement|null){
+  for(let n=el;n&&n!==document.body;n=n.parentElement){
+    if(n.matches('input,select,textarea,[data-no-swipe]'))return true;
+    if(n.scrollWidth>n.clientWidth+1&&/(auto|scroll)/.test(getComputedStyle(n).overflowX))return true;
+  }
+  return false;
+}
 
 export function RangePicker({value,onChange}:{value:number;onChange:(days:number)=>void}){
   return <div className="rx-range" role="radiogroup" aria-label="Time range">{REPORT_RANGES.map(([days,label])=><button key={days} type="button" role="radio" aria-checked={value===days} onClick={()=>onChange(days as number)}>{label}</button>)}</div>;

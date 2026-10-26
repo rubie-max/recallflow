@@ -17476,7 +17476,7 @@ const createLucideIcon = (iconName, iconNode) => {
  */
 
 
-const __iconNode$2a = [
+const __iconNode$29 = [
   [
     "path",
     {
@@ -17485,21 +17485,7 @@ const __iconNode$2a = [
     }
   ]
 ];
-const Activity = createLucideIcon("Activity", __iconNode$2a);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$29 = [
-  ["path", { d: "M12 5v14", key: "s699le" }],
-  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
-];
-const ArrowDown = createLucideIcon("ArrowDown", __iconNode$29);
+const Activity = createLucideIcon("Activity", __iconNode$29);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17510,12 +17496,10 @@ const ArrowDown = createLucideIcon("ArrowDown", __iconNode$29);
 
 
 const __iconNode$28 = [
-  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
-  ["path", { d: "M4 7h16", key: "6tx8e3" }],
-  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
-  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+  ["path", { d: "M12 5v14", key: "s699le" }],
+  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
 ];
-const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$28);
+const ArrowDown = createLucideIcon("ArrowDown", __iconNode$28);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17526,11 +17510,12 @@ const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$28);
 
 
 const __iconNode$27 = [
-  ["path", { d: "M3 19V5", key: "rwsyhb" }],
-  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
-  ["path", { d: "M7 12h14", key: "uoisry" }]
+  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
+  ["path", { d: "M4 7h16", key: "6tx8e3" }],
+  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
+  ["path", { d: "M20 17H4", key: "h6l3hr" }]
 ];
-const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$27);
+const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$27);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17541,10 +17526,11 @@ const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$27);
 
 
 const __iconNode$26 = [
-  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
-  ["path", { d: "M19 12H5", key: "x3x0zl" }]
+  ["path", { d: "M3 19V5", key: "rwsyhb" }],
+  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
+  ["path", { d: "M7 12h14", key: "uoisry" }]
 ];
-const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$26);
+const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$26);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17555,11 +17541,10 @@ const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$26);
 
 
 const __iconNode$25 = [
-  ["path", { d: "M17 12H3", key: "8awo09" }],
-  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
-  ["path", { d: "M21 5v14", key: "nzette" }]
+  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
+  ["path", { d: "M19 12H5", key: "x3x0zl" }]
 ];
-const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$25);
+const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$25);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17570,10 +17555,11 @@ const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$25);
 
 
 const __iconNode$24 = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
+  ["path", { d: "M17 12H3", key: "8awo09" }],
+  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
+  ["path", { d: "M21 5v14", key: "nzette" }]
 ];
-const ArrowRight = createLucideIcon("ArrowRight", __iconNode$24);
+const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$24);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17584,12 +17570,10 @@ const ArrowRight = createLucideIcon("ArrowRight", __iconNode$24);
 
 
 const __iconNode$23 = [
-  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
-  ["path", { d: "M17 20V4", key: "1ejh1v" }],
-  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
-  ["path", { d: "M7 4v16", key: "1glfcx" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$23);
+const ArrowRight = createLucideIcon("ArrowRight", __iconNode$23);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17600,10 +17584,12 @@ const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$23);
 
 
 const __iconNode$22 = [
-  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
-  ["path", { d: "M12 19V5", key: "x0mq9r" }]
+  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
+  ["path", { d: "M17 20V4", key: "1ejh1v" }],
+  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
+  ["path", { d: "M7 4v16", key: "1glfcx" }]
 ];
-const ArrowUp = createLucideIcon("ArrowUp", __iconNode$22);
+const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$22);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17614,14 +17600,10 @@ const ArrowUp = createLucideIcon("ArrowUp", __iconNode$22);
 
 
 const __iconNode$21 = [
-  ["path", { d: "M2 10v3", key: "1fnikh" }],
-  ["path", { d: "M6 6v11", key: "11sgs0" }],
-  ["path", { d: "M10 3v18", key: "yhl04a" }],
-  ["path", { d: "M14 8v7", key: "3a1oy3" }],
-  ["path", { d: "M18 5v13", key: "123xd1" }],
-  ["path", { d: "M22 10v3", key: "154ddg" }]
+  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
+  ["path", { d: "M12 19V5", key: "x0mq9r" }]
 ];
-const AudioLines = createLucideIcon("AudioLines", __iconNode$21);
+const ArrowUp = createLucideIcon("ArrowUp", __iconNode$21);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17632,16 +17614,14 @@ const AudioLines = createLucideIcon("AudioLines", __iconNode$21);
 
 
 const __iconNode$20 = [
-  ["path", { d: "M12 7v14", key: "1akyts" }],
-  [
-    "path",
-    {
-      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
-      key: "ruj8y"
-    }
-  ]
+  ["path", { d: "M2 10v3", key: "1fnikh" }],
+  ["path", { d: "M6 6v11", key: "11sgs0" }],
+  ["path", { d: "M10 3v18", key: "yhl04a" }],
+  ["path", { d: "M14 8v7", key: "3a1oy3" }],
+  ["path", { d: "M18 5v13", key: "123xd1" }],
+  ["path", { d: "M22 10v3", key: "154ddg" }]
 ];
-const BookOpen = createLucideIcon("BookOpen", __iconNode$20);
+const AudioLines = createLucideIcon("AudioLines", __iconNode$20);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17652,9 +17632,16 @@ const BookOpen = createLucideIcon("BookOpen", __iconNode$20);
 
 
 const __iconNode$1$ = [
-  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
+  ["path", { d: "M12 7v14", key: "1akyts" }],
+  [
+    "path",
+    {
+      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+      key: "ruj8y"
+    }
+  ]
 ];
-const Bookmark = createLucideIcon("Bookmark", __iconNode$1$);
+const BookOpen = createLucideIcon("BookOpen", __iconNode$1$);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17665,10 +17652,9 @@ const Bookmark = createLucideIcon("Bookmark", __iconNode$1$);
 
 
 const __iconNode$1_ = [
-  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
-  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
+  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
 ];
-const Brackets = createLucideIcon("Brackets", __iconNode$1_);
+const Bookmark = createLucideIcon("Bookmark", __iconNode$1_);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17679,6 +17665,20 @@ const Brackets = createLucideIcon("Brackets", __iconNode$1_);
 
 
 const __iconNode$1Z = [
+  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
+  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
+];
+const Brackets = createLucideIcon("Brackets", __iconNode$1Z);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1Y = [
   [
     "path",
     {
@@ -17701,25 +17701,7 @@ const __iconNode$1Z = [
   ["path", { d: "M6 18a4 4 0 0 1-1.967-.516", key: "2e4loj" }],
   ["path", { d: "M19.967 17.484A4 4 0 0 1 18 18", key: "159ez6" }]
 ];
-const Brain = createLucideIcon("Brain", __iconNode$1Z);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1Y = [
-  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
-  ["path", { d: "M16 2v4", key: "4m81vk" }],
-  ["path", { d: "M8 2v4", key: "1cmpym" }],
-  ["path", { d: "M3 10h5", key: "r794hk" }],
-  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
-  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
-];
-const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1Y);
+const Brain = createLucideIcon("Brain", __iconNode$1Y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17730,6 +17712,24 @@ const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1Y);
 
 
 const __iconNode$1X = [
+  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
+  ["path", { d: "M16 2v4", key: "4m81vk" }],
+  ["path", { d: "M8 2v4", key: "1cmpym" }],
+  ["path", { d: "M3 10h5", key: "r794hk" }],
+  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
+  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
+];
+const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1X);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1W = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -17741,27 +17741,7 @@ const __iconNode$1X = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1X);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1W = [
-  [
-    "path",
-    {
-      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
-      key: "1tc9qg"
-    }
-  ],
-  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
-];
-const Camera = createLucideIcon("Camera", __iconNode$1W);
+const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1W);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17772,11 +17752,31 @@ const Camera = createLucideIcon("Camera", __iconNode$1W);
 
 
 const __iconNode$1V = [
+  [
+    "path",
+    {
+      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
+      key: "1tc9qg"
+    }
+  ],
+  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
+];
+const Camera = createLucideIcon("Camera", __iconNode$1V);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1U = [
   ["line", { x1: "12", x2: "12", y1: "20", y2: "10", key: "1vz5eb" }],
   ["line", { x1: "18", x2: "18", y1: "20", y2: "4", key: "cun8e5" }],
   ["line", { x1: "6", x2: "6", y1: "20", y2: "16", key: "hq0ia6" }]
 ];
-const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1V);
+const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1U);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17786,8 +17786,8 @@ const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasin
  */
 
 
-const __iconNode$1U = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("Check", __iconNode$1U);
+const __iconNode$1T = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("Check", __iconNode$1T);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17797,8 +17797,8 @@ const Check = createLucideIcon("Check", __iconNode$1U);
  */
 
 
-const __iconNode$1T = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1T);
+const __iconNode$1S = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1S);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17808,8 +17808,8 @@ const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1T);
  */
 
 
-const __iconNode$1S = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1S);
+const __iconNode$1R = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1R);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17819,23 +17819,8 @@ const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1S);
  */
 
 
-const __iconNode$1R = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1R);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1Q = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
-];
-const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1Q);
+const __iconNode$1Q = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1Q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17847,9 +17832,10 @@ const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1Q);
 
 const __iconNode$1P = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
 ];
-const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1P);
+const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1P);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17861,9 +17847,9 @@ const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1P);
 
 const __iconNode$1O = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleDot = createLucideIcon("CircleDot", __iconNode$1O);
+const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1O);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17875,10 +17861,9 @@ const CircleDot = createLucideIcon("CircleDot", __iconNode$1O);
 
 const __iconNode$1N = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
 ];
-const CircleX = createLucideIcon("CircleX", __iconNode$1N);
+const CircleDot = createLucideIcon("CircleDot", __iconNode$1N);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17889,6 +17874,21 @@ const CircleX = createLucideIcon("CircleX", __iconNode$1N);
 
 
 const __iconNode$1M = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+];
+const CircleX = createLucideIcon("CircleX", __iconNode$1M);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1L = [
   [
     "path",
     { d: "M15 2H9a1 1 0 0 0-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z", key: "1pp7kr" }
@@ -17902,21 +17902,7 @@ const __iconNode$1M = [
   ],
   ["path", { d: "m17 10 4 4-4 4", key: "vp2hj1" }]
 ];
-const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1M);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1L = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
-];
-const Clock = createLucideIcon("Clock", __iconNode$1L);
+const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1L);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17927,14 +17913,10 @@ const Clock = createLucideIcon("Clock", __iconNode$1L);
 
 
 const __iconNode$1K = [
-  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
-  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
-  [
-    "path",
-    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
-  ]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
 ];
-const CloudOff = createLucideIcon("CloudOff", __iconNode$1K);
+const Clock = createLucideIcon("Clock", __iconNode$1K);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17945,11 +17927,14 @@ const CloudOff = createLucideIcon("CloudOff", __iconNode$1K);
 
 
 const __iconNode$1J = [
-  ["path", { d: "M12 13v8", key: "1l5pq0" }],
-  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
-  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
+  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
+  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
+  [
+    "path",
+    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
+  ]
 ];
-const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1J);
+const CloudOff = createLucideIcon("CloudOff", __iconNode$1J);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17960,9 +17945,11 @@ const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1J);
 
 
 const __iconNode$1I = [
-  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
+  ["path", { d: "M12 13v8", key: "1l5pq0" }],
+  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
+  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
 ];
-const Cloud = createLucideIcon("Cloud", __iconNode$1I);
+const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1I);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17973,10 +17960,9 @@ const Cloud = createLucideIcon("Cloud", __iconNode$1I);
 
 
 const __iconNode$1H = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
+  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
 ];
-const Contrast = createLucideIcon("Contrast", __iconNode$1H);
+const Cloud = createLucideIcon("Cloud", __iconNode$1H);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17987,11 +17973,10 @@ const Contrast = createLucideIcon("Contrast", __iconNode$1H);
 
 
 const __iconNode$1G = [
-  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
 ];
-const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1G);
+const Contrast = createLucideIcon("Contrast", __iconNode$1G);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18002,10 +17987,11 @@ const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1G);
 
 
 const __iconNode$1F = [
+  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
   ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
   ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Copy = createLucideIcon("Copy", __iconNode$1F);
+const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1F);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18016,10 +18002,10 @@ const Copy = createLucideIcon("Copy", __iconNode$1F);
 
 
 const __iconNode$1E = [
-  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
-  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Crop = createLucideIcon("Crop", __iconNode$1E);
+const Copy = createLucideIcon("Copy", __iconNode$1E);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18030,13 +18016,10 @@ const Crop = createLucideIcon("Crop", __iconNode$1E);
 
 
 const __iconNode$1D = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
-  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
-  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
-  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
+  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
+  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
 ];
-const Crosshair = createLucideIcon("Crosshair", __iconNode$1D);
+const Crop = createLucideIcon("Crop", __iconNode$1D);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18047,11 +18030,13 @@ const Crosshair = createLucideIcon("Crosshair", __iconNode$1D);
 
 
 const __iconNode$1C = [
-  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
-  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
-  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
+  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
+  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
+  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
 ];
-const Database = createLucideIcon("Database", __iconNode$1C);
+const Crosshair = createLucideIcon("Crosshair", __iconNode$1C);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18062,6 +18047,21 @@ const Database = createLucideIcon("Database", __iconNode$1C);
 
 
 const __iconNode$1B = [
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
+];
+const Database = createLucideIcon("Database", __iconNode$1B);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1A = [
   ["path", { d: "M13 4h3a2 2 0 0 1 2 2v14", key: "hrm0s9" }],
   ["path", { d: "M2 20h3", key: "1gaodv" }],
   ["path", { d: "M13 20h9", key: "s90cdi" }],
@@ -18074,22 +18074,7 @@ const __iconNode$1B = [
     }
   ]
 ];
-const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1B);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1A = [
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
-  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
-];
-const Download = createLucideIcon("Download", __iconNode$1A);
+const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1A);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18100,15 +18085,11 @@ const Download = createLucideIcon("Download", __iconNode$1A);
 
 
 const __iconNode$1z = [
-  [
-    "path",
-    {
-      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
-      key: "c7niix"
-    }
-  ]
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
+  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
 ];
-const Droplet = createLucideIcon("Droplet", __iconNode$1z);
+const Download = createLucideIcon("Download", __iconNode$1z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18119,11 +18100,15 @@ const Droplet = createLucideIcon("Droplet", __iconNode$1z);
 
 
 const __iconNode$1y = [
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
-  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
-  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
+  [
+    "path",
+    {
+      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
+      key: "c7niix"
+    }
+  ]
 ];
-const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1y);
+const Droplet = createLucideIcon("Droplet", __iconNode$1y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18134,16 +18119,11 @@ const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1y);
 
 
 const __iconNode$1x = [
-  ["path", { d: "m15 15 6 6", key: "1s409w" }],
-  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
-  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
-  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
-  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
-  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
-  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
-  ["path", { d: "M9 9 3 3", key: "v551iv" }]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
+  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
 ];
-const Expand = createLucideIcon("Expand", __iconNode$1x);
+const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1x);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18154,11 +18134,16 @@ const Expand = createLucideIcon("Expand", __iconNode$1x);
 
 
 const __iconNode$1w = [
-  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
-  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
-  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
+  ["path", { d: "m15 15 6 6", key: "1s409w" }],
+  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
+  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
+  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
+  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
+  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
+  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
+  ["path", { d: "M9 9 3 3", key: "v551iv" }]
 ];
-const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1w);
+const Expand = createLucideIcon("Expand", __iconNode$1w);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18169,6 +18154,21 @@ const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1w);
 
 
 const __iconNode$1v = [
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
+];
+const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1v);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1u = [
   [
     "path",
     {
@@ -18186,27 +18186,7 @@ const __iconNode$1v = [
   ],
   ["path", { d: "m2 2 20 20", key: "1ooewy" }]
 ];
-const EyeOff = createLucideIcon("EyeOff", __iconNode$1v);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1u = [
-  [
-    "path",
-    {
-      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
-      key: "1nclc0"
-    }
-  ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
-];
-const Eye = createLucideIcon("Eye", __iconNode$1u);
+const EyeOff = createLucideIcon("EyeOff", __iconNode$1u);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18217,10 +18197,16 @@ const Eye = createLucideIcon("Eye", __iconNode$1u);
 
 
 const __iconNode$1t = [
-  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
-  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
+  [
+    "path",
+    {
+      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
+      key: "1nclc0"
+    }
+  ],
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
 ];
-const FastForward = createLucideIcon("FastForward", __iconNode$1t);
+const Eye = createLucideIcon("Eye", __iconNode$1t);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18231,17 +18217,10 @@ const FastForward = createLucideIcon("FastForward", __iconNode$1t);
 
 
 const __iconNode$1s = [
-  ["path", { d: "M10 12v-1", key: "v7bkov" }],
-  ["path", { d: "M10 18v-2", key: "1cjy8d" }],
-  ["path", { d: "M10 7V6", key: "dljcrl" }],
-  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  [
-    "path",
-    { d: "M15.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v16a2 2 0 0 0 .274 1.01", key: "gkbcor" }
-  ],
-  ["circle", { cx: "10", cy: "20", r: "2", key: "1xzdoj" }]
+  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
+  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
 ];
-const FileArchive = createLucideIcon("FileArchive", __iconNode$1s);
+const FastForward = createLucideIcon("FastForward", __iconNode$1s);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18252,17 +18231,17 @@ const FileArchive = createLucideIcon("FileArchive", __iconNode$1s);
 
 
 const __iconNode$1r = [
-  ["path", { d: "M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3", key: "rslqgf" }],
+  ["path", { d: "M10 12v-1", key: "v7bkov" }],
+  ["path", { d: "M10 18v-2", key: "1cjy8d" }],
+  ["path", { d: "M10 7V6", key: "dljcrl" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
   [
     "path",
-    {
-      d: "M2 19a2 2 0 1 1 4 0v1a2 2 0 1 1-4 0v-4a6 6 0 0 1 12 0v4a2 2 0 1 1-4 0v-1a2 2 0 1 1 4 0",
-      key: "9f7x3i"
-    }
-  ]
+    { d: "M15.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v16a2 2 0 0 0 .274 1.01", key: "gkbcor" }
+  ],
+  ["circle", { cx: "10", cy: "20", r: "2", key: "1xzdoj" }]
 ];
-const FileAudio = createLucideIcon("FileAudio", __iconNode$1r);
+const FileArchive = createLucideIcon("FileArchive", __iconNode$1r);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18273,12 +18252,17 @@ const FileAudio = createLucideIcon("FileAudio", __iconNode$1r);
 
 
 const __iconNode$1q = [
-  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3", key: "rslqgf" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 18v-6", key: "17g6i2" }],
-  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+  [
+    "path",
+    {
+      d: "M2 19a2 2 0 1 1 4 0v1a2 2 0 1 1-4 0v-4a6 6 0 0 1 12 0v4a2 2 0 1 1-4 0v-1a2 2 0 1 1 4 0",
+      key: "9f7x3i"
+    }
+  ]
 ];
-const FileDown = createLucideIcon("FileDown", __iconNode$1q);
+const FileAudio = createLucideIcon("FileAudio", __iconNode$1q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18291,16 +18275,10 @@ const FileDown = createLucideIcon("FileDown", __iconNode$1q);
 const __iconNode$1p = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  [
-    "path",
-    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
-  ],
-  [
-    "path",
-    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
-  ]
+  ["path", { d: "M12 18v-6", key: "17g6i2" }],
+  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
 ];
-const FileJson = createLucideIcon("FileJson", __iconNode$1p);
+const FileDown = createLucideIcon("FileDown", __iconNode$1p);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18313,12 +18291,16 @@ const FileJson = createLucideIcon("FileJson", __iconNode$1p);
 const __iconNode$1o = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M8 13h2", key: "yr2amv" }],
-  ["path", { d: "M14 13h2", key: "un5t4a" }],
-  ["path", { d: "M8 17h2", key: "2yhykz" }],
-  ["path", { d: "M14 17h2", key: "10kma7" }]
+  [
+    "path",
+    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
+  ],
+  [
+    "path",
+    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
+  ]
 ];
-const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1o);
+const FileJson = createLucideIcon("FileJson", __iconNode$1o);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18331,11 +18313,12 @@ const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1o);
 const __iconNode$1n = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M10 9H8", key: "b1mrlr" }],
-  ["path", { d: "M16 13H8", key: "t4e002" }],
-  ["path", { d: "M16 17H8", key: "z1uh3a" }]
+  ["path", { d: "M8 13h2", key: "yr2amv" }],
+  ["path", { d: "M14 13h2", key: "un5t4a" }],
+  ["path", { d: "M8 17h2", key: "2yhykz" }],
+  ["path", { d: "M14 17h2", key: "10kma7" }]
 ];
-const FileText = createLucideIcon("FileText", __iconNode$1n);
+const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1n);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18348,10 +18331,11 @@ const FileText = createLucideIcon("FileText", __iconNode$1n);
 const __iconNode$1m = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 12v6", key: "3ahymv" }],
-  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
+  ["path", { d: "M10 9H8", key: "b1mrlr" }],
+  ["path", { d: "M16 13H8", key: "t4e002" }],
+  ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileUp = createLucideIcon("FileUp", __iconNode$1m);
+const FileText = createLucideIcon("FileText", __iconNode$1m);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18364,9 +18348,10 @@ const FileUp = createLucideIcon("FileUp", __iconNode$1m);
 const __iconNode$1l = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "m10 11 5 3-5 3v-6Z", key: "7ntvm4" }]
+  ["path", { d: "M12 12v6", key: "3ahymv" }],
+  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
 ];
-const FileVideo = createLucideIcon("FileVideo", __iconNode$1l);
+const FileUp = createLucideIcon("FileUp", __iconNode$1l);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18377,16 +18362,11 @@ const FileVideo = createLucideIcon("FileVideo", __iconNode$1l);
 
 
 const __iconNode$1k = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
-  ["path", { d: "M7 3v18", key: "bbkbws" }],
-  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
-  ["path", { d: "M3 12h18", key: "1i2n21" }],
-  ["path", { d: "M3 16.5h4", key: "1230mu" }],
-  ["path", { d: "M17 3v18", key: "in4fa5" }],
-  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
-  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  ["path", { d: "m10 11 5 3-5 3v-6Z", key: "7ntvm4" }]
 ];
-const Film = createLucideIcon("Film", __iconNode$1k);
+const FileVideo = createLucideIcon("FileVideo", __iconNode$1k);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18397,15 +18377,16 @@ const Film = createLucideIcon("Film", __iconNode$1k);
 
 
 const __iconNode$1j = [
-  [
-    "path",
-    {
-      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
-      key: "96xj49"
-    }
-  ]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M7 3v18", key: "bbkbws" }],
+  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
+  ["path", { d: "M3 12h18", key: "1i2n21" }],
+  ["path", { d: "M3 16.5h4", key: "1230mu" }],
+  ["path", { d: "M17 3v18", key: "in4fa5" }],
+  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
+  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
 ];
-const Flame = createLucideIcon("Flame", __iconNode$1j);
+const Film = createLucideIcon("Film", __iconNode$1j);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18416,14 +18397,15 @@ const Flame = createLucideIcon("Flame", __iconNode$1j);
 
 
 const __iconNode$1i = [
-  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
-  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
-  ["path", { d: "M12 20v2", key: "1lh1kg" }],
-  ["path", { d: "M12 14v2", key: "8jcxud" }],
-  ["path", { d: "M12 8v2", key: "1woqiv" }],
-  ["path", { d: "M12 2v2", key: "tus03m" }]
+  [
+    "path",
+    {
+      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+      key: "96xj49"
+    }
+  ]
 ];
-const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1i);
+const Flame = createLucideIcon("Flame", __iconNode$1i);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18434,14 +18416,14 @@ const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1i);
 
 
 const __iconNode$1h = [
-  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
-  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
-  ["path", { d: "M4 12H2", key: "rhcxmi" }],
-  ["path", { d: "M10 12H8", key: "s88cx1" }],
-  ["path", { d: "M16 12h-2", key: "10asgb" }],
-  ["path", { d: "M22 12h-2", key: "14jgyd" }]
+  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
+  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "M12 14v2", key: "8jcxud" }],
+  ["path", { d: "M12 8v2", key: "1woqiv" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }]
 ];
-const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1h);
+const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1h);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18452,17 +18434,14 @@ const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1h);
 
 
 const __iconNode$1g = [
-  [
-    "path",
-    {
-      d: "M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1",
-      key: "fm4g5t"
-    }
-  ],
-  ["path", { d: "M2 13h10", key: "pgb2dq" }],
-  ["path", { d: "m9 16 3-3-3-3", key: "6m91ic" }]
+  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
+  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
+  ["path", { d: "M4 12H2", key: "rhcxmi" }],
+  ["path", { d: "M10 12H8", key: "s88cx1" }],
+  ["path", { d: "M16 12h-2", key: "10asgb" }],
+  ["path", { d: "M22 12h-2", key: "14jgyd" }]
 ];
-const FolderInput = createLucideIcon("FolderInput", __iconNode$1g);
+const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1g);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18473,11 +18452,17 @@ const FolderInput = createLucideIcon("FolderInput", __iconNode$1g);
 
 
 const __iconNode$1f = [
-  ["path", { d: "M7 2h10", key: "nczekb" }],
-  ["path", { d: "M5 6h14", key: "u2x4p" }],
-  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
+  [
+    "path",
+    {
+      d: "M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1",
+      key: "fm4g5t"
+    }
+  ],
+  ["path", { d: "M2 13h10", key: "pgb2dq" }],
+  ["path", { d: "m9 16 3-3-3-3", key: "6m91ic" }]
 ];
-const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1f);
+const FolderInput = createLucideIcon("FolderInput", __iconNode$1f);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18488,14 +18473,11 @@ const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1f)
 
 
 const __iconNode$1e = [
-  ["circle", { cx: "9", cy: "12", r: "1", key: "1vctgf" }],
-  ["circle", { cx: "9", cy: "5", r: "1", key: "hp0tcf" }],
-  ["circle", { cx: "9", cy: "19", r: "1", key: "fkjjf6" }],
-  ["circle", { cx: "15", cy: "12", r: "1", key: "1tmaij" }],
-  ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
-  ["circle", { cx: "15", cy: "19", r: "1", key: "f4zoj3" }]
+  ["path", { d: "M7 2h10", key: "nczekb" }],
+  ["path", { d: "M5 6h14", key: "u2x4p" }],
+  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
 ];
-const GripVertical = createLucideIcon("GripVertical", __iconNode$1e);
+const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1e);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18506,12 +18488,14 @@ const GripVertical = createLucideIcon("GripVertical", __iconNode$1e);
 
 
 const __iconNode$1d = [
-  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
-  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
-  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
-  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
+  ["circle", { cx: "9", cy: "12", r: "1", key: "1vctgf" }],
+  ["circle", { cx: "9", cy: "5", r: "1", key: "hp0tcf" }],
+  ["circle", { cx: "9", cy: "19", r: "1", key: "fkjjf6" }],
+  ["circle", { cx: "15", cy: "12", r: "1", key: "1tmaij" }],
+  ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
+  ["circle", { cx: "15", cy: "19", r: "1", key: "f4zoj3" }]
 ];
-const Hash = createLucideIcon("Hash", __iconNode$1d);
+const GripVertical = createLucideIcon("GripVertical", __iconNode$1d);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18522,11 +18506,12 @@ const Hash = createLucideIcon("Hash", __iconNode$1d);
 
 
 const __iconNode$1c = [
-  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
-  ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
-  ["path", { d: "M12 7v5l4 2", key: "1fdv2h" }]
+  ["line", { x1: "4", x2: "20", y1: "9", y2: "9", key: "4lhtct" }],
+  ["line", { x1: "4", x2: "20", y1: "15", y2: "15", key: "vyu0kd" }],
+  ["line", { x1: "10", x2: "8", y1: "3", y2: "21", key: "1ggp8o" }],
+  ["line", { x1: "16", x2: "14", y1: "3", y2: "21", key: "weycgp" }]
 ];
-const History = createLucideIcon("History", __iconNode$1c);
+const Hash = createLucideIcon("Hash", __iconNode$1c);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18537,10 +18522,11 @@ const History = createLucideIcon("History", __iconNode$1c);
 
 
 const __iconNode$1b = [
-  ["path", { d: "m9 11-6 6v3h9l3-3", key: "1a3l36" }],
-  ["path", { d: "m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4", key: "14a9rk" }]
+  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
+  ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
+  ["path", { d: "M12 7v5l4 2", key: "1fdv2h" }]
 ];
-const Highlighter = createLucideIcon("Highlighter", __iconNode$1b);
+const History = createLucideIcon("History", __iconNode$1b);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18551,16 +18537,10 @@ const Highlighter = createLucideIcon("Highlighter", __iconNode$1b);
 
 
 const __iconNode$1a = [
-  ["path", { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" }],
-  [
-    "path",
-    {
-      d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-      key: "1d0kgt"
-    }
-  ]
+  ["path", { d: "m9 11-6 6v3h9l3-3", key: "1a3l36" }],
+  ["path", { d: "m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4", key: "14a9rk" }]
 ];
-const House = createLucideIcon("House", __iconNode$1a);
+const Highlighter = createLucideIcon("Highlighter", __iconNode$1a);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18571,13 +18551,16 @@ const House = createLucideIcon("House", __iconNode$1a);
 
 
 const __iconNode$19 = [
-  ["path", { d: "M16 5h6", key: "1vod17" }],
-  ["path", { d: "M19 2v6", key: "4bpg5p" }],
-  ["path", { d: "M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5", key: "1ue2ih" }],
-  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
-  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }]
+  ["path", { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" }],
+  [
+    "path",
+    {
+      d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+      key: "1d0kgt"
+    }
+  ]
 ];
-const ImagePlus = createLucideIcon("ImagePlus", __iconNode$19);
+const House = createLucideIcon("House", __iconNode$19);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18588,11 +18571,13 @@ const ImagePlus = createLucideIcon("ImagePlus", __iconNode$19);
 
 
 const __iconNode$18 = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
-  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
-  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
+  ["path", { d: "M16 5h6", key: "1vod17" }],
+  ["path", { d: "M19 2v6", key: "4bpg5p" }],
+  ["path", { d: "M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5", key: "1ue2ih" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }]
 ];
-const Image$1 = createLucideIcon("Image", __iconNode$18);
+const ImagePlus = createLucideIcon("ImagePlus", __iconNode$18);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18603,11 +18588,11 @@ const Image$1 = createLucideIcon("Image", __iconNode$18);
 
 
 const __iconNode$17 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 16v-4", key: "1dtifu" }],
-  ["path", { d: "M12 8h.01", key: "e9boi3" }]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
 ];
-const Info = createLucideIcon("Info", __iconNode$17);
+const Image$1 = createLucideIcon("Image", __iconNode$17);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18618,16 +18603,11 @@ const Info = createLucideIcon("Info", __iconNode$17);
 
 
 const __iconNode$16 = [
-  [
-    "path",
-    {
-      d: "M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z",
-      key: "1s6t7t"
-    }
-  ],
-  ["circle", { cx: "16.5", cy: "7.5", r: ".5", fill: "currentColor", key: "w0ekpg" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 16v-4", key: "1dtifu" }],
+  ["path", { d: "M12 8h.01", key: "e9boi3" }]
 ];
-const KeyRound = createLucideIcon("KeyRound", __iconNode$16);
+const Info = createLucideIcon("Info", __iconNode$16);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18638,6 +18618,26 @@ const KeyRound = createLucideIcon("KeyRound", __iconNode$16);
 
 
 const __iconNode$15 = [
+  [
+    "path",
+    {
+      d: "M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z",
+      key: "1s6t7t"
+    }
+  ],
+  ["circle", { cx: "16.5", cy: "7.5", r: ".5", fill: "currentColor", key: "w0ekpg" }]
+];
+const KeyRound = createLucideIcon("KeyRound", __iconNode$15);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$14 = [
   [
     "path",
     {
@@ -18660,23 +18660,7 @@ const __iconNode$15 = [
     }
   ]
 ];
-const Layers = createLucideIcon("Layers", __iconNode$15);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$14 = [
-  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
-  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
-  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
-  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
-];
-const LayoutDashboard = createLucideIcon("LayoutDashboard", __iconNode$14);
+const Layers = createLucideIcon("Layers", __iconNode$14);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -31290,6 +31274,13 @@ function activityStats(reports){
 
 function formatDuration(seconds){seconds=Math.round(seconds||0);if(seconds<60)return `${seconds}s`;const minutes=Math.round(seconds/60);return minutes<60?`${minutes}m`:`${Math.floor(minutes/60)}h ${minutes%60}m`;}
 
+const REPORT_ORDER=['overview','progress','mistakes','memory','history','activity','insights'];
+function swipeTarget(order,current,dx,dy,min=60){
+  if(Math.abs(dx)<min||Math.abs(dx)<Math.abs(dy)*1.5)return null;
+  const i=order.indexOf(current);if(i<0)return null;
+  return order[i+(dx<0?1:-1)]??null;
+}
+
 const weekday$1 = (day) => new Date(day + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'narrow', timeZone: 'UTC' });
 const level$1 = (pct) => pct == null ? 'none' : pct >= 80 ? 'good' : pct >= 50 ? 'ok' : 'low';
 function ago$1(iso) { const m = Math.round((Date.now() - Date.parse(iso)) / 60000); if (m < 1)
@@ -32520,6 +32511,41 @@ function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTit
 const shortDate = (day) => new Date(day + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const weekday = (day) => new Date(day + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' });
 const periodName = (days) => days === 7 ? 'last week' : `previous ${days} days`;
+const REPORT_MAIN = [['overview', 'Overview'], ['progress', 'Progress'], ['mistakes', 'Mistakes'], ['memory', 'Memory']];
+const REPORT_MORE = [['history', 'History', History], ['activity', 'Activity', CalendarDays], ['insights', 'Insights', Lightbulb]];
+function ReportTabs({ value, onChange }) {
+    const [open, setOpen] = reactExports.useState(false), ref = reactExports.useRef(null);
+    const extra = REPORT_MORE.find(([id]) => id === value);
+    reactExports.useEffect(() => {
+        if (!open)
+            return;
+        const away = (e) => { if (!ref.current?.contains(e.target))
+            setOpen(false); };
+        const esc = (e) => { if (e.key === 'Escape')
+            setOpen(false); };
+        document.addEventListener('pointerdown', away);
+        document.addEventListener('keydown', esc);
+        return () => { document.removeEventListener('pointerdown', away); document.removeEventListener('keydown', esc); };
+    }, [open]);
+    const pick = (id) => { setOpen(false); onChange(id); };
+    return React.createElement("div", { className: "rt-tabs", ref: ref, role: "tablist", "aria-label": "Report sections" },
+        REPORT_MAIN.map(([id, label]) => React.createElement("button", { key: id, type: "button", role: "tab", "aria-selected": value === id, onClick: () => pick(id) }, label)),
+        React.createElement("button", { type: "button", role: "tab", className: "rt-more", "aria-selected": !!extra, "aria-haspopup": "menu", "aria-expanded": open, onClick: () => setOpen(v => !v) },
+            extra ? extra[1] : 'More',
+            React.createElement(ChevronDown, { size: 14, "aria-hidden": "true" })),
+        open && React.createElement("div", { className: "rt-menu", role: "menu" }, REPORT_MORE.map(([id, label, Icon]) => React.createElement("button", { key: id, type: "button", role: "menuitemradio", "aria-checked": value === id, onClick: () => pick(id) },
+            React.createElement(Icon, { size: 16, "aria-hidden": "true" }),
+            label))));
+}
+function blocksSwipe(el) {
+    for (let n = el; n && n !== document.body; n = n.parentElement) {
+        if (n.matches('input,select,textarea,[data-no-swipe]'))
+            return true;
+        if (n.scrollWidth > n.clientWidth + 1 && /(auto|scroll)/.test(getComputedStyle(n).overflowX))
+            return true;
+    }
+    return false;
+}
 function RangePicker({ value, onChange }) {
     return React.createElement("div", { className: "rx-range", role: "radiogroup", "aria-label": "Time range" }, REPORT_RANGES.map(([days, label]) => React.createElement("button", { key: days, type: "button", role: "radio", "aria-checked": value === days, onClick: () => onChange(days) }, label)));
 }
@@ -34220,6 +34246,9 @@ function IndexPage() {
     } });
     const [openReportId, setOpenReportId] = reactExports.useState(null);
     const [reportView, setReportView] = reactExports.useState("overview");
+    const [reportDir, setReportDir] = reactExports.useState("");
+    const reportSwipe = reactExports.useRef(null);
+    const showReport = (id) => { setReportDir(REPORT_ORDER.indexOf(id) > REPORT_ORDER.indexOf(reportView) ? "next" : "prev"); setReportView(id); };
     const [reportRange, setReportRangeState] = reactExports.useState(() => { const n = Number(localStorage.getItem("recallflow_report_range")); return [7, 30, 90, 0].includes(n) && localStorage.getItem("recallflow_report_range") !== null ? n : 30; });
     const [historyKind, setHistoryKind] = reactExports.useState("all");
     function setReportRange(days) { setReportRangeState(days); try {
@@ -35432,168 +35461,169 @@ function IndexPage() {
                 React.createElement("div", { className: styles$1.pageTitle },
                     React.createElement("div", null,
                         React.createElement("h1", null, "Reports"))),
-                React.createElement("div", { className: "reports-view-tabs", role: "tablist", "aria-label": "Report sections" }, [["overview", "Overview", LayoutDashboard], ["history", "History", History], ["progress", "Progress", ChartNoAxesColumnIncreasing], ["memory", "Memory", Brain], ["mistakes", "Mistakes", CircleX], ["activity", "Activity", CalendarDays], ["insights", "Insights", Lightbulb]].map(([id, label, Icon]) => React.createElement("button", { key: id, role: "tab", "aria-selected": reportView === id, onClick: e => { setReportView(id); e.currentTarget.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" }); } },
-                    React.createElement(Icon, { size: 17, "aria-hidden": "true" }),
-                    React.createElement("span", null, label)))),
-                !!reportHistory.length && ["overview", "history", "progress", "insights"].includes(reportView) && React.createElement(RangePicker, { value: reportRange, onChange: setReportRange }),
-                reportView === "memory" ? React.createElement(MemoryPanel, { counts: memoryCounts, forecast: forecast, onStart: () => startReview() }) : !reportHistory.length ? React.createElement("div", { className: styles$1.emptyReports },
-                    React.createElement(History, { size: 34 }),
-                    React.createElement("h2", null, "No reports yet"),
-                    React.createElement("p", null, "Finish your first quiz and its report will appear here. Progress, mistakes and activity will fill in as you practice."),
-                    React.createElement(Button, { onClick: startReview, disabled: !items.length },
-                        React.createElement(Play, { size: 16, fill: "currentColor" }),
-                        " Take a quiz")) : React.createElement(React.Fragment, null,
-                    reportView === "overview" && React.createElement(React.Fragment, null,
-                        rangeSummary.quizzes ? React.createElement(OverviewStats, { now: rangeSummary, before: previousSummary, days: reportRange, mastered: memoryCounts.mastered, total: items.length }) : React.createElement("div", { className: "report-inline-empty" },
-                            "No quizzes in ",
-                            rangeLabel,
-                            ". Pick a longer range to see older results."),
-                        React.createElement("div", { className: styles$1.reportSectionTitle },
-                            React.createElement("strong", null, "Recent quizzes"),
-                            React.createElement("button", { onClick: () => setReportView("history") },
-                                "View all ",
-                                React.createElement(ArrowRight, { size: 13 }))),
-                        React.createElement("div", { className: styles$1.reportList }, reportHistory.slice(0, 3).map((r, i) => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: i, openId: openReportId, setOpenId: setOpenReportId, items: items, retry: retryMistakes, copy: copySavedReport }))),
-                        React.createElement("div", { className: "report-shortcuts" },
-                            React.createElement("button", { onClick: () => setReportView("progress") },
-                                React.createElement(ChartNoAxesColumnIncreasing, null),
-                                React.createElement("span", null,
-                                    React.createElement("b", null, "Track progress"),
-                                    React.createElement("small", null, "See how accuracy changes")),
-                                React.createElement(ArrowRight, null)),
-                            React.createElement("button", { onClick: () => setReportView("mistakes") },
-                                React.createElement(CircleX, null),
-                                React.createElement("span", null,
-                                    React.createElement("b", null, "Review mistakes"),
-                                    React.createElement("small", null,
-                                        missedQuestions.length,
-                                        " ",
-                                        missedQuestions.length === 1 ? "question" : "questions",
-                                        " to revisit")),
-                                React.createElement(ArrowRight, null)),
-                            React.createElement("button", { onClick: () => setReportView("memory") },
-                                React.createElement(Brain, null),
-                                React.createElement("span", null,
-                                    React.createElement("b", null, "Memory strength"),
-                                    React.createElement("small", null,
-                                        forecast.days[0]?.count || 0,
-                                        " due today \u00B7 ",
-                                        memoryCounts.mastered,
-                                        " mastered")),
-                                React.createElement(ArrowRight, null)))),
-                    reportView === "history" && React.createElement(React.Fragment, null,
-                        React.createElement("div", { className: "rx-history-tools" },
-                            React.createElement("div", { className: "rx-chips", role: "radiogroup", "aria-label": "Show" }, [["all", "All"], ["quiz", "Quizzes"], ["retake", "Retakes"]].map(([id, label]) => React.createElement("button", { key: id, type: "button", role: "radio", "aria-checked": historyKind === id, onClick: () => setHistoryKind(id) }, label))),
-                            React.createElement(Button, { variant: "outline", size: "sm", onClick: exportCsv, disabled: !historyReports.length },
-                                React.createElement(FileSpreadsheet, { size: 15 }),
-                                " Export CSV")),
-                        React.createElement("div", { className: styles$1.reportSectionTitle },
-                            React.createElement("strong", null, "Quiz history"),
-                            React.createElement("span", null,
-                                historyReports.length,
-                                " in ",
+                React.createElement(ReportTabs, { value: reportView, onChange: showReport }),
+                React.createElement("div", { className: "rt-panel", key: reportView, "data-dir": reportDir || undefined, onTouchStart: e => { const t = e.touches[0]; reportSwipe.current = e.touches.length === 1 && !blocksSwipe(e.target) ? { x: t.clientX, y: t.clientY } : null; }, onTouchEnd: e => { const s = reportSwipe.current; reportSwipe.current = null; if (!s)
+                        return; const t = e.changedTouches[0]; const next = swipeTarget(REPORT_ORDER, reportView, t.clientX - s.x, t.clientY - s.y); if (next)
+                        showReport(next); } },
+                    !!reportHistory.length && ["overview", "history", "progress", "insights"].includes(reportView) && React.createElement(RangePicker, { value: reportRange, onChange: setReportRange }),
+                    reportView === "memory" ? React.createElement(MemoryPanel, { counts: memoryCounts, forecast: forecast, onStart: () => startReview() }) : !reportHistory.length ? React.createElement("div", { className: styles$1.emptyReports },
+                        React.createElement(History, { size: 34 }),
+                        React.createElement("h2", null, "No reports yet"),
+                        React.createElement("p", null, "Finish your first quiz and its report will appear here. Progress, mistakes and activity will fill in as you practice."),
+                        React.createElement(Button, { onClick: startReview, disabled: !items.length },
+                            React.createElement(Play, { size: 16, fill: "currentColor" }),
+                            " Take a quiz")) : React.createElement(React.Fragment, null,
+                        reportView === "overview" && React.createElement(React.Fragment, null,
+                            rangeSummary.quizzes ? React.createElement(OverviewStats, { now: rangeSummary, before: previousSummary, days: reportRange, mastered: memoryCounts.mastered, total: items.length }) : React.createElement("div", { className: "report-inline-empty" },
+                                "No quizzes in ",
                                 rangeLabel,
-                                " \u00B7 Select one for answers")),
-                        historyReports.length ? React.createElement("div", { className: styles$1.reportList }, historyReports.map((r, i) => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: reportHistory.indexOf(r), openId: openReportId, setOpenId: setOpenReportId, items: items, retry: retryMistakes, copy: copySavedReport }))) : React.createElement("div", { className: "report-inline-empty" },
-                            "Nothing here for ",
-                            rangeLabel,
-                            ".")),
-                    reportView === "progress" && React.createElement("section", { className: "report-content-card" },
-                        React.createElement("div", { className: "report-content-heading" },
-                            React.createElement("div", null,
-                                React.createElement("p", null, "ACCURACY OVER TIME"),
-                                React.createElement("h2", null, "Your progress")),
-                            React.createElement("strong", { title: "Latest quiz" },
-                                reportHistory[0]?.accuracy ?? 0,
-                                "%")),
-                        React.createElement("p", { className: "report-muted" },
-                            "Accuracy for each day in ",
-                            rangeLabel,
-                            ", with how many questions you answered underneath. The big number is your latest quiz."),
-                        rangeSummary.quizzes ? React.createElement(AccuracyChart, { series: rangeSeries }) : React.createElement("div", { className: "report-inline-empty" },
-                            "No quizzes in ",
-                            rangeLabel,
-                            "."),
-                        React.createElement("div", { className: "report-progress-stats" },
-                            React.createElement("div", null,
-                                React.createElement("strong", null, rangeSummary.correct),
-                                React.createElement("span", null, "Correct answers")),
-                            React.createElement("div", null,
-                                React.createElement("strong", null, rangeSummary.missed),
-                                React.createElement("span", null, "Missed answers")),
-                            React.createElement("div", null,
-                                React.createElement("strong", null, rangeSummary.quizzes ? formatDuration(rangeSummary.seconds / rangeSummary.quizzes) : "—"),
-                                React.createElement("span", null, "Avg. quiz time"))),
-                        (() => { const days = rangeSeries.filter(d => d.accuracy != null && d.answers >= 3); if (days.length < 2)
-                            return null; const best = days.reduce((a, b) => b.accuracy > a.accuracy || (b.accuracy === a.accuracy && b.answers > a.answers) ? b : a), half = Math.floor(days.length / 2), avg = (xs) => Math.round(xs.reduce((n, d) => n + d.correct, 0) / Math.max(1, xs.reduce((n, d) => n + d.answers, 0)) * 100), change = avg(days.slice(half)) - avg(days.slice(0, half)); return React.createElement("div", { className: "rx-callouts" },
-                            React.createElement("p", null,
-                                React.createElement("b", null, "Best day"),
-                                new Date(best.day + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }),
-                                " \u00B7 ",
-                                best.accuracy,
-                                "% on ",
-                                best.answers,
-                                " answers"),
-                            React.createElement("p", null,
-                                React.createElement("b", null, "Trend"),
-                                change > 0 ? `Up ${change} points in your more recent study days` : change < 0 ? `Down ${-change} points in your more recent study days` : "Holding steady")); })()),
-                    reportView === "mistakes" && React.createElement(MistakesPanel, { reports: reportHistory, items: items, onPractice: results => retryMistakes(results), onEdit: item => openAdd(item) }),
-                    reportView === "activity" && React.createElement(ActivityPanel, { reports: reportHistory, streakDays: streakDays }),
-                    reportView === "insights" && (rangeAnalytics.total ? React.createElement(React.Fragment, null,
-                        React.createElement("section", { className: "report-content-card" },
+                                ". Pick a longer range to see older results."),
+                            React.createElement("div", { className: styles$1.reportSectionTitle },
+                                React.createElement("strong", null, "Recent quizzes"),
+                                React.createElement("button", { onClick: () => setReportView("history") },
+                                    "View all ",
+                                    React.createElement(ArrowRight, { size: 13 }))),
+                            React.createElement("div", { className: styles$1.reportList }, reportHistory.slice(0, 3).map((r, i) => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: i, openId: openReportId, setOpenId: setOpenReportId, items: items, retry: retryMistakes, copy: copySavedReport }))),
+                            React.createElement("div", { className: "report-shortcuts" },
+                                React.createElement("button", { onClick: () => setReportView("progress") },
+                                    React.createElement(ChartNoAxesColumnIncreasing, null),
+                                    React.createElement("span", null,
+                                        React.createElement("b", null, "Track progress"),
+                                        React.createElement("small", null, "See how accuracy changes")),
+                                    React.createElement(ArrowRight, null)),
+                                React.createElement("button", { onClick: () => setReportView("mistakes") },
+                                    React.createElement(CircleX, null),
+                                    React.createElement("span", null,
+                                        React.createElement("b", null, "Review mistakes"),
+                                        React.createElement("small", null,
+                                            missedQuestions.length,
+                                            " ",
+                                            missedQuestions.length === 1 ? "question" : "questions",
+                                            " to revisit")),
+                                    React.createElement(ArrowRight, null)),
+                                React.createElement("button", { onClick: () => setReportView("memory") },
+                                    React.createElement(Brain, null),
+                                    React.createElement("span", null,
+                                        React.createElement("b", null, "Memory strength"),
+                                        React.createElement("small", null,
+                                            forecast.days[0]?.count || 0,
+                                            " due today \u00B7 ",
+                                            memoryCounts.mastered,
+                                            " mastered")),
+                                    React.createElement(ArrowRight, null)))),
+                        reportView === "history" && React.createElement(React.Fragment, null,
+                            React.createElement("div", { className: "rx-history-tools" },
+                                React.createElement("div", { className: "rx-chips", role: "radiogroup", "aria-label": "Show" }, [["all", "All"], ["quiz", "Quizzes"], ["retake", "Retakes"]].map(([id, label]) => React.createElement("button", { key: id, type: "button", role: "radio", "aria-checked": historyKind === id, onClick: () => setHistoryKind(id) }, label))),
+                                React.createElement(Button, { variant: "outline", size: "sm", onClick: exportCsv, disabled: !historyReports.length },
+                                    React.createElement(FileSpreadsheet, { size: 15 }),
+                                    " Export CSV")),
+                            React.createElement("div", { className: styles$1.reportSectionTitle },
+                                React.createElement("strong", null, "Quiz history"),
+                                React.createElement("span", null,
+                                    historyReports.length,
+                                    " in ",
+                                    rangeLabel,
+                                    " \u00B7 Select one for answers")),
+                            historyReports.length ? React.createElement("div", { className: styles$1.reportList }, historyReports.map((r, i) => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: reportHistory.indexOf(r), openId: openReportId, setOpenId: setOpenReportId, items: items, retry: retryMistakes, copy: copySavedReport }))) : React.createElement("div", { className: "report-inline-empty" },
+                                "Nothing here for ",
+                                rangeLabel,
+                                ".")),
+                        reportView === "progress" && React.createElement("section", { className: "report-content-card" },
                             React.createElement("div", { className: "report-content-heading" },
                                 React.createElement("div", null,
-                                    React.createElement("p", null, "WHERE YOU\u2019RE STRONG"),
-                                    React.createElement("h2", null, "Learning insights")),
-                                React.createElement(Sparkles, null)),
+                                    React.createElement("p", null, "ACCURACY OVER TIME"),
+                                    React.createElement("h2", null, "Your progress")),
+                                React.createElement("strong", { title: "Latest quiz" },
+                                    reportHistory[0]?.accuracy ?? 0,
+                                    "%")),
                             React.createElement("p", { className: "report-muted" },
-                                "Accuracy by subject, topic and question type in ",
+                                "Accuracy for each day in ",
                                 rangeLabel,
-                                ", weakest first. Tap Practice to drill one area."),
-                            Object.entries(rangeAnalytics.groups).map(([key, groups]) => { const rows = Object.entries(groups).sort(([, a], [, b]) => a.correct / a.total - b.correct / b.total); return rows.length ? React.createElement("div", { className: "report-insight-group", key: key },
-                                React.createElement("h3", null,
-                                    "By ",
-                                    key === "type" ? "question type" : key),
-                                rows.map(([name, s]) => { const pct = Math.round(s.correct / s.total * 100); return React.createElement("div", { className: "report-insight-row", key: name, "data-level": pct >= 80 ? "good" : pct >= 50 ? "ok" : "low" },
+                                ", with how many questions you answered underneath. The big number is your latest quiz."),
+                            rangeSummary.quizzes ? React.createElement(AccuracyChart, { series: rangeSeries }) : React.createElement("div", { className: "report-inline-empty" },
+                                "No quizzes in ",
+                                rangeLabel,
+                                "."),
+                            React.createElement("div", { className: "report-progress-stats" },
+                                React.createElement("div", null,
+                                    React.createElement("strong", null, rangeSummary.correct),
+                                    React.createElement("span", null, "Correct answers")),
+                                React.createElement("div", null,
+                                    React.createElement("strong", null, rangeSummary.missed),
+                                    React.createElement("span", null, "Missed answers")),
+                                React.createElement("div", null,
+                                    React.createElement("strong", null, rangeSummary.quizzes ? formatDuration(rangeSummary.seconds / rangeSummary.quizzes) : "—"),
+                                    React.createElement("span", null, "Avg. quiz time"))),
+                            (() => { const days = rangeSeries.filter(d => d.accuracy != null && d.answers >= 3); if (days.length < 2)
+                                return null; const best = days.reduce((a, b) => b.accuracy > a.accuracy || (b.accuracy === a.accuracy && b.answers > a.answers) ? b : a), half = Math.floor(days.length / 2), avg = (xs) => Math.round(xs.reduce((n, d) => n + d.correct, 0) / Math.max(1, xs.reduce((n, d) => n + d.answers, 0)) * 100), change = avg(days.slice(half)) - avg(days.slice(0, half)); return React.createElement("div", { className: "rx-callouts" },
+                                React.createElement("p", null,
+                                    React.createElement("b", null, "Best day"),
+                                    new Date(best.day + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" }),
+                                    " \u00B7 ",
+                                    best.accuracy,
+                                    "% on ",
+                                    best.answers,
+                                    " answers"),
+                                React.createElement("p", null,
+                                    React.createElement("b", null, "Trend"),
+                                    change > 0 ? `Up ${change} points in your more recent study days` : change < 0 ? `Down ${-change} points in your more recent study days` : "Holding steady")); })()),
+                        reportView === "mistakes" && React.createElement(MistakesPanel, { reports: reportHistory, items: items, onPractice: results => retryMistakes(results), onEdit: item => openAdd(item) }),
+                        reportView === "activity" && React.createElement(ActivityPanel, { reports: reportHistory, streakDays: streakDays }),
+                        reportView === "insights" && (rangeAnalytics.total ? React.createElement(React.Fragment, null,
+                            React.createElement("section", { className: "report-content-card" },
+                                React.createElement("div", { className: "report-content-heading" },
                                     React.createElement("div", null,
-                                        React.createElement("span", null, key === "type" ? typeLabel(name) : name),
-                                        React.createElement("strong", null,
-                                            pct,
-                                            "%")),
-                                    React.createElement("div", { className: "report-insight-track" },
-                                        React.createElement("i", { style: { width: `${pct}%` } })),
-                                    React.createElement("small", null,
-                                        s.correct,
-                                        "/",
-                                        s.total,
-                                        " correct \u00B7 ",
-                                        (s.seconds / s.total).toFixed(1),
-                                        "s average",
-                                        pct < 100 && React.createElement("button", { type: "button", className: "rx-practice-link", onClick: () => practiceGroup(key, name) },
-                                            React.createElement(Play, { size: 11, fill: "currentColor" }),
-                                            " Practice"))); })) : null; })),
-                        React.createElement("section", { className: "report-content-card" },
-                            React.createElement("div", { className: "report-content-heading" },
-                                React.createElement("div", null,
-                                    React.createElement("p", null, "NEEDS WORK"),
-                                    React.createElement("h2", null, "Hardest questions"))),
-                            (() => { const rows = hardestQuestions(rangeQuestionStats); return rows.length ? React.createElement(React.Fragment, null,
-                                React.createElement("p", { className: "report-muted" }, "Questions you\u2019ve tried at least twice, lowest success rate first."),
-                                React.createElement(QuestionStatList, { rows: rows, metric: "accuracy", onPractice: () => practiceQuestions(rows.map(r => r.id)), practiceLabel: `Practice these ${rows.length}` })) : React.createElement("div", { className: "report-inline-empty" },
-                                "No question has tripped you up more than once in ",
-                                rangeLabel,
-                                "."); })()),
-                        React.createElement("section", { className: "report-content-card" },
-                            React.createElement("div", { className: "report-content-heading" },
-                                React.createElement("div", null,
-                                    React.createElement("p", null, "SPEED"),
-                                    React.createElement("h2", null, "Slowest to answer")),
-                                React.createElement("strong", null, rangeSummary.perAnswer == null ? "—" : `${rangeSummary.perAnswer.toFixed(1)}s`)),
-                            React.createElement("p", { className: "report-muted" }, "Taking longer often means a question isn\u2019t quite automatic yet. The number above is your average per question."),
-                            React.createElement(QuestionStatList, { rows: slowestQuestions(rangeQuestionStats), metric: "speed" }))) : React.createElement("div", { className: "report-inline-empty" },
-                        "No quizzes in ",
-                        rangeLabel,
-                        ", so there\u2019s nothing to analyse yet."))),
+                                        React.createElement("p", null, "WHERE YOU\u2019RE STRONG"),
+                                        React.createElement("h2", null, "Learning insights")),
+                                    React.createElement(Sparkles, null)),
+                                React.createElement("p", { className: "report-muted" },
+                                    "Accuracy by subject, topic and question type in ",
+                                    rangeLabel,
+                                    ", weakest first. Tap Practice to drill one area."),
+                                Object.entries(rangeAnalytics.groups).map(([key, groups]) => { const rows = Object.entries(groups).sort(([, a], [, b]) => a.correct / a.total - b.correct / b.total); return rows.length ? React.createElement("div", { className: "report-insight-group", key: key },
+                                    React.createElement("h3", null,
+                                        "By ",
+                                        key === "type" ? "question type" : key),
+                                    rows.map(([name, s]) => { const pct = Math.round(s.correct / s.total * 100); return React.createElement("div", { className: "report-insight-row", key: name, "data-level": pct >= 80 ? "good" : pct >= 50 ? "ok" : "low" },
+                                        React.createElement("div", null,
+                                            React.createElement("span", null, key === "type" ? typeLabel(name) : name),
+                                            React.createElement("strong", null,
+                                                pct,
+                                                "%")),
+                                        React.createElement("div", { className: "report-insight-track" },
+                                            React.createElement("i", { style: { width: `${pct}%` } })),
+                                        React.createElement("small", null,
+                                            s.correct,
+                                            "/",
+                                            s.total,
+                                            " correct \u00B7 ",
+                                            (s.seconds / s.total).toFixed(1),
+                                            "s average",
+                                            pct < 100 && React.createElement("button", { type: "button", className: "rx-practice-link", onClick: () => practiceGroup(key, name) },
+                                                React.createElement(Play, { size: 11, fill: "currentColor" }),
+                                                " Practice"))); })) : null; })),
+                            React.createElement("section", { className: "report-content-card" },
+                                React.createElement("div", { className: "report-content-heading" },
+                                    React.createElement("div", null,
+                                        React.createElement("p", null, "NEEDS WORK"),
+                                        React.createElement("h2", null, "Hardest questions"))),
+                                (() => { const rows = hardestQuestions(rangeQuestionStats); return rows.length ? React.createElement(React.Fragment, null,
+                                    React.createElement("p", { className: "report-muted" }, "Questions you\u2019ve tried at least twice, lowest success rate first."),
+                                    React.createElement(QuestionStatList, { rows: rows, metric: "accuracy", onPractice: () => practiceQuestions(rows.map(r => r.id)), practiceLabel: `Practice these ${rows.length}` })) : React.createElement("div", { className: "report-inline-empty" },
+                                    "No question has tripped you up more than once in ",
+                                    rangeLabel,
+                                    "."); })()),
+                            React.createElement("section", { className: "report-content-card" },
+                                React.createElement("div", { className: "report-content-heading" },
+                                    React.createElement("div", null,
+                                        React.createElement("p", null, "SPEED"),
+                                        React.createElement("h2", null, "Slowest to answer")),
+                                    React.createElement("strong", null, rangeSummary.perAnswer == null ? "—" : `${rangeSummary.perAnswer.toFixed(1)}s`)),
+                                React.createElement("p", { className: "report-muted" }, "Taking longer often means a question isn\u2019t quite automatic yet. The number above is your average per question."),
+                                React.createElement(QuestionStatList, { rows: slowestQuestions(rangeQuestionStats), metric: "speed" }))) : React.createElement("div", { className: "report-inline-empty" },
+                            "No quizzes in ",
+                            rangeLabel,
+                            ", so there\u2019s nothing to analyse yet.")))),
                 message && React.createElement("p", { className: styles$1.note }, message)),
             tab === "settings" && React.createElement(SettingsPage, { items: items, reports: reportHistory, quizCount: quizCount, streakDays: streakDays, theme: themeChoice, onTheme: chooseTheme, onQuizDefaults: setQuizDefaults, onOpenTransfer: () => openTransfer("import"), onResetProgress: resetProgress, onDeleteAll: deleteEverything }),
             tab === "transfer" && React.createElement(TransferPage, { key: transferTab + transferSelection.join(), items: items, selectedIds: transferSelection, initial: transferTab, onImport: importItems, onUndo: (ids) => deleteQuestions(ids), onBack: () => { setTab("library"); window.scrollTo({ top: 0 }); } }),
