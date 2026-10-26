@@ -270,8 +270,8 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
   <button type="button" className="media-action" disabled={!!busy} aria-label={audio&&audio.startsWith('data:')?'Change sound file':'Upload sound file'} onClick={pickFile}>{busy?<LoaderCircle size={14} className="speech-spinner"/>:audio&&audio.startsWith('data:')?<RefreshCw size={14}/>:<Upload size={14}/>}{uploadLabel}</button>
   {!recording&&<button type="button" className="media-action" aria-label={`Add ${title.toLowerCase()} from a link`} aria-expanded={linking} aria-controls={linking?'question-sound-link':undefined} disabled={!!busy} onClick={openLink}><Link2 size={14}/>{linkLabel}</button>}
   {audio&&!recording&&!drive&&<button type="button" className="media-action" aria-label={`Edit ${title.toLowerCase()}`} disabled={!!busy} onClick={()=>setClipOpen(true)}><Scissors size={14}/>Edit</button>}
-  {audio&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={clearAudio}><Trash2 size={14}/></button>}
  </>;
+ const removeBtn=audio&&!recording&&countIn===null&&<button type="button" className="media-action is-remove" aria-label={`Remove ${title.toLowerCase()}`} disabled={!!busy} onClick={clearAudio}><Trash2 size={14}/></button>;
  const player=audio&&!recording&&!drive&&<div className="asset-media-extra"><SoundPlayer key={JSON.stringify(edit??null)} src={audio} edit={edit} durationHint={durationHint} variant="card" displayName={shownName} fileTitle={fullName} label={`Play ${title.toLowerCase()}`} className="editor-sound-player"/></div>;
  const legacy=audio&&!recording&&drive&&<div className="asset-media-extra"><DriveShareLegacyNotice kind="sound"/></div>;
  const progress=busy&&!recording&&<div className="mf-progress" role="status" aria-live="polite"><div className={`mf-progress-bar${busy.progress===undefined?' is-indeterminate':''}`}><i style={busy.progress!==undefined?{width:`${Math.round(busy.progress*100)}%`}:undefined}/></div><div className="mf-progress-row"><span>{busy.label}{busy.progress!==undefined?` ${Math.round(busy.progress*100)}%`:''}</span></div></div>;
@@ -287,7 +287,7 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
   const badgeClass=`asset-state${recording||countIn!==null?' is-warn':!audio?' is-empty':warn||drive?' is-warn':' is-ok'}`;
   const desc=recording||countIn!==null?(countIn!==null?`Recording starts in ${countIn}…`:`Recording… ${fmtTime(seconds)}`):busy?busy.label:(audio&&!drive?'Tap play to preview':hint);
   return <article className={`asset${audio?' has-image':''}${linking?' is-linking':''}${dragOver?' is-dragover':''}`} data-recording={recording||undefined} {...drop}>
-   <header className="media-head"><span className="media-ico" aria-hidden="true">{recording||countIn!==null?<span className="sound-rec-dot"/>:<AudioLines size={17}/>}</span><div className="media-headmain"><div className="media-titlerow"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{desc}</small></div></header>
+   <header className="media-head"><span className="media-ico" aria-hidden="true">{recording||countIn!==null?<span className="sound-rec-dot"/>:<AudioLines size={17}/>}</span><div className="media-headmain"><div className="media-titlerow"><span className="asset-name">{title}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{desc}</small></div>{removeBtn}</header>
    {!recording&&progress}
    {!recording?player:null}
    {!recording?legacy:null}
@@ -300,7 +300,7 @@ export function SoundField({audio,audioName,onAudioNameChange,edit,onEditChange,
  return <article className={`mf mf-sound${audio?' has-media':''}${dragOver?' is-dragover':''}`} data-recording={recording||undefined} {...drop}>
   <header className="mf-head"><span className="mf-ico" aria-hidden="true"><AudioLines size={18}/></span><div className="mf-headmain"><strong>{title}</strong><small className="mf-caption">{hint}</small></div></header>
   {!recording&&player}{progress}{warnEl}
-  <div className="asset-actions">{assetActions}</div>
+  <div className="asset-actions">{assetActions}{removeBtn}</div>
   {fileInput}{linkForm}{clip}
  </article>;
 }

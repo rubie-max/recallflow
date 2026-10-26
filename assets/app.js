@@ -23021,7 +23021,9 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
                     React.createElement("div", { className: "media-titlerow" },
                         React.createElement("span", { className: "asset-name" }, title),
                         React.createElement("span", { className: `asset-state ${badge.cls}` }, badge.text)),
-                    React.createElement("small", { className: "asset-caption" }, caption))),
+                    React.createElement("small", { className: "asset-caption" }, caption)),
+                video && !busy && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: remove },
+                    React.createElement(Trash2, { size: 14 }))),
             busy ? body : video && React.createElement("div", { className: "asset-media-extra" }, body),
             !busy && React.createElement("div", { className: "asset-actions" },
                 React.createElement("button", { type: "button", className: "media-action", onClick: pickFile },
@@ -23032,9 +23034,7 @@ function VideoField({ video, edit, onEditChange, onChange, onError, onClearError
                     "Link"),
                 video && !drive && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Edit ${title.toLowerCase()}`, onClick: () => setClipOpen(true) },
                     React.createElement(Scissors, { size: 14 }),
-                    "Edit"),
-                video && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, onClick: remove },
-                    React.createElement(Trash2, { size: 14 }))),
+                    "Edit")),
             fileInput,
             linkForm,
             clip);
@@ -31902,9 +31902,9 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
             linkLabel),
         audio && !recording && !drive && React.createElement("button", { type: "button", className: "media-action", "aria-label": `Edit ${title.toLowerCase()}`, disabled: !!busy, onClick: () => setClipOpen(true) },
             React.createElement(Scissors, { size: 14 }),
-            "Edit"),
-        audio && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: clearAudio },
-            React.createElement(Trash2, { size: 14 })));
+            "Edit"));
+    const removeBtn = audio && !recording && countIn === null && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${title.toLowerCase()}`, disabled: !!busy, onClick: clearAudio },
+        React.createElement(Trash2, { size: 14 }));
     const player = audio && !recording && !drive && React.createElement("div", { className: "asset-media-extra" },
         React.createElement(SoundPlayer, { key: JSON.stringify(edit ?? null), src: audio, edit: edit, durationHint: durationHint, variant: "card", displayName: shownName, fileTitle: fullName, label: `Play ${title.toLowerCase()}`, className: "editor-sound-player" }));
     const legacy = audio && !recording && drive && React.createElement("div", { className: "asset-media-extra" },
@@ -31938,7 +31938,8 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
                     React.createElement("div", { className: "media-titlerow" },
                         React.createElement("span", { className: "asset-name" }, title),
                         React.createElement("span", { className: badgeClass }, badge)),
-                    React.createElement("small", { className: "asset-caption" }, desc))),
+                    React.createElement("small", { className: "asset-caption" }, desc)),
+                removeBtn),
             !recording && progress,
             !recording ? player : null,
             !recording ? legacy : null,
@@ -31958,7 +31959,9 @@ function SoundField({ audio, audioName, onAudioNameChange, edit, onEditChange, o
         !recording && player,
         progress,
         warnEl,
-        React.createElement("div", { className: "asset-actions" }, assetActions),
+        React.createElement("div", { className: "asset-actions" },
+            assetActions,
+            removeBtn),
         fileInput,
         linkForm,
         clip);
@@ -33482,7 +33485,7 @@ function ImageLightbox({ src, onClose }) {
     return src ? React.createElement(ImageViewer, { src: src, alt: "Enlarged preview", onClose: onClose }) : null;
 }
 function mediaSlotCount(...values) { return values.filter(Boolean).length; }
-function InlineImage({ label, hint, image, onPick, onLink, onRemove, onView, onEdit, onClearError, assetLayout, required, linkLabel = 'Paste link', uploadEmptyLabel }) {
+function InlineImage({ label, hint, image, onPick, onLink, onRemove, onView, onEdit, onClearError, assetLayout, required, linkLabel = 'Link', uploadEmptyLabel }) {
     const input = reactExports.useRef(null), [loading, setLoading] = reactExports.useState(false), [linking, setLinking] = reactExports.useState(false);
     const pick = async (file) => { if (!file)
         return; setLoading(true); try {
@@ -33491,7 +33494,7 @@ function InlineImage({ label, hint, image, onPick, onLink, onRemove, onView, onE
     finally {
         setLoading(false);
     } };
-    const uploadLabel = loading ? 'Adding…' : image ? 'Change image' : (uploadEmptyLabel || 'Upload image');
+    const uploadLabel = loading ? 'Adding…' : image ? 'Replace' : (uploadEmptyLabel || 'Upload image');
     const uploadBtn = React.createElement("button", { type: "button", className: assetLayout ? 'media-action' : undefined, disabled: loading, "aria-label": uploadLabel, title: uploadLabel, onClick: () => { setLinking(false); input.current?.click(); } },
         loading ? React.createElement(LoaderCircle, { size: 14, className: "speech-spinner" }) : image ? React.createElement(RefreshCw, { size: 14 }) : React.createElement(Upload, { size: 14 }),
         assetLayout ? uploadLabel : (loading ? 'Adding…' : image ? 'Change' : 'Upload'));
@@ -33510,9 +33513,7 @@ function InlineImage({ label, hint, image, onPick, onLink, onRemove, onView, onE
                 React.createElement(Crop, { size: 14 }),
                 "Edit"),
             uploadBtn,
-            linkBtn,
-            image && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${label.toLowerCase()}`, disabled: loading, onClick: onRemove },
-                React.createElement(Trash2, { size: 14 })));
+            linkBtn);
         return React.createElement("article", { className: `asset${image ? ' has-image' : ''}${linking ? ' is-linking' : ''}` },
             React.createElement("header", { className: "media-head" },
                 React.createElement("span", { className: "media-ico", "aria-hidden": "true" },
@@ -33521,7 +33522,9 @@ function InlineImage({ label, hint, image, onPick, onLink, onRemove, onView, onE
                     React.createElement("div", { className: "media-titlerow" },
                         React.createElement("span", { className: "asset-name" }, label),
                         React.createElement("span", { className: badgeClass }, badge)),
-                    React.createElement("small", { className: "asset-caption" }, caption))),
+                    React.createElement("small", { className: "asset-caption" }, caption)),
+                image && React.createElement("button", { type: "button", className: "media-action is-remove", "aria-label": `Remove ${label.toLowerCase()}`, disabled: loading, onClick: onRemove },
+                    React.createElement(Trash2, { size: 14 }))),
             image && React.createElement("div", { className: "asset-media-extra" },
                 React.createElement("button", { type: "button", className: "media-banner", "aria-label": `Preview ${label.toLowerCase()}`, onClick: () => onView(image) },
                     React.createElement("img", { src: image, alt: "" }))),

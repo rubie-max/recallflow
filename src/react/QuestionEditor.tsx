@@ -74,10 +74,10 @@ export function ImageLightbox({src,onClose}:{src:string|null;onClose:()=>void}){
  return src?<ImageViewer src={src} alt="Enlarged preview" onClose={onClose}/>:null;
 }
 function mediaSlotCount(...values:(string|undefined)[]){return values.filter(Boolean).length}
-function InlineImage({label,hint,image,onPick,onLink,onRemove,onView,onEdit,onClearError,assetLayout,required,linkLabel='Paste link',uploadEmptyLabel}:any){
+function InlineImage({label,hint,image,onPick,onLink,onRemove,onView,onEdit,onClearError,assetLayout,required,linkLabel='Link',uploadEmptyLabel}:any){
  const input=useRef<HTMLInputElement>(null),[loading,setLoading]=useState(false),[linking,setLinking]=useState(false);
  const pick=async(file?:File)=>{if(!file)return;setLoading(true);try{await onPick(file);}finally{setLoading(false);}};
- const uploadLabel=loading?'Adding…':image?'Change image':(uploadEmptyLabel||'Upload image');
+ const uploadLabel=loading?'Adding…':image?'Replace':(uploadEmptyLabel||'Upload image');
  const uploadBtn=<button type="button" className={assetLayout?'media-action':undefined} disabled={loading} aria-label={uploadLabel} title={uploadLabel} onClick={()=>{setLinking(false);input.current?.click();}}>{loading?<LoaderCircle size={14} className="speech-spinner"/>:image?<RefreshCw size={14}/>:<Upload size={14}/>}{assetLayout?uploadLabel:(loading?'Adding…':image?'Change':'Upload')}</button>;
  const linkBtn=<button type="button" className={assetLayout?'media-action':undefined} aria-label={image?`Replace ${label.toLowerCase()} with a link`:`Add ${label.toLowerCase()} from a link`} aria-expanded={linking} disabled={loading} onClick={()=>{onClearError?.();setLinking(v=>!v);}}><Link2 size={14}/>{assetLayout?linkLabel:'Link'}</button>;
  const linkForm=linking&&<MediaLinkForm autoFocus resolve={resolveImageLink} label={`${label} link`} placeholder="https://…/picture.jpg" initialUrl={image?.startsWith('https://')?image:''} onClearError={onClearError} onCancel={()=>setLinking(false)} onSubmit={async(url:string)=>{if(await onLink(url))setLinking(false);}}/>;
@@ -86,9 +86,9 @@ function InlineImage({label,hint,image,onPick,onLink,onRemove,onView,onEdit,onCl
   const badge=!image?(required?'Needed':'Not added'):'Added';
   const badgeClass=!image?`asset-state${required?' is-warn':' is-empty'}`:'asset-state is-ok';
   const caption=image?'Tap the preview to view it full size':hint;
-  const actions=<div className="asset-actions">{image&&onEdit&&<button type="button" className="media-action" aria-label={`Edit ${label.toLowerCase()}`} disabled={loading} onClick={onEdit}><Crop size={14}/>Edit</button>}{uploadBtn}{linkBtn}{image&&<button type="button" className="media-action is-remove" aria-label={`Remove ${label.toLowerCase()}`} disabled={loading} onClick={onRemove}><Trash2 size={14}/></button>}</div>;
+  const actions=<div className="asset-actions">{image&&onEdit&&<button type="button" className="media-action" aria-label={`Edit ${label.toLowerCase()}`} disabled={loading} onClick={onEdit}><Crop size={14}/>Edit</button>}{uploadBtn}{linkBtn}</div>;
   return <article className={`asset${image?' has-image':''}${linking?' is-linking':''}`}>
-   <header className="media-head"><span className="media-ico" aria-hidden="true"><ImagePlus size={17}/></span><div className="media-headmain"><div className="media-titlerow"><span className="asset-name">{label}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div></header>
+   <header className="media-head"><span className="media-ico" aria-hidden="true"><ImagePlus size={17}/></span><div className="media-headmain"><div className="media-titlerow"><span className="asset-name">{label}</span><span className={badgeClass}>{badge}</span></div><small className="asset-caption">{caption}</small></div>{image&&<button type="button" className="media-action is-remove" aria-label={`Remove ${label.toLowerCase()}`} disabled={loading} onClick={onRemove}><Trash2 size={14}/></button>}</header>
    {image&&<div className="asset-media-extra"><button type="button" className="media-banner" aria-label={`Preview ${label.toLowerCase()}`} onClick={()=>onView(image)}><img src={image} alt=""/></button></div>}
    {actions}{linkForm}{fileInput}
   </article>;

@@ -1789,6 +1789,8 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .editor-media-step .media-action.is-remove{flex:0 0 44px;width:44px;min-width:44px;padding:0;color:#ffb0b2;background:#1a1620;border-color:#49303a}
 .editor-media-step .media-action.is-remove svg{color:inherit}
 .editor-media-step .media-action:disabled{opacity:.55;cursor:wait}
+.editor-media-step .media-head>.media-action.is-remove{flex:0 0 32px;width:32px;min-width:32px;height:32px;min-height:32px;border-radius:9px}
+.editor-media-step .asset-actions:has(>.media-action:nth-child(4)){display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 .editor-media-step .media-alert{margin:10px 0 0;border:1px solid #49303a;border-radius:12px;background:linear-gradient(100deg,#2b2028,#211b24);padding:10px 11px;display:flex;gap:9px;align-items:flex-start;color:#f1babc;font-size:10.5px;line-height:1.45}
 .editor-media-step .media-alert svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--ms-red)}
 .editor-media-step .media-alert strong{color:#ffd2d3}
