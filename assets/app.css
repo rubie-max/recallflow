@@ -950,6 +950,7 @@ html,body{overscroll-behavior-y:none}html{scroll-padding-bottom:calc(82px + env(
  .question-editor-page .editor-step-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;width:100%;grid-template-columns:repeat(3,minmax(0,1fr))!important}
  .question-editor-page .editor-step-controls>button,.question-editor-page .editor-step-controls .editor-preview-toggle{order:unset!important;min-height:36px!important;padding:0 8px!important;font-size:11px!important;width:100%}
  .question-editor-page .editor-tab-actions>button{width:100%;min-height:39px!important;font-weight:750}
+ body:not(.dark) .question-editor-page .editor-tab-actions{border-top-color:var(--border);background:color-mix(in srgb,var(--card) 92%,transparent)}
 }
 .editor-preview-answer-image,.editor-flashcard-answer-image{display:block;max-width:100%;max-height:160px;margin:0 auto;object-fit:contain;border-radius:10px}
 .editor-preview-options .editor-preview-option{justify-content:flex-start}
@@ -1809,6 +1810,26 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
  .editor-media-step .media-banner img{max-height:150px}
 }
 
+/* Light mode: the media step follows the theme instead of its fixed dark palette */
+body:not(.dark) .editor-media-step{--ms-line:var(--border);--ms-violet:var(--primary);--ms-muted:var(--muted-foreground)}
+body:not(.dark) .editor-media-step .media-panel{background:var(--card);box-shadow:var(--shadow)}
+body:not(.dark) .editor-media-step .media-panel-icon,body:not(.dark) .editor-media-step .editor-media-eyebrow-pill{background:var(--accent);border-color:var(--border);color:var(--accent-foreground)}
+body:not(.dark) .editor-media-step .asset{background:var(--surface)}
+body:not(.dark) .editor-media-step .media-ico,body:not(.dark) .editor-media-step .media-count,body:not(.dark) .editor-media-step .asset-state{background:var(--card);border-color:var(--border);color:var(--muted-foreground)}
+body:not(.dark) .editor-media-step .media-ico{color:var(--primary)}
+body:not(.dark) .editor-media-step .media-count.has-added,body:not(.dark) .editor-media-step .asset-state.is-ok{background:color-mix(in srgb,var(--success) 12%,var(--card));border-color:color-mix(in srgb,var(--success) 35%,var(--border));color:var(--success)}
+body:not(.dark) .editor-media-step .asset-state.is-warn{background:color-mix(in srgb,var(--error) 10%,var(--card));border-color:color-mix(in srgb,var(--error) 35%,var(--border));color:var(--error)}
+body:not(.dark) .editor-media-step .media-banner{background:var(--muted);border-color:var(--border)}
+body:not(.dark) .editor-media-step .asset-actions{border-top-color:var(--border)}
+body:not(.dark) .editor-media-step .media-action{background:var(--card);border-color:var(--border);color:var(--foreground)}
+body:not(.dark) .editor-media-step .media-action:hover{background:var(--muted);border-color:var(--primary)}
+body:not(.dark) .editor-media-step .media-action svg{color:var(--primary)}
+body:not(.dark) .editor-media-step .media-action.is-primary{background:var(--accent);color:var(--accent-foreground)}
+body:not(.dark) .editor-media-step .media-action.is-remove,body:not(.dark) .editor-media-step .media-action.is-recording{background:color-mix(in srgb,var(--error) 8%,var(--card));border-color:color-mix(in srgb,var(--error) 35%,var(--border));color:var(--error)}
+body:not(.dark) .editor-media-step .media-alert,body:not(.dark) .editor-media-step .media-drive-legacy{background:color-mix(in srgb,var(--error) 8%,var(--card));border-color:color-mix(in srgb,var(--error) 35%,var(--border));color:var(--foreground)}
+body:not(.dark) .editor-media-step .media-alert strong,body:not(.dark) .editor-media-step .media-drive-legacy strong{color:var(--error)}
+body:not(.dark) .editor-media-step .editor-media-link{background:var(--card);border-color:var(--border)}
+
 /* Legacy progress bar (recording UI) */
 .sound-progress{position:relative;display:block;height:4px;border-radius:4px;background:#3c3953;cursor:pointer;overflow:visible}
 .sound-progress::before{content:"";position:absolute;inset:-8px 0}
@@ -1892,7 +1913,8 @@ li[data-state=wrong] .list-answer-mark{color:var(--bad)}
 .settings-error{margin:8px 0 0;font-size:12.5px;color:#ef4444}
 
 /* RecallFlow audio/video editor UI — dark theme, mobile-first */
-:root,.dark{
+:root{--font-family-base:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mc-wave:#a99cff;--mc-wave-dim:#4c4870}
+.dark{
 --background:#17181d;--foreground:#f2f0ea;--surface:#22242b;--card:#1e2026;
 --surface-foreground:#f2f0ea;--card-foreground:#f2f0ea;--sidebar:#202229;--sidebar-foreground:#f2f0ea;--popup:#23252c;--popup-foreground:#f2f0ea;
 --secondary:#2b2d35;--secondary-foreground:#f2f0ea;--accent:#302f52;--accent-foreground:#d8d5ff;

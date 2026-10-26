@@ -179,6 +179,7 @@
  .question-editor-page .editor-step-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;width:100%;grid-template-columns:repeat(3,minmax(0,1fr))!important}
  .question-editor-page .editor-step-controls>button,.question-editor-page .editor-step-controls .editor-preview-toggle{order:unset!important;min-height:36px!important;padding:0 8px!important;font-size:11px!important;width:100%}
  .question-editor-page .editor-tab-actions>button{width:100%;min-height:39px!important;font-weight:750}
+ body:not(.dark) .question-editor-page .editor-tab-actions{border-top-color:var(--border);background:color-mix(in srgb,var(--card) 92%,transparent)}
 }
 .editor-preview-answer-image,.editor-flashcard-answer-image{display:block;max-width:100%;max-height:160px;margin:0 auto;object-fit:contain;border-radius:10px}
 .editor-preview-options .editor-preview-option{justify-content:flex-start}
