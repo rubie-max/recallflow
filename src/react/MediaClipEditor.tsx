@@ -93,8 +93,10 @@ function useBackdrop(video:React.RefObject<HTMLVideoElement|null>,canvas:React.R
   const draw=()=>{if(v.readyState<2||!v.videoWidth)return;const k=Math.max(32/v.videoWidth,24/v.videoHeight),w=v.videoWidth*k,h=v.videoHeight*k;try{g.drawImage(v,(32-w)/2,(24-h)/2,w,h);}catch{}};
   let raf=0,last=0;const loop=(t:number)=>{if(t-last>120){draw();last=t;}raf=requestAnimationFrame(loop);};
   v.addEventListener('loadeddata',draw);v.addEventListener('seeked',draw);draw();
+  const prime=()=>{if(v.paused&&v.currentTime===0&&v.readyState>=2){try{v.currentTime=0.001;}catch{}}};
+  v.addEventListener('loadeddata',prime);prime();
   if(playing)raf=requestAnimationFrame(loop);
-  return()=>{cancelAnimationFrame(raf);v.removeEventListener('loadeddata',draw);v.removeEventListener('seeked',draw);};
+  return()=>{cancelAnimationFrame(raf);v.removeEventListener('loadeddata',draw);v.removeEventListener('seeked',draw);v.removeEventListener('loadeddata',prime);};
  },[src,playing,video,canvas]);
 }
 /** A 4:3 box with a blurred backdrop and the video placed by `frame`. Used by the player and the editor. */

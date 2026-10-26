@@ -21486,9 +21486,17 @@ function useBackdrop(video, canvas, src, playing) {
         v.addEventListener('loadeddata', draw);
         v.addEventListener('seeked', draw);
         draw();
+        const prime = () => { if (v.paused && v.currentTime === 0 && v.readyState >= 2) {
+            try {
+                v.currentTime = 0.001;
+            }
+            catch { }
+        } };
+        v.addEventListener('loadeddata', prime);
+        prime();
         if (playing)
             raf = requestAnimationFrame(loop);
-        return () => { cancelAnimationFrame(raf); v.removeEventListener('loadeddata', draw); v.removeEventListener('seeked', draw); };
+        return () => { cancelAnimationFrame(raf); v.removeEventListener('loadeddata', draw); v.removeEventListener('seeked', draw); v.removeEventListener('loadeddata', prime); };
     }, [src, playing, video, canvas]);
 }
 /** A 4:3 box with a blurred backdrop and the video placed by `frame`. Used by the player and the editor. */
