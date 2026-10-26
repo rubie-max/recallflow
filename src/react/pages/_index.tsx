@@ -27,7 +27,7 @@ import {QuestionMedia} from "../QuestionMedia";
 import {WordBankAnswer,InlineBlankAnswer} from '../QuestionInteractions';
 import {QuizBuilder,StructuredAnswer} from '../LearningFeatures';
 import {scheduled,reviewedOn,openMistakes,textGrade,duplicateIds,filterQuiz,analytics} from '../../learning-core.js';
-import {streakStats,localDay,APP_TIME_ZONE} from '../../streak-stats.js';
+import {streakStats,localDay,APP_TIME_ZONE,dayLabel,greeting} from '../../streak-stats.js';
 import {reportsInRange,summarize,dailySeries,mastery,dueForecast,questionStats,hardestQuestions,slowestQuestions,reportsCsv,formatDuration,REPORT_ORDER,swipeTarget,groupByDay} from '../../report-stats.js';
 import {RangePicker,OverviewStats,AccuracyChart,MemoryPanel,QuestionStatList,ReportTabs,blocksSwipe,ScoreRing} from '../ReportPanels';
 import {QuestionEditor} from '../QuestionEditor';
@@ -400,6 +400,16 @@ export default function IndexPage(){
   const rangeAnalytics=useMemo(()=>analytics(rangeReports),[rangeReports]);
   const rangeQuestionStats=useMemo(()=>questionStats(rangeReports),[rangeReports]);
   const memoryCounts=useMemo(()=>mastery(items),[items]),forecast=useMemo(()=>dueForecast(items,7,today()),[items]);
+  const [homeMode,setHomeMode]=useState<"due"|"mistakes"|"weak"|"all">("due");
+  const weakItems=useMemo(()=>filterQuiz(items,reportHistory,{mode:'all',focus:'weak',count:0,subject:'',topic:'',types:[],shuffle:false}) as Item[],[items,reportHistory]);
+  const mistakeCount=useMemo(()=>missedItems(missedQuestions,items).length,[missedQuestions,items]);
+  const homeModes=[
+    {id:"due" as const,label:"Due",count:quizSize,note:quizSize?"Ready for review today.":items.length?"Nothing due. Pick Mistakes, Weak or All to keep going.":"Add a question to start practising.",start:()=>startReview()},
+    {id:"mistakes" as const,label:"Mistakes",count:mistakeCount,note:mistakeCount?"Questions you got wrong. Two right in a row fixes one.":"No open mistakes right now.",start:()=>retryMistakes([...missedQuestions])},
+    {id:"weak" as const,label:"Weak",count:weakItems.length,note:weakItems.length?"Questions you miss at least 3 times in 10.":"No weak questions yet.",start:()=>beginReview(prepareQuiz(weakItems,{...quizDefaults,count:0}),"all")},
+    {id:"all" as const,label:"All",count:items.length,note:items.length?"Every question in your bank.":"Add a question to start practising.",start:()=>beginReview(prepareQuiz(items,{...quizDefaults,count:0}),"all")},
+  ];
+  const homeCurrent=homeModes.find(m=>m.id===homeMode)!;
   const historyReports=rangeReports.filter(r=>historyKind==="all"||(historyKind==="retake")===(r.mode==="retry_mistakes"));
   const rangeLabel=reportRange?`the last ${reportRange} days`:"your history";
   function practiceGroup(key:string,name:string){
@@ -474,9 +484,17 @@ export default function IndexPage(){
 
   return <div className={styles.shell}><main className={`${styles.main} ${tab==="streak"?'streak-layout-shell':tab==="home"?styles.homeMain:''}`}>
     <header className="app-top-bar" data-scrolled={scrolled||undefined}><div><Brand size={28}/></div><div className={styles.headerRight}>{tab!=="home"&&<span className={styles.mini}>{items.length} questions</span>}<Button variant="ghost" size="icon-md" className={tab==="home"?styles.homeTheme:undefined} aria-label="Change theme" onClick={toggleTheme}>{tab==="home"?<><Sun size={13}/><span className={`${styles.themeSwitch} ${isDark?styles.themeDark:''}`}/><Moon size={13}/></>:isDark?<Sun size={18}/>:<Moon size={18}/>}</Button>{tab==="home"&&<button className={styles.profilePlaceholder} aria-label="Profile settings" title="Profile settings" onClick={()=>{setTab("settings");window.setTimeout(()=>document.getElementById("settings-profile")?.scrollIntoView({block:"start"}),50);}}>{profilePhoto?<img src={profilePhoto} alt=""/>:(prefs.name[0]||"?").toUpperCase()}</button>}</div></header>
-    {tab==="home"&&<><section className={styles.intro}><h1>Good to see you again{prefs.name?<>, <strong>{prefs.name}</strong></>:""}</h1></section>
-      <section className={styles.hero}><span className={styles.homeQuizIcon}><BookOpen size={23}/></span><div className={styles.heroCopy}>{resumable?<><div className={styles.homeQuizTitle}><h2>Quiz in progress</h2><span>{resumable.results.length} of {resumable.questions.length} answered</span></div><p>Pick up where you left off.</p></>:<><div className={styles.homeQuizTitle}><h2>Today's quiz</h2><span>{quizSize} {quizSize===1?'question':'questions'}</span></div><p>{quizSize||!items.length?"A little practice, every day.":"All caught up — nothing is due right now."}</p></>}</div>{resumable?<div className="resume-actions"><Button variant="outline" onClick={()=>startReview(true)}>Start over</Button><Button onClick={resumeQuiz}>Continue <ArrowRight size={16}/></Button></div>:<Button onClick={startReview} disabled={!items.length}>Start quiz <ArrowRight size={16}/></Button>}</section>
-      <div className={styles.quickQuizOptions}><button onClick={()=>{setMessage("");setShowQuizBuilder(true);window.scrollTo({top:0});}}>Advanced settings <Settings size={12}/></button></div>
+    {tab==="home"&&<><section className={`${styles.intro} home-greeting`}><p>{dayLabel()}</p><h1>{greeting()}{prefs.name?<>, <strong>{prefs.name}</strong></>:""}</h1><p>{due.length?`${due.length} due today`:"Nothing due today"}</p></section>
+      <section className="home-quiz" aria-label="Today's quiz">{resumable?<>
+        <div className="home-quiz-head"><span className={styles.homeQuizIcon}><BookOpen size={23}/></span><div><h2>Quiz in progress</h2><p>{resumable.results.length} of {resumable.questions.length} answered · pick up where you left off</p></div></div>
+        <div className="home-quiz-progress"><span style={{width:`${resumable.results.length/Math.max(1,resumable.questions.length)*100}%`}}/></div>
+        <div className="home-quiz-actions"><Button variant="outline" onClick={()=>startReview(true)}>Start over</Button><Button onClick={resumeQuiz}>Continue <ArrowRight size={16}/></Button></div>
+      </>:<>
+        <div className="home-quiz-head"><h2>{homeMode==="due"&&!quizSize&&items.length?"All caught up":"Today's quiz"}</h2><button type="button" className="home-quiz-settings" onClick={()=>{setMessage("");setShowQuizBuilder(true);window.scrollTo({top:0});}}><SlidersHorizontal size={13}/>Settings</button></div>
+        <div className="home-quiz-modes" role="radiogroup" aria-label="What to practise">{homeModes.map(m=><button key={m.id} type="button" role="radio" aria-checked={homeMode===m.id} data-mode={m.id} onClick={()=>setHomeMode(m.id)}><strong>{m.count}</strong><span>{m.label}</span></button>)}</div>
+        <p className="home-quiz-note">{homeCurrent.note}</p>
+        <Button className="home-quiz-start" disabled={!homeCurrent.count} onClick={homeCurrent.start}><Play size={15}/> Start {homeCurrent.count} {homeCurrent.count===1?"question":"questions"}</Button>
+      </>}</section>
       <section className={styles.streakCard}>
         <button className={styles.streakOpen} onClick={()=>setTab("streak")} aria-label={`Current streak: ${streak} ${streak===1?"day":"days"}. View streak details`}>
           <div className={styles.streakTop}><strong>Your streak</strong><span className={styles.homeStreakBadge}><Flame size={20}/><b>{streak} {streak===1?'day':'days'}</b></span></div>

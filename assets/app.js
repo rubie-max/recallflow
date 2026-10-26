@@ -20006,7 +20006,7 @@ const Input = reactExports.forwardRef(({ className, ...props }, ref) => {
 });
 Input.displayName = "Input";
 
-var styles$1 = {"shell":"rf__index_shell","main":"rf__index_main","mini":"rf__index_mini","intro":"rf__index_intro","pageTitle":"rf__index_pageTitle","finish":"rf__index_finish","hero":"rf__index_hero","heroCopy":"rf__index_heroCopy","eyebrow":"rf__index_eyebrow","streakCard":"rf__index_streakCard","streakOpen":"rf__index_streakOpen","streakTop":"rf__index_streakTop","week":"rf__index_week","dayMissed":"rf__index_dayMissed","dayDone":"rf__index_dayDone","dayToday":"rf__index_dayToday","streakHint":"rf__index_streakHint","homeStats":"rf__index_homeStats","nav":"rf__index_nav","active":"rf__index_active","plus":"rf__index_plus","quizNav":"rf__index_quizNav","note":"rf__index_note","reviewPage":"rf__index_reviewPage","track":"rf__index_track","flipCard":"rf__index_flipCard","flipInner":"rf__index_flipInner","flipped":"rf__index_flipped","flipFront":"rf__index_flipFront","flipBack":"rf__index_flipBack","two":"rf__index_two","options":"rf__index_options","answerArea":"rf__index_answerArea","feedbackGood":"rf__index_feedbackGood","feedbackBad":"rf__index_feedbackBad","feedbackIcon":"rf__index_feedbackIcon","feedbackCopy":"rf__index_feedbackCopy","finishBadge":"rf__index_finishBadge","scoreRing":"rf__index_scoreRing","finishStats":"rf__index_finishStats","reportsPage":"rf__index_reportsPage","reportList":"rf__index_reportList","reportCard":"rf__index_reportCard","reportHead":"rf__index_reportHead","emptyReports":"rf__index_emptyReports","homeStreakBadge":"rf__index_homeStreakBadge","homeTileDone":"rf__index_homeTileDone","homeMain":"rf__index_homeMain","headerRight":"rf__index_headerRight","homeTheme":"rf__index_homeTheme","themeSwitch":"rf__index_themeSwitch","themeDark":"rf__index_themeDark","profilePlaceholder":"rf__index_profilePlaceholder","homeQuizIcon":"rf__index_homeQuizIcon","homeQuizTitle":"rf__index_homeQuizTitle","homeTileUpcoming":"rf__index_homeTileUpcoming","homeTileToday":"rf__index_homeTileToday","homeTileCompletedToday":"rf__index_homeTileCompletedToday","daySkipped":"rf__index_daySkipped","quickQuizOptions":"rf__index_quickQuizOptions","reportSectionTitle":"rf__index_reportSectionTitle"};
+var styles$1 = {"shell":"rf__index_shell","main":"rf__index_main","mini":"rf__index_mini","intro":"rf__index_intro","pageTitle":"rf__index_pageTitle","finish":"rf__index_finish","eyebrow":"rf__index_eyebrow","streakCard":"rf__index_streakCard","streakOpen":"rf__index_streakOpen","streakTop":"rf__index_streakTop","week":"rf__index_week","dayMissed":"rf__index_dayMissed","dayDone":"rf__index_dayDone","dayToday":"rf__index_dayToday","streakHint":"rf__index_streakHint","homeStats":"rf__index_homeStats","nav":"rf__index_nav","active":"rf__index_active","plus":"rf__index_plus","quizNav":"rf__index_quizNav","note":"rf__index_note","reviewPage":"rf__index_reviewPage","track":"rf__index_track","flipCard":"rf__index_flipCard","flipInner":"rf__index_flipInner","flipped":"rf__index_flipped","flipFront":"rf__index_flipFront","flipBack":"rf__index_flipBack","two":"rf__index_two","options":"rf__index_options","answerArea":"rf__index_answerArea","feedbackGood":"rf__index_feedbackGood","feedbackBad":"rf__index_feedbackBad","feedbackIcon":"rf__index_feedbackIcon","feedbackCopy":"rf__index_feedbackCopy","finishBadge":"rf__index_finishBadge","scoreRing":"rf__index_scoreRing","finishStats":"rf__index_finishStats","reportsPage":"rf__index_reportsPage","reportList":"rf__index_reportList","reportCard":"rf__index_reportCard","reportHead":"rf__index_reportHead","emptyReports":"rf__index_emptyReports","homeStreakBadge":"rf__index_homeStreakBadge","homeTileDone":"rf__index_homeTileDone","homeMain":"rf__index_homeMain","headerRight":"rf__index_headerRight","homeTheme":"rf__index_homeTheme","themeSwitch":"rf__index_themeSwitch","themeDark":"rf__index_themeDark","profilePlaceholder":"rf__index_profilePlaceholder","homeQuizIcon":"rf__index_homeQuizIcon","homeTileUpcoming":"rf__index_homeTileUpcoming","homeTileToday":"rf__index_homeTileToday","homeTileCompletedToday":"rf__index_homeTileCompletedToday","daySkipped":"rf__index_daySkipped","reportSectionTitle":"rf__index_reportSectionTitle"};
 
 // Only generated audio lives here; other RecallFlow data stays in localStorage.
 let database;
@@ -20312,7 +20312,14 @@ const APP_TIME_ZONE='Asia/Kolkata';
 const IST_OFFSET=330*60000;
 // A Date whose UTC fields (getUTCHours, getUTCDay…) read as IST wall-clock values.
 function istClock(date=new Date()){return new Date(new Date(date).getTime()+IST_OFFSET);}
-function localDay(date=new Date()){const d=istClock(date);return Number.isFinite(d.getTime())?d.toISOString().slice(0,10):'';}function streakStats(days,today=localDay()) {
+function localDay(date=new Date()){const d=istClock(date);return Number.isFinite(d.getTime())?d.toISOString().slice(0,10):'';}
+const DAY_NAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+// "Monday, 26 Oct" for the IST calendar day.
+function dayLabel(date=new Date()){const d=istClock(date);return Number.isFinite(d.getTime())?`${DAY_NAMES[d.getUTCDay()]}, ${d.getUTCDate()} ${MONTH_NAMES[d.getUTCMonth()]}`:'';}
+// By IST hour: morning 5–11, afternoon 12–16, evening 17–20, night 21–4.
+function greeting(date=new Date()){const h=istClock(date).getUTCHours();if(!Number.isFinite(h))return 'Hello';return h>=5&&h<12?'Good morning':h>=12&&h<17?'Good afternoon':h>=17&&h<21?'Good evening':'Good night';}
+function streakStats(days,today=localDay()) {
   const end=Date.parse(today+'T00:00:00Z');
   const timestamps=[...new Set(days.filter(d=>typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)).filter(d=>{const t=Date.parse(d+'T00:00:00Z');return Number.isFinite(t)&&new Date(t).toISOString().slice(0,10)===d;}).map(d=>Date.parse(d+'T00:00:00Z')).filter(t=>t<=end))].sort((a,b)=>a-b);
   const active=new Set(timestamps);let cursor=active.has(end)?end:end-DAY,current=0,longest=0,run=0,previous;
@@ -34960,6 +34967,16 @@ function IndexPage() {
     const rangeAnalytics = reactExports.useMemo(() => analytics(rangeReports), [rangeReports]);
     const rangeQuestionStats = reactExports.useMemo(() => questionStats(rangeReports), [rangeReports]);
     const memoryCounts = reactExports.useMemo(() => mastery(items), [items]), forecast = reactExports.useMemo(() => dueForecast(items, 7, today()), [items]);
+    const [homeMode, setHomeMode] = reactExports.useState("due");
+    const weakItems = reactExports.useMemo(() => filterQuiz(items, reportHistory, { mode: 'all', focus: 'weak', count: 0, subject: '', topic: '', types: [], shuffle: false }), [items, reportHistory]);
+    const mistakeCount = reactExports.useMemo(() => missedItems(missedQuestions, items).length, [missedQuestions, items]);
+    const homeModes = [
+        { id: "due", label: "Due", count: quizSize, note: quizSize ? "Ready for review today." : items.length ? "Nothing due. Pick Mistakes, Weak or All to keep going." : "Add a question to start practising.", start: () => startReview() },
+        { id: "mistakes", label: "Mistakes", count: mistakeCount, note: mistakeCount ? "Questions you got wrong. Two right in a row fixes one." : "No open mistakes right now.", start: () => retryMistakes([...missedQuestions]) },
+        { id: "weak", label: "Weak", count: weakItems.length, note: weakItems.length ? "Questions you miss at least 3 times in 10." : "No weak questions yet.", start: () => beginReview(prepareQuiz(weakItems, { ...quizDefaults, count: 0 }), "all") },
+        { id: "all", label: "All", count: items.length, note: items.length ? "Every question in your bank." : "Add a question to start practising.", start: () => beginReview(prepareQuiz(items, { ...quizDefaults, count: 0 }), "all") },
+    ];
+    const homeCurrent = homeModes.find(m => m.id === homeMode);
     const historyReports = rangeReports.filter(r => historyKind === "all" || (historyKind === "retake") === (r.mode === "retry_mistakes"));
     const rangeLabel = reportRange ? `the last ${reportRange} days` : "your history";
     function practiceGroup(key, name) {
@@ -35243,42 +35260,47 @@ function IndexPage() {
                         React.createElement(Moon, { size: 13 })) : isDark ? React.createElement(Sun, { size: 18 }) : React.createElement(Moon, { size: 18 })),
                     tab === "home" && React.createElement("button", { className: styles$1.profilePlaceholder, "aria-label": "Profile settings", title: "Profile settings", onClick: () => { setTab("settings"); window.setTimeout(() => document.getElementById("settings-profile")?.scrollIntoView({ block: "start" }), 50); } }, profilePhoto ? React.createElement("img", { src: profilePhoto, alt: "" }) : (prefs.name[0] || "?").toUpperCase()))),
             tab === "home" && React.createElement(React.Fragment, null,
-                React.createElement("section", { className: styles$1.intro },
+                React.createElement("section", { className: `${styles$1.intro} home-greeting` },
+                    React.createElement("p", null, dayLabel()),
                     React.createElement("h1", null,
-                        "Good to see you again",
+                        greeting(),
                         prefs.name ? React.createElement(React.Fragment, null,
                             ", ",
-                            React.createElement("strong", null, prefs.name)) : "")),
-                React.createElement("section", { className: styles$1.hero },
-                    React.createElement("span", { className: styles$1.homeQuizIcon },
-                        React.createElement(BookOpen, { size: 23 })),
-                    React.createElement("div", { className: styles$1.heroCopy }, resumable ? React.createElement(React.Fragment, null,
-                        React.createElement("div", { className: styles$1.homeQuizTitle },
+                            React.createElement("strong", null, prefs.name)) : ""),
+                    React.createElement("p", null, due.length ? `${due.length} due today` : "Nothing due today")),
+                React.createElement("section", { className: "home-quiz", "aria-label": "Today's quiz" }, resumable ? React.createElement(React.Fragment, null,
+                    React.createElement("div", { className: "home-quiz-head" },
+                        React.createElement("span", { className: styles$1.homeQuizIcon },
+                            React.createElement(BookOpen, { size: 23 })),
+                        React.createElement("div", null,
                             React.createElement("h2", null, "Quiz in progress"),
-                            React.createElement("span", null,
+                            React.createElement("p", null,
                                 resumable.results.length,
                                 " of ",
                                 resumable.questions.length,
-                                " answered")),
-                        React.createElement("p", null, "Pick up where you left off.")) : React.createElement(React.Fragment, null,
-                        React.createElement("div", { className: styles$1.homeQuizTitle },
-                            React.createElement("h2", null, "Today's quiz"),
-                            React.createElement("span", null,
-                                quizSize,
-                                " ",
-                                quizSize === 1 ? 'question' : 'questions')),
-                        React.createElement("p", null, quizSize || !items.length ? "A little practice, every day." : "All caught up — nothing is due right now."))),
-                    resumable ? React.createElement("div", { className: "resume-actions" },
+                                " answered \u00B7 pick up where you left off"))),
+                    React.createElement("div", { className: "home-quiz-progress" },
+                        React.createElement("span", { style: { width: `${resumable.results.length / Math.max(1, resumable.questions.length) * 100}%` } })),
+                    React.createElement("div", { className: "home-quiz-actions" },
                         React.createElement(Button, { variant: "outline", onClick: () => startReview(true) }, "Start over"),
                         React.createElement(Button, { onClick: resumeQuiz },
                             "Continue ",
-                            React.createElement(ArrowRight, { size: 16 }))) : React.createElement(Button, { onClick: startReview, disabled: !items.length },
-                        "Start quiz ",
-                        React.createElement(ArrowRight, { size: 16 }))),
-                React.createElement("div", { className: styles$1.quickQuizOptions },
-                    React.createElement("button", { onClick: () => { setMessage(""); setShowQuizBuilder(true); window.scrollTo({ top: 0 }); } },
-                        "Advanced settings ",
-                        React.createElement(Settings, { size: 12 }))),
+                            React.createElement(ArrowRight, { size: 16 })))) : React.createElement(React.Fragment, null,
+                    React.createElement("div", { className: "home-quiz-head" },
+                        React.createElement("h2", null, homeMode === "due" && !quizSize && items.length ? "All caught up" : "Today's quiz"),
+                        React.createElement("button", { type: "button", className: "home-quiz-settings", onClick: () => { setMessage(""); setShowQuizBuilder(true); window.scrollTo({ top: 0 }); } },
+                            React.createElement(SlidersHorizontal, { size: 13 }),
+                            "Settings")),
+                    React.createElement("div", { className: "home-quiz-modes", role: "radiogroup", "aria-label": "What to practise" }, homeModes.map(m => React.createElement("button", { key: m.id, type: "button", role: "radio", "aria-checked": homeMode === m.id, "data-mode": m.id, onClick: () => setHomeMode(m.id) },
+                        React.createElement("strong", null, m.count),
+                        React.createElement("span", null, m.label)))),
+                    React.createElement("p", { className: "home-quiz-note" }, homeCurrent.note),
+                    React.createElement(Button, { className: "home-quiz-start", disabled: !homeCurrent.count, onClick: homeCurrent.start },
+                        React.createElement(Play, { size: 15 }),
+                        " Start ",
+                        homeCurrent.count,
+                        " ",
+                        homeCurrent.count === 1 ? "question" : "questions"))),
                 React.createElement("section", { className: styles$1.streakCard },
                     React.createElement("button", { className: styles$1.streakOpen, onClick: () => setTab("streak"), "aria-label": `Current streak: ${streak} ${streak === 1 ? "day" : "days"}. View streak details` },
                         React.createElement("div", { className: styles$1.streakTop },
