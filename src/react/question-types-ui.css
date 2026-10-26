@@ -929,4 +929,8 @@ label.split-choice:has(.choice-media) .split-choice-text>span:not(.zoomable-imag
 .mx-reveal{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:10px;border:1.5px dashed var(--border);border-radius:12px;background:none;color:var(--muted-foreground);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
 .mx-actions{display:flex;justify-content:flex-end}
 .mx-actions button{height:34px;padding:0 14px}
+.mx-list,.qr-list{grid-template-columns:minmax(0,1fr)}
+.mx-item,.qr-item{min-width:0}
+.mx-prompt,.mx-answers p span,.qr-said{overflow-wrap:anywhere}
+.rv-media,.rv-media>*{max-width:100%}
 @media(max-width:420px){.ax-stats{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px}.ax-stats>div{flex-direction:column!important;align-items:center!important;text-align:center;padding:10px 4px}.ax-stats svg{margin:0 0 2px!important}.ax-stats strong{font-size:17px}.ax-stats span{flex-basis:auto!important;font-size:10.5px}}

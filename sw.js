@@ -1,4 +1,4 @@
-const CACHE='recallflow-shell-v125';
+const CACHE='recallflow-shell-v126';
 const IMAGE_CACHE='recallflow-images';
 const ROOT=new URL('./',self.location.href);
 const FILES=['./','./index.html','./assets/app.js','./assets/app.css','./public/recallflow-logo.png','./public/recallflow-logo.svg','./manifest.webmanifest','./public/icon-192.png','./public/icon-512.png',...['af_heart','af_bella','am_michael','am_fenrir','bf_emma'].map(voice=>'./public/voice-previews/'+voice+'.wav')];
