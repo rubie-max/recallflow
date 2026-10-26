@@ -5,6 +5,7 @@ import {questionTypes,typeLabel,validateQuestion} from '../question-types.js';
 import {itemTypes} from '../question-variants.js';
 import {exportFormats,importFormats,serialize,parseImport,duplicateKey,csvTemplate,aiImportPrompt,embeddedAudioCount,embeddedVideoCount} from '../transfer-formats.js';
 import {inlineImages} from '../sync.js';
+import {localDay} from '../streak-stats.js';
 
 const formatIcons:any={json:FileJson,csv:Sheet,tsv:Layers,text:FileText};
 const formatShort:any={json:['RecallFlow','Full backup'],csv:['Spreadsheet','Excel · Sheets'],tsv:['Flashcards','Anki · Quizlet'],text:['Printable','Read or print']};
@@ -33,7 +34,7 @@ function ExportPanel({items,selectedIds,onDone}:any){
  const linkVideoCount=chosen.filter((x:any)=>['video','answerVideo'].some(k=>typeof x[k]==='string'&&x[k].startsWith('https://'))).length;
  const chosenSubjects=new Set(chosen.map((x:any)=>x.subject||'General')).size;
  const bytes=useMemo(()=>new Blob([output]).size,[output]);
- const name=`recallflow-${scope==='subject'?subject.toLowerCase().replace(/[^a-z0-9]+/g,'-'):scope}-${new Date().toISOString().slice(0,10)}.${meta.ext}`;
+ const name=`recallflow-${scope==='subject'?subject.toLowerCase().replace(/[^a-z0-9]+/g,'-'):scope}-${localDay()}.${meta.ext}`;
  async function copy(){try{await navigator.clipboard.writeText(output);setStatus('Copied to the clipboard.');}catch{setStatus('Copy is blocked here. Use Download instead.');}}
  const canShare=useMemo(()=>{if(typeof navigator==='undefined'||!navigator.share||!navigator.canShare)return false;try{return navigator.canShare({files:[new File(['x'],'test.'+meta.ext,{type:meta.mime})]});}catch{return false;}},[meta]);
  async function share(){let f:File;try{f=new File([output],name,{type:meta.mime});}catch{return;}try{await navigator.share({files:[f],title:name});setStatus(`Shared ${name}`);}catch(e:any){if(e?.name!=='AbortError')setStatus('Sharing did not work here. Use Download instead.');}}

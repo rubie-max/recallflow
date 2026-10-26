@@ -20305,6 +20305,22 @@ function prepareQuiz(items,preferences,random=Math.random) {
   return preferences.count?result.slice(0,preferences.count):result;
 }
 
+const DAY=86400000;
+// Study days, due dates, streaks and every shown time use India Standard Time,
+// whatever timezone the device is set to. IST has no daylight saving, so a fixed offset is exact.
+const APP_TIME_ZONE='Asia/Kolkata';
+const IST_OFFSET=330*60000;
+// A Date whose UTC fields (getUTCHours, getUTCDay…) read as IST wall-clock values.
+function istClock(date=new Date()){return new Date(new Date(date).getTime()+IST_OFFSET);}
+function localDay(date=new Date()){const d=istClock(date);return Number.isFinite(d.getTime())?d.toISOString().slice(0,10):'';}function streakStats(days,today=localDay()) {
+  const end=Date.parse(today+'T00:00:00Z');
+  const timestamps=[...new Set(days.filter(d=>typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)).filter(d=>{const t=Date.parse(d+'T00:00:00Z');return Number.isFinite(t)&&new Date(t).toISOString().slice(0,10)===d;}).map(d=>Date.parse(d+'T00:00:00Z')).filter(t=>t<=end))].sort((a,b)=>a-b);
+  const active=new Set(timestamps);let cursor=active.has(end)?end:end-DAY,current=0,longest=0,run=0,previous;
+  while(active.has(cursor)){current++;cursor-=DAY;}
+  for(const t of timestamps){run=previous!==undefined&&t-previous===DAY?run+1:1;longest=Math.max(longest,run);previous=t;}
+  return {current,longest,total:active.size};
+}
+
 function VoiceCache() {
     const [stats, setStats] = reactExports.useState(null), [status, setStatus] = reactExports.useState(''), [confirm, setConfirm] = reactExports.useState(false), [clearing, setClearing] = reactExports.useState(false);
     reactExports.useEffect(() => { let active = true, revision = 0; async function refresh() { const current = ++revision; try {
@@ -20968,23 +20984,11 @@ function playFeedback(kind,mode=appPreferences().soundEffects){
   playPreset(kind);
 }
 
-const DAY=86400000;
-// Study days, due dates and streaks follow the device's own calendar day, not UTC.
-function localDay(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
-function streakStats(days,today=localDay()) {
-  const end=Date.parse(today+'T00:00:00Z');
-  const timestamps=[...new Set(days.filter(d=>typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)).filter(d=>{const t=Date.parse(d+'T00:00:00Z');return Number.isFinite(t)&&new Date(t).toISOString().slice(0,10)===d;}).map(d=>Date.parse(d+'T00:00:00Z')).filter(t=>t<=end))].sort((a,b)=>a-b);
-  const active=new Set(timestamps);let cursor=active.has(end)?end:end-DAY,current=0,longest=0,run=0,previous;
-  while(active.has(cursor)){current++;cursor-=DAY;}
-  for(const t of timestamps){run=previous!==undefined&&t-previous===DAY?run+1:1;longest=Math.max(longest,run);previous=t;}
-  return {current,longest,total:active.size};
-}
-
 const normalize=s=>String(s).normalize('NFKC').toLocaleLowerCase().trim().replace(/[^\p{L}\p{N}]/gu,'');
 function distance(a,b){let row=Array.from({length:b.length+1},(_,i)=>i);for(let i=1;i<=a.length;i++){let next=[i];for(let j=1;j<=b.length;j++)next[j]=Math.min(next[j-1]+1,row[j]+1,row[j-1]+(a[i-1]===b[j-1]?0:1));row=next;}return row[b.length];}
 function textGrade(item,value){const actual=normalize(value),answers=[item.answer,...(item.acceptedAnswers||[]),...(item.alt?[item.alt]:[])].map(normalize);if(actual&&answers.includes(actual))return 'correct';if(item.fuzzy!==false&&actual&&answers.some(a=>a.length>=5&&actual.length>=5&&distance(actual,a)<=1&&!/\d/.test(a+actual)))return 'typo';return 'wrong';}
 // A miss comes back tomorrow, and answering it right then restores about a quarter of its old gap.
-function scheduled(item,correct,now=new Date()){const interval=correct?Math.min(365,Math.max(1,Math.round((item.interval||0)*2.2))):Math.round((item.interval||0)*.25/2.2);const next=new Date(now);next.setDate(next.getDate()+(correct?interval:1));return {...item,interval,due:localDay(next),lastReviewed:now.toISOString(),attempts:(item.attempts||0)+1,lapses:(item.lapses||0)+(correct?0:1)};}
+function scheduled(item,correct,now=new Date()){const interval=correct?Math.min(365,Math.max(1,Math.round((item.interval||0)*2.2))):Math.round((item.interval||0)*.25/2.2);const next=new Date(now.getTime()+(correct?interval:1)*86400000);return {...item,interval,due:localDay(next),lastReviewed:now.toISOString(),attempts:(item.attempts||0)+1,lapses:(item.lapses||0)+(correct?0:1)};}
 // The first answer of the day sets the schedule; retakes and extra practice the same day do not.
 function reviewedOn(item,day=localDay()){return !!item.lastReviewed&&localDay(new Date(item.lastReviewed))===day;}
 // Missed questions still worth revisiting, newest miss first, each with the latest wrong answer.
@@ -30097,7 +30101,7 @@ function BackupPanel({ items, reports, quizCount, streakDays, theme }) {
         const url = URL.createObjectURL(new Blob([json()], { type: 'application/json' }));
         const link = document.createElement('a');
         link.href = url;
-        link.download = `RecallFlow_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        link.download = `RecallFlow_backup_${localDay()}.json`;
         document.body.append(link);
         link.click();
         link.remove();
@@ -30125,7 +30129,7 @@ function BackupPanel({ items, reports, quizCount, streakDays, theme }) {
         status && React.createElement("p", { className: "settings-status", role: "status" }, status));
 }
 const PENDING_BACKUP = 'rf_backup_pending', WAIT_MS = 6 * 60000;
-function when(iso) { const d = new Date(iso), days = Math.round((new Date().setHours(0, 0, 0, 0) - new Date(iso).setHours(0, 0, 0, 0)) / 864e5), time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); return days === 0 ? `Today, ${time}` : days === 1 ? `Yesterday, ${time}` : `${d.toLocaleDateString([], { day: 'numeric', month: 'short' })}, ${time}`; }
+function when(iso) { const d = new Date(iso), days = Math.round((Date.parse(localDay() + 'T00:00:00Z') - Date.parse(localDay(d) + 'T00:00:00Z')) / 864e5), time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', timeZone: APP_TIME_ZONE }); return days === 0 ? `Today, ${time}` : days === 1 ? `Yesterday, ${time}` : `${d.toLocaleDateString([], { day: 'numeric', month: 'short', timeZone: APP_TIME_ZONE })}, ${time}`; }
 function TelegramBackup() {
     const [last, setLast] = reactExports.useState(null), [note, setNote] = reactExports.useState(''), [phase, setPhase] = reactExports.useState('idle'), [error, setError] = reactExports.useState(''), [started, setStarted] = reactExports.useState(0), [, tick] = reactExports.useState(0), [online, setOnline] = reactExports.useState(navigator.onLine);
     const alive = reactExports.useRef(true);
@@ -30220,7 +30224,7 @@ function TelegramBackup() {
 function BackupPassword() {
     const [info, setInfo] = reactExports.useState(null), [open, setOpen] = reactExports.useState(false), [pw, setPw] = reactExports.useState(''), [confirm, setConfirm] = reactExports.useState(''), [show, setShow] = reactExports.useState(false), [tried, setTried] = reactExports.useState(false), [saving, setSaving] = reactExports.useState(false), [error, setError] = reactExports.useState(''), [saved, setSaved] = reactExports.useState(false);
     reactExports.useEffect(() => { let active = true; backupPasswordInfo().then(i => active && setInfo(i)).catch(() => active && setInfo('unknown')); return () => { active = false; }; }, []);
-    const problem = passwordProblem(pw, confirm), date = (iso) => new Date(iso).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
+    const problem = passwordProblem(pw, confirm), date = (iso) => new Date(iso).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric', timeZone: APP_TIME_ZONE });
     const reset = () => { setPw(''); setConfirm(''); setShow(false); setTried(false); setError(''); };
     async function save(e) {
         e.preventDefault();
@@ -30280,7 +30284,7 @@ function ago$2(ms) { if (!ms)
     return 'Not synced yet'; const s = Math.round((Date.now() - ms) / 1000); if (s < 45)
     return 'Synced just now'; if (s < 3600)
     return `Synced ${Math.round(s / 60)} min ago`; if (s < 86400)
-    return `Synced ${Math.round(s / 3600)} h ago`; return `Synced ${new Date(ms).toLocaleDateString()}`; }
+    return `Synced ${Math.round(s / 3600)} h ago`; return `Synced ${new Date(ms).toLocaleDateString(undefined, { timeZone: APP_TIME_ZONE })}`; }
 function AccountSettings() {
     const [status, setStatus] = reactExports.useState(syncStatus), [, tick] = reactExports.useState(0), [confirm, setConfirm] = reactExports.useState(false), user = session()?.user || '';
     reactExports.useEffect(() => { const on = () => setStatus(syncStatus()); window.addEventListener('recallflow:sync-status', on); const t = setInterval(() => tick(n => n + 1), 30000); return () => { window.removeEventListener('recallflow:sync-status', on); clearInterval(t); }; }, []);
@@ -30738,7 +30742,7 @@ function ExportPanel({ items, selectedIds, onDone }) {
     const linkVideoCount = chosen.filter((x) => ['video', 'answerVideo'].some(k => typeof x[k] === 'string' && x[k].startsWith('https://'))).length;
     const chosenSubjects = new Set(chosen.map((x) => x.subject || 'General')).size;
     const bytes = reactExports.useMemo(() => new Blob([output]).size, [output]);
-    const name = `recallflow-${scope === 'subject' ? subject.toLowerCase().replace(/[^a-z0-9]+/g, '-') : scope}-${new Date().toISOString().slice(0, 10)}.${meta.ext}`;
+    const name = `recallflow-${scope === 'subject' ? subject.toLowerCase().replace(/[^a-z0-9]+/g, '-') : scope}-${localDay()}.${meta.ext}`;
     async function copy() { try {
         await navigator.clipboard.writeText(output);
         setStatus('Copied to the clipboard.');
@@ -31244,7 +31248,7 @@ function slowestQuestions(stats,limit=5){return stats.filter(s=>s.avgSeconds>0).
 const csvCell=value=>{let s=String(value??'');if(/^[=+\-@\t\r]/.test(s))s="'"+s;return /[",\r\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};
 function reportsCsv(reports){
   const rows=[['Date','Time','Kind','Subject','Topic','Question type','Question','Your answer','Correct answer','Result','Seconds']];
-  for(const r of [...reports].reverse()){const d=new Date(r.date),time=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;for(const q of r.questions||[])rows.push([localDay(d),time,r.mode==='retry_mistakes'?'Retake':'Quiz',q.subject,q.topic,typeLabel(q.type),q.prompt,q.user_answer,q.correct_answer,q.correct?'Correct':'Missed',q.response_time_seconds]);}
+  for(const r of [...reports].reverse()){const d=new Date(r.date),c=istClock(d),time=`${String(c.getUTCHours()).padStart(2,'0')}:${String(c.getUTCMinutes()).padStart(2,'0')}`;for(const q of r.questions||[])rows.push([localDay(d),time,r.mode==='retry_mistakes'?'Retake':'Quiz',q.subject,q.topic,typeLabel(q.type),q.prompt,q.user_answer,q.correct_answer,q.correct?'Correct':'Missed',q.response_time_seconds]);}
   return rows.map(row=>row.map(csvCell).join(',')).join('\r\n');
 }
 
@@ -31267,7 +31271,7 @@ function activityStats(reports){
   for(const r of reports){
     const d=new Date(r.date),key=localDay(d),s=days.get(key)||{day:key,quizzes:0,answers:0,correct:0,seconds:0,reports:[]};
     s.quizzes++;s.answers+=r.total||0;s.correct+=r.correct||0;s.seconds+=Number(r.duration_seconds)||0;s.reports.push(r);days.set(key,s);
-    weekdays[(d.getDay()+6)%7]++;const h=d.getHours();parts[h<5?'night':h<12?'morning':h<17?'afternoon':h<22?'evening':'night']++;
+    const c=istClock(d);weekdays[(c.getUTCDay()+6)%7]++;const h=c.getUTCHours();parts[h<5?'night':h<12?'morning':h<17?'afternoon':h<22?'evening':'night']++;
   }
   return {days,weekdays,parts};
 }
@@ -32231,7 +32235,7 @@ function ItemMedia({ item, kind }) {
     const a = kind === 'answer';
     return React.createElement(QuestionMedia, { kind: kind, className: a ? 'rv-media rv-answer-media' : 'rv-media', zoomClass: "rv-zoom", imgClass: "rv-img", image: a ? item.answerImage : item.image, imageAlt: a ? undefined : item.imageAlt, audio: a ? item.answerAudio : item.audio, audioEdit: a ? item.answerAudioEdit : item.audioEdit, video: a ? item.answerVideo : item.video, videoEdit: a ? item.answerVideoEdit : item.videoEdit, videoClass: "is-compact" });
 }
-const ago = (iso) => { const d = Math.floor((Date.now() - Date.parse(iso)) / 86400000); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? `${d} days ago` : new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }); };
+const ago = (iso) => { const d = Math.round((Date.parse(localDay() + 'T00:00:00Z') - Date.parse(localDay(new Date(iso)) + 'T00:00:00Z')) / 86400000); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? `${d} days ago` : new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', timeZone: APP_TIME_ZONE }); };
 const level = (pct) => pct >= 80 ? 'good' : pct >= 50 ? 'ok' : 'low';
 function MistakesPanel({ reports, items, onPractice, onEdit }) {
     const ledger = reactExports.useMemo(() => mistakeLedger(reports), [reports]);
@@ -32372,9 +32376,9 @@ function QuizReviewPage({ report: r, items, onBack, onRetry, onCopy }) {
                     " ",
                     qs.length === 1 ? 'question' : 'questions'),
                 React.createElement("small", null,
-                    when.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }),
+                    when.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', timeZone: APP_TIME_ZONE }),
                     ", ",
-                    when.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
+                    when.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', timeZone: APP_TIME_ZONE }),
                     " \u00B7 took ",
                     formatDuration(r.duration_seconds)),
                 React.createElement("p", null,
@@ -32425,26 +32429,27 @@ function QuizReviewPage({ report: r, items, onBack, onRetry, onCopy }) {
                 " ",
                 missed === 1 ? 'mistake' : 'mistakes')));
 }
-const monthName = (y, m) => new Date(y, m, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+const monthName = (y, m) => new Date(Date.UTC(y, m, 1)).toLocaleDateString(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const monthOf = (day) => ({ y: Number(day.slice(0, 4)), m: Number(day.slice(5, 7)) - 1 });
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const PARTS = [['morning', 'Morning', Sunrise, '5am–12pm'], ['afternoon', 'Afternoon', Sun, '12–5pm'], ['evening', 'Evening', Sunset, '5–10pm'], ['night', 'Night', Moon, '10pm–5am']];
 function ActivityPanel({ reports, streakDays }) {
     const today = localDay();
     const stats = reactExports.useMemo(() => activityStats(reports), [reports]);
     const streak = reactExports.useMemo(() => streakStats([...streakDays, ...stats.days.keys()], today), [streakDays, stats, today]);
-    const [month, setMonth] = reactExports.useState(() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; });
+    const [month, setMonth] = reactExports.useState(() => monthOf(today));
     const [picked, setPicked] = reactExports.useState(today);
-    const first = new Date(month.y, month.m, 1), days = new Date(month.y, month.m + 1, 0).getDate(), lead = (first.getDay() + 6) % 7;
-    const keys = Array.from({ length: days }, (_, i) => localDay(new Date(month.y, month.m, i + 1)));
+    const first = new Date(Date.UTC(month.y, month.m, 1)), days = new Date(Date.UTC(month.y, month.m + 1, 0)).getUTCDate(), lead = (first.getUTCDay() + 6) % 7;
+    const keys = Array.from({ length: days }, (_, i) => new Date(Date.UTC(month.y, month.m, i + 1)).toISOString().slice(0, 10));
     const studied = new Set([...streakDays, ...stats.days.keys()]);
     const maxAnswers = Math.max(1, ...keys.map(k => stats.days.get(k)?.answers || 0));
     const inMonth = keys.map(k => stats.days.get(k)).filter(Boolean);
     const monthSeconds = inMonth.reduce((n, d) => n + d.seconds, 0), monthDays = keys.filter(k => studied.has(k)).length;
     const elapsed = keys.filter(k => k <= today).length;
-    const isCurrent = month.y === new Date().getFullYear() && month.m === new Date().getMonth();
-    const earliest = reports.length ? new Date(reports[reports.length - 1].date) : new Date();
-    const canBack = new Date(month.y, month.m, 1) > new Date(earliest.getFullYear(), earliest.getMonth(), 1);
-    const shift = (n) => setMonth(({ y, m }) => { const d = new Date(y, m + n, 1); return { y: d.getFullYear(), m: d.getMonth() }; });
+    const now = monthOf(today), isCurrent = month.y === now.y && month.m === now.m;
+    const earliest = monthOf(reports.length ? localDay(new Date(reports[reports.length - 1].date)) || today : today);
+    const canBack = month.y * 12 + month.m > earliest.y * 12 + earliest.m;
+    const shift = (n) => setMonth(({ y, m }) => { const d = new Date(Date.UTC(y, m + n, 1)); return { y: d.getUTCFullYear(), m: d.getUTCMonth() }; });
     const totalQuizzes = stats.weekdays.reduce((a, b) => a + b, 0);
     const topDay = totalQuizzes ? stats.weekdays.indexOf(Math.max(...stats.weekdays)) : -1;
     const topPart = totalQuizzes ? PARTS.reduce((a, p) => stats.parts[p[0]] > stats.parts[a[0]] ? p : a) : null;
@@ -32501,7 +32506,7 @@ function ActivityPanel({ reports, streakDays }) {
                 [0, 1, 2, 3, 4].map(l => React.createElement("i", { key: l, "data-lv": l })),
                 React.createElement("span", null, "More"))),
         React.createElement("div", { className: "ax-dayview" },
-            React.createElement("h3", null, picked === today ? 'Today' : new Date(picked + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })),
+            React.createElement("h3", null, picked === today ? 'Today' : new Date(picked + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' })),
             day ? React.createElement(React.Fragment, null,
                 React.createElement("p", { className: "report-muted" },
                     day.quizzes,
@@ -32514,7 +32519,7 @@ function ActivityPanel({ reports, streakDays }) {
                     "% correct \u00B7 ",
                     formatDuration(day.seconds)),
                 React.createElement("ul", null, day.reports.map((r) => React.createElement("li", { key: r.id },
-                    React.createElement("span", null, new Date(r.date).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })),
+                    React.createElement("span", null, new Date(r.date).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', timeZone: APP_TIME_ZONE })),
                     React.createElement("em", null,
                         r.mode === 'retry_mistakes' ? 'Retake' : 'Quiz',
                         " \u00B7 ",
@@ -34098,7 +34103,7 @@ function DayActivity({ date, studied, reports, onClose }) {
                         "Quiz ",
                         i + 1,
                         React.createElement("small", null,
-                            new Date(r.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }),
+                            new Date(r.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', timeZone: APP_TIME_ZONE }),
                             " \u00B7 ",
                             r.total,
                             " ",
@@ -34121,12 +34126,12 @@ function DayActivity({ date, studied, reports, onClose }) {
 }
 function StreakPage({ days, reports = [], onBack, onQuiz }) {
     reactExports.useEffect(() => { window.scrollTo({ top: 0 }); }, []);
-    const now = new Date(), today = localDay(now), active = new Set(days), stats = streakStats(days, today);
+    const today = localDay(), now = new Date(today + 'T00:00:00Z'), active = new Set(days), stats = streakStats(days, today);
     const [offset, setOffset] = reactExports.useState(0);
     const [selectedDay, setSelectedDay] = reactExports.useState(null);
-    const month = new Date(Date.UTC(now.getFullYear(), now.getMonth() + offset, 1));
+    const month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offset, 1));
     const monthLabel = month.toLocaleDateString(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' });
-    const currentYear = now.getFullYear(), currentMonth = now.getMonth();
+    const currentYear = now.getUTCFullYear(), currentMonth = now.getUTCMonth();
     const firstYear = Math.min(currentYear - 10, ...days.map(d => Number(d.slice(0, 4))).filter(y => Number.isInteger(y) && y >= 1900 && y <= currentYear));
     const years = Array.from({ length: currentYear - firstYear + 1 }, (_, i) => currentYear - i);
     const selectMonth = (year, index) => setOffset(Math.min(0, (year - currentYear) * 12 + index - currentMonth));
@@ -34241,7 +34246,7 @@ function clearSavedQuiz() { try {
     localStorage.removeItem(PROGRESS_KEY);
 }
 catch { } }
-const dayHeading = (day) => { const t = localDay(), y = localDay(new Date(Date.now() - 864e5)); return day === t ? "Today" : day === y ? "Yesterday" : new Date(day + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" }); };
+const dayHeading = (day) => { const t = localDay(), y = localDay(new Date(Date.now() - 864e5)); return day === t ? "Today" : day === y ? "Yesterday" : new Date(day + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }); };
 function ReportHistoryCard({ report: r, index: i, onOpen, grouped }) {
     return React.createElement("article", { className: styles$1.reportCard },
         React.createElement("button", { className: `${styles$1.reportHead} rx-qhead`, onClick: () => onOpen(r.id) },
@@ -34255,7 +34260,7 @@ function ReportHistoryCard({ report: r, index: i, onOpen, grouped }) {
                     r.total === 1 ? "question" : "questions"),
                 React.createElement("small", null,
                     grouped ? "" : dayHeading(localDay(new Date(r.date))) + ", ",
-                    new Date(r.date).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }),
+                    new Date(r.date).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", timeZone: APP_TIME_ZONE }),
                     " \u00B7 ",
                     formatDuration(r.duration_seconds),
                     " \u00B7 ",

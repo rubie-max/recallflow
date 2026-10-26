@@ -1,4 +1,4 @@
-import {localDay} from './streak-stats.js';
+import {localDay,istClock} from './streak-stats.js';
 import {typeLabel} from './question-types.js';
 
 export const REPORT_RANGES=[[7,'7 days'],[30,'30 days'],[90,'90 days'],[0,'All time']];
@@ -59,7 +59,7 @@ export function slowestQuestions(stats,limit=5){return stats.filter(s=>s.avgSeco
 const csvCell=value=>{let s=String(value??'');if(/^[=+\-@\t\r]/.test(s))s="'"+s;return /[",\r\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};
 export function reportsCsv(reports){
   const rows=[['Date','Time','Kind','Subject','Topic','Question type','Question','Your answer','Correct answer','Result','Seconds']];
-  for(const r of [...reports].reverse()){const d=new Date(r.date),time=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;for(const q of r.questions||[])rows.push([localDay(d),time,r.mode==='retry_mistakes'?'Retake':'Quiz',q.subject,q.topic,typeLabel(q.type),q.prompt,q.user_answer,q.correct_answer,q.correct?'Correct':'Missed',q.response_time_seconds]);}
+  for(const r of [...reports].reverse()){const d=new Date(r.date),c=istClock(d),time=`${String(c.getUTCHours()).padStart(2,'0')}:${String(c.getUTCMinutes()).padStart(2,'0')}`;for(const q of r.questions||[])rows.push([localDay(d),time,r.mode==='retry_mistakes'?'Retake':'Quiz',q.subject,q.topic,typeLabel(q.type),q.prompt,q.user_answer,q.correct_answer,q.correct?'Correct':'Missed',q.response_time_seconds]);}
   return rows.map(row=>row.map(csvCell).join(',')).join('\r\n');
 }
 
@@ -82,7 +82,7 @@ export function activityStats(reports){
   for(const r of reports){
     const d=new Date(r.date),key=localDay(d),s=days.get(key)||{day:key,quizzes:0,answers:0,correct:0,seconds:0,reports:[]};
     s.quizzes++;s.answers+=r.total||0;s.correct+=r.correct||0;s.seconds+=Number(r.duration_seconds)||0;s.reports.push(r);days.set(key,s);
-    weekdays[(d.getDay()+6)%7]++;const h=d.getHours();parts[h<5?'night':h<12?'morning':h<17?'afternoon':h<22?'evening':'night']++;
+    const c=istClock(d);weekdays[(c.getUTCDay()+6)%7]++;const h=c.getUTCHours();parts[h<5?'night':h<12?'morning':h<17?'afternoon':h<22?'evening':'night']++;
   }
   return {days,weekdays,parts};
 }

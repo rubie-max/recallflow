@@ -27,7 +27,7 @@ import {QuestionMedia} from "../QuestionMedia";
 import {WordBankAnswer,InlineBlankAnswer} from '../QuestionInteractions';
 import {QuizBuilder,StructuredAnswer} from '../LearningFeatures';
 import {scheduled,reviewedOn,openMistakes,textGrade,duplicateIds,filterQuiz,analytics} from '../../learning-core.js';
-import {streakStats,localDay} from '../../streak-stats.js';
+import {streakStats,localDay,APP_TIME_ZONE} from '../../streak-stats.js';
 import {reportsInRange,summarize,dailySeries,mastery,dueForecast,questionStats,hardestQuestions,slowestQuestions,reportsCsv,formatDuration,REPORT_ORDER,swipeTarget,groupByDay} from '../../report-stats.js';
 import {RangePicker,OverviewStats,AccuracyChart,MemoryPanel,QuestionStatList,ReportTabs,blocksSwipe,ScoreRing} from '../ReportPanels';
 import {QuestionEditor} from '../QuestionEditor';
@@ -54,12 +54,12 @@ function savedQuiz():SavedQuiz|null{try{const p=JSON.parse(localStorage.getItem(
 function clearSavedQuiz(){try{localStorage.removeItem(PROGRESS_KEY);}catch{}}
 type Result = { grading?:string; knowledge_id:string; subject:string; topic:string; type:string; prompt:string; correct_answer:string; user_answer:string; correct:boolean; response_time_seconds:number; selected_answers?:string[] };
 type QuizReport = { id:string; date:string; duration_seconds:number; total:number; correct:number; accuracy:number; questions:Result[]; mode?:"all"|"retry_mistakes"|"daily"|"due"; source_report_id?:string };
-const dayHeading=(day:string)=>{const t=localDay(),y=localDay(new Date(Date.now()-864e5));return day===t?"Today":day===y?"Yesterday":new Date(day+"T12:00:00").toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"});};
+const dayHeading=(day:string)=>{const t=localDay(),y=localDay(new Date(Date.now()-864e5));return day===t?"Today":day===y?"Yesterday":new Date(day+"T00:00:00Z").toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short",timeZone:"UTC"});};
 function ReportHistoryCard({report:r,index:i,onOpen,grouped}:{report:QuizReport;index:number;onOpen:(id:string)=>void;grouped?:boolean}){return <article className={styles.reportCard}>
   <button className={`${styles.reportHead} rx-qhead`} onClick={()=>onOpen(r.id)}>
     <ScoreRing pct={r.accuracy}>{r.accuracy}</ScoreRing>
     <span className="rx-qmain"><b>{r.mode==="retry_mistakes"?"Retake":i===0?"Latest quiz":"Quiz"} · {r.total} {r.total===1?"question":"questions"}</b>
-      <small>{grouped?"":dayHeading(localDay(new Date(r.date)))+", "}{new Date(r.date).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"})} · {formatDuration(r.duration_seconds)} · {r.correct} right</small></span>
+      <small>{grouped?"":dayHeading(localDay(new Date(r.date)))+", "}{new Date(r.date).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit",timeZone:APP_TIME_ZONE})} · {formatDuration(r.duration_seconds)} · {r.correct} right</small></span>
     <ChevronRight size={16} className="rx-qchev" aria-hidden="true"/></button>
 </article>}
 

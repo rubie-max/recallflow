@@ -1,7 +1,7 @@
 import React,{useMemo,useState} from 'react';
 import {Play,Pencil,XCircle,CheckCircle2,ChevronLeft,ChevronRight,Flame,Trophy,CalendarDays,Clock,Sunrise,Sun,Sunset,Moon,ChevronDown,Target,Check,X,Copy,RotateCcw,Eye} from 'lucide-react';
 import {mistakeLedger,activityStats,formatDuration,shiftDay} from '../report-stats.js';
-import {streakStats,localDay} from '../streak-stats.js';
+import {streakStats,localDay,APP_TIME_ZONE} from '../streak-stats.js';
 import {typeLabel,answerText,missedItems} from '../question-types.js';
 import {QuestionMedia} from './QuestionMedia';
 import {ScoreRing} from './ReportPanels';
@@ -15,7 +15,7 @@ function ItemMedia({item,kind}:{item:any;kind:'question'|'answer'}){
   video={a?item.answerVideo:item.video} videoEdit={a?item.answerVideoEdit:item.videoEdit} videoClass="is-compact"/>;
 }
 
-const ago=(iso:string)=>{const d=Math.floor((Date.now()-Date.parse(iso))/86400000);return d<=0?'today':d===1?'yesterday':d<7?`${d} days ago`:new Date(iso).toLocaleDateString(undefined,{day:'numeric',month:'short'});};
+const ago=(iso:string)=>{const d=Math.round((Date.parse(localDay()+'T00:00:00Z')-Date.parse(localDay(new Date(iso))+'T00:00:00Z'))/86400000);return d<=0?'today':d===1?'yesterday':d<7?`${d} days ago`:new Date(iso).toLocaleDateString(undefined,{day:'numeric',month:'short',timeZone:APP_TIME_ZONE});};
 const level=(pct:number)=>pct>=80?'good':pct>=50?'ok':'low';
 
 export function MistakesPanel({reports,items,onPractice,onEdit}:{reports:any[];items:any[];onPractice:(results:any[])=>void;onEdit:(item:any)=>void}){
@@ -70,7 +70,7 @@ export function QuizReviewPage({report:r,items,onBack,onRetry,onCopy}:{report:an
   <div className="qr-top"><button type="button" className="qr-back" onClick={onBack}><ChevronLeft size={18}/>History</button><button type="button" className="qr-copy" onClick={()=>onCopy(r)}><Copy size={15}/>Copy</button></div>
   <div className="qr-summary"><ScoreRing pct={r.accuracy} size={64} stroke={7}>{r.accuracy}%</ScoreRing><div>
    <h1>{r.mode==='retry_mistakes'?'Retake':'Quiz'} · {qs.length} {qs.length===1?'question':'questions'}</h1>
-   <small>{when.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})}, {when.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})} · took {formatDuration(r.duration_seconds)}</small>
+   <small>{when.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short',timeZone:APP_TIME_ZONE})}, {when.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',timeZone:APP_TIME_ZONE})} · took {formatDuration(r.duration_seconds)}</small>
    <p><span data-kind="right"><Check size={13}/>{right} right</span><span data-kind="wrong"><X size={13}/>{wrong} wrong</span></p>
   </div></div>
   <div className="rx-range" role="radiogroup" aria-label="Show">{([['all',`All ${qs.length}`],['wrong',`Wrong ${wrong}`],['right',`Right ${right}`]] as const).map(([id,label])=><button key={id} type="button" role="radio" aria-checked={show===id} onClick={()=>setShow(id)}>{label}</button>)}</div>
@@ -85,7 +85,8 @@ export function QuizReviewPage({report:r,items,onBack,onRetry,onCopy}:{report:an
  </section>;
 }
 
-const monthName=(y:number,m:number)=>new Date(y,m,1).toLocaleDateString(undefined,{month:'long',year:'numeric'});
+const monthName=(y:number,m:number)=>new Date(Date.UTC(y,m,1)).toLocaleDateString(undefined,{month:'long',year:'numeric',timeZone:'UTC'});
+const monthOf=(day:string)=>({y:Number(day.slice(0,4)),m:Number(day.slice(5,7))-1});
 const WEEKDAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const PARTS=[['morning','Morning',Sunrise,'5am–12pm'],['afternoon','Afternoon',Sun,'12–5pm'],['evening','Evening',Sunset,'5–10pm'],['night','Night',Moon,'10pm–5am']] as const;
 
@@ -93,19 +94,19 @@ export function ActivityPanel({reports,streakDays}:{reports:any[];streakDays:str
  const today=localDay();
  const stats=useMemo(()=>activityStats(reports),[reports]);
  const streak=useMemo(()=>streakStats([...streakDays,...stats.days.keys()],today),[streakDays,stats,today]);
- const [month,setMonth]=useState(()=>{const d=new Date();return {y:d.getFullYear(),m:d.getMonth()};});
+ const [month,setMonth]=useState(()=>monthOf(today));
  const [picked,setPicked]=useState<string>(today);
- const first=new Date(month.y,month.m,1),days=new Date(month.y,month.m+1,0).getDate(),lead=(first.getDay()+6)%7;
- const keys=Array.from({length:days},(_,i)=>localDay(new Date(month.y,month.m,i+1)));
+ const first=new Date(Date.UTC(month.y,month.m,1)),days=new Date(Date.UTC(month.y,month.m+1,0)).getUTCDate(),lead=(first.getUTCDay()+6)%7;
+ const keys=Array.from({length:days},(_,i)=>new Date(Date.UTC(month.y,month.m,i+1)).toISOString().slice(0,10));
  const studied=new Set([...streakDays,...stats.days.keys()]);
  const maxAnswers=Math.max(1,...keys.map(k=>stats.days.get(k)?.answers||0));
  const inMonth=keys.map(k=>stats.days.get(k)).filter(Boolean) as any[];
  const monthSeconds=inMonth.reduce((n,d)=>n+d.seconds,0),monthDays=keys.filter(k=>studied.has(k)).length;
  const elapsed=keys.filter(k=>k<=today).length;
- const isCurrent=month.y===new Date().getFullYear()&&month.m===new Date().getMonth();
- const earliest=reports.length?new Date(reports[reports.length-1].date):new Date();
- const canBack=new Date(month.y,month.m,1)>new Date(earliest.getFullYear(),earliest.getMonth(),1);
- const shift=(n:number)=>setMonth(({y,m})=>{const d=new Date(y,m+n,1);return {y:d.getFullYear(),m:d.getMonth()};});
+ const now=monthOf(today),isCurrent=month.y===now.y&&month.m===now.m;
+ const earliest=monthOf(reports.length?localDay(new Date(reports[reports.length-1].date))||today:today);
+ const canBack=month.y*12+month.m>earliest.y*12+earliest.m;
+ const shift=(n:number)=>setMonth(({y,m})=>{const d=new Date(Date.UTC(y,m+n,1));return {y:d.getUTCFullYear(),m:d.getUTCMonth()};});
  const totalQuizzes=stats.weekdays.reduce((a,b)=>a+b,0);
  const topDay=totalQuizzes?stats.weekdays.indexOf(Math.max(...stats.weekdays)):-1;
  const topPart=totalQuizzes?PARTS.reduce((a,p)=>stats.parts[p[0]]>stats.parts[a[0]]?p:a):null;
@@ -134,9 +135,9 @@ export function ActivityPanel({reports,streakDays}:{reports:any[];streakDays:str
   </div>
 
   <div className="ax-dayview">
-   <h3>{picked===today?'Today':new Date(picked+'T12:00:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'})}</h3>
+   <h3>{picked===today?'Today':new Date(picked+'T00:00:00Z').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'})}</h3>
    {day?<><p className="report-muted">{day.quizzes} {day.quizzes===1?'quiz':'quizzes'} · {day.answers} answers · {Math.round(day.correct/Math.max(1,day.answers)*100)}% correct · {formatDuration(day.seconds)}</p>
-    <ul>{day.reports.map((r:any)=><li key={r.id}><span>{new Date(r.date).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}</span><em>{r.mode==='retry_mistakes'?'Retake':'Quiz'} · {r.total} questions</em><b data-level={level(r.accuracy)}>{r.accuracy}%</b></li>)}</ul></>
+    <ul>{day.reports.map((r:any)=><li key={r.id}><span>{new Date(r.date).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',timeZone:APP_TIME_ZONE})}</span><em>{r.mode==='retry_mistakes'?'Retake':'Quiz'} · {r.total} questions</em><b data-level={level(r.accuracy)}>{r.accuracy}%</b></li>)}</ul></>
    :<p className="report-muted">{studied.has(picked)?'You practised this day.':'No quizzes this day.'}{picked===today?' A quick quiz keeps your streak going.':''}</p>}
   </div>
 

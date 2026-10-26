@@ -12,6 +12,7 @@ import {session,signOut,syncNow,syncStatus,requestBackup,backupStatus,setBackupP
 import {passwordProblem,MIN_PASSWORD,MAX_PASSWORD} from '../backup-password.js';
 import {openPhoto,saveProfilePhoto,profilePhoto,profilePhotoKey} from '../profile-photo.js';
 import {useProfilePhoto,PhotoEditor} from './ProfilePhoto';
+import {localDay,APP_TIME_ZONE} from '../streak-stats.js';
 
 const sections:[string,string,any][]=[['profile','Profile',UserRound],['account','Account',Cloud],['appearance','Appearance',Palette],['voice','Voice',Volume2],['quiz','Quiz',SlidersHorizontal],['data','Data',Database],['app','App',Smartphone]];
 const menuGroups:[string,string[]][]=[['Sync',['account']],['Learning',['quiz','voice']],['App',['appearance','data','app']]];
@@ -115,13 +116,13 @@ function StorageMeter({items}:any){
 function BackupPanel({items,reports,quizCount,streakDays,theme}:any){
  const [status,setStatus]=useState('');
  function json(){return JSON.stringify({app:'RecallFlow',version:1,exportedAt:new Date().toISOString(),questions:items,reports,quizCount,streakDays,preferences:{theme,voice:localStorage.getItem('recallflow_kokoro_voice')||'af_heart',speed:Number(localStorage.getItem('recallflow_kokoro_speed')||1),speechEngine:localStorage.getItem('recallflow_speech_engine')||'system',quiz:quizPreferences(),quizSetups:readSetups(),app:appPreferences()},...(profilePhoto()?{synced:{[profilePhotoKey]:profilePhoto()}}:{})},null,2);}
- function download(){try{const url=URL.createObjectURL(new Blob([json()],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download=`RecallFlow_backup_${new Date().toISOString().slice(0,10)}.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Backup downloaded.');}catch(e:any){setStatus(`Could not create the backup: ${e.message}`);}}
+ function download(){try{const url=URL.createObjectURL(new Blob([json()],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download=`RecallFlow_backup_${localDay()}.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Backup downloaded.');}catch(e:any){setStatus(`Could not create the backup: ${e.message}`);}}
  async function copy(){try{await navigator.clipboard.writeText(json());setStatus('Backup copied to the clipboard.');}catch{setStatus('Copy is blocked here. Use Download instead.');}}
  return <Panel icon={Download} title="Full backup" detail="Everything: questions, reports, streak and settings."><div className="settings-button-row"><Button onClick={download}><Download size={16}/>Download backup</Button><Button variant="outline" onClick={copy}><Copy size={16}/>Copy</Button></div>{status&&<p className="settings-status" role="status">{status}</p>}</Panel>;
 }
 
 const PENDING_BACKUP='rf_backup_pending',WAIT_MS=6*60000;
-function when(iso:string){const d=new Date(iso),days=Math.round((new Date().setHours(0,0,0,0)-new Date(iso).setHours(0,0,0,0))/864e5),time=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});return days===0?`Today, ${time}`:days===1?`Yesterday, ${time}`:`${d.toLocaleDateString([],{day:'numeric',month:'short'})}, ${time}`;}
+function when(iso:string){const d=new Date(iso),days=Math.round((Date.parse(localDay()+'T00:00:00Z')-Date.parse(localDay(d)+'T00:00:00Z'))/864e5),time=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit',timeZone:APP_TIME_ZONE});return days===0?`Today, ${time}`:days===1?`Yesterday, ${time}`:`${d.toLocaleDateString([],{day:'numeric',month:'short',timeZone:APP_TIME_ZONE})}, ${time}`;}
 function TelegramBackup(){
  const [last,setLast]=useState<any>(null),[note,setNote]=useState(''),[phase,setPhase]=useState<'idle'|'saving'|'waiting'|'done'|'failed'|'slow'>('idle'),[error,setError]=useState(''),[started,setStarted]=useState(0),[,tick]=useState(0),[online,setOnline]=useState(navigator.onLine);
  const alive=useRef(true);
@@ -169,7 +170,7 @@ function TelegramBackup(){
 function BackupPassword(){
  const [info,setInfo]=useState<{changedAt:string|null}|null|'unknown'>(null),[open,setOpen]=useState(false),[pw,setPw]=useState(''),[confirm,setConfirm]=useState(''),[show,setShow]=useState(false),[tried,setTried]=useState(false),[saving,setSaving]=useState(false),[error,setError]=useState(''),[saved,setSaved]=useState(false);
  useEffect(()=>{let active=true;backupPasswordInfo().then(i=>active&&setInfo(i)).catch(()=>active&&setInfo('unknown'));return()=>{active=false;};},[]);
- const problem=passwordProblem(pw,confirm),date=(iso:string)=>new Date(iso).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric'});
+ const problem=passwordProblem(pw,confirm),date=(iso:string)=>new Date(iso).toLocaleDateString([],{day:'numeric',month:'short',year:'numeric',timeZone:APP_TIME_ZONE});
  const reset=()=>{setPw('');setConfirm('');setShow(false);setTried(false);setError('');};
  async function save(e:React.FormEvent){
   e.preventDefault();setTried(true);if(problem)return;
@@ -196,7 +197,7 @@ function BackupPassword(){
  </div>;
 }
 
-function ago(ms:number){if(!ms)return 'Not synced yet';const s=Math.round((Date.now()-ms)/1000);if(s<45)return 'Synced just now';if(s<3600)return `Synced ${Math.round(s/60)} min ago`;if(s<86400)return `Synced ${Math.round(s/3600)} h ago`;return `Synced ${new Date(ms).toLocaleDateString()}`;}
+function ago(ms:number){if(!ms)return 'Not synced yet';const s=Math.round((Date.now()-ms)/1000);if(s<45)return 'Synced just now';if(s<3600)return `Synced ${Math.round(s/60)} min ago`;if(s<86400)return `Synced ${Math.round(s/3600)} h ago`;return `Synced ${new Date(ms).toLocaleDateString(undefined,{timeZone:APP_TIME_ZONE})}`;}
 function AccountSettings(){
  const [status,setStatus]=useState(syncStatus),[,tick]=useState(0),[confirm,setConfirm]=useState(false),user=session()?.user||'';
  useEffect(()=>{const on=()=>setStatus(syncStatus());window.addEventListener('recallflow:sync-status',on);const t=setInterval(()=>tick(n=>n+1),30000);return()=>{window.removeEventListener('recallflow:sync-status',on);clearInterval(t);};},[]);

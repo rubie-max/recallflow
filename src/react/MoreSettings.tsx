@@ -6,6 +6,7 @@ import {readSetups} from '../quiz-setups.js';
 import {quizPreferences,saveQuizPreferences} from '../quiz-preferences.js';
 import {audioCache} from '../audio-cache.js';
 import {kokoroVoice} from '../kokoro-service.js';
+import {localDay} from '../streak-stats.js';
 
 export function QuizSettings({onSaved}:{onSaved:(value:{count:number;shuffle:boolean})=>void}) {
   const [saved,setSaved]=useState(quizPreferences);
@@ -36,7 +37,7 @@ export function StorageSettings({questions,reports,quizCount,streakDays,theme}:{
   async function copyBackup(){try{await navigator.clipboard.writeText(backupJSON());setStatus('Backup JSON copied. Paste it into a file and keep it somewhere safe.');}catch(error:any){setStatus(`Could not copy the backup: ${error.message}`);}}
   function backup(){try{
     const url=URL.createObjectURL(new Blob([backupJSON()],{type:'application/json'}));
-    const link=document.createElement('a');link.href=url;link.download=`RecallFlow_backup_${new Date().toISOString().slice(0,10)}.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Backup download requested. If your browser blocks it, use Copy backup JSON.');
+    const link=document.createElement('a');link.href=url;link.download=`RecallFlow_backup_${localDay()}.json`;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Backup download requested. If your browser blocks it, use Copy backup JSON.');
   }catch(error:any){setStatus(`Could not create the backup: ${error.message}`);}}
   return <section className="settings-panel"><div className="settings-heading"><span className="settings-icon"><Database size={19}/></span><div><h2>Data &amp; storage</h2><p>Keep a copy of your progress.</p></div></div><div className="settings-data-stats"><span><b>{questions.length}</b> Questions</span><span><b>{reports.length}</b> Reports</span><span className="settings-local">Saved on this device</span></div>
     <div className="kokoro-controls"><Button variant="outline" onClick={backup}><Download size={16}/> Download data backup</Button><Button variant="ghost" onClick={copyBackup}><Copy size={16}/> Copy backup JSON</Button></div><p>Includes questions, reports, progress and preferences. Audio is excluded.</p>
