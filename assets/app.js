@@ -20006,7 +20006,7 @@ const Input = reactExports.forwardRef(({ className, ...props }, ref) => {
 });
 Input.displayName = "Input";
 
-var styles$1 = {"shell":"rf__index_shell","main":"rf__index_main","mini":"rf__index_mini","intro":"rf__index_intro","pageTitle":"rf__index_pageTitle","finish":"rf__index_finish","hero":"rf__index_hero","heroCopy":"rf__index_heroCopy","eyebrow":"rf__index_eyebrow","streakCard":"rf__index_streakCard","streakOpen":"rf__index_streakOpen","streakTop":"rf__index_streakTop","week":"rf__index_week","dayMissed":"rf__index_dayMissed","dayDone":"rf__index_dayDone","dayToday":"rf__index_dayToday","streakHint":"rf__index_streakHint","homeStats":"rf__index_homeStats","nav":"rf__index_nav","active":"rf__index_active","plus":"rf__index_plus","quizNav":"rf__index_quizNav","note":"rf__index_note","reviewPage":"rf__index_reviewPage","track":"rf__index_track","flipCard":"rf__index_flipCard","flipInner":"rf__index_flipInner","flipped":"rf__index_flipped","flipFront":"rf__index_flipFront","flipBack":"rf__index_flipBack","two":"rf__index_two","options":"rf__index_options","answerArea":"rf__index_answerArea","feedbackGood":"rf__index_feedbackGood","feedbackBad":"rf__index_feedbackBad","feedbackIcon":"rf__index_feedbackIcon","feedbackCopy":"rf__index_feedbackCopy","finishBadge":"rf__index_finishBadge","scoreRing":"rf__index_scoreRing","finishStats":"rf__index_finishStats","reportsPage":"rf__index_reportsPage","reportList":"rf__index_reportList","reportCard":"rf__index_reportCard","reportHead":"rf__index_reportHead","reportDetails":"rf__index_reportDetails","reportMiniStats":"rf__index_reportMiniStats","reportQuestions":"rf__index_reportQuestions","reportQuestionGood":"rf__index_reportQuestionGood","reportQuestionBad":"rf__index_reportQuestionBad","emptyReports":"rf__index_emptyReports","homeStreakBadge":"rf__index_homeStreakBadge","homeTileDone":"rf__index_homeTileDone","homeMain":"rf__index_homeMain","headerRight":"rf__index_headerRight","homeTheme":"rf__index_homeTheme","themeSwitch":"rf__index_themeSwitch","themeDark":"rf__index_themeDark","profilePlaceholder":"rf__index_profilePlaceholder","homeQuizIcon":"rf__index_homeQuizIcon","homeQuizTitle":"rf__index_homeQuizTitle","homeTileUpcoming":"rf__index_homeTileUpcoming","homeTileToday":"rf__index_homeTileToday","homeTileCompletedToday":"rf__index_homeTileCompletedToday","daySkipped":"rf__index_daySkipped","quickQuizOptions":"rf__index_quickQuizOptions","reportSectionTitle":"rf__index_reportSectionTitle"};
+var styles$1 = {"shell":"rf__index_shell","main":"rf__index_main","mini":"rf__index_mini","intro":"rf__index_intro","pageTitle":"rf__index_pageTitle","finish":"rf__index_finish","hero":"rf__index_hero","heroCopy":"rf__index_heroCopy","eyebrow":"rf__index_eyebrow","streakCard":"rf__index_streakCard","streakOpen":"rf__index_streakOpen","streakTop":"rf__index_streakTop","week":"rf__index_week","dayMissed":"rf__index_dayMissed","dayDone":"rf__index_dayDone","dayToday":"rf__index_dayToday","streakHint":"rf__index_streakHint","homeStats":"rf__index_homeStats","nav":"rf__index_nav","active":"rf__index_active","plus":"rf__index_plus","quizNav":"rf__index_quizNav","note":"rf__index_note","reviewPage":"rf__index_reviewPage","track":"rf__index_track","flipCard":"rf__index_flipCard","flipInner":"rf__index_flipInner","flipped":"rf__index_flipped","flipFront":"rf__index_flipFront","flipBack":"rf__index_flipBack","two":"rf__index_two","options":"rf__index_options","answerArea":"rf__index_answerArea","feedbackGood":"rf__index_feedbackGood","feedbackBad":"rf__index_feedbackBad","feedbackIcon":"rf__index_feedbackIcon","feedbackCopy":"rf__index_feedbackCopy","finishBadge":"rf__index_finishBadge","scoreRing":"rf__index_scoreRing","finishStats":"rf__index_finishStats","reportsPage":"rf__index_reportsPage","reportList":"rf__index_reportList","reportCard":"rf__index_reportCard","reportHead":"rf__index_reportHead","emptyReports":"rf__index_emptyReports","homeStreakBadge":"rf__index_homeStreakBadge","homeTileDone":"rf__index_homeTileDone","homeMain":"rf__index_homeMain","headerRight":"rf__index_headerRight","homeTheme":"rf__index_homeTheme","themeSwitch":"rf__index_themeSwitch","themeDark":"rf__index_themeDark","profilePlaceholder":"rf__index_profilePlaceholder","homeQuizIcon":"rf__index_homeQuizIcon","homeQuizTitle":"rf__index_homeQuizTitle","homeTileUpcoming":"rf__index_homeTileUpcoming","homeTileToday":"rf__index_homeTileToday","homeTileCompletedToday":"rf__index_homeTileCompletedToday","daySkipped":"rf__index_daySkipped","quickQuizOptions":"rf__index_quickQuizOptions","reportSectionTitle":"rf__index_reportSectionTitle"};
 
 // Only generated audio lives here; other RecallFlow data stays in localStorage.
 let database;
@@ -23137,7 +23137,7 @@ function ItemMediaSheet({ title, hint, onClose, children }) {
                     "Done")))), document.body);
 }
 
-function ItemMedia({ item, text }) { const src = item.optionImages?.[text]; return src ? React.createElement("img", { className: "item-media", src: src, alt: "", draggable: false }) : null; }
+function ItemMedia$1({ item, text }) { const src = item.optionImages?.[text]; return src ? React.createElement("img", { className: "item-media", src: src, alt: "", draggable: false }) : null; }
 function ItemText({ item, text, className }) { return isPictureLabel(text) && (item.optionImages?.[text] || itemMediaOf(item, text)) ? React.createElement("span", { className: "visually-hidden" }, text) : React.createElement("span", { className: className }, text); }
 function ItemZoom({ item, text }) { const src = item.optionImages?.[text]; return React.createElement(React.Fragment, null,
     src && React.createElement(ZoomButton, { src: src, alt: text, label: `Enlarge picture for ${text}` }),
@@ -23198,14 +23198,14 @@ function MatchingAnswer({ item, value, onChange, disabled, onGrade }) {
             React.createElement("div", { className: "match-column", "aria-label": "Items to match" }, item.pairs.map((p, i) => React.createElement("div", { className: "media-slot", key: p.left },
                 React.createElement("button", { "data-left": i, "data-state": state(i), style: tint(i), "data-drawing": drawing('left', i), "aria-label": `Select ${p.left}`, "aria-pressed": active === i, disabled: disabled, onClick: () => { if (skipClick.current)
                         return; setActive(i); setMessage(''); } },
-                    React.createElement(ItemMedia, { item: item, text: p.left }),
+                    React.createElement(ItemMedia$1, { item: item, text: p.left }),
                     React.createElement(ItemText, { item: item, text: p.left }),
                     values[i] && React.createElement("b", null, i + 1)),
                 React.createElement(ItemZoom, { item: item, text: p.left })))),
             React.createElement("div", { className: "match-column", "aria-label": "Possible matches" }, rights.map((p, j) => { const owner = values.indexOf(p.right); return React.createElement("div", { className: "media-slot", key: p.right },
                 React.createElement("button", { "data-right": j, "data-state": owner < 0 ? 'idle' : state(owner), style: owner < 0 ? undefined : tint(owner), "data-drawing": drawing('right', j), "aria-label": `Match with ${p.right}`, "aria-pressed": owner >= 0, disabled: disabled, onClick: () => connect(p.right) },
                     owner >= 0 && React.createElement("b", null, owner + 1),
-                    React.createElement(ItemMedia, { item: item, text: p.right }),
+                    React.createElement(ItemMedia$1, { item: item, text: p.right }),
                     React.createElement(ItemText, { item: item, text: p.right })),
                 React.createElement(ItemZoom, { item: item, text: p.right })); }))),
         React.createElement("div", { className: "matching-tools" },
@@ -23264,7 +23264,7 @@ function WordBankAnswer({ item, value, onChange, disabled, onGrade }) {
                 React.createElement("b", null, item.blanks[i])) : values[i] || React.createElement("span", { className: "word-bank-blank", "aria-hidden": "true" }))))),
         React.createElement("div", { className: "word-bank-options", role: "group", "aria-label": "Word bank" }, item.options.map(option => React.createElement("span", { className: "media-slot", key: option },
             React.createElement("button", { "aria-label": `Option ${option}${values.includes(option) ? ', used' : ''}`, "data-used": values.includes(option) || undefined, disabled: disabled, onClick: () => choose(option) },
-                React.createElement(ItemMedia, { item: item, text: option }),
+                React.createElement(ItemMedia$1, { item: item, text: option }),
                 React.createElement(ItemText, { item: item, text: option })),
             React.createElement(ItemZoom, { item: item, text: option })))),
         !disabled && React.createElement("div", { className: "word-bank-tools" },
@@ -29558,7 +29558,7 @@ function OrderingSteps({ item, values, onChange, disabled }) {
                 React.createElement(GripVertical, { size: 18 })),
             React.createElement("span", { className: "sequence-num", "aria-hidden": "true" }, i + 1),
             React.createElement("span", { className: "media-slot" },
-                React.createElement(ItemMedia, { item: item, text: step }),
+                React.createElement(ItemMedia$1, { item: item, text: step }),
                 React.createElement(ItemZoom, { item: item, text: step })),
             React.createElement("span", { className: "sequence-text" },
                 React.createElement("span", { className: "visually-hidden" },
@@ -31423,550 +31423,7 @@ function HomeInsights({ items, reports, forecast, memory, mistakes, onPracticeMi
                 "Import")));
 }
 
-const ago = (iso) => { const d = Math.floor((Date.now() - Date.parse(iso)) / 86400000); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? `${d} days ago` : new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }); };
-const level = (pct) => pct >= 80 ? 'good' : pct >= 50 ? 'ok' : 'low';
-function MistakesPanel({ reports, items, onPractice, onEdit }) {
-    const ledger = reactExports.useMemo(() => mistakeLedger(reports), [reports]);
-    const byId = reactExports.useMemo(() => new Map(items.map(x => [x.id, x])), [items]);
-    const [subject, setSubject] = reactExports.useState(''), [sort, setSort] = reactExports.useState('recent'), [showCleared, setShowCleared] = reactExports.useState(false);
-    const subjects = reactExports.useMemo(() => { const m = new Map(); for (const e of ledger.open) {
-        const s = e.last.subject || 'General';
-        m.set(s, (m.get(s) || 0) + 1);
-    } return [...m].sort((a, b) => b[1] - a[1]); }, [ledger]);
-    const list = reactExports.useMemo(() => { const rows = ledger.open.filter(e => !subject || (e.last.subject || 'General') === subject); return sort === 'most' ? [...rows].sort((a, b) => b.misses - a.misses) : sort === 'close' ? [...rows].sort((a, b) => b.streak - a.streak || b.misses - a.misses) : rows; }, [ledger, subject, sort]);
-    const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString();
-    const clearedRecent = ledger.cleared.filter(e => e.clearedAt >= monthAgo);
-    const practicable = list.filter(e => byId.has(e.id));
-    if (!ledger.open.length && !ledger.cleared.length)
-        return React.createElement("section", { className: "report-content-card mx" },
-            React.createElement("div", { className: "mx-empty" },
-                React.createElement(CircleCheck, { size: 30 }),
-                React.createElement("h2", null, "No mistakes yet"),
-                React.createElement("p", null, "Questions you get wrong will appear here with your answer and the right one, so you can fix them.")));
-    return React.createElement("section", { className: "report-content-card mx" },
-        React.createElement("div", { className: "report-content-heading" },
-            React.createElement("div", null,
-                React.createElement("p", null, "WHAT TO PRACTICE NEXT"),
-                React.createElement("h2", null, "Mistakes"))),
-        React.createElement("div", { className: "mx-stats" },
-            React.createElement("div", { "data-kind": "open" },
-                React.createElement("strong", null, ledger.open.length),
-                React.createElement("span", null, "To fix")),
-            React.createElement("div", { "data-kind": "cleared" },
-                React.createElement("strong", null, clearedRecent.length),
-                React.createElement("span", null, "Fixed in 30 days")),
-            React.createElement("div", null,
-                React.createElement("strong", null, subjects[0]?.[0] || '—'),
-                React.createElement("span", null, subjects[0] ? `Most mistakes (${subjects[0][1]})` : 'No open mistakes'))),
-        ledger.open.length > 0 ? React.createElement(React.Fragment, null,
-            React.createElement("p", { className: "report-muted" }, "A question is fixed after you answer it right twice in a row. The dots show how close each one is."),
-            practicable.length > 0 && React.createElement("button", { type: "button", className: "mx-practice-all", onClick: () => onPractice(practicable.map(e => e.last)) },
-                React.createElement(Target, { size: 17 }),
-                "Practice ",
-                practicable.length === ledger.open.length ? 'all' : 'these',
-                " ",
-                practicable.length,
-                " ",
-                practicable.length === 1 ? 'mistake' : 'mistakes'),
-            React.createElement("div", { className: "mx-tools" },
-                subjects.length > 1 && React.createElement("div", { className: "mx-chips", role: "radiogroup", "aria-label": "Subject" },
-                    React.createElement("button", { type: "button", role: "radio", "aria-checked": !subject, onClick: () => setSubject('') },
-                        "All ",
-                        React.createElement("b", null, ledger.open.length)),
-                    subjects.map(([s, n]) => React.createElement("button", { key: s, type: "button", role: "radio", "aria-checked": subject === s, onClick: () => setSubject(s) },
-                        s,
-                        " ",
-                        React.createElement("b", null, n)))),
-                React.createElement("label", { className: "mx-sort" },
-                    "Sort",
-                    React.createElement("select", { value: sort, onChange: e => setSort(e.target.value) },
-                        React.createElement("option", { value: "recent" }, "Newest first"),
-                        React.createElement("option", { value: "most" }, "Most missed"),
-                        React.createElement("option", { value: "close" }, "Closest to fixed")))),
-            React.createElement("ul", { className: "mx-list" }, list.map(e => {
-                const item = byId.get(e.id), q = e.last;
-                return React.createElement("li", { key: e.id, className: "mx-item" },
-                    React.createElement("div", { className: "mx-item-top" },
-                        React.createElement("span", { className: "mx-place" }, [q.subject, q.topic].filter(Boolean).join(' › ') || 'General'),
-                        React.createElement("span", { className: "mx-type" }, typeLabel(q.type))),
-                    React.createElement("strong", { className: "mx-prompt" }, q.prompt || 'Picture question'),
-                    React.createElement("div", { className: "mx-answers" },
-                        React.createElement("p", { "data-kind": "wrong" },
-                            React.createElement(CircleX, { size: 14 }),
-                            React.createElement("span", null,
-                                React.createElement("small", null, "You said"),
-                                q.user_answer || 'No answer')),
-                        React.createElement("p", { "data-kind": "right" },
-                            React.createElement(CircleCheck, { size: 14 }),
-                            React.createElement("span", null,
-                                React.createElement("small", null, "Correct"),
-                                q.correct_answer || '—'))),
-                    React.createElement("div", { className: "mx-item-foot" },
-                        React.createElement("span", { className: "mx-progress", title: `${e.streak} of 2 right answers in a row` },
-                            React.createElement("i", { "data-on": e.streak >= 1 || undefined }),
-                            React.createElement("i", { "data-on": e.streak >= 2 || undefined }),
-                            React.createElement("em", null, e.streak ? '1 more to fix' : '2 to fix')),
-                        React.createElement("span", { className: "mx-meta" },
-                            "Missed ",
-                            e.misses,
-                            "\u00D7 \u00B7 ",
-                            ago(e.lastMissed))),
-                    item ? React.createElement("div", { className: "mx-actions" },
-                        React.createElement("button", { type: "button", onClick: () => onPractice([q]) },
-                            React.createElement(Play, { size: 13, fill: "currentColor" }),
-                            "Practice"),
-                        React.createElement("button", { type: "button", className: "is-soft", onClick: () => onEdit(item) },
-                            React.createElement(Pencil, { size: 13 }),
-                            "Edit")) : React.createElement("p", { className: "mx-gone" }, "No longer in your question bank."));
-            }))) : React.createElement("div", { className: "mx-allclear" },
-            React.createElement(Trophy, { size: 22 }),
-            React.createElement("div", null,
-                React.createElement("strong", null, "All mistakes fixed"),
-                React.createElement("small", null, "Nothing left to revisit. Nice work."))),
-        ledger.cleared.length > 0 && React.createElement("div", { className: "mx-cleared" },
-            React.createElement("button", { type: "button", "aria-expanded": showCleared, onClick: () => setShowCleared(v => !v) },
-                React.createElement(CircleCheck, { size: 16 }),
-                "Fixed questions ",
-                React.createElement("b", null, ledger.cleared.length),
-                React.createElement(ChevronDown, { size: 16, className: "mx-chev" })),
-            showCleared && React.createElement("ul", null, ledger.cleared.slice(0, 30).map(e => React.createElement("li", { key: e.id },
-                React.createElement("span", null, e.last.prompt || 'Picture question'),
-                React.createElement("small", null,
-                    "Fixed ",
-                    ago(e.clearedAt),
-                    " \u00B7 missed ",
-                    e.misses,
-                    "\u00D7"))))));
-}
-const monthName = (y, m) => new Date(y, m, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const PARTS = [['morning', 'Morning', Sunrise, '5am–12pm'], ['afternoon', 'Afternoon', Sun, '12–5pm'], ['evening', 'Evening', Sunset, '5–10pm'], ['night', 'Night', Moon, '10pm–5am']];
-function ActivityPanel({ reports, streakDays }) {
-    const today = localDay();
-    const stats = reactExports.useMemo(() => activityStats(reports), [reports]);
-    const streak = reactExports.useMemo(() => streakStats([...streakDays, ...stats.days.keys()], today), [streakDays, stats, today]);
-    const [month, setMonth] = reactExports.useState(() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; });
-    const [picked, setPicked] = reactExports.useState(today);
-    const first = new Date(month.y, month.m, 1), days = new Date(month.y, month.m + 1, 0).getDate(), lead = (first.getDay() + 6) % 7;
-    const keys = Array.from({ length: days }, (_, i) => localDay(new Date(month.y, month.m, i + 1)));
-    const studied = new Set([...streakDays, ...stats.days.keys()]);
-    const maxAnswers = Math.max(1, ...keys.map(k => stats.days.get(k)?.answers || 0));
-    const inMonth = keys.map(k => stats.days.get(k)).filter(Boolean);
-    const monthSeconds = inMonth.reduce((n, d) => n + d.seconds, 0), monthDays = keys.filter(k => studied.has(k)).length;
-    const elapsed = keys.filter(k => k <= today).length;
-    const isCurrent = month.y === new Date().getFullYear() && month.m === new Date().getMonth();
-    const earliest = reports.length ? new Date(reports[reports.length - 1].date) : new Date();
-    const canBack = new Date(month.y, month.m, 1) > new Date(earliest.getFullYear(), earliest.getMonth(), 1);
-    const shift = (n) => setMonth(({ y, m }) => { const d = new Date(y, m + n, 1); return { y: d.getFullYear(), m: d.getMonth() }; });
-    const totalQuizzes = stats.weekdays.reduce((a, b) => a + b, 0);
-    const topDay = totalQuizzes ? stats.weekdays.indexOf(Math.max(...stats.weekdays)) : -1;
-    const topPart = totalQuizzes ? PARTS.reduce((a, p) => stats.parts[p[0]] > stats.parts[a[0]] ? p : a) : null;
-    const maxWeekday = Math.max(1, ...stats.weekdays);
-    const day = stats.days.get(picked);
-    const last14 = Array.from({ length: 14 }, (_, i) => shiftDay(today, i - 13));
-    const recentMinutes = last14.reduce((n, k) => n + (stats.days.get(k)?.seconds || 0), 0) / 60;
-    return React.createElement("section", { className: "report-content-card ax" },
-        React.createElement("div", { className: "report-content-heading" },
-            React.createElement("div", null,
-                React.createElement("p", null, "YOUR STUDY RHYTHM"),
-                React.createElement("h2", null, "Activity"))),
-        React.createElement("div", { className: "ax-stats" },
-            React.createElement("div", { "data-kind": "streak" },
-                React.createElement(Flame, { size: 18 }),
-                React.createElement("strong", null, streak.current),
-                React.createElement("span", null, "Day streak")),
-            React.createElement("div", null,
-                React.createElement(Trophy, { size: 18 }),
-                React.createElement("strong", null, streak.longest),
-                React.createElement("span", null, "Best streak")),
-            React.createElement("div", null,
-                React.createElement(CalendarDays, { size: 18 }),
-                React.createElement("strong", null, streak.total),
-                React.createElement("span", null, "Days studied")),
-            React.createElement("div", null,
-                React.createElement(Clock, { size: 18 }),
-                React.createElement("strong", null,
-                    Math.round(recentMinutes / 14) || 0,
-                    "m"),
-                React.createElement("span", null, "Per day (2 wks)"))),
-        React.createElement("div", { className: "ax-cal" },
-            React.createElement("div", { className: "ax-cal-head" },
-                React.createElement("button", { type: "button", "aria-label": "Previous month", disabled: !canBack, onClick: () => shift(-1) },
-                    React.createElement(ChevronLeft, { size: 18 })),
-                React.createElement("strong", null, monthName(month.y, month.m)),
-                React.createElement("button", { type: "button", "aria-label": "Next month", disabled: isCurrent, onClick: () => shift(1) },
-                    React.createElement(ChevronRight, { size: 18 }))),
-            React.createElement("p", { className: "ax-cal-sub" },
-                monthDays,
-                " of ",
-                isCurrent ? elapsed : days,
-                " days studied \u00B7 ",
-                formatDuration(monthSeconds),
-                " \u00B7 ",
-                inMonth.reduce((n, d) => n + d.quizzes, 0),
-                " quizzes"),
-            React.createElement("div", { className: "ax-grid", role: "grid", "aria-label": `Study days in ${monthName(month.y, month.m)}` },
-                WEEKDAYS.map(d => React.createElement("span", { key: d, className: "ax-wd", "aria-hidden": "true" }, d[0])),
-                Array.from({ length: lead }, (_, i) => React.createElement("span", { key: 'l' + i })),
-                keys.map((k, i) => { const s = stats.days.get(k), lv = s ? Math.min(4, 1 + Math.floor(s.answers / maxAnswers * 3.99)) : studied.has(k) ? 1 : 0; return React.createElement("button", { key: k, type: "button", className: "ax-day", "data-lv": lv, "data-today": k === today || undefined, "data-picked": k === picked || undefined, disabled: k > today, "aria-label": `${k}: ${s ? `${s.quizzes} ${s.quizzes === 1 ? 'quiz' : 'quizzes'}, ${s.answers} answers` : studied.has(k) ? 'practised' : 'no study'}`, onClick: () => setPicked(k) }, i + 1); })),
-            React.createElement("div", { className: "ax-legend" },
-                React.createElement("span", null, "Less"),
-                [0, 1, 2, 3, 4].map(l => React.createElement("i", { key: l, "data-lv": l })),
-                React.createElement("span", null, "More"))),
-        React.createElement("div", { className: "ax-dayview" },
-            React.createElement("h3", null, picked === today ? 'Today' : new Date(picked + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })),
-            day ? React.createElement(React.Fragment, null,
-                React.createElement("p", { className: "report-muted" },
-                    day.quizzes,
-                    " ",
-                    day.quizzes === 1 ? 'quiz' : 'quizzes',
-                    " \u00B7 ",
-                    day.answers,
-                    " answers \u00B7 ",
-                    Math.round(day.correct / Math.max(1, day.answers) * 100),
-                    "% correct \u00B7 ",
-                    formatDuration(day.seconds)),
-                React.createElement("ul", null, day.reports.map((r) => React.createElement("li", { key: r.id },
-                    React.createElement("span", null, new Date(r.date).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })),
-                    React.createElement("em", null,
-                        r.mode === 'retry_mistakes' ? 'Retake' : 'Quiz',
-                        " \u00B7 ",
-                        r.total,
-                        " questions"),
-                    React.createElement("b", { "data-level": level(r.accuracy) },
-                        r.accuracy,
-                        "%")))))
-                : React.createElement("p", { className: "report-muted" },
-                    studied.has(picked) ? 'You practised this day.' : 'No quizzes this day.',
-                    picked === today ? ' A quick quiz keeps your streak going.' : '')),
-        totalQuizzes > 0 && React.createElement("div", { className: "ax-rhythm" },
-            React.createElement("h3", null, "When you study"),
-            React.createElement("p", { className: "report-muted" },
-                "Most often on ",
-                React.createElement("b", null, WEEKDAYS[topDay]),
-                topPart ? React.createElement(React.Fragment, null,
-                    ", usually in the ",
-                    React.createElement("b", null, topPart[1].toLowerCase())) : null,
-                "."),
-            React.createElement("div", { className: "ax-week" }, stats.weekdays.map((n, i) => React.createElement("div", { key: i, "data-top": i === topDay || undefined },
-                React.createElement("i", { style: { height: `${Math.max(6, n / maxWeekday * 100)}%` } }),
-                React.createElement("span", null, WEEKDAYS[i][0]),
-                React.createElement("small", null, n)))),
-            React.createElement("div", { className: "ax-parts" }, PARTS.map(([id, label, Icon, hint]) => { const pct = Math.round(stats.parts[id] / totalQuizzes * 100); return React.createElement("div", { key: id, "data-top": topPart?.[0] === id || undefined },
-                React.createElement(Icon, { size: 16 }),
-                React.createElement("span", null,
-                    React.createElement("strong", null, label),
-                    React.createElement("small", null, hint)),
-                React.createElement("b", null,
-                    pct,
-                    "%"),
-                React.createElement("i", { style: { width: `${pct}%` } })); }))));
-}
-
-// Answer areas for the newer question types. Each keeps its own answer and reports it through onGrade.
-const clamp$2 = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
-function ListRecallAnswer({ item, disabled, onGrade }) {
-    const total = item.listItems?.length || 0, need = Math.max(1, listNeed(item));
-    const [values, setValues] = reactExports.useState(() => Array(need).fill('')), fields = reactExports.useRef([]);
-    const matches = disabled ? listMatches(item, values) : [], named = new Set(matches.filter((i) => i >= 0)), filled = values.some(v => v.trim());
-    const others = (item.listItems || []).map((x, i) => named.has(i) ? null : listAlternatives(x)[0]).filter(Boolean);
-    return React.createElement("div", { className: "extra-answer list-answer" },
-        React.createElement("p", { className: "split-answer-help" }, need < total ? `Name any ${need} of ${total}, in any order.` : `Name all ${need}, in any order.`),
-        React.createElement("ol", { className: "list-answer-fields" }, values.map((v, i) => React.createElement("li", { key: i, "data-state": disabled ? (matches[i] >= 0 ? 'correct' : 'wrong') : undefined },
-            React.createElement("span", { className: "list-answer-number", "aria-hidden": "true" }, i + 1),
-            React.createElement("input", { ref: el => { fields.current[i] = el; }, "aria-label": `Answer ${i + 1}`, value: v, disabled: disabled, autoComplete: "off", spellCheck: false, enterKeyHint: i < need - 1 ? 'next' : 'done', placeholder: i === 0 ? 'Type one…' : '', onChange: e => setValues(xs => xs.map((x, j) => j === i ? e.target.value : x)), onKeyDown: e => { if (e.key !== 'Enter')
-                    return; e.preventDefault(); const next = fields.current[i + 1]; if (next)
-                    next.focus();
-                else if (filled)
-                    onGrade(values); } }),
-            disabled && React.createElement("span", { className: "list-answer-mark", "aria-label": matches[i] >= 0 ? 'Correct' : 'Not on the list' }, matches[i] >= 0 ? React.createElement(Check, { size: 16 }) : React.createElement(X, { size: 16 }))))),
-        disabled && React.createElement("div", { className: "list-answer-summary" },
-            React.createElement("p", { role: "status" },
-                React.createElement("b", null, named.size),
-                " of ",
-                need,
-                " named"),
-            others.length > 0 && React.createElement(React.Fragment, null,
-                React.createElement("small", null, named.size >= need ? 'Others on the list' : 'Ones you missed'),
-                React.createElement("div", { className: "list-answer-others" }, others.map((x) => React.createElement("span", { key: x }, x))))),
-        !disabled && React.createElement(Button, { className: "split-submit", disabled: !filled, onClick: () => onGrade(values) }, "Check answers"));
-}
-// Sort into groups: drag an item onto a group, or tap the item and then the group.
-function CategorizeAnswer({ item, disabled, onGrade }) {
-    const groups = item.groups || [];
-    const all = reactExports.useMemo(() => seededShuffle(groups.flatMap(g => g.items), String(item.id || item.prompt) + '|sort'), [item]);
-    const [placed, setPlaced] = reactExports.useState({}), [active, setActive] = reactExports.useState(null), [note, setNote] = reactExports.useState('');
-    const [drag, setDrag] = reactExports.useState(null), press = reactExports.useRef(null), skipClick = reactExports.useRef(false);
-    const home = (x) => groups.find(g => g.items.includes(x))?.name, pool = all.filter(x => !placed[x]);
-    const pictured = all.some(x => item.optionImages?.[x]);
-    function put(x, name) { setPlaced(p => { const n = { ...p }; if (name)
-        n[x] = name;
-    else
-        delete n[x]; return n; }); setNote(''); }
-    function pick(x) { if (disabled)
-        return; setActive(x); setNote(''); }
-    function drop(name) {
-        if (disabled)
-            return;
-        if (!active) {
-            setNote('Pick an item first: drag it here, or tap it and then this group.');
-            return;
-        }
-        put(active, name);
-        setActive(pool.find(x => x !== active) ?? null);
-    }
-    const zoneAt = (x, y) => document.elementFromPoint(x, y)?.closest('[data-zone]')?.dataset.zone ?? null;
-    function down(x, e) { if (disabled || (e.pointerType === 'mouse' && e.button !== 0))
-        return; press.current = { x, sx: e.clientX, sy: e.clientY, id: e.pointerId, moved: false, el: e.currentTarget }; }
-    function move(e) {
-        const p = press.current;
-        if (!p || p.id !== e.pointerId)
-            return;
-        if (!p.moved) {
-            if (Math.hypot(e.clientX - p.sx, e.clientY - p.sy) < 7)
-                return;
-            p.moved = true;
-            try {
-                p.el.setPointerCapture(e.pointerId);
-            }
-            catch { }
-            setActive(null);
-            setNote('');
-            try {
-                navigator.vibrate?.(8);
-            }
-            catch { }
-        }
-        setDrag({ x: p.x, px: e.clientX, py: e.clientY, over: zoneAt(e.clientX, e.clientY) });
-    }
-    function up(e) {
-        const p = press.current;
-        press.current = null;
-        setDrag(null);
-        if (!p || p.id !== e.pointerId || !p.moved)
-            return;
-        skipClick.current = true;
-        setTimeout(() => { skipClick.current = false; });
-        const zone = zoneAt(e.clientX, e.clientY);
-        if (zone === '__pool')
-            put(p.x, null);
-        else if (zone)
-            put(p.x, zone);
-    }
-    function chip(x, state) {
-        const img = item.optionImages?.[x];
-        return React.createElement("span", { className: "sort-item media-slot", key: x, "data-picture": img ? '' : undefined },
-            React.createElement("button", { type: "button", className: "sort-chip", "aria-pressed": active === x, "data-state": state, "data-lifted": drag?.x === x || undefined, disabled: disabled, "aria-label": placed[x] && !disabled ? `${x}, in ${placed[x]}. Tap to pick it up again.` : undefined, onPointerDown: e => down(x, e), onPointerMove: move, onPointerUp: up, onPointerCancel: () => { press.current = null; setDrag(null); }, onClick: () => { if (skipClick.current)
-                    return; if (placed[x] && active === x) {
-                    put(x, null);
-                    return;
-                } pick(x); } },
-                img && React.createElement("img", { className: "sort-chip-img", src: img, alt: "", draggable: false }),
-                React.createElement(ItemText, { item: item, text: x, className: "sort-chip-text" }),
-                state === 'wrong' && React.createElement("small", null,
-                    "\u2192 ",
-                    home(x))),
-            React.createElement(ItemExtras, { item: item, text: x }));
-    }
-    const ghostImg = drag ? item.optionImages?.[drag.x] : null;
-    return React.createElement("div", { className: "extra-answer sort-answer", "data-pictured": pictured || undefined, "data-dragging": drag ? '' : undefined },
-        React.createElement("p", { className: "split-answer-help" }, disabled ? 'Your groups' : 'Drag each item into its group, or tap an item and then a group.'),
-        !disabled && React.createElement("div", { className: "sort-pool", role: "group", "aria-label": "Items to sort", "data-zone": "__pool", "data-over": drag?.over === '__pool' || undefined }, pool.length ? pool.map(x => chip(x)) : React.createElement("span", { className: "sort-pool-done" }, "All sorted. Drag or tap an item to move it.")),
-        React.createElement("div", { className: "sort-groups", "data-count": groups.length }, groups.map(g => {
-            const here = all.filter(x => placed[x] === g.name);
-            return React.createElement("section", { key: g.name, className: "sort-group", "data-zone": g.name, "data-over": drag?.over === g.name || undefined, "data-ready": !disabled && !!active || undefined, onClick: e => { if (!e.target.closest('.sort-item'))
-                    drop(g.name); } },
-                React.createElement("button", { type: "button", className: "sort-group-head", disabled: disabled, "aria-label": active ? `Put ${active} in ${g.name}` : g.name },
-                    React.createElement("span", null, g.name),
-                    disabled ? React.createElement("small", null,
-                        here.filter(x => home(x) === g.name).length,
-                        "/",
-                        g.items.length) : active ? React.createElement(Plus, { size: 16, "aria-hidden": "true" }) : React.createElement("small", null, here.length)),
-                React.createElement("div", { className: "sort-group-items" },
-                    here.map(x => chip(x, disabled ? (home(x) === g.name ? 'correct' : 'wrong') : undefined)),
-                    !here.length && React.createElement("span", { className: "sort-empty" }, disabled ? 'Nothing here' : 'Drop here')));
-        })),
-        drag && reactDomExports.createPortal(React.createElement("div", { className: "sort-ghost", style: { left: drag.px, top: drag.py }, "aria-hidden": "true" },
-            ghostImg && React.createElement("img", { src: ghostImg, alt: "" }),
-            React.createElement("span", null, isPictureLabel(drag.x) && ghostImg ? '' : drag.x)), document.body),
-        note && React.createElement("p", { className: "extra-note", role: "status" }, note),
-        !disabled && React.createElement("div", { className: "extra-tools" },
-            React.createElement("span", { role: "status" },
-                all.length - pool.length,
-                " of ",
-                all.length,
-                " sorted"),
-            React.createElement("button", { type: "button", disabled: !Object.keys(placed).length, onClick: () => { setPlaced({}); setActive(null); setNote(''); } }, "Start over")),
-        !disabled && React.createElement(Button, { className: "split-submit", disabled: pool.length > 0, onClick: () => onGrade(placed) }, "Check groups"));
-}
-function HighlightAnswer({ item, disabled, onGrade }) {
-    const tokens = reactExports.useMemo(() => passageTokens(item.passage), [item.passage]);
-    const [picked, setPicked] = reactExports.useState([]);
-    const marked = new Set(tokens.filter((t) => t.marked).map((t) => t.index));
-    const found = picked.filter(i => marked.has(i)).length, extra = picked.length - found;
-    const state = (i) => !disabled ? (picked.includes(i) ? 'picked' : undefined) : picked.includes(i) ? (marked.has(i) ? 'correct' : 'wrong') : marked.has(i) ? 'missed' : undefined;
-    return React.createElement("div", { className: "extra-answer highlight-answer" },
-        React.createElement("p", { className: "split-answer-help" }, disabled ? `Found ${found} of ${marked.size}${extra ? ` · ${extra} not a match` : ''}` : `Find ${marked.size} ${marked.size === 1 ? 'word' : 'words'}. Tap again to undo.`),
-        React.createElement("p", { className: "highlight-passage" }, tokens.map((t, i) => t.word ? React.createElement(React.Fragment, { key: i },
-            t.pre,
-            React.createElement("button", { type: "button", className: "highlight-word", "aria-pressed": picked.includes(t.index), "data-state": state(t.index), disabled: disabled, onClick: () => setPicked(xs => xs.includes(t.index) ? xs.filter(x => x !== t.index) : [...xs, t.index]) }, t.word),
-            t.post) : React.createElement(React.Fragment, { key: i }, t.space ? t.text : t.plain))),
-        disabled && marked.size > found && React.createElement("p", { className: "extra-note" },
-            React.createElement("span", { className: "highlight-key", "data-state": "missed" }, "dashed"),
-            " words are the ones you missed."),
-        !disabled && React.createElement("div", { className: "extra-tools" },
-            React.createElement("span", { role: "status" },
-                picked.length,
-                " selected"),
-            React.createElement("button", { type: "button", disabled: !picked.length, onClick: () => setPicked([]) }, "Clear")),
-        !disabled && React.createElement(Button, { className: "split-submit", disabled: !picked.length, onClick: () => onGrade(picked) }, "Check words"));
-}
-function TapTarget({ spot, state, label }) { return React.createElement("span", { className: "tap-target", "data-state": state, "aria-hidden": "true", style: { left: `${spot.x * 100}%`, top: `${spot.y * 100}%`, width: `${spot.r * 200}%`, height: `${spot.r * 200 / spot.aspect}%` } }, label && React.createElement("em", null, label)); }
-/** The picture sized to its own shape, so spot positions match the image. Zoom makes small places easier to hit on phones. */
-function TapCanvas({ image, alt, boardRef, zoomed, onZoom, children, locked, ...rest }) {
-    return React.createElement("div", { className: "tap-frame", "data-zoomed": zoomed || undefined },
-        React.createElement("div", { className: "tap-scroll" },
-            React.createElement("div", { className: "tap-board is-map", ref: boardRef, "data-locked": locked || undefined, style: zoomed ? { width: '200%' } : undefined, ...rest },
-                React.createElement("img", { src: image, alt: alt, draggable: false }),
-                children)),
-        React.createElement("button", { type: "button", className: "tap-zoom", "aria-pressed": !!zoomed, onClick: onZoom },
-            zoomed ? React.createElement(ZoomOut, { size: 15 }) : React.createElement(ZoomIn, { size: 15 }),
-            zoomed ? 'Zoom out' : 'Zoom in'));
-}
-function ImageTapAnswer({ item, disabled, onGrade }) {
-    const spots = tapSpots(item), mode = item.tapMode === 'name' ? 'name' : 'find', single = mode === 'find' && spots.length === 1;
-    const order = reactExports.useMemo(() => single ? [0] : seededShuffle(spots.map((_, i) => i), String(item.id || item.prompt) + '|tap'), [item]);
-    const bank = reactExports.useMemo(() => seededShuffle(spots.map(s => s.label), String(item.id || item.prompt) + '|names'), [item]);
-    const [pins, setPins] = reactExports.useState(() => spots.map(() => null)), [names, setNames] = reactExports.useState(() => spots.map(() => ''));
-    const [cur, setCur] = reactExports.useState(order[0] ?? 0), [zoomed, setZoomed] = reactExports.useState(false), board = reactExports.useRef(null);
-    const given = mode === 'name' ? names : pins, results = disabled ? tapResults(item, given) : [], right = results.filter(Boolean).length;
-    const done = mode === 'name' ? names.filter(Boolean).length : pins.filter(Boolean).length;
-    const nextOpen = (list, from) => { const at = order.indexOf(from); for (let k = 1; k <= order.length; k++) {
-        const i = order[(at + k) % order.length];
-        if (!list[i])
-            return i;
-    } return from; };
-    function place(e) {
-        if (disabled || mode === 'name')
-            return;
-        const r = board.current.getBoundingClientRect();
-        const next = pins.map((p, i) => i === cur ? { x: clamp$2((e.clientX - r.left) / r.width), y: clamp$2((e.clientY - r.top) / r.height) } : p);
-        setPins(next);
-        if (!single)
-            setCur(nextOpen(next, cur));
-    }
-    function key(e) {
-        if (disabled || mode === 'name')
-            return;
-        const moves = { ArrowLeft: [-0.02, 0], ArrowRight: [.02, 0], ArrowUp: [0, -0.02], ArrowDown: [0, .02] };
-        if (moves[e.key]) {
-            e.preventDefault();
-            setPins(ps => ps.map((p, i) => i === cur ? { x: clamp$2((p?.x ?? .5) + moves[e.key][0]), y: clamp$2((p?.y ?? .5) + moves[e.key][1]) } : p));
-        }
-        else if ((e.key === 'Enter' || e.key === ' ') && !pins[cur]) {
-            e.preventDefault();
-            setPins(ps => ps.map((p, i) => i === cur ? { x: .5, y: .5 } : p));
-        }
-    }
-    function nameIt(label) {
-        if (disabled)
-            return;
-        const next = names.map((n, i) => i === cur ? label : n === label ? '' : n);
-        setNames(next);
-        setCur(nextOpen(next, cur));
-    }
-    const ask = spots[cur]?.label;
-    return React.createElement("div", { className: "extra-answer tap-answer", "data-mode": mode },
-        !disabled && (single ? React.createElement("p", { className: "split-answer-help" }, pins[0] ? 'Tap again to move your pin, then check.' : 'Tap the right place on the picture.')
-            : mode === 'find' ? React.createElement("p", { className: "tap-ask", role: "status" },
-                React.createElement("span", null, "Tap"),
-                React.createElement("b", null, ask),
-                React.createElement("small", null,
-                    done,
-                    " of ",
-                    spots.length,
-                    " placed"))
-                : React.createElement("p", { className: "tap-ask", role: "status" },
-                    React.createElement("span", null, "Name pin"),
-                    React.createElement("b", { className: "tap-ask-num" }, cur + 1),
-                    React.createElement("small", null,
-                        done,
-                        " of ",
-                        spots.length,
-                        " named"))),
-        React.createElement(TapCanvas, { image: item.image, alt: item.imageAlt || 'Question picture', boardRef: board, zoomed: zoomed, onZoom: () => setZoomed(z => !z), locked: disabled || mode === 'name', role: mode === 'find' ? 'button' : undefined, tabIndex: disabled || mode === 'name' ? -1 : 0, "aria-label": mode === 'find' ? `Picture. Tap to place your pin${ask && !single ? ` for ${ask}` : ''}; arrow keys move it.` : 'Picture with numbered pins', onClick: place, onKeyDown: key },
-            disabled && mode === 'find' && spots.map((s, i) => React.createElement(TapTarget, { key: 't' + i, spot: s, state: results[i] ? 'correct' : 'wrong', label: single ? undefined : String(i + 1) })),
-            mode === 'find' && pins.map((p, i) => p && !(disabled && results[i]) && React.createElement("span", { key: 'p' + i, className: "tap-pin", "data-current": !disabled && !single && i === cur || undefined, "data-state": disabled ? 'wrong' : undefined, style: { left: `${p.x * 100}%`, top: `${p.y * 100}%` }, "aria-hidden": "true" }, !single && !disabled && React.createElement("em", null, spots[i].label))),
-            mode === 'name' && spots.map((s, i) => React.createElement("button", { type: "button", key: 'n' + i, className: "tap-marker", "aria-pressed": !disabled && cur === i, "data-state": disabled ? (results[i] ? 'correct' : 'wrong') : names[i] ? 'named' : undefined, disabled: disabled, "aria-label": `Pin ${i + 1}${names[i] ? `: ${names[i]}` : ''}`, style: { left: `${s.x * 100}%`, top: `${s.y * 100}%` }, onClick: e => { e.stopPropagation(); setCur(i); } },
-                React.createElement("span", null, i + 1),
-                names[i] && !disabled && React.createElement("em", null, names[i])))),
-        disabled && !single && React.createElement("ol", { className: "tap-review", "aria-label": "Your answers" }, spots.map((s, i) => React.createElement("li", { key: i, "data-state": results[i] ? 'correct' : 'wrong' },
-            React.createElement("b", null, i + 1),
-            React.createElement("span", null,
-                s.label,
-                !results[i] && React.createElement("small", null, mode === 'name' ? (names[i] ? React.createElement(React.Fragment, null,
-                    "You said ",
-                    React.createElement("s", null, names[i])) : 'Not named') : 'Missed')),
-            results[i] ? React.createElement(Check, { size: 16, "aria-label": "Right" }) : React.createElement(X, { size: 16, "aria-label": "Wrong" })))),
-        !disabled && !single && mode === 'find' && React.createElement("div", { className: "tap-queue", role: "group", "aria-label": "Places to find" }, order.map(i => React.createElement("button", { type: "button", key: i, "aria-pressed": cur === i, "data-done": !!pins[i] || undefined, onClick: () => setCur(i) },
-            pins[i] && React.createElement(Check, { size: 13, "aria-hidden": "true" }),
-            spots[i].label))),
-        !disabled && mode === 'name' && React.createElement("div", { className: "tap-bank", role: "group", "aria-label": "Names" }, bank.map(label => { const at = names.indexOf(label); return React.createElement("button", { type: "button", key: label, "data-used": at >= 0 || undefined, "aria-label": `${label}${at >= 0 ? `, on pin ${at + 1}` : ''}`, onClick: () => nameIt(label) },
-            at >= 0 && React.createElement("b", null, at + 1),
-            label); })),
-        disabled && React.createElement("div", { className: "tap-result", "data-state": right === spots.length ? 'correct' : 'wrong', role: "status" },
-            right === spots.length ? React.createElement(Check, { size: 18 }) : React.createElement(X, { size: 18 }),
-            React.createElement("div", null,
-                React.createElement("strong", null, single ? (right ? 'You found it' : 'Not quite') : right === spots.length ? (mode === 'name' ? 'All named' : 'All found') : `${right} of ${spots.length} right`),
-                React.createElement("span", null, single ? (right ? 'Right on the spot.' : 'The ringed spot is the right place.') : right === spots.length ? 'Every place is right.' : mode === 'name' ? 'Numbers match the list below.' : 'Rings show the right places; red dots are your misses.'))),
-        !disabled && React.createElement(Button, { className: "split-submit", disabled: done < spots.length, onClick: () => onGrade(given) }, "Check"));
-}
-function SliderAnswer({ item, disabled, onGrade }) {
-    const min = Number(item.sliderMin ?? 0), max = Number(item.sliderMax ?? 100), step = Number(item.sliderStep) || 1;
-    const decimals = Math.min(6, (String(step).split('.')[1] || '').length), snap = (v) => Number(clamp$2(min + Math.round((v - min) / step) * step, min, max).toFixed(decimals));
-    const [value, setValue] = reactExports.useState(null), shown = value ?? snap((min + max) / 2);
-    const answer = Number(item.answer), tolerance = Number(item.numericTolerance) || 0, span = max - min || 1;
-    const pct = (v) => clamp$2((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals, useGrouping: Math.abs(v) >= 10000 });
-    const right = disabled && value !== null && Math.abs(value - answer) <= tolerance + 1e-9;
-    const unit = item.unit ? React.createElement("small", null, item.unit) : null;
-    return React.createElement("div", { className: "extra-answer slider-answer" },
-        React.createElement("p", { className: "split-answer-help" }, disabled ? (right ? 'Close enough — well estimated.' : `You were ${fmt(Math.abs((value ?? answer) - answer))}${item.unit ? ' ' + item.unit : ''} away.`) : `Drag to your best estimate.${tolerance > 0 ? ` Within ± ${fmt(tolerance)} counts as right.` : ''}`),
-        React.createElement("output", { className: "slider-value", "data-state": disabled ? (right ? 'correct' : 'wrong') : value === null ? 'empty' : undefined },
-            value === null ? 'Drag the slider' : fmt(value),
-            value !== null && unit),
-        React.createElement("div", { className: "slider-track" },
-            React.createElement("input", { type: "range", min: min, max: max, step: step, value: shown, disabled: disabled, "aria-label": "Your estimate", "aria-valuetext": `${fmt(shown)}${item.unit ? ' ' + item.unit : ''}`, "data-untouched": value === null || undefined, onChange: e => setValue(snap(Number(e.target.value))) }),
-            disabled && React.createElement("div", { className: "slider-marks", "aria-hidden": "true" },
-                tolerance > 0 && React.createElement("span", { className: "slider-band", style: { left: `${pct(answer - tolerance)}%`, width: `${pct(answer + tolerance) - pct(answer - tolerance)}%` } }),
-                React.createElement("span", { className: "slider-correct", style: { left: `${pct(answer)}%` } },
-                    React.createElement("b", null, fmt(answer))))),
-        React.createElement("div", { className: "slider-scale", "aria-hidden": "true" },
-            React.createElement("span", null, fmt(min)),
-            React.createElement("span", null, fmt(max))),
-        !disabled && React.createElement("div", { className: "slider-nudge" },
-            React.createElement("button", { type: "button", "aria-label": "Decrease by one step", onClick: () => setValue(snap(shown - step)) },
-                React.createElement(Minus, { size: 18 })),
-            React.createElement("span", null, "Fine-tune"),
-            React.createElement("button", { type: "button", "aria-label": "Increase by one step", onClick: () => setValue(snap(shown + step)) },
-                React.createElement(Plus, { size: 18 }))),
-        !disabled && React.createElement(Button, { className: "split-submit", disabled: value === null, onClick: () => onGrade(value) }, "Check estimate"));
-}
-function ExtraAnswer(props) {
-    const type = props.item?.type;
-    if (type === 'list_recall')
-        return React.createElement(ListRecallAnswer, { ...props });
-    if (type === 'categorize')
-        return React.createElement(CategorizeAnswer, { ...props });
-    if (type === 'highlight')
-        return React.createElement(HighlightAnswer, { ...props });
-    if (type === 'image_tap')
-        return props.item.image && tapSpots(props.item).length ? React.createElement(ImageTapAnswer, { ...props }) : React.createElement("p", { className: "extra-note" }, props.item.image ? 'Mark at least one place on the picture.' : 'Add a question picture to use this type.');
-    if (type === 'slider')
-        return React.createElement(SliderAnswer, { ...props });
-    return null;
-}
-
-const clamp$1 = (v, a, b) => Math.min(b, Math.max(a, v));
+const clamp$2 = (v, a, b) => Math.min(b, Math.max(a, v));
 const recorderType = () => typeof MediaRecorder === 'undefined' ? '' : ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => MediaRecorder.isTypeSupported?.(t)) || '';
 const guessType = (name) => ({ mp3: 'audio/mpeg', m4a: 'audio/mp4', aac: 'audio/aac', wav: 'audio/wav', ogg: 'audio/ogg', oga: 'audio/ogg', opus: 'audio/ogg', webm: 'audio/webm' }[name.split('.').pop()?.toLowerCase() || ''] || '');
 const tooLong = `Keep the sound to about ${fmtTime(MAX_AUDIO_SECONDS)} or less.`;
@@ -32023,7 +31480,7 @@ function useWaveform(src, bars, start, end) {
     return reactExports.useMemo(() => {
         if (!raw)
             return Array.from({ length: bars }, (_, i) => 0.22 + 0.12 * Math.abs(Math.sin(i * 0.9)));
-        const d = raw.duration || 1, n = raw.peaks.length, a = clamp$1((end > start ? start : 0) / d, 0, 1) * n, b = Math.max(a + 1, clamp$1((end > start ? end : d) / d, 0, 1) * n);
+        const d = raw.duration || 1, n = raw.peaks.length, a = clamp$2((end > start ? start : 0) / d, 0, 1) * n, b = Math.max(a + 1, clamp$2((end > start ? end : d) / d, 0, 1) * n);
         return Array.from({ length: bars }, (_, i) => { const s = Math.floor(a + (i / bars) * (b - a)), e = Math.max(s + 1, Math.floor(a + ((i + 1) / bars) * (b - a))); let m = 0; for (let j = s; j < e && j < n; j++)
             if (raw.peaks[j] > m)
                 m = raw.peaks[j]; return m; });
@@ -32046,7 +31503,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
     const pb = useClipPlayback(audio, src, edit, { durationHint, analyser: variant === 'overlay' });
     const { duration, at, playing, failed } = pb;
     const known = duration > 0, clip = normalizeEdit(edit, duration), selLen = known ? clip.trimEnd - clip.trimStart : 0;
-    const played = known ? clamp$1((at - clip.trimStart) / Math.max(0.1, selLen), 0, 1) : 0;
+    const played = known ? clamp$2((at - clip.trimStart) / Math.max(0.1, selLen), 0, 1) : 0;
     const bars = variant === 'media' ? 48 : variant === 'overlay' ? 30 : 36;
     const peaks = useWaveform(src, bars, known ? clip.trimStart : 0, known ? clip.trimEnd : 0);
     const live = useLiveLevels(pb.levels, bars, playing && variant === 'overlay');
@@ -32069,7 +31526,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
                 React.createElement("i", null)),
             React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
     if (variant === 'pulse') {
-        const ratio = (x) => { const r = bar.current?.getBoundingClientRect(); return r && r.width ? clamp$1((x - r.left) / r.width, 0, 1) : 0; };
+        const ratio = (x) => { const r = bar.current?.getBoundingClientRect(); return r && r.width ? clamp$2((x - r.left) / r.width, 0, 1) : 0; };
         const shown = drag ?? played, secs = (v) => fmtTime(Math.round(v));
         const nowAt = known ? secs((drag !== null ? drag * selLen : Math.max(0, at - clip.trimStart))) : '0:00', len = known ? secs(selLen) : '–:––';
         const end = (e) => { if (!dragging.current)
@@ -32116,7 +31573,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
     }
     if (variant === 'card' || variant === 'media') {
         const seekAt = (x) => { const r = bar.current?.getBoundingClientRect(); if (!r || !known)
-            return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
+            return; pb.seek(clip.trimStart + clamp$2((x - r.left) / r.width, 0, 1) * selLen); };
         const title = failed ? 'This sound could not play' : (displayName || 'Question sound');
         return React.createElement("div", { className: `sp sp-card ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
             React.createElement("button", { type: "button", className: "sp-card-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
@@ -32149,7 +31606,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
             React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
     }
     const seekAt = (x) => { const r = wave.current?.getBoundingClientRect(); if (!r || !known)
-        return; pb.seek(clip.trimStart + clamp$1((x - r.left) / r.width, 0, 1) * selLen); };
+        return; pb.seek(clip.trimStart + clamp$2((x - r.left) / r.width, 0, 1) * selLen); };
     return React.createElement("div", { className: `sp sp-${variant} ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
         React.createElement("button", { type: "button", className: "sp-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
         React.createElement("div", { className: "sp-body" },
@@ -32746,6 +32203,634 @@ function QuestionStatList({ rows, metric, onPractice, practiceLabel }) {
             React.createElement(Play, { size: 15, fill: "currentColor" }),
             " ",
             practiceLabel));
+}
+
+function ItemMedia({ item, kind }) {
+    if (!item)
+        return null;
+    const a = kind === 'answer';
+    return React.createElement(QuestionMedia, { kind: kind, className: a ? 'rv-media rv-answer-media' : 'rv-media', zoomClass: "rv-zoom", imgClass: "rv-img", image: a ? item.answerImage : item.image, imageAlt: a ? undefined : item.imageAlt, audio: a ? item.answerAudio : item.audio, audioEdit: a ? item.answerAudioEdit : item.audioEdit, video: a ? item.answerVideo : item.video, videoEdit: a ? item.answerVideoEdit : item.videoEdit, videoClass: "is-compact" });
+}
+const ago = (iso) => { const d = Math.floor((Date.now() - Date.parse(iso)) / 86400000); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? `${d} days ago` : new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }); };
+const level = (pct) => pct >= 80 ? 'good' : pct >= 50 ? 'ok' : 'low';
+function MistakesPanel({ reports, items, onPractice, onEdit }) {
+    const ledger = reactExports.useMemo(() => mistakeLedger(reports), [reports]);
+    const byId = reactExports.useMemo(() => new Map(items.map(x => [x.id, x])), [items]);
+    const [subject, setSubject] = reactExports.useState(''), [sort, setSort] = reactExports.useState('recent'), [showCleared, setShowCleared] = reactExports.useState(false);
+    const subjects = reactExports.useMemo(() => { const m = new Map(); for (const e of ledger.open) {
+        const s = e.last.subject || 'General';
+        m.set(s, (m.get(s) || 0) + 1);
+    } return [...m].sort((a, b) => b[1] - a[1]); }, [ledger]);
+    const list = reactExports.useMemo(() => { const rows = ledger.open.filter(e => !subject || (e.last.subject || 'General') === subject); return sort === 'most' ? [...rows].sort((a, b) => b.misses - a.misses) : sort === 'close' ? [...rows].sort((a, b) => b.streak - a.streak || b.misses - a.misses) : rows; }, [ledger, subject, sort]);
+    const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+    const clearedRecent = ledger.cleared.filter(e => e.clearedAt >= monthAgo);
+    const practicable = list.filter(e => byId.has(e.id));
+    const [shown, setShown] = reactExports.useState(() => new Set());
+    const reveal = (id) => setShown(s => new Set(s).add(id));
+    if (!ledger.open.length && !ledger.cleared.length)
+        return React.createElement("section", { className: "report-content-card mx" },
+            React.createElement("div", { className: "mx-empty" },
+                React.createElement(CircleCheck, { size: 30 }),
+                React.createElement("h2", null, "No mistakes yet"),
+                React.createElement("p", null, "Questions you get wrong will appear here with your answer and the right one, so you can fix them.")));
+    return React.createElement("section", { className: "report-content-card mx" },
+        React.createElement("div", { className: "report-content-heading" },
+            React.createElement("div", null,
+                React.createElement("p", null, "WHAT TO PRACTICE NEXT"),
+                React.createElement("h2", null, "Mistakes"))),
+        ledger.open.length > 0 ? React.createElement(React.Fragment, null,
+            React.createElement("div", { className: "mx-summary" },
+                React.createElement("div", null,
+                    React.createElement("strong", null,
+                        React.createElement("b", null, ledger.open.length),
+                        " to fix \u00B7 ",
+                        clearedRecent.length,
+                        " fixed in 30 days"),
+                    React.createElement("small", null, "Answer right twice in a row to fix one")),
+                practicable.length > 0 && React.createElement("button", { type: "button", onClick: () => onPractice(practicable.map(e => e.last)) },
+                    React.createElement(Target, { size: 15 }),
+                    "Practice ",
+                    practicable.length === ledger.open.length ? 'all' : practicable.length)),
+            React.createElement("div", { className: "mx-tools" },
+                subjects.length > 1 && React.createElement("div", { className: "mx-chips", role: "radiogroup", "aria-label": "Subject" },
+                    React.createElement("button", { type: "button", role: "radio", "aria-checked": !subject, onClick: () => setSubject('') },
+                        "All ",
+                        React.createElement("b", null, ledger.open.length)),
+                    subjects.map(([s, n]) => React.createElement("button", { key: s, type: "button", role: "radio", "aria-checked": subject === s, onClick: () => setSubject(s) },
+                        s,
+                        " ",
+                        React.createElement("b", null, n)))),
+                React.createElement("label", { className: "mx-sort" },
+                    "Sort",
+                    React.createElement("select", { value: sort, onChange: e => setSort(e.target.value) },
+                        React.createElement("option", { value: "recent" }, "Newest first"),
+                        React.createElement("option", { value: "most" }, "Most missed"),
+                        React.createElement("option", { value: "close" }, "Closest to fixed")))),
+            React.createElement("ul", { className: "mx-list" }, list.map(e => {
+                const item = byId.get(e.id), q = e.last;
+                return React.createElement("li", { key: e.id, className: "mx-item" },
+                    React.createElement("div", { className: "mx-item-top" },
+                        React.createElement("span", { className: "mx-place" }, [q.subject, q.topic].filter(Boolean).join(' › ') || 'General'),
+                        React.createElement("span", { className: "mx-type" }, typeLabel(q.type))),
+                    React.createElement("strong", { className: "mx-prompt" }, q.prompt || 'Picture question'),
+                    React.createElement(ItemMedia, { item: item, kind: "question" }),
+                    shown.has(e.id) ? React.createElement(React.Fragment, null,
+                        React.createElement("div", { className: "mx-answers" },
+                            React.createElement("p", { "data-kind": "wrong" },
+                                React.createElement(CircleX, { size: 14 }),
+                                React.createElement("span", null,
+                                    React.createElement("small", null, "You said"),
+                                    q.user_answer || 'No answer')),
+                            React.createElement("p", { "data-kind": "right" },
+                                React.createElement(CircleCheck, { size: 14 }),
+                                React.createElement("span", null,
+                                    React.createElement("small", null, "Correct"),
+                                    q.correct_answer || '—'))),
+                        React.createElement(ItemMedia, { item: item, kind: "answer" })) : React.createElement("button", { type: "button", className: "mx-reveal", onClick: () => reveal(e.id) },
+                        React.createElement(Eye, { size: 15 }),
+                        "Think of the answer, then tap to reveal"),
+                    React.createElement("div", { className: "mx-item-foot" },
+                        React.createElement("span", { className: "mx-progress", title: `${e.streak} of 2 right answers in a row` },
+                            React.createElement("i", { "data-on": e.streak >= 1 || undefined }),
+                            React.createElement("i", { "data-on": e.streak >= 2 || undefined }),
+                            React.createElement("em", null, e.streak ? '1 more to fix' : '2 to fix')),
+                        React.createElement("span", { className: "mx-meta" },
+                            "Missed ",
+                            e.misses,
+                            "\u00D7 \u00B7 ",
+                            ago(e.lastMissed))),
+                    item ? React.createElement("div", { className: "mx-actions" },
+                        React.createElement("button", { type: "button", className: "is-soft", onClick: () => onEdit(item) },
+                            React.createElement(Pencil, { size: 13 }),
+                            "Edit"),
+                        React.createElement("button", { type: "button", onClick: () => onPractice([q]) },
+                            React.createElement(Play, { size: 13, fill: "currentColor" }),
+                            "Practice")) : React.createElement("p", { className: "mx-gone" }, "No longer in your question bank."));
+            }))) : React.createElement("div", { className: "mx-allclear" },
+            React.createElement(Trophy, { size: 22 }),
+            React.createElement("div", null,
+                React.createElement("strong", null, "All mistakes fixed"),
+                React.createElement("small", null, "Nothing left to revisit. Nice work."))),
+        ledger.cleared.length > 0 && React.createElement("div", { className: "mx-cleared" },
+            React.createElement("button", { type: "button", "aria-expanded": showCleared, onClick: () => setShowCleared(v => !v) },
+                React.createElement(CircleCheck, { size: 16 }),
+                "Fixed questions ",
+                React.createElement("b", null, ledger.cleared.length),
+                React.createElement(ChevronDown, { size: 16, className: "mx-chev" })),
+            showCleared && React.createElement("ul", null, ledger.cleared.slice(0, 30).map(e => React.createElement("li", { key: e.id },
+                React.createElement("span", null, e.last.prompt || 'Picture question'),
+                React.createElement("small", null,
+                    "Fixed ",
+                    ago(e.clearedAt),
+                    " \u00B7 missed ",
+                    e.misses,
+                    "\u00D7"))))));
+}
+function QuizReviewPage({ report: r, items, onBack, onRetry, onCopy }) {
+    const byId = reactExports.useMemo(() => new Map(items.map(x => [x.id, x])), [items]);
+    const [show, setShow] = reactExports.useState('all');
+    const qs = r.questions || [], wrong = qs.filter(q => !q.correct).length, right = qs.length - wrong;
+    const rows = qs.map((q, i) => ({ q, i })).filter(({ q }) => show === 'all' || (show === 'wrong') === !q.correct);
+    const missed = missedItems(qs, items).length, when = new Date(r.date);
+    return React.createElement("section", { className: "qr" },
+        React.createElement("div", { className: "qr-top" },
+            React.createElement("button", { type: "button", className: "qr-back", onClick: onBack },
+                React.createElement(ChevronLeft, { size: 18 }),
+                "History"),
+            React.createElement("button", { type: "button", className: "qr-copy", onClick: () => onCopy(r) },
+                React.createElement(Copy, { size: 15 }),
+                "Copy")),
+        React.createElement("div", { className: "qr-summary" },
+            React.createElement(ScoreRing, { pct: r.accuracy, size: 64, stroke: 7 },
+                r.accuracy,
+                "%"),
+            React.createElement("div", null,
+                React.createElement("h1", null,
+                    r.mode === 'retry_mistakes' ? 'Retake' : 'Quiz',
+                    " \u00B7 ",
+                    qs.length,
+                    " ",
+                    qs.length === 1 ? 'question' : 'questions'),
+                React.createElement("small", null,
+                    when.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' }),
+                    ", ",
+                    when.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
+                    " \u00B7 took ",
+                    formatDuration(r.duration_seconds)),
+                React.createElement("p", null,
+                    React.createElement("span", { "data-kind": "right" },
+                        React.createElement(Check, { size: 13 }),
+                        right,
+                        " right"),
+                    React.createElement("span", { "data-kind": "wrong" },
+                        React.createElement(X, { size: 13 }),
+                        wrong,
+                        " wrong")))),
+        React.createElement("div", { className: "rx-range", role: "radiogroup", "aria-label": "Show" }, [['all', `All ${qs.length}`], ['wrong', `Wrong ${wrong}`], ['right', `Right ${right}`]].map(([id, label]) => React.createElement("button", { key: id, type: "button", role: "radio", "aria-checked": show === id, onClick: () => setShow(id) }, label))),
+        rows.length ? React.createElement("ol", { className: "qr-list" }, rows.map(({ q, i }) => {
+            const item = byId.get(q.knowledge_id), correct = q.correct_answer || (item ? answerText(item) : '') || '—';
+            return React.createElement("li", { key: i, className: "qr-item", "data-correct": q.correct ? 'true' : 'false' },
+                React.createElement("div", { className: "qr-item-top" },
+                    React.createElement("span", { className: "qr-badge" }, q.correct ? React.createElement(Check, { size: 13 }) : React.createElement(X, { size: 13 })),
+                    React.createElement("small", null,
+                        "Q",
+                        i + 1,
+                        " \u00B7 ",
+                        typeLabel(q.type)),
+                    React.createElement("small", null,
+                        q.response_time_seconds,
+                        "s")),
+                React.createElement("strong", { className: "qr-prompt" }, q.prompt || 'Picture question'),
+                React.createElement(ItemMedia, { item: item, kind: "question" }),
+                q.correct ? React.createElement("p", { className: "qr-said" },
+                    "You said ",
+                    React.createElement("b", null, q.user_answer || correct)) : React.createElement("div", { className: "mx-answers" },
+                    React.createElement("p", { "data-kind": "wrong" },
+                        React.createElement(CircleX, { size: 14 }),
+                        React.createElement("span", null,
+                            React.createElement("small", null, "You said"),
+                            q.user_answer || 'No answer')),
+                    React.createElement("p", { "data-kind": "right" },
+                        React.createElement(CircleCheck, { size: 14 }),
+                        React.createElement("span", null,
+                            React.createElement("small", null, "Correct"),
+                            correct))),
+                React.createElement(ItemMedia, { item: item, kind: "answer" }));
+        })) : React.createElement("p", { className: "report-inline-empty" }, show === 'wrong' ? 'No wrong answers in this quiz.' : 'No right answers in this quiz.'),
+        missed > 0 && React.createElement("div", { className: "qr-bar" },
+            React.createElement("button", { type: "button", onClick: () => onRetry(qs, r.id) },
+                React.createElement(RotateCcw, { size: 16 }),
+                "Retry ",
+                missed,
+                " ",
+                missed === 1 ? 'mistake' : 'mistakes')));
+}
+const monthName = (y, m) => new Date(y, m, 1).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const PARTS = [['morning', 'Morning', Sunrise, '5am–12pm'], ['afternoon', 'Afternoon', Sun, '12–5pm'], ['evening', 'Evening', Sunset, '5–10pm'], ['night', 'Night', Moon, '10pm–5am']];
+function ActivityPanel({ reports, streakDays }) {
+    const today = localDay();
+    const stats = reactExports.useMemo(() => activityStats(reports), [reports]);
+    const streak = reactExports.useMemo(() => streakStats([...streakDays, ...stats.days.keys()], today), [streakDays, stats, today]);
+    const [month, setMonth] = reactExports.useState(() => { const d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; });
+    const [picked, setPicked] = reactExports.useState(today);
+    const first = new Date(month.y, month.m, 1), days = new Date(month.y, month.m + 1, 0).getDate(), lead = (first.getDay() + 6) % 7;
+    const keys = Array.from({ length: days }, (_, i) => localDay(new Date(month.y, month.m, i + 1)));
+    const studied = new Set([...streakDays, ...stats.days.keys()]);
+    const maxAnswers = Math.max(1, ...keys.map(k => stats.days.get(k)?.answers || 0));
+    const inMonth = keys.map(k => stats.days.get(k)).filter(Boolean);
+    const monthSeconds = inMonth.reduce((n, d) => n + d.seconds, 0), monthDays = keys.filter(k => studied.has(k)).length;
+    const elapsed = keys.filter(k => k <= today).length;
+    const isCurrent = month.y === new Date().getFullYear() && month.m === new Date().getMonth();
+    const earliest = reports.length ? new Date(reports[reports.length - 1].date) : new Date();
+    const canBack = new Date(month.y, month.m, 1) > new Date(earliest.getFullYear(), earliest.getMonth(), 1);
+    const shift = (n) => setMonth(({ y, m }) => { const d = new Date(y, m + n, 1); return { y: d.getFullYear(), m: d.getMonth() }; });
+    const totalQuizzes = stats.weekdays.reduce((a, b) => a + b, 0);
+    const topDay = totalQuizzes ? stats.weekdays.indexOf(Math.max(...stats.weekdays)) : -1;
+    const topPart = totalQuizzes ? PARTS.reduce((a, p) => stats.parts[p[0]] > stats.parts[a[0]] ? p : a) : null;
+    const maxWeekday = Math.max(1, ...stats.weekdays);
+    const day = stats.days.get(picked);
+    const last14 = Array.from({ length: 14 }, (_, i) => shiftDay(today, i - 13));
+    const recentMinutes = last14.reduce((n, k) => n + (stats.days.get(k)?.seconds || 0), 0) / 60;
+    return React.createElement("section", { className: "report-content-card ax" },
+        React.createElement("div", { className: "report-content-heading" },
+            React.createElement("div", null,
+                React.createElement("p", null, "YOUR STUDY RHYTHM"),
+                React.createElement("h2", null, "Activity"))),
+        React.createElement("div", { className: "ax-stats" },
+            React.createElement("div", { "data-kind": "streak" },
+                React.createElement(Flame, { size: 18 }),
+                React.createElement("strong", null, streak.current),
+                React.createElement("span", null, "Day streak")),
+            React.createElement("div", null,
+                React.createElement(Trophy, { size: 18 }),
+                React.createElement("strong", null, streak.longest),
+                React.createElement("span", null, "Best streak")),
+            React.createElement("div", null,
+                React.createElement(CalendarDays, { size: 18 }),
+                React.createElement("strong", null, streak.total),
+                React.createElement("span", null, "Days studied")),
+            React.createElement("div", null,
+                React.createElement(Clock, { size: 18 }),
+                React.createElement("strong", null,
+                    Math.round(recentMinutes / 14) || 0,
+                    "m"),
+                React.createElement("span", null, "Per day (2 wks)"))),
+        React.createElement("div", { className: "ax-cal" },
+            React.createElement("div", { className: "ax-cal-head" },
+                React.createElement("button", { type: "button", "aria-label": "Previous month", disabled: !canBack, onClick: () => shift(-1) },
+                    React.createElement(ChevronLeft, { size: 18 })),
+                React.createElement("strong", null, monthName(month.y, month.m)),
+                React.createElement("button", { type: "button", "aria-label": "Next month", disabled: isCurrent, onClick: () => shift(1) },
+                    React.createElement(ChevronRight, { size: 18 }))),
+            React.createElement("p", { className: "ax-cal-sub" },
+                monthDays,
+                " of ",
+                isCurrent ? elapsed : days,
+                " days studied \u00B7 ",
+                formatDuration(monthSeconds),
+                " \u00B7 ",
+                inMonth.reduce((n, d) => n + d.quizzes, 0),
+                " quizzes"),
+            React.createElement("div", { className: "ax-grid", role: "grid", "aria-label": `Study days in ${monthName(month.y, month.m)}` },
+                WEEKDAYS.map(d => React.createElement("span", { key: d, className: "ax-wd", "aria-hidden": "true" }, d[0])),
+                Array.from({ length: lead }, (_, i) => React.createElement("span", { key: 'l' + i })),
+                keys.map((k, i) => { const s = stats.days.get(k), lv = s ? Math.min(4, 1 + Math.floor(s.answers / maxAnswers * 3.99)) : studied.has(k) ? 1 : 0; return React.createElement("button", { key: k, type: "button", className: "ax-day", "data-lv": lv, "data-today": k === today || undefined, "data-picked": k === picked || undefined, disabled: k > today, "aria-label": `${k}: ${s ? `${s.quizzes} ${s.quizzes === 1 ? 'quiz' : 'quizzes'}, ${s.answers} answers` : studied.has(k) ? 'practised' : 'no study'}`, onClick: () => setPicked(k) }, i + 1); })),
+            React.createElement("div", { className: "ax-legend" },
+                React.createElement("span", null, "Less"),
+                [0, 1, 2, 3, 4].map(l => React.createElement("i", { key: l, "data-lv": l })),
+                React.createElement("span", null, "More"))),
+        React.createElement("div", { className: "ax-dayview" },
+            React.createElement("h3", null, picked === today ? 'Today' : new Date(picked + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })),
+            day ? React.createElement(React.Fragment, null,
+                React.createElement("p", { className: "report-muted" },
+                    day.quizzes,
+                    " ",
+                    day.quizzes === 1 ? 'quiz' : 'quizzes',
+                    " \u00B7 ",
+                    day.answers,
+                    " answers \u00B7 ",
+                    Math.round(day.correct / Math.max(1, day.answers) * 100),
+                    "% correct \u00B7 ",
+                    formatDuration(day.seconds)),
+                React.createElement("ul", null, day.reports.map((r) => React.createElement("li", { key: r.id },
+                    React.createElement("span", null, new Date(r.date).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })),
+                    React.createElement("em", null,
+                        r.mode === 'retry_mistakes' ? 'Retake' : 'Quiz',
+                        " \u00B7 ",
+                        r.total,
+                        " questions"),
+                    React.createElement("b", { "data-level": level(r.accuracy) },
+                        r.accuracy,
+                        "%")))))
+                : React.createElement("p", { className: "report-muted" },
+                    studied.has(picked) ? 'You practised this day.' : 'No quizzes this day.',
+                    picked === today ? ' A quick quiz keeps your streak going.' : '')),
+        totalQuizzes > 0 && React.createElement("div", { className: "ax-rhythm" },
+            React.createElement("h3", null, "When you study"),
+            React.createElement("p", { className: "report-muted" },
+                "Most often on ",
+                React.createElement("b", null, WEEKDAYS[topDay]),
+                topPart ? React.createElement(React.Fragment, null,
+                    ", usually in the ",
+                    React.createElement("b", null, topPart[1].toLowerCase())) : null,
+                "."),
+            React.createElement("div", { className: "ax-week" }, stats.weekdays.map((n, i) => React.createElement("div", { key: i, "data-top": i === topDay || undefined },
+                React.createElement("i", { style: { height: `${Math.max(6, n / maxWeekday * 100)}%` } }),
+                React.createElement("span", null, WEEKDAYS[i][0]),
+                React.createElement("small", null, n)))),
+            React.createElement("div", { className: "ax-parts" }, PARTS.map(([id, label, Icon, hint]) => { const pct = Math.round(stats.parts[id] / totalQuizzes * 100); return React.createElement("div", { key: id, "data-top": topPart?.[0] === id || undefined },
+                React.createElement(Icon, { size: 16 }),
+                React.createElement("span", null,
+                    React.createElement("strong", null, label),
+                    React.createElement("small", null, hint)),
+                React.createElement("b", null,
+                    pct,
+                    "%"),
+                React.createElement("i", { style: { width: `${pct}%` } })); }))));
+}
+
+// Answer areas for the newer question types. Each keeps its own answer and reports it through onGrade.
+const clamp$1 = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
+function ListRecallAnswer({ item, disabled, onGrade }) {
+    const total = item.listItems?.length || 0, need = Math.max(1, listNeed(item));
+    const [values, setValues] = reactExports.useState(() => Array(need).fill('')), fields = reactExports.useRef([]);
+    const matches = disabled ? listMatches(item, values) : [], named = new Set(matches.filter((i) => i >= 0)), filled = values.some(v => v.trim());
+    const others = (item.listItems || []).map((x, i) => named.has(i) ? null : listAlternatives(x)[0]).filter(Boolean);
+    return React.createElement("div", { className: "extra-answer list-answer" },
+        React.createElement("p", { className: "split-answer-help" }, need < total ? `Name any ${need} of ${total}, in any order.` : `Name all ${need}, in any order.`),
+        React.createElement("ol", { className: "list-answer-fields" }, values.map((v, i) => React.createElement("li", { key: i, "data-state": disabled ? (matches[i] >= 0 ? 'correct' : 'wrong') : undefined },
+            React.createElement("span", { className: "list-answer-number", "aria-hidden": "true" }, i + 1),
+            React.createElement("input", { ref: el => { fields.current[i] = el; }, "aria-label": `Answer ${i + 1}`, value: v, disabled: disabled, autoComplete: "off", spellCheck: false, enterKeyHint: i < need - 1 ? 'next' : 'done', placeholder: i === 0 ? 'Type one…' : '', onChange: e => setValues(xs => xs.map((x, j) => j === i ? e.target.value : x)), onKeyDown: e => { if (e.key !== 'Enter')
+                    return; e.preventDefault(); const next = fields.current[i + 1]; if (next)
+                    next.focus();
+                else if (filled)
+                    onGrade(values); } }),
+            disabled && React.createElement("span", { className: "list-answer-mark", "aria-label": matches[i] >= 0 ? 'Correct' : 'Not on the list' }, matches[i] >= 0 ? React.createElement(Check, { size: 16 }) : React.createElement(X, { size: 16 }))))),
+        disabled && React.createElement("div", { className: "list-answer-summary" },
+            React.createElement("p", { role: "status" },
+                React.createElement("b", null, named.size),
+                " of ",
+                need,
+                " named"),
+            others.length > 0 && React.createElement(React.Fragment, null,
+                React.createElement("small", null, named.size >= need ? 'Others on the list' : 'Ones you missed'),
+                React.createElement("div", { className: "list-answer-others" }, others.map((x) => React.createElement("span", { key: x }, x))))),
+        !disabled && React.createElement(Button, { className: "split-submit", disabled: !filled, onClick: () => onGrade(values) }, "Check answers"));
+}
+// Sort into groups: drag an item onto a group, or tap the item and then the group.
+function CategorizeAnswer({ item, disabled, onGrade }) {
+    const groups = item.groups || [];
+    const all = reactExports.useMemo(() => seededShuffle(groups.flatMap(g => g.items), String(item.id || item.prompt) + '|sort'), [item]);
+    const [placed, setPlaced] = reactExports.useState({}), [active, setActive] = reactExports.useState(null), [note, setNote] = reactExports.useState('');
+    const [drag, setDrag] = reactExports.useState(null), press = reactExports.useRef(null), skipClick = reactExports.useRef(false);
+    const home = (x) => groups.find(g => g.items.includes(x))?.name, pool = all.filter(x => !placed[x]);
+    const pictured = all.some(x => item.optionImages?.[x]);
+    function put(x, name) { setPlaced(p => { const n = { ...p }; if (name)
+        n[x] = name;
+    else
+        delete n[x]; return n; }); setNote(''); }
+    function pick(x) { if (disabled)
+        return; setActive(x); setNote(''); }
+    function drop(name) {
+        if (disabled)
+            return;
+        if (!active) {
+            setNote('Pick an item first: drag it here, or tap it and then this group.');
+            return;
+        }
+        put(active, name);
+        setActive(pool.find(x => x !== active) ?? null);
+    }
+    const zoneAt = (x, y) => document.elementFromPoint(x, y)?.closest('[data-zone]')?.dataset.zone ?? null;
+    function down(x, e) { if (disabled || (e.pointerType === 'mouse' && e.button !== 0))
+        return; press.current = { x, sx: e.clientX, sy: e.clientY, id: e.pointerId, moved: false, el: e.currentTarget }; }
+    function move(e) {
+        const p = press.current;
+        if (!p || p.id !== e.pointerId)
+            return;
+        if (!p.moved) {
+            if (Math.hypot(e.clientX - p.sx, e.clientY - p.sy) < 7)
+                return;
+            p.moved = true;
+            try {
+                p.el.setPointerCapture(e.pointerId);
+            }
+            catch { }
+            setActive(null);
+            setNote('');
+            try {
+                navigator.vibrate?.(8);
+            }
+            catch { }
+        }
+        setDrag({ x: p.x, px: e.clientX, py: e.clientY, over: zoneAt(e.clientX, e.clientY) });
+    }
+    function up(e) {
+        const p = press.current;
+        press.current = null;
+        setDrag(null);
+        if (!p || p.id !== e.pointerId || !p.moved)
+            return;
+        skipClick.current = true;
+        setTimeout(() => { skipClick.current = false; });
+        const zone = zoneAt(e.clientX, e.clientY);
+        if (zone === '__pool')
+            put(p.x, null);
+        else if (zone)
+            put(p.x, zone);
+    }
+    function chip(x, state) {
+        const img = item.optionImages?.[x];
+        return React.createElement("span", { className: "sort-item media-slot", key: x, "data-picture": img ? '' : undefined },
+            React.createElement("button", { type: "button", className: "sort-chip", "aria-pressed": active === x, "data-state": state, "data-lifted": drag?.x === x || undefined, disabled: disabled, "aria-label": placed[x] && !disabled ? `${x}, in ${placed[x]}. Tap to pick it up again.` : undefined, onPointerDown: e => down(x, e), onPointerMove: move, onPointerUp: up, onPointerCancel: () => { press.current = null; setDrag(null); }, onClick: () => { if (skipClick.current)
+                    return; if (placed[x] && active === x) {
+                    put(x, null);
+                    return;
+                } pick(x); } },
+                img && React.createElement("img", { className: "sort-chip-img", src: img, alt: "", draggable: false }),
+                React.createElement(ItemText, { item: item, text: x, className: "sort-chip-text" }),
+                state === 'wrong' && React.createElement("small", null,
+                    "\u2192 ",
+                    home(x))),
+            React.createElement(ItemExtras, { item: item, text: x }));
+    }
+    const ghostImg = drag ? item.optionImages?.[drag.x] : null;
+    return React.createElement("div", { className: "extra-answer sort-answer", "data-pictured": pictured || undefined, "data-dragging": drag ? '' : undefined },
+        React.createElement("p", { className: "split-answer-help" }, disabled ? 'Your groups' : 'Drag each item into its group, or tap an item and then a group.'),
+        !disabled && React.createElement("div", { className: "sort-pool", role: "group", "aria-label": "Items to sort", "data-zone": "__pool", "data-over": drag?.over === '__pool' || undefined }, pool.length ? pool.map(x => chip(x)) : React.createElement("span", { className: "sort-pool-done" }, "All sorted. Drag or tap an item to move it.")),
+        React.createElement("div", { className: "sort-groups", "data-count": groups.length }, groups.map(g => {
+            const here = all.filter(x => placed[x] === g.name);
+            return React.createElement("section", { key: g.name, className: "sort-group", "data-zone": g.name, "data-over": drag?.over === g.name || undefined, "data-ready": !disabled && !!active || undefined, onClick: e => { if (!e.target.closest('.sort-item'))
+                    drop(g.name); } },
+                React.createElement("button", { type: "button", className: "sort-group-head", disabled: disabled, "aria-label": active ? `Put ${active} in ${g.name}` : g.name },
+                    React.createElement("span", null, g.name),
+                    disabled ? React.createElement("small", null,
+                        here.filter(x => home(x) === g.name).length,
+                        "/",
+                        g.items.length) : active ? React.createElement(Plus, { size: 16, "aria-hidden": "true" }) : React.createElement("small", null, here.length)),
+                React.createElement("div", { className: "sort-group-items" },
+                    here.map(x => chip(x, disabled ? (home(x) === g.name ? 'correct' : 'wrong') : undefined)),
+                    !here.length && React.createElement("span", { className: "sort-empty" }, disabled ? 'Nothing here' : 'Drop here')));
+        })),
+        drag && reactDomExports.createPortal(React.createElement("div", { className: "sort-ghost", style: { left: drag.px, top: drag.py }, "aria-hidden": "true" },
+            ghostImg && React.createElement("img", { src: ghostImg, alt: "" }),
+            React.createElement("span", null, isPictureLabel(drag.x) && ghostImg ? '' : drag.x)), document.body),
+        note && React.createElement("p", { className: "extra-note", role: "status" }, note),
+        !disabled && React.createElement("div", { className: "extra-tools" },
+            React.createElement("span", { role: "status" },
+                all.length - pool.length,
+                " of ",
+                all.length,
+                " sorted"),
+            React.createElement("button", { type: "button", disabled: !Object.keys(placed).length, onClick: () => { setPlaced({}); setActive(null); setNote(''); } }, "Start over")),
+        !disabled && React.createElement(Button, { className: "split-submit", disabled: pool.length > 0, onClick: () => onGrade(placed) }, "Check groups"));
+}
+function HighlightAnswer({ item, disabled, onGrade }) {
+    const tokens = reactExports.useMemo(() => passageTokens(item.passage), [item.passage]);
+    const [picked, setPicked] = reactExports.useState([]);
+    const marked = new Set(tokens.filter((t) => t.marked).map((t) => t.index));
+    const found = picked.filter(i => marked.has(i)).length, extra = picked.length - found;
+    const state = (i) => !disabled ? (picked.includes(i) ? 'picked' : undefined) : picked.includes(i) ? (marked.has(i) ? 'correct' : 'wrong') : marked.has(i) ? 'missed' : undefined;
+    return React.createElement("div", { className: "extra-answer highlight-answer" },
+        React.createElement("p", { className: "split-answer-help" }, disabled ? `Found ${found} of ${marked.size}${extra ? ` · ${extra} not a match` : ''}` : `Find ${marked.size} ${marked.size === 1 ? 'word' : 'words'}. Tap again to undo.`),
+        React.createElement("p", { className: "highlight-passage" }, tokens.map((t, i) => t.word ? React.createElement(React.Fragment, { key: i },
+            t.pre,
+            React.createElement("button", { type: "button", className: "highlight-word", "aria-pressed": picked.includes(t.index), "data-state": state(t.index), disabled: disabled, onClick: () => setPicked(xs => xs.includes(t.index) ? xs.filter(x => x !== t.index) : [...xs, t.index]) }, t.word),
+            t.post) : React.createElement(React.Fragment, { key: i }, t.space ? t.text : t.plain))),
+        disabled && marked.size > found && React.createElement("p", { className: "extra-note" },
+            React.createElement("span", { className: "highlight-key", "data-state": "missed" }, "dashed"),
+            " words are the ones you missed."),
+        !disabled && React.createElement("div", { className: "extra-tools" },
+            React.createElement("span", { role: "status" },
+                picked.length,
+                " selected"),
+            React.createElement("button", { type: "button", disabled: !picked.length, onClick: () => setPicked([]) }, "Clear")),
+        !disabled && React.createElement(Button, { className: "split-submit", disabled: !picked.length, onClick: () => onGrade(picked) }, "Check words"));
+}
+function TapTarget({ spot, state, label }) { return React.createElement("span", { className: "tap-target", "data-state": state, "aria-hidden": "true", style: { left: `${spot.x * 100}%`, top: `${spot.y * 100}%`, width: `${spot.r * 200}%`, height: `${spot.r * 200 / spot.aspect}%` } }, label && React.createElement("em", null, label)); }
+/** The picture sized to its own shape, so spot positions match the image. Zoom makes small places easier to hit on phones. */
+function TapCanvas({ image, alt, boardRef, zoomed, onZoom, children, locked, ...rest }) {
+    return React.createElement("div", { className: "tap-frame", "data-zoomed": zoomed || undefined },
+        React.createElement("div", { className: "tap-scroll" },
+            React.createElement("div", { className: "tap-board is-map", ref: boardRef, "data-locked": locked || undefined, style: zoomed ? { width: '200%' } : undefined, ...rest },
+                React.createElement("img", { src: image, alt: alt, draggable: false }),
+                children)),
+        React.createElement("button", { type: "button", className: "tap-zoom", "aria-pressed": !!zoomed, onClick: onZoom },
+            zoomed ? React.createElement(ZoomOut, { size: 15 }) : React.createElement(ZoomIn, { size: 15 }),
+            zoomed ? 'Zoom out' : 'Zoom in'));
+}
+function ImageTapAnswer({ item, disabled, onGrade }) {
+    const spots = tapSpots(item), mode = item.tapMode === 'name' ? 'name' : 'find', single = mode === 'find' && spots.length === 1;
+    const order = reactExports.useMemo(() => single ? [0] : seededShuffle(spots.map((_, i) => i), String(item.id || item.prompt) + '|tap'), [item]);
+    const bank = reactExports.useMemo(() => seededShuffle(spots.map(s => s.label), String(item.id || item.prompt) + '|names'), [item]);
+    const [pins, setPins] = reactExports.useState(() => spots.map(() => null)), [names, setNames] = reactExports.useState(() => spots.map(() => ''));
+    const [cur, setCur] = reactExports.useState(order[0] ?? 0), [zoomed, setZoomed] = reactExports.useState(false), board = reactExports.useRef(null);
+    const given = mode === 'name' ? names : pins, results = disabled ? tapResults(item, given) : [], right = results.filter(Boolean).length;
+    const done = mode === 'name' ? names.filter(Boolean).length : pins.filter(Boolean).length;
+    const nextOpen = (list, from) => { const at = order.indexOf(from); for (let k = 1; k <= order.length; k++) {
+        const i = order[(at + k) % order.length];
+        if (!list[i])
+            return i;
+    } return from; };
+    function place(e) {
+        if (disabled || mode === 'name')
+            return;
+        const r = board.current.getBoundingClientRect();
+        const next = pins.map((p, i) => i === cur ? { x: clamp$1((e.clientX - r.left) / r.width), y: clamp$1((e.clientY - r.top) / r.height) } : p);
+        setPins(next);
+        if (!single)
+            setCur(nextOpen(next, cur));
+    }
+    function key(e) {
+        if (disabled || mode === 'name')
+            return;
+        const moves = { ArrowLeft: [-0.02, 0], ArrowRight: [.02, 0], ArrowUp: [0, -0.02], ArrowDown: [0, .02] };
+        if (moves[e.key]) {
+            e.preventDefault();
+            setPins(ps => ps.map((p, i) => i === cur ? { x: clamp$1((p?.x ?? .5) + moves[e.key][0]), y: clamp$1((p?.y ?? .5) + moves[e.key][1]) } : p));
+        }
+        else if ((e.key === 'Enter' || e.key === ' ') && !pins[cur]) {
+            e.preventDefault();
+            setPins(ps => ps.map((p, i) => i === cur ? { x: .5, y: .5 } : p));
+        }
+    }
+    function nameIt(label) {
+        if (disabled)
+            return;
+        const next = names.map((n, i) => i === cur ? label : n === label ? '' : n);
+        setNames(next);
+        setCur(nextOpen(next, cur));
+    }
+    const ask = spots[cur]?.label;
+    return React.createElement("div", { className: "extra-answer tap-answer", "data-mode": mode },
+        !disabled && (single ? React.createElement("p", { className: "split-answer-help" }, pins[0] ? 'Tap again to move your pin, then check.' : 'Tap the right place on the picture.')
+            : mode === 'find' ? React.createElement("p", { className: "tap-ask", role: "status" },
+                React.createElement("span", null, "Tap"),
+                React.createElement("b", null, ask),
+                React.createElement("small", null,
+                    done,
+                    " of ",
+                    spots.length,
+                    " placed"))
+                : React.createElement("p", { className: "tap-ask", role: "status" },
+                    React.createElement("span", null, "Name pin"),
+                    React.createElement("b", { className: "tap-ask-num" }, cur + 1),
+                    React.createElement("small", null,
+                        done,
+                        " of ",
+                        spots.length,
+                        " named"))),
+        React.createElement(TapCanvas, { image: item.image, alt: item.imageAlt || 'Question picture', boardRef: board, zoomed: zoomed, onZoom: () => setZoomed(z => !z), locked: disabled || mode === 'name', role: mode === 'find' ? 'button' : undefined, tabIndex: disabled || mode === 'name' ? -1 : 0, "aria-label": mode === 'find' ? `Picture. Tap to place your pin${ask && !single ? ` for ${ask}` : ''}; arrow keys move it.` : 'Picture with numbered pins', onClick: place, onKeyDown: key },
+            disabled && mode === 'find' && spots.map((s, i) => React.createElement(TapTarget, { key: 't' + i, spot: s, state: results[i] ? 'correct' : 'wrong', label: single ? undefined : String(i + 1) })),
+            mode === 'find' && pins.map((p, i) => p && !(disabled && results[i]) && React.createElement("span", { key: 'p' + i, className: "tap-pin", "data-current": !disabled && !single && i === cur || undefined, "data-state": disabled ? 'wrong' : undefined, style: { left: `${p.x * 100}%`, top: `${p.y * 100}%` }, "aria-hidden": "true" }, !single && !disabled && React.createElement("em", null, spots[i].label))),
+            mode === 'name' && spots.map((s, i) => React.createElement("button", { type: "button", key: 'n' + i, className: "tap-marker", "aria-pressed": !disabled && cur === i, "data-state": disabled ? (results[i] ? 'correct' : 'wrong') : names[i] ? 'named' : undefined, disabled: disabled, "aria-label": `Pin ${i + 1}${names[i] ? `: ${names[i]}` : ''}`, style: { left: `${s.x * 100}%`, top: `${s.y * 100}%` }, onClick: e => { e.stopPropagation(); setCur(i); } },
+                React.createElement("span", null, i + 1),
+                names[i] && !disabled && React.createElement("em", null, names[i])))),
+        disabled && !single && React.createElement("ol", { className: "tap-review", "aria-label": "Your answers" }, spots.map((s, i) => React.createElement("li", { key: i, "data-state": results[i] ? 'correct' : 'wrong' },
+            React.createElement("b", null, i + 1),
+            React.createElement("span", null,
+                s.label,
+                !results[i] && React.createElement("small", null, mode === 'name' ? (names[i] ? React.createElement(React.Fragment, null,
+                    "You said ",
+                    React.createElement("s", null, names[i])) : 'Not named') : 'Missed')),
+            results[i] ? React.createElement(Check, { size: 16, "aria-label": "Right" }) : React.createElement(X, { size: 16, "aria-label": "Wrong" })))),
+        !disabled && !single && mode === 'find' && React.createElement("div", { className: "tap-queue", role: "group", "aria-label": "Places to find" }, order.map(i => React.createElement("button", { type: "button", key: i, "aria-pressed": cur === i, "data-done": !!pins[i] || undefined, onClick: () => setCur(i) },
+            pins[i] && React.createElement(Check, { size: 13, "aria-hidden": "true" }),
+            spots[i].label))),
+        !disabled && mode === 'name' && React.createElement("div", { className: "tap-bank", role: "group", "aria-label": "Names" }, bank.map(label => { const at = names.indexOf(label); return React.createElement("button", { type: "button", key: label, "data-used": at >= 0 || undefined, "aria-label": `${label}${at >= 0 ? `, on pin ${at + 1}` : ''}`, onClick: () => nameIt(label) },
+            at >= 0 && React.createElement("b", null, at + 1),
+            label); })),
+        disabled && React.createElement("div", { className: "tap-result", "data-state": right === spots.length ? 'correct' : 'wrong', role: "status" },
+            right === spots.length ? React.createElement(Check, { size: 18 }) : React.createElement(X, { size: 18 }),
+            React.createElement("div", null,
+                React.createElement("strong", null, single ? (right ? 'You found it' : 'Not quite') : right === spots.length ? (mode === 'name' ? 'All named' : 'All found') : `${right} of ${spots.length} right`),
+                React.createElement("span", null, single ? (right ? 'Right on the spot.' : 'The ringed spot is the right place.') : right === spots.length ? 'Every place is right.' : mode === 'name' ? 'Numbers match the list below.' : 'Rings show the right places; red dots are your misses.'))),
+        !disabled && React.createElement(Button, { className: "split-submit", disabled: done < spots.length, onClick: () => onGrade(given) }, "Check"));
+}
+function SliderAnswer({ item, disabled, onGrade }) {
+    const min = Number(item.sliderMin ?? 0), max = Number(item.sliderMax ?? 100), step = Number(item.sliderStep) || 1;
+    const decimals = Math.min(6, (String(step).split('.')[1] || '').length), snap = (v) => Number(clamp$1(min + Math.round((v - min) / step) * step, min, max).toFixed(decimals));
+    const [value, setValue] = reactExports.useState(null), shown = value ?? snap((min + max) / 2);
+    const answer = Number(item.answer), tolerance = Number(item.numericTolerance) || 0, span = max - min || 1;
+    const pct = (v) => clamp$1((v - min) / span) * 100, fmt = (v) => v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals, useGrouping: Math.abs(v) >= 10000 });
+    const right = disabled && value !== null && Math.abs(value - answer) <= tolerance + 1e-9;
+    const unit = item.unit ? React.createElement("small", null, item.unit) : null;
+    return React.createElement("div", { className: "extra-answer slider-answer" },
+        React.createElement("p", { className: "split-answer-help" }, disabled ? (right ? 'Close enough — well estimated.' : `You were ${fmt(Math.abs((value ?? answer) - answer))}${item.unit ? ' ' + item.unit : ''} away.`) : `Drag to your best estimate.${tolerance > 0 ? ` Within ± ${fmt(tolerance)} counts as right.` : ''}`),
+        React.createElement("output", { className: "slider-value", "data-state": disabled ? (right ? 'correct' : 'wrong') : value === null ? 'empty' : undefined },
+            value === null ? 'Drag the slider' : fmt(value),
+            value !== null && unit),
+        React.createElement("div", { className: "slider-track" },
+            React.createElement("input", { type: "range", min: min, max: max, step: step, value: shown, disabled: disabled, "aria-label": "Your estimate", "aria-valuetext": `${fmt(shown)}${item.unit ? ' ' + item.unit : ''}`, "data-untouched": value === null || undefined, onChange: e => setValue(snap(Number(e.target.value))) }),
+            disabled && React.createElement("div", { className: "slider-marks", "aria-hidden": "true" },
+                tolerance > 0 && React.createElement("span", { className: "slider-band", style: { left: `${pct(answer - tolerance)}%`, width: `${pct(answer + tolerance) - pct(answer - tolerance)}%` } }),
+                React.createElement("span", { className: "slider-correct", style: { left: `${pct(answer)}%` } },
+                    React.createElement("b", null, fmt(answer))))),
+        React.createElement("div", { className: "slider-scale", "aria-hidden": "true" },
+            React.createElement("span", null, fmt(min)),
+            React.createElement("span", null, fmt(max))),
+        !disabled && React.createElement("div", { className: "slider-nudge" },
+            React.createElement("button", { type: "button", "aria-label": "Decrease by one step", onClick: () => setValue(snap(shown - step)) },
+                React.createElement(Minus, { size: 18 })),
+            React.createElement("span", null, "Fine-tune"),
+            React.createElement("button", { type: "button", "aria-label": "Increase by one step", onClick: () => setValue(snap(shown + step)) },
+                React.createElement(Plus, { size: 18 }))),
+        !disabled && React.createElement(Button, { className: "split-submit", disabled: value === null, onClick: () => onGrade(value) }, "Check estimate"));
+}
+function ExtraAnswer(props) {
+    const type = props.item?.type;
+    if (type === 'list_recall')
+        return React.createElement(ListRecallAnswer, { ...props });
+    if (type === 'categorize')
+        return React.createElement(CategorizeAnswer, { ...props });
+    if (type === 'highlight')
+        return React.createElement(HighlightAnswer, { ...props });
+    if (type === 'image_tap')
+        return props.item.image && tapSpots(props.item).length ? React.createElement(ImageTapAnswer, { ...props }) : React.createElement("p", { className: "extra-note" }, props.item.image ? 'Mark at least one place on the picture.' : 'Add a question picture to use this type.');
+    if (type === 'slider')
+        return React.createElement(SliderAnswer, { ...props });
+    return null;
 }
 
 // Every stored picture uses this shape so cards, options and thumbnails line up.
@@ -34137,9 +34222,9 @@ function clearSavedQuiz() { try {
 }
 catch { } }
 const dayHeading = (day) => { const t = localDay(), y = localDay(new Date(Date.now() - 864e5)); return day === t ? "Today" : day === y ? "Yesterday" : new Date(day + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" }); };
-function ReportHistoryCard({ report: r, index: i, openId, setOpenId, items, retry, copy, grouped }) {
+function ReportHistoryCard({ report: r, index: i, onOpen, grouped }) {
     return React.createElement("article", { className: styles$1.reportCard },
-        React.createElement("button", { className: `${styles$1.reportHead} rx-qhead`, onClick: () => setOpenId(openId === r.id ? null : r.id), "aria-expanded": openId === r.id },
+        React.createElement("button", { className: `${styles$1.reportHead} rx-qhead`, onClick: () => onOpen(r.id) },
             React.createElement(ScoreRing, { pct: r.accuracy }, r.accuracy),
             React.createElement("span", { className: "rx-qmain" },
                 React.createElement("b", null,
@@ -34156,40 +34241,7 @@ function ReportHistoryCard({ report: r, index: i, openId, setOpenId, items, retr
                     " \u00B7 ",
                     r.correct,
                     " right")),
-            React.createElement(ChevronDown, { size: 16, className: "rx-qchev", "aria-hidden": "true" })),
-        openId === r.id && React.createElement("div", { className: styles$1.reportDetails },
-            React.createElement("div", { className: styles$1.reportMiniStats },
-                React.createElement("div", null,
-                    React.createElement("b", null, r.correct),
-                    React.createElement("span", null, "Correct")),
-                React.createElement("div", null,
-                    React.createElement("b", null, r.total - r.correct),
-                    React.createElement("span", null, "Missed")),
-                React.createElement("div", null,
-                    React.createElement("b", null,
-                        Math.round(r.duration_seconds / 60),
-                        "m"),
-                    React.createElement("span", null, "Time"))),
-            React.createElement("div", { className: styles$1.reportQuestions }, r.questions.map((q, qi) => React.createElement("div", { className: q.correct ? styles$1.reportQuestionGood : styles$1.reportQuestionBad, key: qi },
-                React.createElement("span", null, q.correct ? React.createElement(CircleCheck, { size: 16 }) : React.createElement(CircleX, { size: 16 })),
-                React.createElement("div", null,
-                    React.createElement("b", null, q.prompt),
-                    React.createElement("small", null,
-                        "Your answer: ",
-                        q.user_answer || "No answer"),
-                    !q.correct && React.createElement("small", null,
-                        "Correct: ",
-                        q.correct_answer || answerText(items.find(x => x.id === q.knowledge_id) || {}) || "—")),
-                React.createElement("em", null,
-                    q.response_time_seconds,
-                    "s")))),
-            missedItems(r.questions, items).length > 0 && React.createElement(Button, { onClick: () => retry(r.questions, r.id) },
-                "Retry mistakes (",
-                missedItems(r.questions, items).length,
-                ")"),
-            React.createElement(Button, { variant: "outline", onClick: () => copy(r) },
-                React.createElement(Copy, { size: 16 }),
-                " Copy full report")));
+            React.createElement(ChevronRight, { size: 16, className: "rx-qchev", "aria-hidden": "true" })));
 }
 const starter = [
     { id: "demo_short", subject: "Demo", topic: "Type Answer", prompt: "What is the capital of Japan?", answer: "Tokyo", type: "short_answer" },
@@ -34270,7 +34322,10 @@ function IndexPage() {
     catch {
         return [];
     } });
-    const [openReportId, setOpenReportId] = reactExports.useState(null);
+    const [reviewId, setReviewId] = reactExports.useState(null);
+    reactExports.useEffect(() => { const back = (e) => setReviewId(e.state?.rfReview ?? null); window.addEventListener('popstate', back); return () => window.removeEventListener('popstate', back); }, []);
+    reactExports.useEffect(() => { if (tab !== "results")
+        setReviewId(null); }, [tab]);
     const [reportView, setReportView] = reactExports.useState("overview");
     const [insightBy, setInsightBy] = reactExports.useState("subject");
     const [reportDir, setReportDir] = reactExports.useState("");
@@ -34744,6 +34799,12 @@ function IndexPage() {
         navigator.clipboard?.writeText(JSON.stringify(report, null, 2));
         setMessage("Detailed report copied to clipboard.");
     }
+    const openReview = (id) => { history.pushState({ ...history.state, rfReview: id }, '', location.href); setReviewId(id); window.scrollTo(0, 0); };
+    const closeReview = () => { if (history.state?.rfReview)
+        history.back();
+    else
+        setReviewId(null); };
+    const reviewReport = reviewId ? reportHistory.find(r => r.id === reviewId) : undefined;
     function copySavedReport(report) { navigator.clipboard?.writeText(JSON.stringify(report, null, 2)); setMessage("Saved report copied to clipboard."); }
     function closeEditor() { setSavedQuestion(null); setSaveStatus(""); setShowAdd(false); setEditingId(null); setTab("library"); setMessage(""); window.scrollTo({ top: 0 }); }
     function openAdd(item) {
@@ -35484,7 +35545,8 @@ function IndexPage() {
                                 React.createElement(CopyCheck, null),
                                 " Find duplicates")),
                         React.createElement("button", { className: "question-tools-cancel", onClick: () => setShowQuestionTools(false) }, "Cancel")))),
-            tab === "results" && React.createElement("section", { className: `${styles$1.reportsPage} rx-page` },
+            tab === "results" && reviewReport && React.createElement(QuizReviewPage, { report: reviewReport, items: items, onBack: closeReview, onRetry: retryMistakes, onCopy: copySavedReport }),
+            tab === "results" && !reviewReport && React.createElement("section", { className: `${styles$1.reportsPage} rx-page` },
                 React.createElement("div", { className: styles$1.pageTitle },
                     React.createElement("div", null,
                         React.createElement("h1", null, "Reports"))),
@@ -35510,7 +35572,7 @@ function IndexPage() {
                                 React.createElement("button", { onClick: () => setReportView("history") },
                                     "View all ",
                                     React.createElement(ArrowRight, { size: 13 }))),
-                            React.createElement("div", { className: styles$1.reportList }, reportHistory.slice(0, 3).map((r, i) => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: i, openId: openReportId, setOpenId: setOpenReportId, items: items, retry: retryMistakes, copy: copySavedReport }))),
+                            React.createElement("div", { className: styles$1.reportList }, reportHistory.slice(0, 3).map((r, i) => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: i, onOpen: openReview }))),
                             React.createElement("div", { className: "report-shortcuts" },
                                 React.createElement("button", { onClick: () => setReportView("progress") },
                                     React.createElement(ChartNoAxesColumnIncreasing, null),
@@ -35546,10 +35608,10 @@ function IndexPage() {
                                     historyReports.length,
                                     " in ",
                                     rangeLabel,
-                                    " \u00B7 Select one for answers")),
+                                    " \u00B7 Tap one to review")),
                             historyReports.length ? React.createElement("div", { className: "rx-days" }, groupByDay(historyReports).map(([day, list]) => React.createElement("section", { key: day, className: "rx-day" },
                                 React.createElement("h3", null, dayHeading(day)),
-                                React.createElement("div", { className: styles$1.reportList }, list.map(r => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: reportHistory.indexOf(r), grouped: true, openId: openReportId, setOpenId: setOpenReportId, items: items, retry: retryMistakes, copy: copySavedReport })))))) : React.createElement("div", { className: "report-inline-empty" },
+                                React.createElement("div", { className: styles$1.reportList }, list.map(r => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: reportHistory.indexOf(r), grouped: true, onOpen: openReview })))))) : React.createElement("div", { className: "report-inline-empty" },
                                 "Nothing here for ",
                                 rangeLabel,
                                 ".")),

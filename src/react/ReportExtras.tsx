@@ -1,8 +1,19 @@
 import React,{useMemo,useState} from 'react';
-import {Play,Pencil,XCircle,CheckCircle2,ChevronLeft,ChevronRight,Flame,Trophy,CalendarDays,Clock,Sunrise,Sun,Sunset,Moon,ChevronDown,Target} from 'lucide-react';
+import {Play,Pencil,XCircle,CheckCircle2,ChevronLeft,ChevronRight,Flame,Trophy,CalendarDays,Clock,Sunrise,Sun,Sunset,Moon,ChevronDown,Target,Check,X,Copy,RotateCcw,Eye} from 'lucide-react';
 import {mistakeLedger,activityStats,formatDuration,shiftDay} from '../report-stats.js';
 import {streakStats,localDay} from '../streak-stats.js';
-import {typeLabel} from '../question-types.js';
+import {typeLabel,answerText,missedItems} from '../question-types.js';
+import {QuestionMedia} from './QuestionMedia';
+import {ScoreRing} from './ReportPanels';
+
+function ItemMedia({item,kind}:{item:any;kind:'question'|'answer'}){
+ if(!item)return null;
+ const a=kind==='answer';
+ return <QuestionMedia kind={kind} className={a?'rv-media rv-answer-media':'rv-media'} zoomClass="rv-zoom" imgClass="rv-img"
+  image={a?item.answerImage:item.image} imageAlt={a?undefined:item.imageAlt}
+  audio={a?item.answerAudio:item.audio} audioEdit={a?item.answerAudioEdit:item.audioEdit}
+  video={a?item.answerVideo:item.video} videoEdit={a?item.answerVideoEdit:item.videoEdit} videoClass="is-compact"/>;
+}
 
 const ago=(iso:string)=>{const d=Math.floor((Date.now()-Date.parse(iso))/86400000);return d<=0?'today':d===1?'yesterday':d<7?`${d} days ago`:new Date(iso).toLocaleDateString(undefined,{day:'numeric',month:'short'});};
 const level=(pct:number)=>pct>=80?'good':pct>=50?'ok':'low';
@@ -16,17 +27,13 @@ export function MistakesPanel({reports,items,onPractice,onEdit}:{reports:any[];i
  const monthAgo=new Date(Date.now()-30*86400000).toISOString();
  const clearedRecent=ledger.cleared.filter(e=>e.clearedAt>=monthAgo);
  const practicable=list.filter(e=>byId.has(e.id));
+ const [shown,setShown]=useState<Set<string>>(()=>new Set());
+ const reveal=(id:string)=>setShown(s=>new Set(s).add(id));
  if(!ledger.open.length&&!ledger.cleared.length)return <section className="report-content-card mx"><div className="mx-empty"><CheckCircle2 size={30}/><h2>No mistakes yet</h2><p>Questions you get wrong will appear here with your answer and the right one, so you can fix them.</p></div></section>;
  return <section className="report-content-card mx">
   <div className="report-content-heading"><div><p>WHAT TO PRACTICE NEXT</p><h2>Mistakes</h2></div></div>
-  <div className="mx-stats">
-   <div data-kind="open"><strong>{ledger.open.length}</strong><span>To fix</span></div>
-   <div data-kind="cleared"><strong>{clearedRecent.length}</strong><span>Fixed in 30 days</span></div>
-   <div><strong>{subjects[0]?.[0]||'—'}</strong><span>{subjects[0]?`Most mistakes (${subjects[0][1]})`:'No open mistakes'}</span></div>
-  </div>
   {ledger.open.length>0?<>
-   <p className="report-muted">A question is fixed after you answer it right twice in a row. The dots show how close each one is.</p>
-   {practicable.length>0&&<button type="button" className="mx-practice-all" onClick={()=>onPractice(practicable.map(e=>e.last))}><Target size={17}/>Practice {practicable.length===ledger.open.length?'all':'these'} {practicable.length} {practicable.length===1?'mistake':'mistakes'}</button>}
+   <div className="mx-summary"><div><strong><b>{ledger.open.length}</b> to fix · {clearedRecent.length} fixed in 30 days</strong><small>Answer right twice in a row to fix one</small></div>{practicable.length>0&&<button type="button" onClick={()=>onPractice(practicable.map(e=>e.last))}><Target size={15}/>Practice {practicable.length===ledger.open.length?'all':practicable.length}</button>}</div>
    <div className="mx-tools">
     {subjects.length>1&&<div className="mx-chips" role="radiogroup" aria-label="Subject"><button type="button" role="radio" aria-checked={!subject} onClick={()=>setSubject('')}>All <b>{ledger.open.length}</b></button>{subjects.map(([s,n])=><button key={s} type="button" role="radio" aria-checked={subject===s} onClick={()=>setSubject(s)}>{s} <b>{n}</b></button>)}</div>}
     <label className="mx-sort">Sort<select value={sort} onChange={e=>setSort(e.target.value as any)}><option value="recent">Newest first</option><option value="most">Most missed</option><option value="close">Closest to fixed</option></select></label>
@@ -34,18 +41,47 @@ export function MistakesPanel({reports,items,onPractice,onEdit}:{reports:any[];i
    <ul className="mx-list">{list.map(e=>{const item=byId.get(e.id),q=e.last;return <li key={e.id} className="mx-item">
     <div className="mx-item-top"><span className="mx-place">{[q.subject,q.topic].filter(Boolean).join(' › ')||'General'}</span><span className="mx-type">{typeLabel(q.type)}</span></div>
     <strong className="mx-prompt">{q.prompt||'Picture question'}</strong>
-    <div className="mx-answers"><p data-kind="wrong"><XCircle size={14}/><span><small>You said</small>{q.user_answer||'No answer'}</span></p><p data-kind="right"><CheckCircle2 size={14}/><span><small>Correct</small>{q.correct_answer||'—'}</span></p></div>
+    <ItemMedia item={item} kind="question"/>
+    {shown.has(e.id)?<>
+     <div className="mx-answers"><p data-kind="wrong"><XCircle size={14}/><span><small>You said</small>{q.user_answer||'No answer'}</span></p><p data-kind="right"><CheckCircle2 size={14}/><span><small>Correct</small>{q.correct_answer||'—'}</span></p></div>
+     <ItemMedia item={item} kind="answer"/>
+    </>:<button type="button" className="mx-reveal" onClick={()=>reveal(e.id)}><Eye size={15}/>Think of the answer, then tap to reveal</button>}
     <div className="mx-item-foot">
      <span className="mx-progress" title={`${e.streak} of 2 right answers in a row`}><i data-on={e.streak>=1||undefined}/><i data-on={e.streak>=2||undefined}/><em>{e.streak?'1 more to fix':'2 to fix'}</em></span>
      <span className="mx-meta">Missed {e.misses}× · {ago(e.lastMissed)}</span>
     </div>
-    {item?<div className="mx-actions"><button type="button" onClick={()=>onPractice([q])}><Play size={13} fill="currentColor"/>Practice</button><button type="button" className="is-soft" onClick={()=>onEdit(item)}><Pencil size={13}/>Edit</button></div>:<p className="mx-gone">No longer in your question bank.</p>}
+    {item?<div className="mx-actions"><button type="button" className="is-soft" onClick={()=>onEdit(item)}><Pencil size={13}/>Edit</button><button type="button" onClick={()=>onPractice([q])}><Play size={13} fill="currentColor"/>Practice</button></div>:<p className="mx-gone">No longer in your question bank.</p>}
    </li>;})}</ul>
   </>:<div className="mx-allclear"><Trophy size={22}/><div><strong>All mistakes fixed</strong><small>Nothing left to revisit. Nice work.</small></div></div>}
   {ledger.cleared.length>0&&<div className="mx-cleared">
    <button type="button" aria-expanded={showCleared} onClick={()=>setShowCleared(v=>!v)}><CheckCircle2 size={16}/>Fixed questions <b>{ledger.cleared.length}</b><ChevronDown size={16} className="mx-chev"/></button>
    {showCleared&&<ul>{ledger.cleared.slice(0,30).map(e=><li key={e.id}><span>{e.last.prompt||'Picture question'}</span><small>Fixed {ago(e.clearedAt)} · missed {e.misses}×</small></li>)}</ul>}
   </div>}
+ </section>;
+}
+
+export function QuizReviewPage({report:r,items,onBack,onRetry,onCopy}:{report:any;items:any[];onBack:()=>void;onRetry:(results:any[],source?:string)=>void;onCopy:(report:any)=>void}){
+ const byId=useMemo(()=>new Map(items.map(x=>[x.id,x])),[items]);
+ const [show,setShow]=useState<'all'|'wrong'|'right'>('all');
+ const qs:any[]=r.questions||[],wrong=qs.filter(q=>!q.correct).length,right=qs.length-wrong;
+ const rows=qs.map((q,i)=>({q,i})).filter(({q})=>show==='all'||(show==='wrong')===!q.correct);
+ const missed=missedItems(qs,items).length,when=new Date(r.date);
+ return <section className="qr">
+  <div className="qr-top"><button type="button" className="qr-back" onClick={onBack}><ChevronLeft size={18}/>History</button><button type="button" className="qr-copy" onClick={()=>onCopy(r)}><Copy size={15}/>Copy</button></div>
+  <div className="qr-summary"><ScoreRing pct={r.accuracy} size={64} stroke={7}>{r.accuracy}%</ScoreRing><div>
+   <h1>{r.mode==='retry_mistakes'?'Retake':'Quiz'} · {qs.length} {qs.length===1?'question':'questions'}</h1>
+   <small>{when.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})}, {when.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})} · took {formatDuration(r.duration_seconds)}</small>
+   <p><span data-kind="right"><Check size={13}/>{right} right</span><span data-kind="wrong"><X size={13}/>{wrong} wrong</span></p>
+  </div></div>
+  <div className="rx-range" role="radiogroup" aria-label="Show">{([['all',`All ${qs.length}`],['wrong',`Wrong ${wrong}`],['right',`Right ${right}`]] as const).map(([id,label])=><button key={id} type="button" role="radio" aria-checked={show===id} onClick={()=>setShow(id)}>{label}</button>)}</div>
+  {rows.length?<ol className="qr-list">{rows.map(({q,i})=>{const item=byId.get(q.knowledge_id),correct=q.correct_answer||(item?answerText(item):'')||'—';return <li key={i} className="qr-item" data-correct={q.correct?'true':'false'}>
+   <div className="qr-item-top"><span className="qr-badge">{q.correct?<Check size={13}/>:<X size={13}/>}</span><small>Q{i+1} · {typeLabel(q.type)}</small><small>{q.response_time_seconds}s</small></div>
+   <strong className="qr-prompt">{q.prompt||'Picture question'}</strong>
+   <ItemMedia item={item} kind="question"/>
+   {q.correct?<p className="qr-said">You said <b>{q.user_answer||correct}</b></p>:<div className="mx-answers"><p data-kind="wrong"><XCircle size={14}/><span><small>You said</small>{q.user_answer||'No answer'}</span></p><p data-kind="right"><CheckCircle2 size={14}/><span><small>Correct</small>{correct}</span></p></div>}
+   <ItemMedia item={item} kind="answer"/>
+  </li>;})}</ol>:<p className="report-inline-empty">{show==='wrong'?'No wrong answers in this quiz.':'No right answers in this quiz.'}</p>}
+  {missed>0&&<div className="qr-bar"><button type="button" onClick={()=>onRetry(qs,r.id)}><RotateCcw size={16}/>Retry {missed} {missed===1?'mistake':'mistakes'}</button></div>}
  </section>;
 }
 

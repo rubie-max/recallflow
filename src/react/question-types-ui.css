@@ -890,4 +890,43 @@ label.split-choice:has(.choice-media) .split-choice-text>span:not(.zoomable-imag
 .mx-progress i{width:18px;height:6px;border:0;border-radius:3px;background:color-mix(in srgb,var(--muted-foreground) 22%,transparent)}
 .mx-progress i[data-on]{background:var(--success)}
 .rx-insight-by{margin:0}
+
+/* Quiz review page */
+.qr{display:grid;gap:14px;min-width:0}
+.qr-top{display:flex;align-items:center;justify-content:space-between}
+.qr-back,.qr-copy{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 10px;border:0;border-radius:12px;background:none;color:var(--primary);font:inherit;font-size:14.5px;font-weight:650;cursor:pointer}
+.qr-back{margin-left:-10px}.qr-copy{color:var(--muted-foreground);font-size:13px}
+.qr-summary{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--border);border-radius:18px;background:var(--card)}
+.qr-summary .rx-ring-label{font-size:15px;color:var(--foreground)}
+.qr-summary h1{margin:0;font:700 17px/1.25 var(--font-family-base)!important;letter-spacing:0!important}
+.qr-summary small{display:block;margin-top:3px;font-size:12px;color:var(--muted-foreground)}
+.qr-summary p{display:flex;gap:12px;margin:7px 0 0;font-size:12.5px;font-weight:700}
+.qr-summary p span{display:inline-flex;align-items:center;gap:4px}
+.qr-summary [data-kind=right]{color:var(--success)}.qr-summary [data-kind=wrong]{color:var(--error)}
+.qr .rx-range{margin:0}
+.qr-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.qr-item{display:grid;gap:10px;min-width:0;padding:14px;border:1px solid var(--border);border-radius:16px;background:var(--card)}
+.qr-item-top{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted-foreground)}
+.qr-item-top small:first-of-type{flex:1}
+.qr-badge{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--success);color:#fff}
+.qr-item[data-correct=false] .qr-badge{background:var(--error)}
+.qr-prompt{font-size:15px;line-height:1.35;font-weight:700;overflow-wrap:anywhere}
+.qr-said{margin:0;font-size:13.5px;color:var(--muted-foreground)}.qr-said b{color:var(--success)}
+.qr-bar{position:sticky;bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:5}
+.qr-bar button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:48px;border:0;border-radius:14px;background:var(--primary);color:var(--primary-foreground,#fff);font:inherit;font-size:15px;font-weight:700;box-shadow:0 8px 24px #0004;cursor:pointer}
+.rv-media{display:grid;gap:8px;min-width:0;margin:0!important}
+.rv-media .rv-zoom{display:block;width:100%!important;max-width:none!important;margin:0!important}
+.rv-media .rv-img{display:block;width:100%;height:150px;object-fit:contain;border-radius:12px;background:var(--surface)}
+.rv-answer-media .rv-img{height:110px}
+.rv-media .quiz-video{max-width:100%;margin:0}
+
+/* Mistakes option C: tap to reveal */
+.mx-item{border-left-width:1px;border-left-color:var(--border)}
+.mx-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--error) 9%,var(--card))}
+.mx-summary strong{display:block;font-size:14px}.mx-summary strong b{color:var(--error)}
+.mx-summary small{display:block;margin-top:2px;font-size:11.5px;color:var(--muted-foreground)}
+.mx-summary button{display:inline-flex;align-items:center;gap:6px;flex:none;height:38px;padding:0 14px;border:0;border-radius:11px;background:var(--primary);color:var(--primary-foreground,#fff);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.mx-reveal{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:10px;border:1.5px dashed var(--border);border-radius:12px;background:none;color:var(--muted-foreground);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.mx-actions{display:flex;justify-content:flex-end}
+.mx-actions button{height:34px;padding:0 14px}
 @media(max-width:420px){.ax-stats{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px}.ax-stats>div{flex-direction:column!important;align-items:center!important;text-align:center;padding:10px 4px}.ax-stats svg{margin:0 0 2px!important}.ax-stats strong{font-size:17px}.ax-stats span{flex-basis:auto!important;font-size:10.5px}}
