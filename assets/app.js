@@ -32001,6 +32001,29 @@ function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTit
         clip);
     return className ? React.createElement("div", { className: `quiz-media-group ${className}` }, parts) : parts;
 }
+// Quiz feedback: answer media stays hidden until asked for, then shows in one small fixed frame.
+function AnswerMediaToggle({ image, imageAlt, audio, audioEdit, video, videoEdit }) {
+    const kinds = ([image && 'picture', video && 'video', audio && 'sound'].filter(Boolean));
+    const [open, setOpen] = reactExports.useState(false), [tab, setTab] = reactExports.useState(kinds[0]);
+    if (!kinds.length)
+        return null;
+    const cur = tab && kinds.includes(tab) ? tab : kinds[0];
+    const icons = { picture: Image$1, video: Film, sound: Volume2 }, names = { picture: 'Picture', video: 'Video', sound: 'Sound' };
+    return React.createElement("div", { className: "answer-media-toggle" },
+        React.createElement("button", { type: "button", className: "amt-toggle", "aria-expanded": open, onClick: () => setOpen(o => !o) },
+            kinds.map(k => { const I = icons[k]; return React.createElement(I, { key: k, size: 15 }); }),
+            React.createElement("span", null,
+                open ? 'Hide' : 'Show',
+                " answer ",
+                kinds.length > 1 ? 'media' : names[kinds[0]].toLowerCase()),
+            React.createElement(ChevronDown, { size: 16 })),
+        open && React.createElement("div", { className: "amt-frame" },
+            kinds.length > 1 && React.createElement("div", { className: "amt-tabs", role: "tablist", "aria-label": "Answer media" }, kinds.map(k => React.createElement("button", { key: k, type: "button", role: "tab", "aria-selected": cur === k, onClick: () => setTab(k) }, names[k]))),
+            React.createElement("div", { className: "amt-panel", "data-kind": cur },
+                cur === 'picture' && React.createElement(ZoomableImage, { className: "amt-zoom", imgClassName: "amt-img", src: image, alt: imageAlt || 'Answer illustration', label: "Enlarge answer image" }),
+                cur === 'video' && React.createElement(VideoPlayer, { src: video, edit: videoEdit, className: "quiz-video is-compact amt-video", label: "Play answer video" }),
+                cur === 'sound' && React.createElement(SoundPlayer, { src: audio, edit: audioEdit, displayName: "Answer sound", variant: "card", label: "Play answer sound", className: "amt-sound" }))));
+}
 
 const shortDate = (day) => new Date(day + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const weekday = (day) => new Date(day + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' });
@@ -35227,7 +35250,7 @@ function IndexPage() {
                                 React.createElement("strong", null, result ? (results[results.length - 1]?.grading === "typo" ? "Accepted — likely typo" : "Correct!") : "Not quite"),
                                 current && answerText(current) && !/^\(answer (picture|video|sound)\)$/.test(answerText(current)) && React.createElement("span", null, result ? `Answer: ${answerText(current)}` : `Correct answer: ${answerText(current)}`),
                                 current && React.createElement(SpeechButton, { questionId: current.id, role: "answer", text: current.answer || answerText(current), label: "Read correct answer" }),
-                                current && current.type !== "flashcard" && React.createElement(QuestionMedia, { key: `${current.id}-answer`, kind: "answer", className: "feedback-media", zoomClass: "feedback-answer-zoom", imgClass: "feedback-answer-media", image: current.answerImage, audio: current.answerAudio, audioEdit: current.answerAudioEdit, video: current.answerVideo, videoEdit: current.answerVideoEdit, videoClass: "is-compact" })),
+                                current && current.type !== "flashcard" && React.createElement(AnswerMediaToggle, { key: `${current.id}-answer`, image: current.answerImage, imageAlt: current.imageAlt, audio: current.answerAudio, audioEdit: current.answerAudioEdit, video: current.answerVideo, videoEdit: current.answerVideoEdit })),
                             React.createElement(Button, { onClick: next },
                                 idx + 1 === review.length ? "See results" : "Continue",
                                 " ",

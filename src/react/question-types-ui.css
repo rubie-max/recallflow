@@ -985,3 +985,21 @@ label.split-choice:has(.choice-media) .split-choice-text>span:not(.zoomable-imag
 .home-quiz-actions{display:flex;gap:8px}
 .home-quiz-actions>*{flex:1;justify-content:center}
 .home-quiz .home-quiz-start{width:100%;justify-content:center}
+
+/* Quiz feedback: answer media hidden until opened, one fixed 80px frame */
+.split-feedback .answer-media-toggle{grid-column:1/-1;display:grid;gap:8px;min-width:0}
+.amt-toggle{display:flex;align-items:center;gap:6px;width:100%;min-height:36px;padding:0 2px;border:0;background:none;color:var(--primary);font:700 13px var(--font-family-base);cursor:pointer;text-align:left}
+.amt-toggle span{flex:1;min-width:0}
+.amt-toggle>svg:last-child{transition:transform .15s}
+.amt-toggle[aria-expanded=true]>svg:last-child{transform:rotate(180deg)}
+.amt-frame{display:grid;gap:6px;min-width:0;padding:6px;border:1px solid var(--border);border-radius:12px;background:var(--card)}
+.amt-tabs{display:flex;gap:4px}
+.amt-tabs button{flex:1;min-height:30px;border:0;border-radius:7px;background:transparent;color:var(--muted-foreground);font:700 12px var(--font-family-base);cursor:pointer}
+.amt-tabs button[aria-selected=true]{background:var(--primary);color:var(--primary-foreground,#fff)}
+.amt-panel{display:grid;place-items:center;height:80px;min-width:0;overflow:hidden;border-radius:9px}
+.amt-panel[data-kind=sound]{height:auto;min-height:64px}
+.amt-panel .amt-zoom.amt-zoom{display:block!important;width:100%!important;max-width:100%!important;height:80px!important;margin:0!important;border-radius:9px}
+.amt-panel .amt-zoom>img.amt-img{width:100%!important;height:80px!important;max-height:none!important;aspect-ratio:auto!important;margin:0!important;object-fit:cover!important;border-radius:9px}
+.amt-panel .amt-video.amt-video{width:142px!important;max-width:100%!important;height:80px!important;margin:0 auto!important}
+.amt-panel .amt-video .vf{width:100%!important;height:80px!important;max-height:80px!important;aspect-ratio:auto!important;border-radius:9px}
+.amt-panel .amt-sound{width:100%;margin:0;border:0;background:transparent}
