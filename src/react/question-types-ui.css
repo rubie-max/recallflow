@@ -851,6 +851,9 @@ label.split-choice:has(.choice-media) .split-choice-text>span:not(.zoomable-imag
 .rt-tabs>button[aria-selected=true]{color:var(--foreground);font-weight:700;border-bottom-color:var(--primary)}
 .rt-tabs>button:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
 .rt-more svg{flex:none;transition:transform .15s}.rt-more[aria-expanded=true] svg{transform:rotate(180deg)}
+/* Reports: the title and its tabs form one header */
+section[class*=reportsPage]>div[class*=pageTitle]{margin-bottom:0!important}
+.rx-page>.rt-tabs{margin:-8px 0 0;position:sticky;top:60px;z-index:6;background:var(--background)}
 .rt-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;min-width:180px;padding:6px;border:1px solid var(--border);border-radius:14px;background:var(--popup,var(--card));box-shadow:0 12px 32px rgba(0,0,0,.28)}
 .rt-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:10px;border:0;border-radius:10px;background:none;color:var(--foreground);font:500 14px var(--font-family-base);text-align:left;cursor:pointer}
 .rt-menu button[aria-checked=true]{background:var(--accent);color:var(--accent-foreground);font-weight:700}
