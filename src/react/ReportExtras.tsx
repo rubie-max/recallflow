@@ -104,8 +104,6 @@ export function ActivityPanel({reports,streakDays}:{reports:any[];streakDays:str
  const monthSeconds=inMonth.reduce((n,d)=>n+d.seconds,0),monthDays=keys.filter(k=>studied.has(k)).length;
  const elapsed=keys.filter(k=>k<=today).length;
  const now=monthOf(today),isCurrent=month.y===now.y&&month.m===now.m;
- const earliest=monthOf(reports.length?localDay(new Date(reports[reports.length-1].date))||today:today);
- const canBack=month.y*12+month.m>earliest.y*12+earliest.m;
  const shift=(n:number)=>setMonth(({y,m})=>{const d=new Date(Date.UTC(y,m+n,1));return {y:d.getUTCFullYear(),m:d.getUTCMonth()};});
  const totalQuizzes=stats.weekdays.reduce((a,b)=>a+b,0);
  const topDay=totalQuizzes?stats.weekdays.indexOf(Math.max(...stats.weekdays)):-1;
@@ -124,7 +122,7 @@ export function ActivityPanel({reports,streakDays}:{reports:any[];streakDays:str
   </div>
 
   <div className="ax-cal">
-   <div className="ax-cal-head"><button type="button" aria-label="Previous month" disabled={!canBack} onClick={()=>shift(-1)}><ChevronLeft size={18}/></button><strong>{monthName(month.y,month.m)}</strong><button type="button" aria-label="Next month" disabled={isCurrent} onClick={()=>shift(1)}><ChevronRight size={18}/></button></div>
+   <div className="ax-cal-head"><button type="button" aria-label="Previous month" onClick={()=>shift(-1)}><ChevronLeft size={18}/></button><strong>{monthName(month.y,month.m)}</strong><button type="button" aria-label="Next month" disabled={isCurrent} onClick={()=>shift(1)}><ChevronRight size={18}/></button></div>
    <p className="ax-cal-sub">{monthDays} of {isCurrent?elapsed:days} days studied · {formatDuration(monthSeconds)} · {inMonth.reduce((n,d)=>n+d.quizzes,0)} quizzes</p>
    <div className="ax-grid" role="grid" aria-label={`Study days in ${monthName(month.y,month.m)}`}>
     {WEEKDAYS.map(d=><span key={d} className="ax-wd" aria-hidden="true">{d[0]}</span>)}

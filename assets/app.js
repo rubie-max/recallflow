@@ -32504,8 +32504,6 @@ function ActivityPanel({ reports, streakDays }) {
     const monthSeconds = inMonth.reduce((n, d) => n + d.seconds, 0), monthDays = keys.filter(k => studied.has(k)).length;
     const elapsed = keys.filter(k => k <= today).length;
     const now = monthOf(today), isCurrent = month.y === now.y && month.m === now.m;
-    const earliest = monthOf(reports.length ? localDay(new Date(reports[reports.length - 1].date)) || today : today);
-    const canBack = month.y * 12 + month.m > earliest.y * 12 + earliest.m;
     const shift = (n) => setMonth(({ y, m }) => { const d = new Date(Date.UTC(y, m + n, 1)); return { y: d.getUTCFullYear(), m: d.getUTCMonth() }; });
     const totalQuizzes = stats.weekdays.reduce((a, b) => a + b, 0);
     const topDay = totalQuizzes ? stats.weekdays.indexOf(Math.max(...stats.weekdays)) : -1;
@@ -32540,7 +32538,7 @@ function ActivityPanel({ reports, streakDays }) {
                 React.createElement("span", null, "Per day (2 wks)"))),
         React.createElement("div", { className: "ax-cal" },
             React.createElement("div", { className: "ax-cal-head" },
-                React.createElement("button", { type: "button", "aria-label": "Previous month", disabled: !canBack, onClick: () => shift(-1) },
+                React.createElement("button", { type: "button", "aria-label": "Previous month", onClick: () => shift(-1) },
                     React.createElement(ChevronLeft, { size: 18 })),
                 React.createElement("strong", null, monthName(month.y, month.m)),
                 React.createElement("button", { type: "button", "aria-label": "Next month", disabled: isCurrent, onClick: () => shift(1) },
