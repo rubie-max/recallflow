@@ -89,6 +89,14 @@ assert.equal(JSON.parse(serialize([audioItem,linkItem],'json',{images:true,audio
 assert.equal(JSON.parse(serialize([audioItem],'json',{audio:true})).questions[0].audio,clip);
 assert.equal(prepareExport([{image:'data:image/png;base64,abc',audio:clip}],{images:false,audio:false})[0].audio,undefined);
 assert.match(aiImportPrompt,/list_recall/);
+// The AI guide's examples must import as written
+const promptSpot=JSON.parse(aiImportPrompt.match(/\[\{ "label":"Sun".*?\}/)[0]+']');
+assert.equal(validateQuestion({type:'image_tap',prompt:'Tap the sun.',image:'https://example.com/sun.png',spots:promptSpot}).answer,'Sun');
+assert.match(aiImportPrompt,/"tapMode" — "name"/);
+assert.match(aiImportPrompt,/2–6 groups/);
+assert.match(aiImportPrompt,/work for pictures only/);
+assert.throws(()=>validateQuestion({type:'short_answer',prompt:'p',answer:'a',audio:'https://drive.google.com/file/d/196xr6Bm0P1tsP9iwQxiP9LFmbWuOlmE-/view'}),/Google Drive/);
+assert.throws(()=>validateQuestion({type:'highlight',prompt:'Tap the words.',passage:'*All* *marked*'}),/unmarked/);
 assert.equal(mediaEditSafe({trimStart:0,trimEnd:3,muted:false}),true);
 assert.match(resolveImageLink('https://drive.google.com/file/d/196xr6Bm0P1tsP9iwQxiP9LFmbWuOlmE-/view?usp=drivesdk'),/^https:\/\/drive\.google\.com\/thumbnail\?id=196xr6Bm0P1tsP9iwQxiP9LFmbWuOlmE-&sz=w1600$/);
 assert.throws(()=>validateQuestion({type:'short_answer',prompt:'p',answer:'x',audio:'https://example.com/a.mp3',audioEdit:{trimStart:2,trimEnd:1,muted:false}}),/Clip edit/);

@@ -70,21 +70,27 @@ Choices & lists:
 - "acceptedAnswers" — array of extra spellings that count as correct (short_answer, etc.)
 - "pairs" — [{ "left":"...", "right":"..." }, ...] (matching)
 - "sequence" — array of strings in correct order (ordering)
-- "blanks" — array of answers, one per ___ in the prompt (cloze, fill_blank_options)
-- "listItems" — array of strings (list_recall); optional "listCount" if they only need to name some
-- "groups" — [{ "name":"Group A", "items":["a","b"] }, ...] (categorize, 2–4 groups)
+- "blanks" — array of answers, one per ___ in the prompt (cloze, fill_blank_options, and fill_blank with more than one ___). In cloze and fill_blank, separate other accepted spellings with |, e.g. "0|zero"
+- "listItems" — array of strings (list_recall); optional "listCount" if they only need to name some. Separate other accepted spellings with |, e.g. "Grey|Gray"
+- "groups" — [{ "name":"Group A", "items":["a","b"] }, ...] (categorize, 2–6 groups, up to 30 items, each item in one group only)
 
 Special types:
-- "passage" — sentence with correct words wrapped in *asterisks* (highlight), e.g. "The *cat* sat."
-- "hotspot" — { "x":0.5, "y":0.4, "r":0.08, "aspect":0.75 } fractions of picture width/height (image_tap; needs "image")
-- "sliderMin", "sliderMax", "sliderStep", "numericTolerance", "unit" (slider)
+- "passage" — sentence with correct words wrapped in *asterisks* (highlight), e.g. "The *cat* sat." Leave at least one word unmarked.
+- "spots" — places to tap on the picture (image_tap; needs "image"):
+  [{ "label":"Sun", "x":0.75, "y":0.3, "r":0.14, "aspect":0.6667 }, ...]
+  x = across from the left (0–1), y = down from the top (0–1), r = target radius as a fraction of the picture width (max 0.5),
+  aspect = picture height ÷ width. Give every place a different label when there is more than one (up to 30).
+- "tapMode" — "name" to make learners name the marked places instead of finding them (needs 2+ labelled spots)
+- "sliderMin", "sliderMax", "sliderStep", "numericTolerance", "unit" (slider; the answer must be between sliderMin and sliderMax)
 - "numericTolerance" — allowed difference (numeric and slider)
 
 Pictures, sound & video (optional):
 - "image", "answerImage" — https:// or Google Drive image link
-- "audio" — question sound; "answerAudio" — answer sound (https / Drive)
-- "video" — question video; "answerVideo" — answer video (https / Drive)
-- Use links, not base64. Google Drive “anyone with the link” URLs are accepted.
+- "audio" — question sound; "answerAudio" — answer sound (direct https mp3/wav/ogg/m4a link)
+- "video" — question video; "answerVideo" — answer video (direct https mp4/webm link)
+- Use links, not base64. Google Drive “anyone with the link” URLs work for pictures only; Drive sound or video links are rejected.
+- "optionImages" — { "choice text": "https://picture link" } pictures on choices, word-bank words, matching sides, ordering steps or group items
+- "optionMedia" — { "choice text": { "audio":"https://...", "video":"https://..." } } sound or video on those same items (direct https links, no Drive)
 - "fuzzy" — true/false for forgiving spelling (default true for text types)
 
 Multi-type questions (optional):
@@ -98,8 +104,9 @@ Type-specific answer rules:
 - list_recall: answer like "Red; Blue; Yellow"
 - categorize: answer like "Fruit: Apple; Vegetable: Carrot"
 - highlight: answer lists marked words, e.g. "sat, slept"
-- image_tap: answer can describe the spot; include hotspot + image
+- image_tap: include "image" and "spots"; the answer is built from the spot labels
 - slider: answer is the number as a string
+- flashcard: "answer" is the back of the card; it can be left out only if the back has answerImage, answerAudio or answerVideo
 
 Example (minimal):
 {"questions":[
