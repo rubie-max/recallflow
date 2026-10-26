@@ -1,4 +1,4 @@
-import React,{useRef,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {Image as ImageIcon,Film,Volume2,ChevronDown} from 'lucide-react';
 import {ZoomableImage} from './ImageViewer';
 import {SoundPlayer} from './QuestionSound';
@@ -55,21 +55,24 @@ export function FlashcardFace({side,text,speech,hint,image,imageAlt,audio,audioE
   {hint&&<small>{hint}</small>}
  </>;
 }
-// Quiz feedback: answer media stays hidden until asked for, then shows in one small fixed frame.
-export function AnswerMediaToggle({image,imageAlt,audio,audioEdit,video,videoEdit}:{image?:string;imageAlt?:string;audio?:string;audioEdit?:any;video?:string;videoEdit?:any}){
+// Media stays hidden until asked for, then opens large; onOpenChange lets the quiz tuck the rest of the screen away.
+export function AnswerMediaToggle({kind='answer',image,imageAlt,audio,audioEdit,video,videoEdit,onOpenChange}:{kind?:'question'|'answer';image?:string;imageAlt?:string;audio?:string;audioEdit?:any;video?:string;videoEdit?:any;onOpenChange?:(open:boolean)=>void}){
  const kinds=([image&&'picture',video&&'video',audio&&'sound'].filter(Boolean)) as AnswerKind[];
  const [open,setOpen]=useState(false),[tab,setTab]=useState<AnswerKind|undefined>(kinds[0]);
+ const report=useRef(onOpenChange);report.current=onOpenChange;
+ useEffect(()=>()=>report.current?.(false),[]);
  if(!kinds.length)return null;
  const cur=tab&&kinds.includes(tab)?tab:kinds[0];
  const icons={picture:ImageIcon,video:Film,sound:Volume2},names={picture:'Picture',video:'Video',sound:'Sound'};
- return <div className="answer-media-toggle">
-  <button type="button" className="amt-toggle" aria-expanded={open} onClick={()=>setOpen(o=>!o)}>{kinds.map(k=>{const I=icons[k];return <I key={k} size={15}/>;})}<span>{open?'Hide':'Show'} answer {kinds.length>1?'media':names[kinds[0]].toLowerCase()}</span><ChevronDown size={16}/></button>
+ const toggle=()=>{const next=!open;setOpen(next);onOpenChange?.(next);};
+ return <div className="answer-media-toggle" data-kind={kind}>
+  <button type="button" className="amt-toggle" aria-expanded={open} onClick={toggle}>{kinds.map(k=>{const I=icons[k];return <I key={k} size={15}/>;})}<span>{open?'Hide':'Show'} {kind} {kinds.length>1?'media':names[kinds[0]].toLowerCase()}</span><ChevronDown size={16}/></button>
   {open&&<div className="amt-frame">
-   {kinds.length>1&&<div className="amt-tabs" role="tablist" aria-label="Answer media">{kinds.map(k=><button key={k} type="button" role="tab" aria-selected={cur===k} onClick={()=>setTab(k)}>{names[k]}</button>)}</div>}
+   {kinds.length>1&&<div className="amt-tabs" role="tablist" aria-label={`${kind==='answer'?'Answer':'Question'} media`}>{kinds.map(k=><button key={k} type="button" role="tab" aria-selected={cur===k} onClick={()=>setTab(k)}>{names[k]}</button>)}</div>}
    <div className="amt-panel" data-kind={cur}>
-    {cur==='picture'&&<ZoomableImage className="amt-zoom" imgClassName="amt-img" src={image!} alt={imageAlt||'Answer illustration'} label="Enlarge answer image"/>}
-    {cur==='video'&&<VideoPlayer src={video!} edit={videoEdit} className="quiz-video is-compact amt-video" label="Play answer video"/>}
-    {cur==='sound'&&<SoundPlayer src={audio!} edit={audioEdit} displayName="Answer sound" variant="card" label="Play answer sound" className="amt-sound"/>}
+    {cur==='picture'&&<ZoomableImage className="amt-zoom" imgClassName="amt-img" src={image!} alt={imageAlt||(kind==='answer'?'Answer illustration':'Question picture')} label={`Enlarge ${kind} image`}/>}
+    {cur==='video'&&<VideoPlayer src={video!} edit={videoEdit} className="quiz-video is-compact amt-video" label={`Play ${kind} video`}/>}
+    {cur==='sound'&&<SoundPlayer src={audio!} edit={audioEdit} variant="icon" label={`Play ${kind} sound`} className="amt-sound"/>}
    </div>
   </div>}
  </div>;
