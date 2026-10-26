@@ -37,6 +37,24 @@ export function QuestionMedia({image,imageAlt,audio,audioEdit,displayName,fileTi
 }
 
 type AnswerKind='picture'|'video'|'sound';
+const stop=(e:React.SyntheticEvent)=>e.stopPropagation();
+// One side of a flashcard: media in a fixed window (tabs above it when there is more than one), then the text with its speaker.
+export function FlashcardFace({side,text,speech,hint,image,imageAlt,audio,audioEdit,video,videoEdit}:{side:'question'|'answer';text:string;speech?:React.ReactNode;hint?:string;image?:string;imageAlt?:string;audio?:string;audioEdit?:any;video?:string;videoEdit?:any}){
+ const kinds=([image&&'picture',video&&'video',audio&&'sound'].filter(Boolean)) as AnswerKind[];
+ const [tab,setTab]=useState<AnswerKind|undefined>(kinds[0]);
+ const cur=tab&&kinds.includes(tab)?tab:kinds[0];
+ const names={picture:'Picture',video:'Video',sound:'Sound'};
+ return <>
+  {kinds.length>1&&<div className="fc-tabs" role="tablist" aria-label={`${side==='answer'?'Answer':'Question'} media`} onClick={stop} onKeyDown={stop}>{kinds.map(k=><button key={k} type="button" role="tab" aria-selected={cur===k} onClick={()=>setTab(k)}>{names[k]}</button>)}</div>}
+  {cur&&<div className="fc-window" data-kind={cur} onClick={cur==='picture'?undefined:stop} onKeyDown={cur==='picture'?undefined:stop}>
+   {cur==='picture'&&<ZoomableImage className="flashcard-question-zoom fc-zoom" imgClassName="flashcard-question-media" src={image!} alt={imageAlt||(side==='answer'?'Answer illustration':'Question picture')} label={`Enlarge ${side} image`} tapImage={false}/>}
+   {cur==='video'&&<VideoPlayer src={video!} edit={videoEdit} className="quiz-video is-compact fc-video" label={`Play ${side} video`}/>}
+   {cur==='sound'&&<SoundPlayer src={audio!} edit={audioEdit} variant="icon" label={`Play ${side} sound`}/>}
+  </div>}
+  <div className="fc-text"><div><span>{side==='answer'?'ANSWER':'QUESTION'}</span><strong>{text}</strong></div>{speech&&<span className="fc-speech" onClick={stop} onKeyDown={stop}>{speech}</span>}</div>
+  {hint&&<small>{hint}</small>}
+ </>;
+}
 // Quiz feedback: answer media stays hidden until asked for, then shows in one small fixed frame.
 export function AnswerMediaToggle({image,imageAlt,audio,audioEdit,video,videoEdit}:{image?:string;imageAlt?:string;audio?:string;audioEdit?:any;video?:string;videoEdit?:any}){
  const kinds=([image&&'picture',video&&'video',audio&&'sound'].filter(Boolean)) as AnswerKind[];

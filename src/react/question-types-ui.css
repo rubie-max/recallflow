@@ -1003,3 +1003,30 @@ label.split-choice:has(.choice-media) .split-choice-text>span:not(.zoomable-imag
 .amt-panel .amt-video.amt-video{width:142px!important;max-width:100%!important;height:80px!important;margin:0 auto!important}
 .amt-panel .amt-video .vf{width:100%!important;height:80px!important;max-height:80px!important;aspect-ratio:auto!important;border-radius:9px}
 .amt-panel .amt-sound{width:100%;margin:0;border:0;background:transparent}
+
+/* Flashcard: media window on top (tabs in their own row), text + speaker below; both sides share the taller height */
+.flashcard-stage [class*=flipCard]{min-height:320px}
+.split-quiz .flashcard-stage .fc-face{justify-content:center;align-items:stretch;gap:8px;min-height:320px;padding:16px}
+.split-quiz .flashcard-stage .fc-face[data-media]{justify-content:flex-start;padding:8px 8px 12px}
+.fc-tabs{display:flex;gap:4px;flex:none}
+.fc-tabs button{flex:1;min-height:32px;padding:0 6px;border:0;border-radius:9px;background:var(--surface);color:var(--muted-foreground);font:700 12px var(--font-family-base);cursor:pointer}
+.fc-tabs button[aria-selected=true]{background:var(--primary);color:var(--primary-foreground,#fff)}
+.fc-window{position:relative;display:grid;place-items:center;flex:none;height:150px;min-width:0;overflow:hidden;border-radius:14px;background:var(--muted)}
+.fc-window .fc-zoom.fc-zoom{width:100%!important;height:150px!important;border-radius:0}
+.fc-window .fc-zoom>img{height:150px!important}
+.fc-window .fc-video.fc-video{width:100%!important;max-width:100%!important;height:150px!important;margin:0!important}
+.fc-window .fc-video .vf{width:100%!important;height:150px!important;max-height:150px!important;aspect-ratio:auto!important;border-radius:0}
+.fc-window .sp.sp-icon{margin:0}
+.fc-text{display:flex;align-items:center;gap:10px;width:100%;min-width:0;text-align:left}
+.fc-face:not([data-media]) .fc-text{flex:1}
+.fc-text>div{flex:1;min-width:0;display:grid;gap:4px}
+.fc-face:not([data-media]) .fc-text>div{text-align:center}
+.fc-text>div>span{font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--muted-foreground)}
+[class*=flipBack] .fc-text>div>span{color:var(--primary)}
+.split-quiz .fc-face .fc-text strong{font-size:17px;line-height:1.35;max-height:none;overflow:visible}
+.split-quiz [class*=flipBack].fc-face .fc-text strong{font-size:22px}
+.split-quiz .fc-face:not([data-media]) .fc-text strong{font-size:22px}
+.fc-speech{flex:none;display:flex;align-items:center}
+.fc-speech .speech-control{flex-direction:row-reverse}
+.fc-face>small{text-align:center;margin-top:auto}
+[class*=flipCard]:not([class*=flipped]) [class*=flipBack] :is(.fc-tabs,.fc-window,.fc-speech),[class*=flipped] [class*=flipFront] :is(.fc-tabs,.fc-window,.fc-speech){pointer-events:none}

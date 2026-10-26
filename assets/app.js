@@ -32001,6 +32001,26 @@ function QuestionMedia({ image, imageAlt, audio, audioEdit, displayName, fileTit
         clip);
     return className ? React.createElement("div", { className: `quiz-media-group ${className}` }, parts) : parts;
 }
+const stop = (e) => e.stopPropagation();
+// One side of a flashcard: media in a fixed window (tabs above it when there is more than one), then the text with its speaker.
+function FlashcardFace({ side, text, speech, hint, image, imageAlt, audio, audioEdit, video, videoEdit }) {
+    const kinds = ([image && 'picture', video && 'video', audio && 'sound'].filter(Boolean));
+    const [tab, setTab] = reactExports.useState(kinds[0]);
+    const cur = tab && kinds.includes(tab) ? tab : kinds[0];
+    const names = { picture: 'Picture', video: 'Video', sound: 'Sound' };
+    return React.createElement(React.Fragment, null,
+        kinds.length > 1 && React.createElement("div", { className: "fc-tabs", role: "tablist", "aria-label": `${side === 'answer' ? 'Answer' : 'Question'} media`, onClick: stop, onKeyDown: stop }, kinds.map(k => React.createElement("button", { key: k, type: "button", role: "tab", "aria-selected": cur === k, onClick: () => setTab(k) }, names[k]))),
+        cur && React.createElement("div", { className: "fc-window", "data-kind": cur, onClick: cur === 'picture' ? undefined : stop, onKeyDown: cur === 'picture' ? undefined : stop },
+            cur === 'picture' && React.createElement(ZoomableImage, { className: "flashcard-question-zoom fc-zoom", imgClassName: "flashcard-question-media", src: image, alt: imageAlt || (side === 'answer' ? 'Answer illustration' : 'Question picture'), label: `Enlarge ${side} image`, tapImage: false }),
+            cur === 'video' && React.createElement(VideoPlayer, { src: video, edit: videoEdit, className: "quiz-video is-compact fc-video", label: `Play ${side} video` }),
+            cur === 'sound' && React.createElement(SoundPlayer, { src: audio, edit: audioEdit, variant: "icon", label: `Play ${side} sound` })),
+        React.createElement("div", { className: "fc-text" },
+            React.createElement("div", null,
+                React.createElement("span", null, side === 'answer' ? 'ANSWER' : 'QUESTION'),
+                React.createElement("strong", null, text)),
+            speech && React.createElement("span", { className: "fc-speech", onClick: stop, onKeyDown: stop }, speech)),
+        hint && React.createElement("small", null, hint));
+}
 // Quiz feedback: answer media stays hidden until asked for, then shows in one small fixed frame.
 function AnswerMediaToggle({ image, imageAlt, audio, audioEdit, video, videoEdit }) {
     const kinds = ([image && 'picture', video && 'video', audio && 'sound'].filter(Boolean));
@@ -35172,32 +35192,18 @@ function IndexPage() {
                                     " ",
                                     current.topic)),
                             React.createElement("span", { className: "split-type-badge" }, typeLabel(current?.type))),
-                        current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" && current.type !== "flashcard" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.type !== "flashcard" && !soundOnly ? current.audio : undefined, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit, soundBar: current.type === "fill_blank_options" || current.type === "image_tap" }),
+                        current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" && current.type !== "flashcard" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.type !== "flashcard" && !soundOnly ? current.audio : undefined, audioEdit: current.audioEdit, video: current.type !== "flashcard" ? current.video : undefined, videoEdit: current.videoEdit, soundBar: current.type === "fill_blank_options" || current.type === "image_tap" }),
                         current?.type === "flashcard" ? React.createElement("div", { className: "flashcard-stage" },
-                            React.createElement("div", { className: "flashcard-speech" },
-                                React.createElement(SpeechButton, { questionId: current.id, role: revealed ? "answer" : "question", text: revealed ? current.answer : current.prompt, label: revealed ? "Read flashcard answer" : "Read flashcard question" })),
                             React.createElement("div", { role: "button", tabIndex: 0, className: `${styles$1.flipCard} ${revealed ? styles$1.flipped : ""}`, onClick: () => result === null && setRevealed(v => !v), onKeyDown: e => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
                                     e.preventDefault();
                                     if (result === null)
                                         setRevealed(v => !v);
                                 } }, "aria-label": revealed ? "Show question" : "Reveal answer" },
                                 React.createElement("div", { className: styles$1.flipInner },
-                                    React.createElement("div", { className: styles$1.flipFront, "aria-hidden": revealed },
-                                        React.createElement("span", null, "QUESTION"),
-                                        current.image && React.createElement("div", { className: "flashcard-media flashcard-question-picture" },
-                                            React.createElement(ZoomableImage, { className: "flashcard-question-zoom", imgClassName: "flashcard-question-media", src: current.image, alt: current.imageAlt || "Question picture", label: "Enlarge question image", tapImage: false })),
-                                        React.createElement("strong", null, current.prompt || "What does the picture show?"),
-                                        current.audio && React.createElement("div", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
-                                            React.createElement(SoundPlayer, { edit: current.audioEdit, src: current.audio, variant: "icon", label: "Play question sound" }))),
-                                    React.createElement("div", { className: styles$1.flipBack, "aria-hidden": !revealed },
-                                        React.createElement("span", null, "ANSWER"),
-                                        React.createElement("div", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
-                                            current.answerImage && React.createElement(ZoomableImage, { className: "flashcard-answer-zoom", imgClassName: "flashcard-answer-media", src: current.answerImage, alt: "Answer illustration", label: "Enlarge answer image", tapImage: false }),
-                                            current.answerVideo && React.createElement(VideoPlayer, { edit: current.answerVideoEdit, src: current.answerVideo, className: "is-compact quiz-video", label: "Play answer video" })),
-                                        React.createElement("strong", null, current.answer),
-                                        current.answerAudio && React.createElement("div", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
-                                            React.createElement(SoundPlayer, { edit: current.answerAudioEdit, src: current.answerAudio, variant: "icon", label: "Play answer sound" })),
-                                        React.createElement("small", null, "Tap to see question"))))) : (() => {
+                                    React.createElement("div", { className: `${styles$1.flipFront} fc-face`, "data-media": current.image || current.video || current.audio ? "" : undefined, "aria-hidden": revealed },
+                                        React.createElement(FlashcardFace, { key: `${current.id}-q`, side: "question", text: current.prompt || "What does the picture show?", speech: !revealed && React.createElement(SpeechButton, { questionId: current.id, role: "question", text: current.prompt, label: "Read flashcard question" }), hint: "Tap card to flip", image: current.image, imageAlt: current.imageAlt, audio: current.audio, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit })),
+                                    React.createElement("div", { className: `${styles$1.flipBack} fc-face`, "data-media": current.answerImage || current.answerVideo || current.answerAudio ? "" : undefined, "aria-hidden": !revealed },
+                                        React.createElement(FlashcardFace, { key: `${current.id}-a`, side: "answer", text: current.answer, speech: revealed && React.createElement(SpeechButton, { questionId: current.id, role: "answer", text: current.answer, label: "Read flashcard answer" }), hint: "Tap to see question", image: current.answerImage, audio: current.answerAudio, audioEdit: current.answerAudioEdit, video: current.answerVideo, videoEdit: current.answerVideoEdit }))))) : (() => {
                             const heading = React.createElement("h1", null, current?.type === "fill_blank_options" ? "Choose the missing words." : current?.type === "fill_blank" ? (isMultiBlank(current) ? "Fill in the missing words." : "Fill in the missing word.") : current?.type === "cloze" ? "Fill in the missing words." : current?.prompt || (current?.type === "image_tap" ? "Tap the right place on the picture." : soundOnly ? "What do you hear?" : "Look at the picture."));
                             const speech = current && React.createElement(SpeechButton, { questionId: current.id, text: current.prompt, spokenText: current.type === "fill_blank" ? current.prompt.replace(/_{2,}/g, "blank") : undefined });
                             return soundOnly ? React.createElement(SoundPlayer, { key: current.id, src: current.audio, edit: current.audioEdit, variant: "now", label: "Play question sound", className: "quiz-now-sound", title: heading, extra: current.prompt ? speech : null }) : React.createElement("div", { className: "question-with-speech" },
