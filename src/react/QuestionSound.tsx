@@ -58,16 +58,17 @@ function useLiveLevels(levels:(bars:number)=>number[]|null,bars:number,on:boolea
 }
 
 /* ───────── player ───────── */
-export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media'|'card'|'pulse'|'icon';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number}){
+export function SoundPlayer({src,label='Play sound',className='',variant='default',edit,displayName,fileTitle,durationHint,title,extra}:{src:string;label?:string;className?:string;variant?:'default'|'overlay'|'media'|'card'|'pulse'|'icon'|'now';edit?:MediaEdit;displayName?:string;fileTitle?:string;durationHint?:number;title?:React.ReactNode;extra?:React.ReactNode}){
  const audio=useRef<HTMLAudioElement>(null),wave=useRef<HTMLDivElement>(null),bar=useRef<HTMLDivElement>(null);
  const [drag,setDrag]=useState<number|null>(null),dragging=useRef(false);
- const pb=useClipPlayback(audio,src,edit,{durationHint,analyser:variant==='overlay'});
+ const livePlayer=variant==='overlay'||variant==='now';
+ const pb=useClipPlayback(audio,src,edit,{durationHint,analyser:livePlayer});
  const {duration,at,playing,failed}=pb;
  const known=duration>0,clip=normalizeEdit(edit,duration),selLen=known?clip.trimEnd-clip.trimStart:0;
  const played=known?clamp((at-clip.trimStart)/Math.max(0.1,selLen),0,1):0;
- const bars=variant==='media'?48:variant==='overlay'?30:36;
+ const bars=variant==='media'?48:variant==='overlay'?30:variant==='now'?5:36;
  const peaks=useWaveform(src,bars,known?clip.trimStart:0,known?clip.trimEnd:0);
- const live=useLiveLevels(pb.levels,bars,playing&&variant==='overlay');
+ const live=useLiveLevels(pb.levels,bars,playing&&livePlayer);
  const heights=live??peaks;
  const name=displayName||soundDisplayName(src),tip=fileTitle||name;
  if(isDriveLink(src))return <DriveShareLegacyNotice kind="sound"/>;
@@ -79,12 +80,32 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
   <span className="sp-icon-waves is-right" aria-hidden="true"><i/><i/><i/></span>
   <audio key={src} ref={audio} src={playbackSrc(src)} preload="metadata" onError={()=>{}}/>
  </div>;
- if(variant==='pulse'){
+ if(variant==='pulse'||variant==='now'){
   const ratio=(x:number)=>{const r=bar.current?.getBoundingClientRect();return r&&r.width?clamp((x-r.left)/r.width,0,1):0;};
   const shown=drag??played,secs=(v:number)=>fmtTime(Math.round(v));
   const nowAt=known?secs((drag!==null?drag*selLen:Math.max(0,at-clip.trimStart))):'0:00',len=known?secs(selLen):'–:––';
   const end=(e:React.PointerEvent)=>{if(!dragging.current)return;dragging.current=false;pb.seek(clip.trimStart+ratio(e.clientX)*selLen);setDrag(null);};
   const replay=()=>{pb.seek(clip.trimStart);if(!playing)pb.play();};
+  const seekBar=(cls:string)=><div ref={bar} className={cls} role="slider" aria-label="Seek" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(shown*100)} tabIndex={known?0:-1} data-dragging={drag!==null||undefined}
+     onPointerDown={e=>{if(!known)return;e.preventDefault();try{e.currentTarget.setPointerCapture(e.pointerId);}catch{}dragging.current=true;setDrag(ratio(e.clientX));}}
+     onPointerMove={e=>{if(dragging.current)setDrag(ratio(e.clientX));}} onPointerUp={end} onPointerCancel={()=>{dragging.current=false;setDrag(null);}}
+     onKeyDown={e=>{if(e.key==='ArrowLeft'){e.preventDefault();pb.seek(at-1);}else if(e.key==='ArrowRight'){e.preventDefault();pb.seek(at+1);}else if(e.key===' '){e.preventDefault();pb.toggle();}}}>
+     <i style={{width:`${shown*100}%`}}/><b style={{left:`${shown*100}%`}}/>
+    </div>;
+  if(variant==='now')return <div className={`sp sp-now ${className}`.trim()} data-playing={playing||undefined} data-failed={failed||undefined} data-live={live?true:undefined}>
+   <div className="sp-now-head">
+    <button type="button" className="sp-now-tile" aria-label={failed?'This sound could not play':playing?'Pause sound':label} onClick={pb.toggle}>{Array.from({length:5},(_,i)=><i key={i} style={live?{height:`${Math.round(18+(live[i]||0)*82)}%`}:undefined}/>)}</button>
+    <div className="sp-now-copy"><span className="sp-now-label">{failed?'Sound could not play':playing?'Playing':'Listen first'}</span>{title}</div>
+   </div>
+   <div className="sp-now-controls">
+    <button type="button" className="sp-now-play" aria-label={playing?'Pause sound':label} onClick={pb.toggle}>{playing?<Pause size={18} fill="currentColor"/>:<Play size={18} fill="currentColor"/>}</button>
+    {seekBar('sp-now-bar sp-pulse-bar')}
+    <span className="sp-now-time">{nowAt} / {len}</span>
+    <button type="button" className="sp-now-replay" aria-label="Replay from the start" disabled={!known} onClick={replay}><RotateCcw size={15}/></button>
+    {extra}
+   </div>
+   <audio key={src} ref={audio} src={playbackSrc(src)} preload="metadata" onError={()=>{}}/>
+  </div>;
   return <div className={`sp sp-pulse ${className}`.trim()} data-playing={playing||undefined} data-failed={failed||undefined}>
    <div className="sp-pulse-orb">
     <span className="sp-pulse-ring" aria-hidden="true"/><span className="sp-pulse-ring" aria-hidden="true"/><span className="sp-pulse-ring" aria-hidden="true"/>
@@ -92,12 +113,7 @@ export function SoundPlayer({src,label='Play sound',className='',variant='defaul
    </div>
    <div className="sp-pulse-body">
     <div className="sp-pulse-top"><span className="sp-pulse-title">{failed?'This sound could not play':'Listen carefully'}</span></div>
-    <div ref={bar} className="sp-pulse-bar" role="slider" aria-label="Seek" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(shown*100)} tabIndex={known?0:-1} data-dragging={drag!==null||undefined}
-     onPointerDown={e=>{if(!known)return;e.preventDefault();try{e.currentTarget.setPointerCapture(e.pointerId);}catch{}dragging.current=true;setDrag(ratio(e.clientX));}}
-     onPointerMove={e=>{if(dragging.current)setDrag(ratio(e.clientX));}} onPointerUp={end} onPointerCancel={()=>{dragging.current=false;setDrag(null);}}
-     onKeyDown={e=>{if(e.key==='ArrowLeft'){e.preventDefault();pb.seek(at-1);}else if(e.key==='ArrowRight'){e.preventDefault();pb.seek(at+1);}else if(e.key===' '){e.preventDefault();pb.toggle();}}}>
-     <i style={{width:`${shown*100}%`}}/><b style={{left:`${shown*100}%`}}/>
-    </div>
+    {seekBar('sp-pulse-bar')}
     <div className="sp-pulse-actions"><button type="button" className="sp-pulse-replay" disabled={!known} onClick={replay}><RotateCcw size={13}/>Replay</button><span className="sp-pulse-time">{nowAt} / {len}</span></div>
    </div>
    <audio key={src} ref={audio} src={playbackSrc(src)} preload="metadata" onError={()=>{}}/>

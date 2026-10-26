@@ -31497,16 +31497,17 @@ function useLiveLevels(levels, bars, on) {
     return lv;
 }
 /* ───────── player ───────── */
-function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'default', edit, displayName, fileTitle, durationHint }) {
+function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'default', edit, displayName, fileTitle, durationHint, title, extra }) {
     const audio = reactExports.useRef(null), wave = reactExports.useRef(null), bar = reactExports.useRef(null);
     const [drag, setDrag] = reactExports.useState(null), dragging = reactExports.useRef(false);
-    const pb = useClipPlayback(audio, src, edit, { durationHint, analyser: variant === 'overlay' });
+    const livePlayer = variant === 'overlay' || variant === 'now';
+    const pb = useClipPlayback(audio, src, edit, { durationHint, analyser: livePlayer });
     const { duration, at, playing, failed } = pb;
     const known = duration > 0, clip = normalizeEdit(edit, duration), selLen = known ? clip.trimEnd - clip.trimStart : 0;
     const played = known ? clamp$2((at - clip.trimStart) / Math.max(0.1, selLen), 0, 1) : 0;
-    const bars = variant === 'media' ? 48 : variant === 'overlay' ? 30 : 36;
+    const bars = variant === 'media' ? 48 : variant === 'overlay' ? 30 : variant === 'now' ? 5 : 36;
     const peaks = useWaveform(src, bars, known ? clip.trimStart : 0, known ? clip.trimEnd : 0);
-    const live = useLiveLevels(pb.levels, bars, playing && variant === 'overlay');
+    const live = useLiveLevels(pb.levels, bars, playing && livePlayer);
     const heights = live ?? peaks;
     const name = displayName || soundDisplayName(src), tip = fileTitle || name;
     if (isDriveLink(src))
@@ -31525,7 +31526,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
                 React.createElement("i", null),
                 React.createElement("i", null)),
             React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
-    if (variant === 'pulse') {
+    if (variant === 'pulse' || variant === 'now') {
         const ratio = (x) => { const r = bar.current?.getBoundingClientRect(); return r && r.width ? clamp$2((x - r.left) / r.width, 0, 1) : 0; };
         const shown = drag ?? played, secs = (v) => fmtTime(Math.round(v));
         const nowAt = known ? secs((drag !== null ? drag * selLen : Math.max(0, at - clip.trimStart))) : '0:00', len = known ? secs(selLen) : '–:––';
@@ -31533,6 +31534,43 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
             return; dragging.current = false; pb.seek(clip.trimStart + ratio(e.clientX) * selLen); setDrag(null); };
         const replay = () => { pb.seek(clip.trimStart); if (!playing)
             pb.play(); };
+        const seekBar = (cls) => React.createElement("div", { ref: bar, className: cls, role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(shown * 100), tabIndex: known ? 0 : -1, "data-dragging": drag !== null || undefined, onPointerDown: e => { if (!known)
+                return; e.preventDefault(); try {
+                e.currentTarget.setPointerCapture(e.pointerId);
+            }
+            catch { } dragging.current = true; setDrag(ratio(e.clientX)); }, onPointerMove: e => { if (dragging.current)
+                setDrag(ratio(e.clientX)); }, onPointerUp: end, onPointerCancel: () => { dragging.current = false; setDrag(null); }, onKeyDown: e => { if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                pb.seek(at - 1);
+            }
+            else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                pb.seek(at + 1);
+            }
+            else if (e.key === ' ') {
+                e.preventDefault();
+                pb.toggle();
+            } } },
+            React.createElement("i", { style: { width: `${shown * 100}%` } }),
+            React.createElement("b", { style: { left: `${shown * 100}%` } }));
+        if (variant === 'now')
+            return React.createElement("div", { className: `sp sp-now ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined, "data-live": live ? true : undefined },
+                React.createElement("div", { className: "sp-now-head" },
+                    React.createElement("button", { type: "button", className: "sp-now-tile", "aria-label": failed ? 'This sound could not play' : playing ? 'Pause sound' : label, onClick: pb.toggle }, Array.from({ length: 5 }, (_, i) => React.createElement("i", { key: i, style: live ? { height: `${Math.round(18 + (live[i] || 0) * 82)}%` } : undefined }))),
+                    React.createElement("div", { className: "sp-now-copy" },
+                        React.createElement("span", { className: "sp-now-label" }, failed ? 'Sound could not play' : playing ? 'Playing' : 'Listen first'),
+                        title)),
+                React.createElement("div", { className: "sp-now-controls" },
+                    React.createElement("button", { type: "button", className: "sp-now-play", "aria-label": playing ? 'Pause sound' : label, onClick: pb.toggle }, playing ? React.createElement(Pause, { size: 18, fill: "currentColor" }) : React.createElement(Play, { size: 18, fill: "currentColor" })),
+                    seekBar('sp-now-bar sp-pulse-bar'),
+                    React.createElement("span", { className: "sp-now-time" },
+                        nowAt,
+                        " / ",
+                        len),
+                    React.createElement("button", { type: "button", className: "sp-now-replay", "aria-label": "Replay from the start", disabled: !known, onClick: replay },
+                        React.createElement(RotateCcw, { size: 15 })),
+                    extra),
+                React.createElement("audio", { key: src, ref: audio, src: playbackSrc(src), preload: "metadata", onError: () => { } }));
         return React.createElement("div", { className: `sp sp-pulse ${className}`.trim(), "data-playing": playing || undefined, "data-failed": failed || undefined },
             React.createElement("div", { className: "sp-pulse-orb" },
                 React.createElement("span", { className: "sp-pulse-ring", "aria-hidden": "true" }),
@@ -31542,25 +31580,7 @@ function SoundPlayer({ src, label = 'Play sound', className = '', variant = 'def
             React.createElement("div", { className: "sp-pulse-body" },
                 React.createElement("div", { className: "sp-pulse-top" },
                     React.createElement("span", { className: "sp-pulse-title" }, failed ? 'This sound could not play' : 'Listen carefully')),
-                React.createElement("div", { ref: bar, className: "sp-pulse-bar", role: "slider", "aria-label": "Seek", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(shown * 100), tabIndex: known ? 0 : -1, "data-dragging": drag !== null || undefined, onPointerDown: e => { if (!known)
-                        return; e.preventDefault(); try {
-                        e.currentTarget.setPointerCapture(e.pointerId);
-                    }
-                    catch { } dragging.current = true; setDrag(ratio(e.clientX)); }, onPointerMove: e => { if (dragging.current)
-                        setDrag(ratio(e.clientX)); }, onPointerUp: end, onPointerCancel: () => { dragging.current = false; setDrag(null); }, onKeyDown: e => { if (e.key === 'ArrowLeft') {
-                        e.preventDefault();
-                        pb.seek(at - 1);
-                    }
-                    else if (e.key === 'ArrowRight') {
-                        e.preventDefault();
-                        pb.seek(at + 1);
-                    }
-                    else if (e.key === ' ') {
-                        e.preventDefault();
-                        pb.toggle();
-                    } } },
-                    React.createElement("i", { style: { width: `${shown * 100}%` } }),
-                    React.createElement("b", { style: { left: `${shown * 100}%` } })),
+                seekBar('sp-pulse-bar'),
                 React.createElement("div", { className: "sp-pulse-actions" },
                     React.createElement("button", { type: "button", className: "sp-pulse-replay", disabled: !known, onClick: replay },
                         React.createElement(RotateCcw, { size: 13 }),
@@ -35077,6 +35097,7 @@ function IndexPage() {
                     message && React.createElement("p", { className: styles$1.note }, message)));
         }
         const choiceQuestion = current?.type === "single_choice" || current?.type === "true_false";
+        const soundOnly = !!current && !!current.audio && !current.video && !current.image && !["flashcard", "fill_blank_options", "image_tap"].includes(current.type || "");
         const extraTitles = { list_recall: "Name them", categorize: "Sort into groups", highlight: "Tap the words", image_tap: "Tap the picture", slider: "Your estimate" };
         const answerTitle = extraTitles[current?.type || ""] ? extraTitles[current.type] : current?.type === "fill_blank_options" ? "Choose from the word bank" : current?.type === "matching" ? "Match the pairs" : current?.type === "ordering" ? "Arrange in order" : current?.type === "cloze" ? "Complete the blanks" : current?.type === "flashcard" ? "How did you do?" : current?.type === "multi_select" ? "Choose your answers" : current?.type === "true_false" ? (revealed ? "Your answer" : "True or false?") : choiceQuestion ? "Choose an answer" : "Your answer";
         return React.createElement("main", { className: `${styles$1.reviewPage} quiz-screen split-quiz` },
@@ -35106,7 +35127,7 @@ function IndexPage() {
                                     " ",
                                     current.topic)),
                             React.createElement("span", { className: "split-type-badge" }, typeLabel(current?.type))),
-                        current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" && current.type !== "flashcard" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.type !== "flashcard" ? current.audio : undefined, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit, soundBar: current.type === "fill_blank_options" || current.type === "image_tap" }),
+                        current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" && current.type !== "flashcard" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.type !== "flashcard" && !soundOnly ? current.audio : undefined, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit, soundBar: current.type === "fill_blank_options" || current.type === "image_tap" }),
                         current?.type === "flashcard" ? React.createElement("div", { className: "flashcard-stage" },
                             React.createElement("div", { className: "flashcard-speech" },
                                 React.createElement(SpeechButton, { questionId: current.id, role: revealed ? "answer" : "question", text: revealed ? current.answer : current.prompt, label: revealed ? "Read flashcard answer" : "Read flashcard question" })),
@@ -35131,9 +35152,13 @@ function IndexPage() {
                                         React.createElement("strong", null, current.answer),
                                         current.answerAudio && React.createElement("div", { className: "flashcard-media", onClick: e => e.stopPropagation(), onKeyDown: e => e.stopPropagation() },
                                             React.createElement(SoundPlayer, { edit: current.answerAudioEdit, src: current.answerAudio, variant: "icon", label: "Play answer sound" })),
-                                        React.createElement("small", null, "Tap to see question"))))) : React.createElement("div", { className: "question-with-speech" },
-                            React.createElement("h1", null, current?.type === "fill_blank_options" ? "Choose the missing words." : current?.type === "fill_blank" ? (isMultiBlank(current) ? "Fill in the missing words." : "Fill in the missing word.") : current?.type === "cloze" ? "Fill in the missing words." : current?.prompt || (current?.type === "image_tap" ? "Tap the right place on the picture." : "Look at the picture.")),
-                            current && React.createElement(SpeechButton, { questionId: current.id, text: current.prompt, spokenText: current.type === "fill_blank" ? current.prompt.replace(/_{2,}/g, "blank") : undefined }))),
+                                        React.createElement("small", null, "Tap to see question"))))) : (() => {
+                            const heading = React.createElement("h1", null, current?.type === "fill_blank_options" ? "Choose the missing words." : current?.type === "fill_blank" ? (isMultiBlank(current) ? "Fill in the missing words." : "Fill in the missing word.") : current?.type === "cloze" ? "Fill in the missing words." : current?.prompt || (current?.type === "image_tap" ? "Tap the right place on the picture." : soundOnly ? "What do you hear?" : "Look at the picture."));
+                            const speech = current && React.createElement(SpeechButton, { questionId: current.id, text: current.prompt, spokenText: current.type === "fill_blank" ? current.prompt.replace(/_{2,}/g, "blank") : undefined });
+                            return soundOnly ? React.createElement(SoundPlayer, { key: current.id, src: current.audio, edit: current.audioEdit, variant: "now", label: "Play question sound", className: "quiz-now-sound", title: heading, extra: current.prompt ? speech : null }) : React.createElement("div", { className: "question-with-speech" },
+                                heading,
+                                speech);
+                        })()),
                     React.createElement("section", { className: "quiz-answer-card", "aria-label": "Answer area", "data-type": current?.type },
                         React.createElement("h2", { className: current?.type === "true_false" ? "visually-hidden" : undefined }, answerTitle),
                         extraTypes.includes(current?.type || "") ? React.createElement(ExtraAnswer, { key: `${current.id}-${idx}`, item: current, disabled: revealed, onGrade: (value) => grade(undefined, value) }) : current?.type === "fill_blank_options" ? React.createElement(WordBankAnswer, { key: current.id, item: current, value: selected, onChange: setSelected, disabled: revealed, onGrade: values => { setSelected(values); grade(undefined, values); } }) : ["fill_blank", "cloze"].includes(current?.type || "") ? React.createElement(InlineBlankAnswer, { key: current.id, item: current, value: isMultiBlank(current) ? selected : answer, onChange: isMultiBlank(current) ? setSelected : setAnswer, disabled: revealed, onGrade: values => { if (Array.isArray(values))
