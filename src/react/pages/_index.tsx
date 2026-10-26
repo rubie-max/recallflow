@@ -12,6 +12,7 @@ import {HomeInsights} from "../HomeInsights";
 import {MistakesPanel,ActivityPanel,QuizReviewPage} from "../ReportExtras";
 import {appPreferences, applyAppPreferences} from "../../app-preferences.js";
 import {removeWithPositions,restoreRemoved} from "../../undo-delete.js";
+import {dropPickedFromSetups} from "../../quiz-setups.js";
 import {saveReminderState,reminderSupport,msUntilNextReminder,reminderDue,lastReminderShown,showReminder,markReminderShown} from "../../reminders.js";
 import {playFeedback} from "../../feedback-sounds.js";
 import {resolveVariant, variantAt, retakeVariant, seededShuffle, itemTypes, draftFromSpec, specFromDraft, isPictureLabel} from "../../question-variants.js";
@@ -184,7 +185,8 @@ export default function IndexPage(){
   },[]);
   const due=useMemo(()=>items.filter(x=>!x.due||x.due<=today()),[items]);
   const [undoLabel,setUndoLabel]=useState(""),pendingDelete=useRef<{removed:{item:Item;index:number}[];timer:number}|null>(null);
-  function finishPendingDelete(){const p=pendingDelete.current;if(!p)return;window.clearTimeout(p.timer);pendingDelete.current=null;p.removed.forEach(r=>void kokoroVoice.deleteQuestion(r.item.id));setUndoLabel("");}
+  function forgetInSetups(ids:string[]){try{dropPickedFromSetups(ids);}catch{}}
+  function finishPendingDelete(){const p=pendingDelete.current;if(!p)return;window.clearTimeout(p.timer);pendingDelete.current=null;p.removed.forEach(r=>void kokoroVoice.deleteQuestion(r.item.id));forgetInSetups(p.removed.map(r=>r.item.id));setUndoLabel("");}
   function undoDelete(){const p=pendingDelete.current;if(!p)return;window.clearTimeout(p.timer);pendingDelete.current=null;setItems(xs=>restoreRemoved(xs,p.removed));setUndoLabel("");setMessage(`${p.removed.length===1?"Question":`${p.removed.length} questions`} restored.`);}
   useEffect(()=>{window.addEventListener("pagehide",finishPendingDelete);return()=>window.removeEventListener("pagehide",finishPendingDelete);},[]);
   const [reminderTick,setReminderTick]=useState(0);
@@ -383,7 +385,7 @@ export default function IndexPage(){
     }catch(error:any){setSaveStatus(error.message||"Could not save. Please try again.");}finally{setSavingQuestion(false);}
   }
 
-  function removeForever(ids:string[]){const remove=new Set(ids);setItems(xs=>xs.filter(x=>!remove.has(x.id)));ids.forEach(id=>void kokoroVoice.deleteQuestion(id));}
+  function removeForever(ids:string[]){const remove=new Set(ids);setItems(xs=>xs.filter(x=>!remove.has(x.id)));ids.forEach(id=>void kokoroVoice.deleteQuestion(id));forgetInSetups(ids);}
   function deleteQuestion(id:string){deleteQuestions([id]);}
   function deleteQuestions(ids:string[]){
     const {kept,removed}=removeWithPositions(items,ids);if(!removed.length)return;
@@ -456,7 +458,7 @@ export default function IndexPage(){
   if(showAdd)return <main className={`${styles.reviewPage} question-editor-page`}><section className="question-editor-shell"><div className="editor-navigation-brand"><Brand/></div><button className="quiz-options-back" disabled={savingQuestion} onClick={()=>requestLeave(closeEditor)}>← Question bank</button><header><p className={styles.eyebrow}>{editingId?"EDIT QUESTION":"NEW QUESTION"}</p><h1>{editingId?"Edit question":"Create a question"}</h1><p>{editingId?"Refine what you learn, one question at a time.":"Turn something worth remembering into practice."}</p></header><QuestionEditor draft={draft} setDraft={setDraft} onSave={saveQuestion} onCancel={()=>requestLeave(closeEditor)} busy={savingQuestion} status={saveStatus} saved={savedQuestion} editing={!!editingId} prepareAudio={prepareAudio} setPrepareAudio={setPrepareAudio} onAnother={()=>openAdd()}/></section>{pendingLeave&&<DiscardChangesDialog onKeep={()=>setPendingLeave(null)} onDiscard={()=>{const action=pendingLeave.action;setPendingLeave(null);action();}}/>}</main>;
 
   if(caughtUp&&!showQuizBuilder)return <main className="quiz-countdown-page quiz-caught-up-page"><header><span className="caught-up-brand"><Brand size={24}/></span><button onClick={exitQuiz}>← Back home</button></header><section><span className="caught-up-mark"><CheckCircle2 size={29}/></span><p className="caught-up-kicker">DAILY PRACTICE</p><h1>You’re caught up</h1><p>No questions are due today. Keep learning with a practice round from your full question bank.</p><Button onClick={()=>beginReview(prepareQuiz(items,{...quizDefaults,count:0,shuffle:quizDefaults.shuffle}),"all")}>Practice all questions <ArrowRight size={17}/></Button><button className="caught-up-advanced" onClick={()=>setShowQuizBuilder(true)}>Customize practice</button><small>{items.length} {items.length===1?'question':'questions'} in your library</small></section><footer>Nice work keeping your reviews current.</footer></main>;
-  if(showQuizBuilder)return <main className={`${styles.reviewPage} quiz-options-page`}><div className="quiz-options-shell"><div className="editor-navigation-brand"><Brand/></div><button className="quiz-options-back" onClick={()=>setShowQuizBuilder(false)}>← Back</button><h1>Advanced quiz settings</h1><p>Choose what to practice, then start your quiz.</p>{message&&<p role="status">{message}</p>}<QuizBuilder items={items} reports={reportHistory} defaults={quizDefaults} onClose={()=>setShowQuizBuilder(false)} onStart={(q:Item[],kind:any,types:string[])=>beginReview(q,kind,undefined,types)}/></div></main>;
+  if(showQuizBuilder)return <main className={`${styles.reviewPage} quiz-options-page`}><div className="quiz-options-shell"><header className="app-top-bar"><div><Brand size={28}/></div><div className={styles.headerRight}><Button variant="ghost" size="icon-md" className={styles.homeTheme} aria-label="Change theme" onClick={toggleTheme}>{isDark?<Moon size={14}/>:<Sun size={14}/>}</Button></div></header><button className="quiz-options-back" onClick={()=>setShowQuizBuilder(false)}>← Back</button><h1>Advanced quiz</h1><p>Build exactly the quiz you want.</p>{message&&<p role="status">{message}</p>}<QuizBuilder items={items} reports={reportHistory} defaults={quizDefaults} keepIds={undoLabel?(pendingDelete.current?.removed.map(r=>r.item.id)||[]):[]} onStart={(q:Item[],kind:any,types:string[])=>beginReview(q,kind,undefined,types)}/></div></main>;
   if(review&&countdown!==null)return <main className="quiz-countdown-page quiz-countdown-focus"><header><span className="countdown-brand"><Brand size={24}/></span><button onClick={exitQuiz} aria-label="Cancel quiz">Cancel</button></header><section><h1>{prefs.name?`Get ready, ${prefs.name}`:"Get ready"}</h1><strong key={countdown} role="status" aria-label={`Starting in ${countdown}`}>{countdown}</strong><p className="countdown-motto">Breathe. Recall. Go.</p><p className="countdown-total">{review.length} {review.length===1?'question':'questions'}</p></section></main>;
   if(review){
     if(idx>=review.length){

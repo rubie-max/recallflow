@@ -1,4 +1,4 @@
-import {validateSetups,setupKey} from './quiz-setups.js';
+import {validateSetups,setupKey,normalizeControls} from './quiz-setups.js';
 import {itemTypes} from './question-variants.js';
 import {appPreferencesKey,validateAppPreferences} from './app-preferences.js';
 import {localDay} from './streak-stats.js';
@@ -20,7 +20,29 @@ export function openMistakes(reports,cleared=2){
   return [...open.values()].reverse().map(x=>x.result);
 }
 export function weakIds(reports){const stats=new Map();for(const r of reports)for(const q of r.questions||[]){const s=stats.get(q.knowledge_id)||{total:0,wrong:0};s.total++;s.wrong+=!q.correct?1:0;stats.set(q.knowledge_id,s);}return new Set([...stats].filter(([,s])=>s.wrong&&s.wrong/s.total>=.3).map(([id])=>id));}
-export function filterQuiz(bank,reports,controls,date=localDay()){const weak=weakIds(reports);const mistakes=new Set(openMistakes(reports).map(q=>q.knowledge_id));let q=bank.filter(x=>(!controls.subject||x.subject===controls.subject)&&(!controls.topic||x.topic===controls.topic)&&(!controls.types.length||itemTypes(x).some(t=>controls.types.includes(t)))&&(controls.focus==='all'||(controls.focus==='weak'?weak:mistakes).has(x.id))&&(controls.mode==='all'||!x.due||x.due<=date));if(controls.mode!=='all')q.sort((a,b)=>(a.due||'').localeCompare(b.due||''));if(controls.shuffle){q=[...q];for(let i=q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[q[i],q[j]]=[q[j],q[i]];}}return q.slice(0,controls.count||q.length);}
+export function itemMedia(x){const m=new Set(),opt=Object.values(x.optionMedia||{});if(x.image||x.answerImage||Object.keys(x.optionImages||{}).length)m.add('picture');if(x.audio||x.answerAudio||opt.some(o=>o?.audio))m.add('sound');if(x.video||x.answerVideo||opt.some(o=>o?.video))m.add('video');return m;}
+export function answeredIds(reports){const ids=new Set();for(const r of reports)for(const q of r.questions||[])ids.add(q.knowledge_id);return ids;}
+// Within one filter any choice matches; across filters every one must match. New, Weak and
+// Mistakes add together, and "due" then keeps only those due by the given day.
+export function quizMatcher(reports,controls,date=localDay()){
+  const c=normalizeControls({...controls,count:controls.count||0}),answered=answeredIds(reports);
+  const sets={weak:c.groups.includes('weak')?weakIds(reports):null,mistakes:c.groups.includes('mistakes')?new Set(openMistakes(reports).map(q=>q.knowledge_id)):null};
+  const inGroup=x=>c.groups.some(g=>g==='new'?!x.attempts&&!answered.has(x.id):sets[g].has(x.id));
+  return {c,match:x=>(!c.subjects.length||c.subjects.includes(x.subject))&&(!c.topics.length||c.topics.includes(x.topic))&&(!c.tags.length||(x.tags||[]).some(t=>c.tags.includes(t)))&&(!c.types.length||itemTypes(x).some(t=>c.types.includes(t)))&&(!c.media.length||c.media.some(m=>itemMedia(x).has(m)))&&(!c.groups.length||inGroup(x))&&(c.mode==='all'||!x.due||x.due<=date)};
+}
+function ordered(q,order,random){q=[...q];if(order==='due')q.sort((a,b)=>(a.due||'').localeCompare(b.due||''));if(order==='shuffle')for(let i=q.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[q[i],q[j]]=[q[j],q[i]];}return q;}
+// Picked questions are always included ("add") or are the whole quiz ("only"), whatever the filters.
+export function filterQuiz(bank,reports,controls,date=localDay(),random=Math.random){
+  const {c,match}=quizMatcher(reports,controls,date),picked=new Set(c.picked);
+  const chosen=bank.filter(x=>picked.has(x.id));
+  if(c.pickedMode==='only'&&chosen.length)return ordered(chosen,c.order,random).slice(0,c.count||chosen.length);
+  const rest=ordered(bank.filter(x=>!picked.has(x.id)&&match(x)),c.order,random);
+  const q=[...ordered(chosen,c.order,random),...rest].slice(0,c.count||chosen.length+rest.length);
+  return c.order==='shuffle'&&chosen.length?ordered(q,'shuffle',random):q;
+}
+// Typical seconds per answer from past quizzes (median), or 30 seconds with no history.
+export function secondsPerQuestion(reports){const t=reports.flatMap(r=>(r.questions||[]).map(q=>Number(q.response_time_seconds))).filter(s=>Number.isFinite(s)&&s>0).sort((a,b)=>a-b);if(!t.length)return 30;const mid=t.length>>1,m=t.length%2?t[mid]:(t[mid-1]+t[mid])/2;return Math.min(300,Math.max(5,m));}
+export function quizMinutes(count,reports){return Math.max(1,Math.round(count*secondsPerQuestion(reports)/60));}
 export function duplicateIds(bank){const groups=new Map();for(const x of bank){const key=(x.prompt?normalize(x.prompt):'image:'+String(x.image||'').slice(-80))+'|'+normalize(x.answer)+'|'+(x.type||'short_answer');groups.set(key,[...(groups.get(key)||[]),x.id]);}return new Set([...groups.values()].filter(a=>a.length>1).flat());}
 export function analytics(reports){const rows=reports.flatMap(r=>r.questions||[]),groups={subject:Object.create(null),topic:Object.create(null),type:Object.create(null)};for(const q of rows)for(const key of Object.keys(groups)){const name=q[key]||'General',s=groups[key][name]||{total:0,correct:0,seconds:0};s.total++;s.correct+=q.correct?1:0;s.seconds+=Number(q.response_time_seconds)||0;groups[key][name]=s;}const mistakes=Object.create(null);for(const q of rows.filter(q=>!q.correct))mistakes[q.knowledge_id]={prompt:q.prompt,count:(mistakes[q.knowledge_id]?.count||0)+1};return {groups,mistakes:Object.values(mistakes).sort((a,b)=>b.count-a.count),trend:[...reports].reverse().slice(-12),total:rows.length};}
 export function validateBackup(data,validate){if(data?.app!=='RecallFlow'||data.version!==1||!Array.isArray(data.questions)||!Array.isArray(data.reports)||!Array.isArray(data.streakDays)||!Number.isInteger(data.quizCount)||data.quizCount<0)throw new Error('Choose a complete RecallFlow version 1 backup.');const ids=new Set();const questions=data.questions.filter(q=>!String(q?.id).startsWith('example_')).map(q=>{if(typeof q.id!=='string'||!q.id||ids.has(q.id))throw new Error('Question IDs must be unique.');ids.add(q.id);return validate(q);});if(data.reports.some(r=>typeof r.id!=='string'||!Array.isArray(r.questions)||!Number.isFinite(r.accuracy)||r.questions.some(q=>typeof q.correct!=='boolean'||typeof q.prompt!=='string')))throw new Error('Invalid report data.');if(data.streakDays.some(d=>typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d)))throw new Error('Invalid streak dates.');const p=data.preferences;if(!p||!['light','dark','system'].includes(p.theme)||!['af_heart','af_bella','am_michael','am_fenrir','bf_emma'].includes(p.voice)||![.8,.9,1,1.1,1.2].includes(p.speed)||!p.quiz||!Number.isInteger(p.quiz.count)||p.quiz.count<0||p.quiz.count>1000||typeof p.quiz.shuffle!=='boolean')throw new Error('Invalid settings.');if(p.quizSetups!==undefined)validateSetups(p.quizSetups);return {...data,questions};}
