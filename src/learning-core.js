@@ -27,21 +27,24 @@ export function answeredIds(reports){const ids=new Set();for(const r of reports)
 export function quizMatcher(reports,controls,date=localDay()){
   const c=normalizeControls({...controls,count:controls.count||0}),answered=answeredIds(reports);
   const sets={weak:c.groups.includes('weak')?weakIds(reports):null,mistakes:c.groups.includes('mistakes')?new Set(openMistakes(reports).map(q=>q.knowledge_id)):null};
-  const inGroup=x=>c.groups.some(g=>g==='new'?!x.attempts&&!answered.has(x.id):sets[g].has(x.id));
-  return {c,match:x=>(!c.subjects.length||c.subjects.includes(x.subject))&&(!c.topics.length||c.topics.includes(x.topic))&&(!c.tags.length||(x.tags||[]).some(t=>c.tags.includes(t)))&&(!c.types.length||itemTypes(x).some(t=>c.types.includes(t)))&&(!c.media.length||c.media.some(m=>itemMedia(x).has(m)))&&(!c.groups.length||inGroup(x))&&(c.mode==='all'||!x.due||x.due<=date)};
+  const inGroup=x=>c.groups.some(g=>g==='new'?!x.attempts&&!answered.has(x.id):sets[g].has(x.id)),skipped=new Set(c.skipped);
+  return {c,match:x=>!skipped.has(x.id)&&(!c.subjects.length||c.subjects.includes(x.subject))&&(!c.topics.length||c.topics.includes(x.topic))&&(!c.tags.length||(x.tags||[]).some(t=>c.tags.includes(t)))&&(!c.types.length||itemTypes(x).some(t=>c.types.includes(t)))&&(!c.media.length||c.media.some(m=>itemMedia(x).has(m)))&&(!c.groups.length||inGroup(x))&&(c.mode==='all'||!x.due||x.due<=date)};
 }
 function ordered(q,order,random){q=[...q];if(order==='due')q.sort((a,b)=>(a.due||'').localeCompare(b.due||''));if(order==='shuffle')for(let i=q.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[q[i],q[j]]=[q[j],q[i]];}return q;}
 // Picked questions are always included ("add") or are the whole quiz ("only"), whatever the filters.
+// Skipped questions are never included, even when picked.
 export function filterQuiz(bank,reports,controls,date=localDay(),random=Math.random){
-  const {c,match}=quizMatcher(reports,controls,date),picked=new Set(c.picked);
-  const chosen=bank.filter(x=>picked.has(x.id));
-  if(c.pickedMode==='only'&&chosen.length)return ordered(chosen,c.order,random).slice(0,c.count||chosen.length);
+  const {c,match}=quizMatcher(reports,controls,date),picked=new Set(c.picked),skipped=new Set(c.skipped),limit=quizLimit(c,reports);
+  const chosen=bank.filter(x=>picked.has(x.id)&&!skipped.has(x.id));
+  if(c.pickedMode==='only'&&chosen.length)return ordered(chosen,c.order,random).slice(0,limit||chosen.length);
   const rest=ordered(bank.filter(x=>!picked.has(x.id)&&match(x)),c.order,random);
-  const q=[...ordered(chosen,c.order,random),...rest].slice(0,c.count||chosen.length+rest.length);
+  const q=[...ordered(chosen,c.order,random),...rest].slice(0,limit||chosen.length+rest.length);
   return c.order==='shuffle'&&chosen.length?ordered(q,'shuffle',random):q;
 }
 // Typical seconds per answer from past quizzes (median), or 30 seconds with no history.
 export function secondsPerQuestion(reports){const t=reports.flatMap(r=>(r.questions||[]).map(q=>Number(q.response_time_seconds))).filter(s=>Number.isFinite(s)&&s>0).sort((a,b)=>a-b);if(!t.length)return 30;const mid=t.length>>1,m=t.length%2?t[mid]:(t[mid-1]+t[mid])/2;return Math.min(300,Math.max(5,m));}
+// A time budget ("minutes") wins over the question count when both are set.
+export function quizLimit(c,reports){return c.minutes?Math.max(1,Math.floor(c.minutes*60/secondsPerQuestion(reports))):c.count;}
 export function quizMinutes(count,reports){return Math.max(1,Math.round(count*secondsPerQuestion(reports)/60));}
 export function duplicateIds(bank){const groups=new Map();for(const x of bank){const key=(x.prompt?normalize(x.prompt):'image:'+String(x.image||'').slice(-80))+'|'+normalize(x.answer)+'|'+(x.type||'short_answer');groups.set(key,[...(groups.get(key)||[]),x.id]);}return new Set([...groups.values()].filter(a=>a.length>1).flat());}
 export function analytics(reports){const rows=reports.flatMap(r=>r.questions||[]),groups={subject:Object.create(null),topic:Object.create(null),type:Object.create(null)};for(const q of rows)for(const key of Object.keys(groups)){const name=q[key]||'General',s=groups[key][name]||{total:0,correct:0,seconds:0};s.total++;s.correct+=q.correct?1:0;s.seconds+=Number(q.response_time_seconds)||0;groups[key][name]=s;}const mistakes=Object.create(null);for(const q of rows.filter(q=>!q.correct))mistakes[q.knowledge_id]={prompt:q.prompt,count:(mistakes[q.knowledge_id]?.count||0)+1};return {groups,mistakes:Object.values(mistakes).sort((a,b)=>b.count-a.count),trend:[...reports].reverse().slice(-12),total:rows.length};}

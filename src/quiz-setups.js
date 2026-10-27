@@ -14,6 +14,7 @@ export function normalizeControls(c){
  if(c.focus!==undefined&&!['all','weak','mistakes'].includes(c.focus))bad();
  if(c.shuffle!==undefined&&typeof c.shuffle!=='boolean')bad();
  if((c.subject!==undefined&&typeof c.subject!=='string')||(c.topic!==undefined&&typeof c.topic!=='string'))bad();
+ if(c.minutes!==undefined&&(!Number.isInteger(c.minutes)||c.minutes<0||c.minutes>180))bad();
  const groups=picks(c.groups??(c.focus&&c.focus!=='all'?[c.focus]:[]),QUIZ_GROUPS);
  const subjects=strings(c.subjects,c.subject?[c.subject]:[]),topics=strings(c.topics,c.topic?[c.topic]:[]);
  const order=c.order===undefined?(c.shuffle?'shuffle':c.mode==='all'?'bank':'due'):c.order;
@@ -22,7 +23,7 @@ export function normalizeControls(c){
  if(!['add','only'].includes(pickedMode))bad();
  const due=c.mode!=='all';
  return {mode:due?(c.mode==='due'?'due':'daily'):'all',count:c.count,subject:subjects[0]||'',topic:topics[0]||'',types:strings(c.types),shuffle:order==='shuffle',
-  focus:groups.length===1&&groups[0]!=='new'?groups[0]:'all',groups,subjects,topics,tags:strings(c.tags),media:picks(c.media,QUIZ_MEDIA),picked:strings(c.picked),pickedMode,order};
+  focus:groups.length===1&&groups[0]!=='new'?groups[0]:'all',groups,subjects,topics,tags:strings(c.tags),media:picks(c.media,QUIZ_MEDIA),picked:strings(c.picked),pickedMode,order,skipped:strings(c.skipped),minutes:c.minutes||0};
 }
 export function validateSetups(value){
  if(!Array.isArray(value)||value.length>100)throw new Error('Choose up to 100 saved setups.');
@@ -33,10 +34,15 @@ export function validateSetups(value){
 export function readSetups(){try{return validateSetups(JSON.parse(localStorage.getItem(setupKey)||'[]'));}catch{return [];}}
 export function writeSetups(value){const clean=validateSetups(value);localStorage.setItem(setupKey,JSON.stringify(clean));return clean;}
 export function setupNameError(setups,name,exceptId=''){const n=String(name||'').trim();if(!n)return 'Give it a name.';if(n.length>50)return 'Use 50 characters or fewer.';if(setups.some(p=>p.id!==exceptId&&p.name.toLocaleLowerCase()===n.toLocaleLowerCase()))return 'You already have a setup with this name.';return '';}
-// Removes picked questions that no longer exist. A setup limited to "only these" questions
-// falls back to its filters once none of its picks remain, instead of giving an empty quiz.
-export function dropPicked(setups,isGone){let changed=0;const next=setups.map(p=>{const picked=p.controls.picked.filter(id=>!isGone(id));if(picked.length===p.controls.picked.length)return p;changed++;return {...p,controls:{...p.controls,picked,pickedMode:picked.length?p.controls.pickedMode:'add'}};});return {setups:next,changed};}
+// Removes picked and skipped questions that no longer exist. A setup limited to "only these"
+// questions falls back to its filters once none of its picks remain, instead of giving an empty quiz.
+export function dropGone(controls,isGone){const picked=controls.picked.filter(id=>!isGone(id)),skipped=controls.skipped.filter(id=>!isGone(id));if(picked.length===controls.picked.length&&skipped.length===controls.skipped.length)return controls;return {...controls,picked,skipped,pickedMode:picked.length?controls.pickedMode:'add'};}
+export function dropPicked(setups,isGone){let changed=0;const next=setups.map(p=>{const controls=dropGone(p.controls,isGone);if(controls===p.controls)return p;changed++;return {...p,controls};});return {setups:next,changed};}
 export function dropPickedFromSetups(ids){if(!ids.length)return 0;const gone=new Set(ids),{setups,changed}=dropPicked(readSetups(),id=>gone.has(id));if(changed)writeSetups(setups);return changed;}
 // Cleans picks for questions deleted elsewhere (for example on another device). Skipped while
 // the bank is empty so a bank that has not loaded yet can never wipe every pick.
 export function prunePickedSetups(setups,bank,keep=[]){if(!bank.length)return {setups,changed:0};const ids=new Set([...bank.map(x=>x.id),...keep]);return dropPicked(setups,id=>!ids.has(id));}
+// The last quiz started from the builder, kept on this device only.
+export const lastKey='recallflow_quiz_last_v1';
+export function readLastQuiz(){try{const v=JSON.parse(localStorage.getItem(lastKey)||'null');return v?{controls:normalizeControls(v.controls),setupId:typeof v.setupId==='string'?v.setupId:''}:null;}catch{return null;}}
+export function writeLastQuiz(controls,setupId=''){try{localStorage.setItem(lastKey,JSON.stringify({controls:normalizeControls(controls),setupId}));return true;}catch{return false;}}

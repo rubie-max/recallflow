@@ -20352,6 +20352,7 @@ function normalizeControls(c){
  if(c.focus!==undefined&&!['all','weak','mistakes'].includes(c.focus))bad();
  if(c.shuffle!==undefined&&typeof c.shuffle!=='boolean')bad();
  if((c.subject!==undefined&&typeof c.subject!=='string')||(c.topic!==undefined&&typeof c.topic!=='string'))bad();
+ if(c.minutes!==undefined&&(!Number.isInteger(c.minutes)||c.minutes<0||c.minutes>180))bad();
  const groups=picks(c.groups??(c.focus&&c.focus!=='all'?[c.focus]:[]),QUIZ_GROUPS);
  const subjects=strings(c.subjects,c.subject?[c.subject]:[]),topics=strings(c.topics,c.topic?[c.topic]:[]);
  const order=c.order===undefined?(c.shuffle?'shuffle':c.mode==='all'?'bank':'due'):c.order;
@@ -20360,7 +20361,7 @@ function normalizeControls(c){
  if(!['add','only'].includes(pickedMode))bad();
  const due=c.mode!=='all';
  return {mode:due?(c.mode==='due'?'due':'daily'):'all',count:c.count,subject:subjects[0]||'',topic:topics[0]||'',types:strings(c.types),shuffle:order==='shuffle',
-  focus:groups.length===1&&groups[0]!=='new'?groups[0]:'all',groups,subjects,topics,tags:strings(c.tags),media:picks(c.media,QUIZ_MEDIA),picked:strings(c.picked),pickedMode,order};
+  focus:groups.length===1&&groups[0]!=='new'?groups[0]:'all',groups,subjects,topics,tags:strings(c.tags),media:picks(c.media,QUIZ_MEDIA),picked:strings(c.picked),pickedMode,order,skipped:strings(c.skipped),minutes:c.minutes||0};
 }
 function validateSetups(value){
  if(!Array.isArray(value)||value.length>100)throw new Error('Choose up to 100 saved setups.');
@@ -20371,13 +20372,18 @@ function validateSetups(value){
 function readSetups(){try{return validateSetups(JSON.parse(localStorage.getItem(setupKey)||'[]'));}catch{return [];}}
 function writeSetups(value){const clean=validateSetups(value);localStorage.setItem(setupKey,JSON.stringify(clean));return clean;}
 function setupNameError(setups,name,exceptId=''){const n=String(name||'').trim();if(!n)return 'Give it a name.';if(n.length>50)return 'Use 50 characters or fewer.';if(setups.some(p=>p.id!==exceptId&&p.name.toLocaleLowerCase()===n.toLocaleLowerCase()))return 'You already have a setup with this name.';return '';}
-// Removes picked questions that no longer exist. A setup limited to "only these" questions
-// falls back to its filters once none of its picks remain, instead of giving an empty quiz.
-function dropPicked(setups,isGone){let changed=0;const next=setups.map(p=>{const picked=p.controls.picked.filter(id=>!isGone(id));if(picked.length===p.controls.picked.length)return p;changed++;return {...p,controls:{...p.controls,picked,pickedMode:picked.length?p.controls.pickedMode:'add'}};});return {setups:next,changed};}
+// Removes picked and skipped questions that no longer exist. A setup limited to "only these"
+// questions falls back to its filters once none of its picks remain, instead of giving an empty quiz.
+function dropGone(controls,isGone){const picked=controls.picked.filter(id=>!isGone(id)),skipped=controls.skipped.filter(id=>!isGone(id));if(picked.length===controls.picked.length&&skipped.length===controls.skipped.length)return controls;return {...controls,picked,skipped,pickedMode:picked.length?controls.pickedMode:'add'};}
+function dropPicked(setups,isGone){let changed=0;const next=setups.map(p=>{const controls=dropGone(p.controls,isGone);if(controls===p.controls)return p;changed++;return {...p,controls};});return {setups:next,changed};}
 function dropPickedFromSetups(ids){if(!ids.length)return 0;const gone=new Set(ids),{setups,changed}=dropPicked(readSetups(),id=>gone.has(id));if(changed)writeSetups(setups);return changed;}
 // Cleans picks for questions deleted elsewhere (for example on another device). Skipped while
 // the bank is empty so a bank that has not loaded yet can never wipe every pick.
 function prunePickedSetups(setups,bank,keep=[]){if(!bank.length)return {setups,changed:0};const ids=new Set([...bank.map(x=>x.id),...keep]);return dropPicked(setups,id=>!ids.has(id));}
+// The last quiz started from the builder, kept on this device only.
+const lastKey='recallflow_quiz_last_v1';
+function readLastQuiz(){try{const v=JSON.parse(localStorage.getItem(lastKey)||'null');return v?{controls:normalizeControls(v.controls),setupId:typeof v.setupId==='string'?v.setupId:''}:null;}catch{return null;}}
+function writeLastQuiz(controls,setupId=''){try{localStorage.setItem(lastKey,JSON.stringify({controls:normalizeControls(controls),setupId}));return true;}catch{return false;}}
 
 const quizDefaults={count:0,shuffle:true};
 function validateQuizPreferences(value) {
@@ -21230,21 +21236,24 @@ function answeredIds(reports){const ids=new Set();for(const r of reports)for(con
 function quizMatcher(reports,controls,date=localDay()){
   const c=normalizeControls({...controls,count:controls.count||0}),answered=answeredIds(reports);
   const sets={weak:c.groups.includes('weak')?weakIds(reports):null,mistakes:c.groups.includes('mistakes')?new Set(openMistakes(reports).map(q=>q.knowledge_id)):null};
-  const inGroup=x=>c.groups.some(g=>g==='new'?!x.attempts&&!answered.has(x.id):sets[g].has(x.id));
-  return {c,match:x=>(!c.subjects.length||c.subjects.includes(x.subject))&&(!c.topics.length||c.topics.includes(x.topic))&&(!c.tags.length||(x.tags||[]).some(t=>c.tags.includes(t)))&&(!c.types.length||itemTypes(x).some(t=>c.types.includes(t)))&&(!c.media.length||c.media.some(m=>itemMedia(x).has(m)))&&(!c.groups.length||inGroup(x))&&(c.mode==='all'||!x.due||x.due<=date)};
+  const inGroup=x=>c.groups.some(g=>g==='new'?!x.attempts&&!answered.has(x.id):sets[g].has(x.id)),skipped=new Set(c.skipped);
+  return {c,match:x=>!skipped.has(x.id)&&(!c.subjects.length||c.subjects.includes(x.subject))&&(!c.topics.length||c.topics.includes(x.topic))&&(!c.tags.length||(x.tags||[]).some(t=>c.tags.includes(t)))&&(!c.types.length||itemTypes(x).some(t=>c.types.includes(t)))&&(!c.media.length||c.media.some(m=>itemMedia(x).has(m)))&&(!c.groups.length||inGroup(x))&&(c.mode==='all'||!x.due||x.due<=date)};
 }
 function ordered(q,order,random){q=[...q];if(order==='due')q.sort((a,b)=>(a.due||'').localeCompare(b.due||''));if(order==='shuffle')for(let i=q.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[q[i],q[j]]=[q[j],q[i]];}return q;}
 // Picked questions are always included ("add") or are the whole quiz ("only"), whatever the filters.
+// Skipped questions are never included, even when picked.
 function filterQuiz(bank,reports,controls,date=localDay(),random=Math.random){
-  const {c,match}=quizMatcher(reports,controls,date),picked=new Set(c.picked);
-  const chosen=bank.filter(x=>picked.has(x.id));
-  if(c.pickedMode==='only'&&chosen.length)return ordered(chosen,c.order,random).slice(0,c.count||chosen.length);
+  const {c,match}=quizMatcher(reports,controls,date),picked=new Set(c.picked),skipped=new Set(c.skipped),limit=quizLimit(c,reports);
+  const chosen=bank.filter(x=>picked.has(x.id)&&!skipped.has(x.id));
+  if(c.pickedMode==='only'&&chosen.length)return ordered(chosen,c.order,random).slice(0,limit||chosen.length);
   const rest=ordered(bank.filter(x=>!picked.has(x.id)&&match(x)),c.order,random);
-  const q=[...ordered(chosen,c.order,random),...rest].slice(0,c.count||chosen.length+rest.length);
+  const q=[...ordered(chosen,c.order,random),...rest].slice(0,limit||chosen.length+rest.length);
   return c.order==='shuffle'&&chosen.length?ordered(q,'shuffle',random):q;
 }
 // Typical seconds per answer from past quizzes (median), or 30 seconds with no history.
 function secondsPerQuestion(reports){const t=reports.flatMap(r=>(r.questions||[]).map(q=>Number(q.response_time_seconds))).filter(s=>Number.isFinite(s)&&s>0).sort((a,b)=>a-b);if(!t.length)return 30;const mid=t.length>>1,m=t.length%2?t[mid]:(t[mid-1]+t[mid])/2;return Math.min(300,Math.max(5,m));}
+// A time budget ("minutes") wins over the question count when both are set.
+function quizLimit(c,reports){return c.minutes?Math.max(1,Math.floor(c.minutes*60/secondsPerQuestion(reports))):c.count;}
 function quizMinutes(count,reports){return Math.max(1,Math.round(count*secondsPerQuestion(reports)/60));}
 function duplicateIds(bank){const groups=new Map();for(const x of bank){const key=(x.prompt?normalize(x.prompt):'image:'+String(x.image||'').slice(-80))+'|'+normalize(x.answer)+'|'+(x.type||'short_answer');groups.set(key,[...(groups.get(key)||[]),x.id]);}return new Set([...groups.values()].filter(a=>a.length>1).flat());}
 function analytics(reports){const rows=reports.flatMap(r=>r.questions||[]),groups={subject:Object.create(null),topic:Object.create(null),type:Object.create(null)};for(const q of rows)for(const key of Object.keys(groups)){const name=q[key]||'General',s=groups[key][name]||{total:0,correct:0,seconds:0};s.total++;s.correct+=q.correct?1:0;s.seconds+=Number(q.response_time_seconds)||0;groups[key][name]=s;}const mistakes=Object.create(null);for(const q of rows.filter(q=>!q.correct))mistakes[q.knowledge_id]={prompt:q.prompt,count:(mistakes[q.knowledge_id]?.count||0)+1};return {groups,mistakes:Object.values(mistakes).sort((a,b)=>b.count-a.count),trend:[...reports].reverse().slice(-12),total:rows.length};}
@@ -29623,7 +29632,7 @@ const GROUP_LABEL = { new: 'New', weak: 'Weak', mistakes: 'Mistakes' };
 const MEDIA_LABEL = { picture: 'Picture', sound: 'Sound', video: 'Video' };
 const ORDER_LABEL = { shuffle: 'Shuffle', due: 'Oldest due', bank: 'Bank order' };
 const FILTERS = [['subjects', 'Subjects'], ['topics', 'Topics'], ['tags', 'Tags'], ['types', 'Question types'], ['media', 'Has media']];
-const PICKER_LIMIT = 200;
+const PICKER_LIMIT = 200, SEARCH_FROM = 8, COUNTS = [0, 5, 10, 20], MINUTES = [5, 10, 15, 20];
 const filterLabel = (k, v) => k === 'tags' ? '#' + v : k === 'types' ? typeLabel(v) : k === 'media' ? MEDIA_LABEL[v] || v : v;
 function whatText(c, long = false) { const g = c.groups.map((x) => GROUP_LABEL[x]), due = c.mode !== 'all'; if (!g.length)
     return due ? (long ? 'Questions due now.' : 'Due') : (long ? 'Every question, due or not.' : 'All'); const names = g.join(long ? ' or ' : ' + '); return due ? (long ? `${names} questions, only ones due now.` : `${names} · due only`) : (long ? `${names} questions, due or not.` : names); }
@@ -29641,12 +29650,16 @@ function AqSheet({ title, onClose, action, footer, dialog, children }) {
             footer));
 }
 function QuizBuilder({ items, reports, defaults, onStart, keepIds = [] }) {
-    const [c, setC] = reactExports.useState(() => normalizeControls({ mode: 'daily', count: defaults.count || 0, types: [], order: defaults.shuffle ? 'shuffle' : 'due' }));
-    const [setups, setSetups] = reactExports.useState(readSetups), [active, setActive] = reactExports.useState(''), [sheet, setSheet] = reactExports.useState(''), [status, setStatus] = reactExports.useState(''), [customCount, setCustomCount] = reactExports.useState(false);
+    const fresh = () => normalizeControls({ mode: 'daily', count: defaults.count || 0, types: [], order: defaults.shuffle ? 'shuffle' : 'due' });
+    const [last] = reactExports.useState(readLastQuiz);
+    const [c, setC] = reactExports.useState(() => last?.controls || fresh());
+    const [setups, setSetups] = reactExports.useState(readSetups), [active, setActive] = reactExports.useState(() => last?.setupId && readSetups().some(p => p.id === last.setupId) ? last.setupId : ''), [sheet, setSheet] = reactExports.useState(''), [status, setStatus] = reactExports.useState('');
+    const [byTime, setByTime] = reactExports.useState(() => c.minutes > 0), [customCount, setCustomCount] = reactExports.useState(() => c.minutes > 0 ? !MINUTES.includes(c.minutes) : !COUNTS.includes(c.count));
     const [saveName, setSaveName] = reactExports.useState(''), [saveAsNew, setSaveAsNew] = reactExports.useState(true), [saveDone, setSaveDone] = reactExports.useState(false), [saveError, setSaveError] = reactExports.useState('');
-    const setupRow = reactExports.useRef(null), [pinned, setPinned] = reactExports.useState([]);
+    const setupRow = reactExports.useRef(null), [pinned, setPinned] = reactExports.useState([]), [previewIds, setPreviewIds] = reactExports.useState([]), [filterSearch, setFilterSearch] = reactExports.useState('');
     const [search, setSearch] = reactExports.useState(''), [renameId, setRenameId] = reactExports.useState(''), [renameValue, setRenameValue] = reactExports.useState(''), [confirmDelete, setConfirmDelete] = reactExports.useState(''), [manageError, setManageError] = reactExports.useState('');
-    reactExports.useEffect(() => { const { setups: next, changed } = prunePickedSetups(readSetups(), items, keepIds); if (!changed)
+    reactExports.useEffect(() => { if (!items.length)
+        return; const ids = new Set([...items.map((x) => x.id), ...keepIds]); setC((x) => dropGone(x, id => !ids.has(id))); const { setups: next, changed } = prunePickedSetups(readSetups(), items, keepIds); if (!changed)
         return; try {
         setSetups(writeSetups(next));
     }
@@ -29673,16 +29686,34 @@ function QuizBuilder({ items, reports, defaults, onStart, keepIds = [] }) {
     const chips = FILTERS.flatMap(([k]) => c[k].map((v) => [k, v]));
     const picker = reactExports.useMemo(() => { const s = search.trim().toLocaleLowerCase(), picked = new Set(pinned); const hit = (x) => !s || [x.prompt, x.answer, x.subject, x.topic, ...(x.tags || [])].some(t => String(t || '').toLocaleLowerCase().includes(s)); const list = items.filter(hit); return { rows: (s ? list : [...list.filter((x) => picked.has(x.id)), ...list.filter((x) => !picked.has(x.id))]).slice(0, PICKER_LIMIT), total: list.length }; }, [items, search, pinned]);
     const nameErr = setupNameError(setups, saveName, saveAsNew ? '' : active);
+    const setupSizes = reactExports.useMemo(() => new Map(setups.map(p => [p.id, filterQuiz(items, reports, p.controls).length])), [setups, items, reports]);
+    const byId = reactExports.useMemo(() => new Map(items.map((x) => [x.id, x])), [items]);
+    const isFresh = JSON.stringify(c) === JSON.stringify(fresh());
+    const sheetOpts = (opts[sheet] || []).filter(([v]) => !filterSearch.trim() || filterLabel(sheet, v).toLocaleLowerCase().includes(filterSearch.trim().toLocaleLowerCase()));
     function pickWhat(id) { if (id === 'all')
         set({ mode: 'all', groups: [] });
     else if (id === 'due')
         set({ mode: c.mode === 'all' ? 'daily' : 'all' });
     else
         toggleIn('groups', id); }
+    function showControls(x) { setByTime(x.minutes > 0); setCustomCount(x.minutes > 0 ? !MINUTES.includes(x.minutes) : !COUNTS.includes(x.count)); }
     function load(p) { if (active === p.id && !dirty) {
         setActive('');
         return;
-    } setC(p.controls); setActive(p.id); setStatus(''); setCustomCount(p.controls.count > 0 && ![5, 10, 20].includes(p.controls.count)); }
+    } setC(p.controls); setActive(p.id); setStatus(''); showControls(p.controls); }
+    function reset() { const x = fresh(); setC(x); setActive(''); setStatus(''); showControls(x); }
+    function setMinutes(m) { set({ minutes: m, count: m ? Math.min(1000, quizLimit({ minutes: m }, reports)) : c.count }); }
+    function setUnit(time) { if (time === byTime)
+        return; setByTime(time); setCustomCount(false); if (time)
+        setMinutes(10);
+    else
+        set({ minutes: 0, count: COUNTS.includes(c.count) ? c.count : 0 }); }
+    function openFilter(k) { setFilterSearch(''); setSheet(k); }
+    function openPreview() { setPreviewIds(q.slice(0, PICKER_LIMIT).map((x) => x.id)); setSheet('preview'); }
+    function skip(id) { const picked = c.picked.filter((x) => x !== id); set({ skipped: [...c.skipped, id], picked, pickedMode: picked.length ? c.pickedMode : 'add' }); }
+    function unskip(id) { set({ skipped: c.skipped.filter((x) => x !== id) }); }
+    function startSetup(p) { const list = filterQuiz(items, reports, p.controls); if (!list.length)
+        return; writeLastQuiz(p.controls, p.id); onStart(list, p.controls.mode, p.controls.types); }
     function openSave() { setSaveAsNew(!saved); setSaveName(saved ? saved.name : suggestName(c)); setSaveDone(false); setSaveError(''); setSheet('save'); }
     function doSave() { if (nameErr)
         return; try {
@@ -29718,22 +29749,27 @@ function QuizBuilder({ items, reports, defaults, onStart, keepIds = [] }) {
     catch (e) {
         setManageError(e.message || 'Could not delete this setup.');
     } }
-    function start() { const list = filterQuiz(items, reports, c); if (list.length)
-        onStart(list, c.mode, c.types); }
+    function start() { const list = filterQuiz(items, reports, c); if (!list.length)
+        return; writeLastQuiz(c, saved && !dirty ? active : ''); onStart(list, c.mode, c.types); }
     const filterSheet = FILTERS.find(([k]) => k === sheet);
     return React.createElement("div", { className: "aq" },
         React.createElement("section", { className: "aq-block", "aria-labelledby": "aq-setups-title" },
             React.createElement("div", { className: "aq-label" },
                 React.createElement("h2", { id: "aq-setups-title" }, "Saved setups"),
-                setups.length > 0 && React.createElement("button", { type: "button", onClick: openManage }, "Manage")),
+                React.createElement("span", { className: "aq-label-actions" },
+                    !isFresh && React.createElement("button", { type: "button", onClick: reset }, "Reset"),
+                    setups.length > 0 && React.createElement("button", { type: "button", onClick: openManage }, "Manage"))),
             React.createElement("div", { className: "aq-setups", ref: setupRow },
-                setups.map(p => { const on = active === p.id, [a, b] = setupSummary(p.controls); return React.createElement("button", { key: p.id, type: "button", className: "aq-setup", "data-setup": p.id, "aria-pressed": on, "aria-label": `Load ${p.name}`, onClick: () => load(p) },
-                    React.createElement("span", { className: "aq-setup-name" },
-                        React.createElement("strong", null, p.name),
-                        on && React.createElement("span", { className: "aq-tick", "aria-hidden": "true" },
-                            React.createElement(Check, { size: 11, strokeWidth: 3.5 }))),
-                    React.createElement("small", null, a),
-                    React.createElement("small", null, on && dirty ? 'Edited · not saved' : b)); }),
+                setups.map(p => { const on = active === p.id, [a, b] = setupSummary(p.controls), size = setupSizes.get(p.id) || 0; return React.createElement("div", { key: p.id, className: "aq-setup aq-card", "data-setup": p.id, "data-on": on || undefined },
+                    React.createElement("button", { type: "button", className: "aq-card-main", "aria-pressed": on, "aria-label": `Load ${p.name}`, onClick: () => load(p) },
+                        React.createElement("span", { className: "aq-setup-name" },
+                            React.createElement("strong", null, p.name),
+                            on && React.createElement("span", { className: "aq-tick", "aria-hidden": "true" },
+                                React.createElement(Check, { size: 11, strokeWidth: 3.5 }))),
+                        React.createElement("small", null, a),
+                        React.createElement("small", { className: "aq-card-last" }, on && dirty ? 'Edited · not saved' : b)),
+                    React.createElement("button", { type: "button", className: "aq-card-play", disabled: !size, "aria-label": size ? `Start ${p.name} now, ${size} ${size === 1 ? 'question' : 'questions'}` : `${p.name} has no questions right now`, onClick: () => startSetup(p) },
+                        React.createElement(Play, { size: 13, fill: "currentColor" }))); }),
                 React.createElement("button", { type: "button", className: "aq-setup aq-setup-new", onClick: openSave },
                     React.createElement(Plus, { size: 18 }),
                     "Save current"))),
@@ -29749,26 +29785,40 @@ function QuizBuilder({ items, reports, defaults, onStart, keepIds = [] }) {
             React.createElement("p", { className: "aq-hint" }, whatText(c, true))),
         React.createElement("section", { className: "aq-block", "aria-labelledby": "aq-count-title" },
             React.createElement("div", { className: "aq-label" },
-                React.createElement("h2", { id: "aq-count-title" }, "How many")),
-            React.createElement("div", { className: "aq-lengths", role: "radiogroup", "aria-label": "How many questions" },
-                [0, 5, 10, 20].map(n => React.createElement("button", { key: n, type: "button", role: "radio", "aria-checked": !customCount && c.count === n, onClick: () => { setCustomCount(false); set({ count: n }); } }, n || 'All')),
-                React.createElement("button", { type: "button", role: "radio", "aria-checked": customCount, onClick: () => setCustomCount(true) }, "Other")),
-            customCount && React.createElement("input", { className: "aq-input", type: "number", inputMode: "numeric", min: 1, max: 1000, "aria-label": "Number of questions", placeholder: "Number of questions", value: c.count || '', onChange: e => set({ count: Math.min(1000, Math.max(0, Math.round(Number(e.target.value) || 0))) }) })),
+                React.createElement("h2", { id: "aq-count-title" }, "How many"),
+                React.createElement("span", { className: "aq-unit", role: "radiogroup", "aria-label": "Count by" }, [[false, 'Questions'], [true, 'Minutes']].map(([time, label]) => React.createElement("button", { key: label, type: "button", role: "radio", "aria-checked": byTime === time, onClick: () => setUnit(time) }, label)))),
+            byTime ? React.createElement("div", { className: "aq-lengths", role: "radiogroup", "aria-label": "How many minutes" },
+                MINUTES.map(m => React.createElement("button", { key: m, type: "button", role: "radio", "aria-checked": !customCount && c.minutes === m, onClick: () => { setCustomCount(false); setMinutes(m); } },
+                    m,
+                    " min")),
+                React.createElement("button", { type: "button", role: "radio", "aria-checked": customCount, onClick: () => setCustomCount(true) }, "Other"))
+                : React.createElement("div", { className: "aq-lengths", role: "radiogroup", "aria-label": "How many questions" },
+                    COUNTS.map(n => React.createElement("button", { key: n, type: "button", role: "radio", "aria-checked": !customCount && c.count === n, onClick: () => { setCustomCount(false); set({ count: n }); } }, n || 'All')),
+                    React.createElement("button", { type: "button", role: "radio", "aria-checked": customCount, onClick: () => setCustomCount(true) }, "Other")),
+            customCount && (byTime ? React.createElement("input", { className: "aq-input", type: "number", inputMode: "numeric", min: 1, max: 180, "aria-label": "Number of minutes", placeholder: "Minutes (1\u2013180)", value: c.minutes || '', onChange: e => setMinutes(Math.min(180, Math.max(0, Math.round(Number(e.target.value) || 0)))) })
+                : React.createElement("input", { className: "aq-input", type: "number", inputMode: "numeric", min: 1, max: 1000, "aria-label": "Number of questions", placeholder: "Number of questions", value: c.count || '', onChange: e => set({ count: Math.min(1000, Math.max(0, Math.round(Number(e.target.value) || 0))) }) })),
+            byTime && React.createElement("p", { className: "aq-hint" }, c.minutes ? `Fits about ${quizLimit(c, reports)} questions at your usual pace.` : 'Type how many minutes you have.')),
         React.createElement("section", { className: "aq-block", "aria-labelledby": "aq-filter-title" },
             React.createElement("div", { className: "aq-label" },
                 React.createElement("h2", { id: "aq-filter-title" }, "Filters"),
-                (chips.length > 0 || c.picked.length > 0) && React.createElement("button", { type: "button", onClick: () => set({ subjects: [], topics: [], tags: [], types: [], media: [], picked: [], pickedMode: 'add' }) }, "Clear all")),
+                (chips.length > 0 || c.picked.length > 0 || c.skipped.length > 0) && React.createElement("button", { type: "button", onClick: () => set({ subjects: [], topics: [], tags: [], types: [], media: [], picked: [], pickedMode: 'add', skipped: [] }) }, "Clear all")),
             chips.length > 0 && React.createElement("div", { className: "aq-active" }, chips.map(([k, v]) => React.createElement("button", { key: k + v, type: "button", "aria-label": `Remove ${filterLabel(k, v)}`, onClick: () => toggleIn(k, v) },
                 filterLabel(k, v),
                 React.createElement(X, { size: 13 })))),
             React.createElement("div", { className: "aq-rows" },
-                FILTERS.map(([k, label]) => React.createElement("button", { key: k, type: "button", onClick: () => setSheet(k) },
+                FILTERS.map(([k, label]) => React.createElement("button", { key: k, type: "button", onClick: () => openFilter(k) },
                     React.createElement("span", null, label),
                     React.createElement("em", { "data-any": !c[k].length || undefined }, c[k].length ? c[k].map((v) => filterLabel(k, v)).join(', ') : 'Any'),
                     React.createElement(ChevronRight, { size: 16 }))),
                 React.createElement("button", { type: "button", onClick: () => { setSearch(''); setPinned(c.picked); setSheet('questions'); } },
                     React.createElement("span", null, "Specific questions"),
                     React.createElement("em", { "data-any": !c.picked.length || undefined }, c.picked.length ? `${c.picked.length} picked · ${c.pickedMode === 'only' ? 'only these' : 'added'}` : 'Any'),
+                    React.createElement(ChevronRight, { size: 16 })),
+                c.skipped.length > 0 && React.createElement("button", { type: "button", onClick: () => setSheet('skipped') },
+                    React.createElement("span", null, "Skipped questions"),
+                    React.createElement("em", null,
+                        c.skipped.length,
+                        " left out"),
                     React.createElement(ChevronRight, { size: 16 })))),
         React.createElement("section", { className: "aq-block", "aria-labelledby": "aq-order-title" },
             React.createElement("div", { className: "aq-label" },
@@ -29776,18 +29826,31 @@ function QuizBuilder({ items, reports, defaults, onStart, keepIds = [] }) {
             React.createElement("div", { className: "aq-seg", role: "radiogroup", "aria-label": "Question order" }, Object.entries(ORDER_LABEL).map(([id, label]) => React.createElement("button", { key: id, type: "button", role: "radio", "aria-checked": c.order === id, onClick: () => set({ order: id }) }, label)))),
         status && React.createElement("p", { className: "aq-status", role: "status" }, status),
         React.createElement("footer", { className: "aq-bar" },
-            React.createElement("div", null,
+            q.length ? React.createElement("button", { type: "button", className: "aq-bar-info", "aria-label": `See the ${q.length} ${q.length === 1 ? 'question' : 'questions'}`, onClick: openPreview },
                 React.createElement("strong", null,
                     q.length,
                     " ",
-                    q.length === 1 ? 'question' : 'questions'),
-                React.createElement("small", null, q.length ? `About ${quizMinutes(q.length, reports)} min` : notDue ? `${notDue} match but aren’t due yet.` : 'Nothing matches. Loosen the filters.'),
-                !q.length && notDue > 0 && React.createElement("button", { type: "button", className: "aq-fix", onClick: () => set({ mode: 'all' }) }, "Include them")),
+                    q.length === 1 ? 'question' : 'questions',
+                    React.createElement(ChevronRight, { size: 15 })),
+                React.createElement("small", null,
+                    c.minutes ? `Fits ${c.minutes} min` : `About ${quizMinutes(q.length, reports)} min`,
+                    " \u00B7 See list"))
+                : React.createElement("div", { className: "aq-bar-info" },
+                    React.createElement("strong", null, "0 questions"),
+                    React.createElement("small", null, notDue ? `${notDue} match but aren’t due yet.` : 'Nothing matches. Loosen the filters.'),
+                    notDue > 0 && React.createElement("button", { type: "button", className: "aq-fix", onClick: () => set({ mode: 'all' }) }, "Include them")),
             React.createElement("button", { type: "button", className: "aq-save", "aria-label": saved ? `Save changes to ${saved.name}` : 'Save these settings', "data-saved": saved && !dirty || undefined, onClick: openSave },
                 React.createElement(Bookmark, { size: 18 })),
             React.createElement(Button, { disabled: !q.length, onClick: start }, "Start quiz")),
         filterSheet && React.createElement(AqSheet, { title: filterSheet[1], onClose: () => setSheet(''), action: c[sheet].length > 0 && React.createElement("button", { type: "button", onClick: () => set({ [sheet]: [] }) }, "Clear"), footer: React.createElement(Button, { className: "aq-done", onClick: () => setSheet('') }, "Done") },
-            opts[sheet].length ? React.createElement("div", { className: "aq-chips" }, opts[sheet].map(([v, n]) => React.createElement("button", { key: v, type: "button", "aria-pressed": c[sheet].includes(v), onClick: () => toggleIn(sheet, v) },
+            sheet !== 'media' && opts[sheet].length > SEARCH_FROM && React.createElement("label", { className: "aq-search" },
+                React.createElement(Search, { size: 16 }),
+                React.createElement("input", { type: "search", placeholder: `Search ${filterSheet[1].toLocaleLowerCase()}`, "aria-label": `Search ${filterSheet[1].toLocaleLowerCase()}`, value: filterSearch, onChange: e => setFilterSearch(e.target.value) })),
+            opts[sheet].length > 0 && !sheetOpts.length && React.createElement("p", { className: "aq-empty" },
+                "No matches for \u201C",
+                filterSearch.trim(),
+                "\u201D."),
+            opts[sheet].length ? React.createElement("div", { className: "aq-chips" }, sheetOpts.map(([v, n]) => React.createElement("button", { key: v, type: "button", "aria-pressed": c[sheet].includes(v), onClick: () => toggleIn(sheet, v) },
                 c[sheet].includes(v) && React.createElement(Check, { size: 13, strokeWidth: 3 }),
                 filterLabel(sheet, v),
                 React.createElement("small", null, n)))) : React.createElement("p", { className: "aq-empty" }, sheet === 'tags' ? 'None of your questions have tags yet. Add them in the question editor.' : sheet === 'media' ? 'None of your questions have pictures, sounds or videos yet.' : 'Nothing to choose yet.'),
@@ -29814,6 +29877,42 @@ function QuizBuilder({ items, reports, defaults, onStart, keepIds = [] }) {
                     " of ",
                     picker.total,
                     ". Search to narrow the list."))),
+        sheet === 'preview' && React.createElement(AqSheet, { title: "Your quiz", onClose: () => setSheet(''), footer: React.createElement("div", { className: "aq-sheet-foot" },
+                React.createElement(Button, { variant: "outline", onClick: () => setSheet('') }, "Done"),
+                React.createElement(Button, { disabled: !q.length, onClick: () => { setSheet(''); start(); } },
+                    "Start ",
+                    q.length)) },
+            React.createElement("p", { className: "aq-empty" },
+                q.length,
+                " ",
+                q.length === 1 ? 'question' : 'questions',
+                c.order === 'shuffle' ? ' · shuffled again when you start' : ` · ${ORDER_LABEL[c.order].toLocaleLowerCase()}`,
+                ". Skip any you don\u2019t want this time; they stay in your bank."),
+            React.createElement("div", { className: "aq-pick-list" },
+                previewIds.map(id => { const x = byId.get(id); if (!x)
+                    return null; const off = c.skipped.includes(id); return React.createElement("div", { key: id, className: "aq-pick aq-preview-row", "data-off": off || undefined },
+                    React.createElement("span", null,
+                        React.createElement("strong", null, x.prompt || 'Picture question'),
+                        React.createElement("small", null, off ? 'Skipped' : [x.subject, x.topic].filter(Boolean).join(' · '))),
+                    React.createElement("button", { type: "button", className: "aq-row-action", "aria-label": off ? `Bring back ${x.prompt || 'this question'}` : `Skip ${x.prompt || 'this question'}`, onClick: () => off ? unskip(id) : skip(id) }, off ? React.createElement(React.Fragment, null,
+                        React.createElement(Undo2, { size: 14 }),
+                        "Undo") : React.createElement(React.Fragment, null,
+                        React.createElement(EyeOff, { size: 14 }),
+                        "Skip"))); }),
+                q.length > previewIds.length && previewIds.length >= PICKER_LIMIT && React.createElement("p", { className: "aq-empty" },
+                    "Showing the first ",
+                    PICKER_LIMIT,
+                    "."))),
+        sheet === 'skipped' && React.createElement(AqSheet, { title: "Skipped questions", onClose: () => setSheet(''), action: c.skipped.length > 0 && React.createElement("button", { type: "button", onClick: () => set({ skipped: [] }) }, "Bring all back"), footer: React.createElement(Button, { className: "aq-done", onClick: () => setSheet('') }, "Done") },
+            React.createElement("p", { className: "aq-empty" }, c.skipped.length ? 'These are left out of this quiz. They are still in your bank.' : 'Nothing is skipped.'),
+            React.createElement("div", { className: "aq-pick-list" }, c.skipped.map((id) => { const x = byId.get(id); if (!x)
+                return null; return React.createElement("div", { key: id, className: "aq-pick aq-preview-row" },
+                React.createElement("span", null,
+                    React.createElement("strong", null, x.prompt || 'Picture question'),
+                    React.createElement("small", null, [x.subject, x.topic].filter(Boolean).join(' · '))),
+                React.createElement("button", { type: "button", className: "aq-row-action", "aria-label": `Bring back ${x.prompt || 'this question'}`, onClick: () => unskip(id) },
+                    React.createElement(Undo2, { size: 14 }),
+                    "Bring back")); }))),
         sheet === 'manage' && React.createElement(AqSheet, { title: "Saved setups", onClose: () => setSheet(''), footer: React.createElement(Button, { className: "aq-done", onClick: () => setSheet('') }, "Done") },
             !setups.length && React.createElement("p", { className: "aq-empty" }, "No saved setups yet. Use \u201CSave current\u201D to add one."),
             React.createElement("div", { className: "aq-manage" }, setups.map(p => renameId === p.id ? React.createElement("div", { key: p.id, className: "aq-manage-row is-editing" },

@@ -101,3 +101,32 @@ const pruned=prunePickedSetups(setups,[{id:'b1'}]);assert.equal(pruned.changed,2
 assert.equal(prunePickedSetups(setups,[{id:'b1'}],['h2']).changed,0);
 storage.set(setupKey,'broken');assert.equal(dropPickedFromSetups(['b1']),0);assert.equal(storage.get(setupKey),'broken');
 console.log('PASS: deleted questions are removed from setups, "only these" falls back, and an empty bank wipes nothing.');
+
+// Skipped questions never appear, even when picked.
+assert.deepEqual(ids({subjects:['Maths'],skipped:['m1']}),['m2']);
+assert.deepEqual(ids({subjects:['Maths'],picked:['h2'],skipped:['h2']}),['m1','m2']);
+assert.deepEqual(ids({picked:['h2','b1'],pickedMode:'only',skipped:['h2']}),['b1']);
+assert.deepEqual(ids({picked:['h2'],pickedMode:'only',skipped:['h2'],subjects:['Maths']}),['m1','m2']);
+const withSkips=validateSetups([{id:'s',name:'Skips',controls:{mode:'all',count:0,types:[],picked:['b1'],skipped:['h2','m1']}}]);
+const cleaned=dropPicked(withSkips,id=>id==='h2');assert.equal(cleaned.changed,1);assert.deepEqual(cleaned.setups[0].controls.skipped,['m1']);assert.deepEqual(cleaned.setups[0].controls.picked,['b1']);
+assert.throws(()=>normalizeControls({mode:'all',count:0,skipped:'h2'}));
+console.log('PASS: skipped questions are left out, and deleted ones leave the skip list.');
+
+// A time budget sets the length from the typical answer time.
+assert.deepEqual(ids({minutes:1}),['b1','b2','h1']);
+assert.equal(filterQuiz(bank,[],{...base,minutes:2,count:1},today).length,4);
+assert.equal(filterQuiz(bank,[],{...base,minutes:0,count:2},today).length,2);
+assert.throws(()=>normalizeControls({mode:'all',count:0,minutes:2.5}));
+assert.throws(()=>normalizeControls({mode:'all',count:0,minutes:181}));
+assert.equal(normalizeControls({mode:'all',count:0}).minutes,0);
+console.log('PASS: minutes decide the quiz length and bad values are rejected.');
+
+// The last quiz started is remembered on this device.
+const {readLastQuiz,writeLastQuiz,lastKey}=await import('./src/quiz-setups.js');
+assert.equal(readLastQuiz(),null);
+assert.equal(writeLastQuiz({mode:'all',count:5,types:[],subjects:['Maths']},'a'),true);
+const last=readLastQuiz();assert.equal(last.setupId,'a');assert.deepEqual([last.controls.count,last.controls.subjects],[5,['Maths']]);
+storage.set(lastKey,'{"controls":{"mode":"bogus"}}');assert.equal(readLastQuiz(),null);
+storage.set(lastKey,'broken');assert.equal(readLastQuiz(),null);
+assert.equal(writeLastQuiz({mode:'bogus'}),false);
+console.log('PASS: the last quiz is saved and read back, and broken storage is ignored.');
