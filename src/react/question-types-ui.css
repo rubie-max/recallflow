@@ -1090,6 +1090,7 @@ body:not(.dark) .quiz-countdown-focus .countdown-motto{color:var(--accent-foregr
 body:not(.dark) .quiz-countdown-focus header button:focus-visible{outline-color:var(--primary)}
 
 /* Advanced quiz (compact): saved setups, what to practise, filter rows with sheets, save dialog. */
+.quiz-options-shell{width:100%;min-width:0}
 .quiz-options-shell>header.app-top-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px}
 .aq{display:grid;gap:18px;margin-top:18px}
 .aq-block{display:grid;gap:9px;min-width:0}
