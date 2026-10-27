@@ -5,6 +5,7 @@ import IndexPage from './pages/_index';
 import {ZoomHost} from './ImageViewer';
 import {LoginPage} from './LoginPage';
 import {session,startSync,syncNow} from '../sync.js';
+import {startBankStore} from '../bank-store.js';
 
 function App(){
  const [signedIn,setSignedIn]=useState(()=>!!session());
@@ -12,6 +13,6 @@ function App(){
  useEffect(()=>{if(signedIn){startSync();syncNow();}},[signedIn]);
  return signedIn?<><IndexPage/><ZoomHost/></>:<LoginPage onSignedIn={()=>setSignedIn(true)}/>;
 }
-createRoot(document.getElementById('app')!).render(<ThemeModeProvider><App/></ThemeModeProvider>);
+void startBankStore().finally(()=>createRoot(document.getElementById('app')!).render(<ThemeModeProvider><App/></ThemeModeProvider>));
 
 if('serviceWorker' in navigator)void navigator.serviceWorker.register('./sw.js').then(r=>r.update()).catch(()=>{});

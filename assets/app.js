@@ -34894,6 +34894,17 @@ const starter = [
     { id: "demo_flash", subject: "Demo", topic: "Flashcard", prompt: "Which organelle is often called the powerhouse of the cell?", answer: "Mitochondrion", type: "flashcard" },
 ];
 // The sample questions for the withdrawn sound/picture types use types this version cannot show.
+const LIST_PAGE = 50;
+function LoadMore({ left, onMore }) {
+    const ref = reactExports.useRef(null);
+    reactExports.useEffect(() => { const el = ref.current; if (!el || typeof IntersectionObserver === "undefined")
+        return; const io = new IntersectionObserver(e => { if (e[0].isIntersecting)
+        onMore(); }, { rootMargin: "600px" }); io.observe(el); return () => io.disconnect(); }, [onMore]);
+    return React.createElement("button", { ref: ref, type: "button", className: "qb-load-more", onClick: onMore },
+        "Show more \u00B7 ",
+        left,
+        " left");
+}
 const withoutExamples = (list) => Array.isArray(list) ? list.filter(x => !String(x?.id).startsWith("example_")) : [];
 function editorRoute() {
     const path = location.hash.slice(2);
@@ -35037,13 +35048,15 @@ function IndexPage() {
                 stat.wrong++;
             stats.set(result.knowledge_id, stat);
         } return stats; }, [reportHistory]);
-    const visibleItems = reactExports.useMemo(() => items.filter(x => (!libraryType.length || itemTypes(x).some(t => libraryType.includes(t))) && (!librarySubject.length || librarySubject.includes(x.subject)) && [x.prompt, x.answer, x.subject, x.topic, ...(x.tags || [])].join(" ").toLowerCase().includes(librarySearch.trim().toLowerCase())).filter(x => (!libraryTag.length || (x.tags || []).some(t => libraryTag.includes(t))) && (!libraryTopic.length || libraryTopic.includes(x.topic || "")) && (!duplicatesOnly || duplicateIds(items).has(x.id)) && (!withImagesOnly || !!x.image || !!x.answerImage || Object.values(x.optionImages || {}).some(Boolean)) && (!dueOnly || !x.due || x.due <= today()) && (!multiTypeOnly || !!x.variants?.length) && (performanceFilter === "all" || (performanceFilter === "mistakes" ? (performance.get(x.id)?.wrong || 0) > 0 : !!performance.get(x.id) && performance.get(x.id).wrong / performance.get(x.id).attempts >= .5))).sort((a, b) => librarySort === "prompt" ? (a.prompt || "Picture question").localeCompare(b.prompt || "Picture question") : librarySort === "due" ? (a.due || "").localeCompare(b.due || "") : items.indexOf(b) - items.indexOf(a)), [items, librarySearch, libraryType, librarySubject, libraryTag, libraryTopic, librarySort, duplicatesOnly, withImagesOnly, dueOnly, performanceFilter, performance, multiTypeOnly]);
+    const duplicateSet = reactExports.useMemo(() => duplicateIds(items), [items]);
+    const visibleItems = reactExports.useMemo(() => { const list = items.filter(x => (!libraryType.length || itemTypes(x).some(t => libraryType.includes(t))) && (!librarySubject.length || librarySubject.includes(x.subject)) && [x.prompt, x.answer, x.subject, x.topic, ...(x.tags || [])].join(" ").toLowerCase().includes(librarySearch.trim().toLowerCase())).filter(x => (!libraryTag.length || (x.tags || []).some(t => libraryTag.includes(t))) && (!libraryTopic.length || libraryTopic.includes(x.topic || "")) && (!duplicatesOnly || duplicateSet.has(x.id)) && (!withImagesOnly || !!x.image || !!x.answerImage || Object.values(x.optionImages || {}).some(Boolean)) && (!dueOnly || !x.due || x.due <= today()) && (!multiTypeOnly || !!x.variants?.length) && (performanceFilter === "all" || (performanceFilter === "mistakes" ? (performance.get(x.id)?.wrong || 0) > 0 : !!performance.get(x.id) && performance.get(x.id).wrong / performance.get(x.id).attempts >= .5))); return librarySort === "recent" ? list.reverse() : list.sort((a, b) => librarySort === "prompt" ? (a.prompt || "Picture question").localeCompare(b.prompt || "Picture question") : (a.due || "").localeCompare(b.due || "")); }, [items, librarySearch, libraryType, librarySubject, libraryTag, libraryTopic, librarySort, duplicatesOnly, withImagesOnly, dueOnly, performanceFilter, performance, multiTypeOnly, duplicateSet]);
+    const [shownCount, setShownCount] = reactExports.useState(LIST_PAGE);
+    reactExports.useEffect(() => setShownCount(LIST_PAGE), [librarySearch, libraryType, librarySubject, libraryTag, libraryTopic, librarySort, duplicatesOnly, withImagesOnly, dueOnly, performanceFilter, multiTypeOnly]);
     const subjects = reactExports.useMemo(() => [...new Set(items.map(x => x.subject))].sort(), [items]);
     const libraryFiltered = !!librarySearch.trim() || libraryType.length > 0 || librarySubject.length > 0 || libraryTag.length > 0 || libraryTopic.length > 0 || duplicatesOnly || withImagesOnly || dueOnly || performanceFilter !== "all" || multiTypeOnly;
     const activeFilterCount = [libraryType.length > 0, librarySubject.length > 0, libraryTag.length > 0, libraryTopic.length > 0, duplicatesOnly, withImagesOnly, dueOnly, performanceFilter !== "all", multiTypeOnly].filter(Boolean).length;
     const hasPictures = (x) => !!x.image || !!x.answerImage || Object.values(x.optionImages || {}).some(Boolean);
     const bankStats = reactExports.useMemo(() => ({ due: items.filter(x => !x.due || x.due <= today()).length, mistakes: items.filter(x => (performance.get(x.id)?.wrong || 0) > 0).length, pictures: items.filter(hasPictures).length, multi: items.filter(x => !!x.variants?.length).length }), [items, performance]);
-    const duplicateSet = reactExports.useMemo(() => duplicateIds(items), [items]);
     function clearLibraryFilters() { setLibrarySearch(""); setLibraryType([]); setLibrarySubject([]); setLibraryTag([]); setLibraryTopic([]); setDuplicatesOnly(false); setWithImagesOnly(false); setDueOnly(false); setPerformanceFilter("all"); setMultiTypeOnly(false); }
     reactExports.useEffect(() => {
         try {
@@ -35065,6 +35078,7 @@ function IndexPage() {
         catch {
             setMessage("Storage is full. Export a backup and reduce image sizes before adding more questions.");
         } }, [items, loaded]);
+    reactExports.useEffect(() => { const full = () => setMessage("Storage is full. Export a backup and reduce image sizes before adding more questions."); window.addEventListener("recallflow:storage-full", full); return () => window.removeEventListener("recallflow:storage-full", full); }, []);
     reactExports.useEffect(() => {
         const reload = () => {
             const read = (key, fallback) => { try {
@@ -36150,7 +36164,7 @@ function IndexPage() {
                     React.createElement("h2", null, items.length ? "No questions found" : "Your bank starts here"),
                     React.createElement("p", null, items.length ? "Try another search or loosen your filters." : "Add your first question or import a collection."),
                     libraryFiltered && React.createElement(Button, { variant: "outline", onClick: clearLibraryFilters }, "Clear filters")),
-                React.createElement("div", { className: "qb-list" }, visibleItems.map(x => { const selected = selectionMode && selectedQuestionIds.includes(x.id), name = x.prompt || "Picture question", TypeIcon = typeIcons[x.type || "short_answer"] || PenLine, due = dueBadge(x), stat = performance.get(x.id), accuracy = stat ? Math.round((stat.attempts - stat.wrong) / stat.attempts * 100) : null, place = [x.subject && x.subject !== "General" ? x.subject : "", x.topic && x.topic !== "General" && x.topic !== x.subject && x.topic.toLowerCase() !== typeLabel(x.type).toLowerCase() ? x.topic : ""].filter(Boolean).join(" › "), detail = questionCardDetail(x); return React.createElement("article", { key: x.id, className: "qb-card", "data-question-type": x.type || "short_answer", "data-selecting": selectionMode || undefined, "data-selected": selected || undefined, onClick: selectionMode ? e => { if (!e.target.closest("input,button,summary,a"))
+                React.createElement("div", { className: "qb-list" }, visibleItems.slice(0, shownCount).map(x => { const selected = selectionMode && selectedQuestionIds.includes(x.id), name = x.prompt || "Picture question", TypeIcon = typeIcons[x.type || "short_answer"] || PenLine, due = dueBadge(x), stat = performance.get(x.id), accuracy = stat ? Math.round((stat.attempts - stat.wrong) / stat.attempts * 100) : null, place = [x.subject && x.subject !== "General" ? x.subject : "", x.topic && x.topic !== "General" && x.topic !== x.subject && x.topic.toLowerCase() !== typeLabel(x.type).toLowerCase() ? x.topic : ""].filter(Boolean).join(" › "), detail = questionCardDetail(x); return React.createElement("article", { key: x.id, className: "qb-card", "data-question-type": x.type || "short_answer", "data-selecting": selectionMode || undefined, "data-selected": selected || undefined, onClick: selectionMode ? e => { if (!e.target.closest("input,button,summary,a"))
                         toggleSelected(x.id); } : undefined },
                     selectionMode && React.createElement("label", { className: "question-select" },
                         React.createElement("input", { type: "checkbox", "aria-label": `Select ${name}`, checked: selected, onChange: () => toggleSelected(x.id) }),
@@ -36214,6 +36228,7 @@ function IndexPage() {
                         React.createElement("div", null,
                             React.createElement(Button, { variant: "destructive", onClick: () => { deleteQuestion(x.id); setDeleteId(null); } }, "Delete question"),
                             React.createElement(Button, { variant: "outline", onClick: () => setDeleteId(null) }, "Cancel")))); })),
+                visibleItems.length > shownCount && React.createElement(LoadMore, { left: visibleItems.length - shownCount, onMore: () => setShownCount(c => c + LIST_PAGE) }),
                 showQuestionTools && React.createElement("div", { className: "question-tools-layer" },
                     React.createElement("button", { className: "question-tools-scrim", "aria-label": "Close question tools", onClick: () => setShowQuestionTools(false) }),
                     React.createElement("section", { className: "question-tools-sheet", role: "dialog", "aria-modal": "true", "aria-labelledby": "question-tools-title" },
@@ -36487,6 +36502,43 @@ function LoginPage({ onSignedIn }) {
                 "Your questions are kept in a private store only this login can open.")));
 }
 
+// The question bank can outgrow localStorage (about 5 MB per site), so it is kept in IndexedDB.
+// A memory copy keeps localStorage.getItem/setItem/removeItem for this one key synchronous,
+// so the rest of the app and cloud sync keep working unchanged.
+const BANK_KEY='recallflow_bank_v2';
+
+function createBankStore(backend,onError){
+  let value=null,latest=0,queue=Promise.resolve();
+  const save=v=>{const n=++latest;queue=queue.then(()=>n===latest?(v==null?backend.del():backend.put(v)):undefined).catch(e=>onError(e));return queue;};
+  return {
+    async load(legacy){const stored=await backend.get();if(stored!=null){value=stored;return 'stored';}value=legacy;if(legacy!=null)await backend.put(legacy);return legacy!=null?'migrated':'empty';},
+    get:()=>value,
+    set(v){value=String(v);return save(value);},
+    remove(){value=null;return save(null);},
+    flush:()=>queue
+  };
+}
+
+function idbBackend(){
+  const db=new Promise((resolve,reject)=>{const req=indexedDB.open('recallflow-bank',1);req.onupgradeneeded=()=>req.result.createObjectStore('kv');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
+  const run=(mode,fn)=>db.then(d=>new Promise((resolve,reject)=>{const tx=d.transaction('kv',mode),req=fn(tx.objectStore('kv'));tx.oncomplete=()=>resolve(req.result);tx.onerror=tx.onabort=()=>reject(tx.error||new Error('Saving failed.'));}));
+  return {get:()=>run('readonly',s=>s.get(BANK_KEY)),put:v=>run('readwrite',s=>s.put(v,BANK_KEY)),del:()=>run('readwrite',s=>s.delete(BANK_KEY))};
+}
+
+// Falls back to plain localStorage (today's behaviour) when IndexedDB is missing or fails to load.
+async function startBankStore(){
+  if(typeof indexedDB==='undefined')return false;
+  const proto=Storage.prototype,get=proto.getItem,set=proto.setItem,remove=proto.removeItem;
+  const store=createBankStore(idbBackend(),()=>window.dispatchEvent(new Event('recallflow:storage-full')));
+  try{await store.load(get.call(localStorage,BANK_KEY));}catch{return false;}
+  remove.call(localStorage,BANK_KEY);
+  proto.getItem=function(k){return this===localStorage&&k===BANK_KEY?store.get():get.call(this,k);};
+  proto.setItem=function(k,v){if(this===localStorage&&k===BANK_KEY)void store.set(v);else set.call(this,k,v);};
+  proto.removeItem=function(k){if(this===localStorage&&k===BANK_KEY)void store.remove();else remove.call(this,k);};
+  void navigator.storage?.persist?.().catch(()=>{});
+  return true;
+}
+
 function App() {
     const [signedIn, setSignedIn] = reactExports.useState(() => !!session());
     reactExports.useEffect(() => { const update = () => setSignedIn(!!session()); window.addEventListener('recallflow:session', update); return () => window.removeEventListener('recallflow:session', update); }, []);
@@ -36498,7 +36550,7 @@ function App() {
         React.createElement(IndexPage, null),
         React.createElement(ZoomHost, null)) : React.createElement(LoginPage, { onSignedIn: () => setSignedIn(true) });
 }
-clientExports.createRoot(document.getElementById('app')).render(React.createElement(ThemeModeProvider, null,
-    React.createElement(App, null)));
+void startBankStore().finally(() => clientExports.createRoot(document.getElementById('app')).render(React.createElement(ThemeModeProvider, null,
+    React.createElement(App, null))));
 if ('serviceWorker' in navigator)
     void navigator.serviceWorker.register('./sw.js').then(r => r.update()).catch(() => { });
