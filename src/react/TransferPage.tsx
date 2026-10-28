@@ -1,11 +1,12 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {FileUp,FileDown,FileJson,Sheet,Layers,FileText,Download,Copy,Check,CheckCircle2,AlertCircle,UploadCloud,ClipboardPaste,ArrowLeft,X,ImageIcon,History,AudioLines,Sparkles,ChevronRight,ChevronDown,Film,Undo2,Share2,Eye,Library,BookOpen,LayoutGrid,ListChecks,Info,FolderInput} from 'lucide-react';
+import {FileUp,FileDown,FileJson,Sheet,Layers,FileText,Download,Copy,Check,CheckCircle2,AlertCircle,UploadCloud,ClipboardPaste,ArrowLeft,X,ImageIcon,History,AudioLines,Sparkles,ChevronRight,ChevronDown,Film,Undo2,Share2,Eye,Library,BookOpen,LayoutGrid,ListChecks,Info,FolderInput,Globe} from 'lucide-react';
 import {Button} from './components/Button';
 import {questionTypes,typeLabel,validateQuestion} from '../question-types.js';
 import {itemTypes} from '../question-variants.js';
 import {exportFormats,importFormats,serialize,parseImport,duplicateKey,csvTemplate,aiImportPrompt,embeddedAudioCount,embeddedVideoCount} from '../transfer-formats.js';
 import {inlineImages} from '../sync.js';
 import {localDay} from '../streak-stats.js';
+import {packBase,readPackIndex,loadPackQuestions} from '../question-packs.js';
 
 const formatIcons:any={json:FileJson,csv:Sheet,tsv:Layers,text:FileText};
 const formatShort:any={json:['RecallFlow','Full backup'],csv:['Spreadsheet','Excel · Sheets'],tsv:['Flashcards','Anki · Quizlet'],text:['Printable','Read or print']};
@@ -89,8 +90,21 @@ function AiHelper({onCopyPrompt,promptCopied}:any){
  </div>;
 }
 
+function ReadyMadeSets({onLoaded,onClose}:any){
+ const [index,setIndex]=useState<any>(null),[picked,setPicked]=useState<string[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ useEffect(()=>{let live=true;readPackIndex(packBase('world')).then(ix=>{if(live){setIndex(ix);setPicked(ix.topics.map((t:any)=>t.id));}}).catch((e:any)=>{if(live)setError(e.message);});return()=>{live=false;};},[]);
+ const all=!!index&&picked.length===index.topics.length,count=index?index.topics.filter((t:any)=>picked.includes(t.id)).reduce((n:number,t:any)=>n+t.count,0):0;
+ async function review(){setBusy(true);setError('');try{const questions=await loadPackQuestions(packBase('world'),index,picked);onLoaded(JSON.stringify({app:'RecallFlow',version:1,questions}),index.title);}catch(e:any){setError(e.message);}finally{setBusy(false);}}
+ return <section className="tf-card tf-sets">
+  <div className="tf-card-head"><span className="tf-tile" data-tone="amber"><Globe size={18}/></span><div><h2>{index?.title||'World countries'}</h2><p>{index?`${index.description} Leaders are as of ${index.asOf}.`:error?'Not available right now.':'Loading…'}</p></div></div>
+  {index&&<><div className="tf-sets-head"><span>{plural(count,'question')} selected</span><button type="button" className="tf-link" onClick={()=>setPicked(all?[]:index.topics.map((t:any)=>t.id))}>{all?'Select none':'Select all'}</button></div>
+  <ul className="tf-rows tf-sets-list">{index.topics.map((t:any)=><li key={t.id}><label className="tf-q" data-on={picked.includes(t.id)||undefined}><input type="checkbox" className="tf-check" aria-label={`Include ${t.label}`} checked={picked.includes(t.id)} onChange={e=>{const on=e.target.checked;setPicked(p=>on?[...p,t.id]:p.filter(x=>x!==t.id));}}/><span className="tf-q-copy"><strong>{t.label}</strong><small>{plural(t.count,'question')}</small></span></label></li>)}</ul></>}
+  {error&&<p className="tf-error" role="alert"><AlertCircle size={16}/>{error}</p>}
+  <div className="tf-row-actions"><Button variant="outline" onClick={onClose}>Cancel</Button><Button disabled={!index||!count||busy} onClick={()=>void review()}>{busy?'Loading…':<>Review {count||''}<ChevronRight size={16}/></>}</Button></div>
+ </section>;
+}
 function ImportPanel({items,onImport,onUndo,onBack}:any){
- const [text,setText]=useState(''),[fileName,setFileName]=useState(''),[format,setFormat]=useState('auto'),[pasting,setPasting]=useState(false),[drag,setDrag]=useState(false),[promptCopied,setPromptCopied]=useState(''),[aiOpen,setAiOpen]=useState(false),[optsOpen,setOptsOpen]=useState(false);
+ const [text,setText]=useState(''),[fileName,setFileName]=useState(''),[format,setFormat]=useState('auto'),[pasting,setPasting]=useState(false),[drag,setDrag]=useState(false),[promptCopied,setPromptCopied]=useState(''),[aiOpen,setAiOpen]=useState(false),[optsOpen,setOptsOpen]=useState(false),[setsOpen,setSetsOpen]=useState(false);
  const [subject,setSubject]=useState(''),[topic,setTopic]=useState(''),[tag,setTag]=useState(''),[dupes,setDupes]=useState<'skip'|'keep'>('skip'),[keepProgress,setKeepProgress]=useState(false),[excluded,setExcluded]=useState<Set<number>>(new Set()),[done,setDone]=useState<number|null>(null),[added,setAdded]=useState<{ids:string[];subjects:[string,number][]}>({ids:[],subjects:[]}),[undone,setUndone]=useState(false);
  const input=useRef<HTMLInputElement>(null);
  const parsed=useMemo(()=>{
@@ -115,7 +129,7 @@ function ImportPanel({items,onImport,onUndo,onBack}:any){
   const subs=new Map<string,number>();for(const x of clean)subs.set(x.subject,(subs.get(x.subject)||0)+1);
   onImport(clean);setDone(clean.length);setAdded({ids:clean.map((x:any)=>x.id),subjects:[...subs].sort((a,b)=>b[1]-a[1])});setUndone(false);window.scrollTo({top:0,behavior:'smooth'});
  }
- function reset(){setUndone(false);setAdded({ids:[],subjects:[]});setText('');setFileName('');setFormat('auto');setExcluded(new Set());setDone(null);setSubject('');setTopic('');setTag('');setPromptCopied('');setAiOpen(false);setPasting(false);setOptsOpen(false);}
+ function reset(){setUndone(false);setAdded({ids:[],subjects:[]});setText('');setFileName('');setFormat('auto');setExcluded(new Set());setDone(null);setSubject('');setTopic('');setTag('');setPromptCopied('');setAiOpen(false);setPasting(false);setOptsOpen(false);setSetsOpen(false);}
  const detectedLabel=(parsed as any)?.detected?importFormats.find(([id])=>id===(parsed as any).detected)?.[1]:'';
 
  if(done!==null)return <div className="tf-stack"><section className="tf-card tf-done">
@@ -135,6 +149,7 @@ function ImportPanel({items,onImport,onUndo,onBack}:any){
   <div className="tf-row-actions"><Button variant="outline" onClick={()=>{setPasting(false);setText('');}}>Cancel</Button><Button disabled={!rows.length} onClick={()=>setPasting(false)}>Review<ChevronRight size={16}/></Button></div>
  </section></div>;
 
+ if(setsOpen&&!text.trim())return <div className="tf-stack"><ReadyMadeSets onClose={()=>setSetsOpen(false)} onLoaded={(json:string,name:string)=>{setText(json);setFileName(name);setFormat('json');setExcluded(new Set());setDone(null);setSetsOpen(false);}}/></div>;
  if(!text.trim())return <div className="tf-stack">
   <button type="button" className="tf-drop" data-drag={drag||undefined} onClick={()=>input.current?.click()} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);void readFile(e.dataTransfer.files?.[0]);}}>
    <span className="tf-drop-icon"><UploadCloud size={28}/></span>
@@ -145,6 +160,7 @@ function ImportPanel({items,onImport,onUndo,onBack}:any){
   {fileError&&<p className="tf-error" role="alert"><AlertCircle size={16}/>{fileError}</p>}
   <p className="tf-label">Other ways to add</p>
   <div className="tf-list">
+   <button type="button" className="tf-item" onClick={()=>setSetsOpen(true)}><span className="tf-tile" data-tone="amber"><Globe size={18}/></span><span className="tf-item-copy"><strong>Ready-made sets</strong><small>World countries: capitals, flags, currencies, leaders and more</small></span><ChevronRight size={18} className="tf-item-chev"/></button>
    <button type="button" className="tf-item" onClick={()=>setPasting(true)}><span className="tf-tile" data-tone="blue"><ClipboardPaste size={18}/></span><span className="tf-item-copy"><strong>Paste text</strong><small>Type or paste question and answer lines</small></span><ChevronRight size={18} className="tf-item-chev"/></button>
    <button type="button" className="tf-item" aria-expanded={aiOpen} onClick={()=>setAiOpen(o=>!o)}><span className="tf-tile" data-tone="violet"><Sparkles size={18}/></span><span className="tf-item-copy"><strong>Make questions with AI</strong><small>Turn your notes into questions with any AI chat</small></span><ChevronDown size={18} className="tf-item-chev tf-chev"/></button>
    {aiOpen&&<AiHelper onCopyPrompt={()=>void copyPrompt()} promptCopied={promptCopied}/>}

@@ -17476,7 +17476,7 @@ const createLucideIcon = (iconName, iconNode) => {
  */
 
 
-const __iconNode$2c = [
+const __iconNode$2d = [
   [
     "path",
     {
@@ -17485,7 +17485,21 @@ const __iconNode$2c = [
     }
   ]
 ];
-const Activity = createLucideIcon("Activity", __iconNode$2c);
+const Activity = createLucideIcon("Activity", __iconNode$2d);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$2c = [
+  ["path", { d: "M12 5v14", key: "s699le" }],
+  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+];
+const ArrowDown = createLucideIcon("ArrowDown", __iconNode$2c);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17496,10 +17510,12 @@ const Activity = createLucideIcon("Activity", __iconNode$2c);
 
 
 const __iconNode$2b = [
-  ["path", { d: "M12 5v14", key: "s699le" }],
-  ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
+  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
+  ["path", { d: "M4 7h16", key: "6tx8e3" }],
+  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
+  ["path", { d: "M20 17H4", key: "h6l3hr" }]
 ];
-const ArrowDown = createLucideIcon("ArrowDown", __iconNode$2b);
+const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$2b);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17510,12 +17526,11 @@ const ArrowDown = createLucideIcon("ArrowDown", __iconNode$2b);
 
 
 const __iconNode$2a = [
-  ["path", { d: "M8 3 4 7l4 4", key: "9rb6wj" }],
-  ["path", { d: "M4 7h16", key: "6tx8e3" }],
-  ["path", { d: "m16 21 4-4-4-4", key: "siv7j2" }],
-  ["path", { d: "M20 17H4", key: "h6l3hr" }]
+  ["path", { d: "M3 19V5", key: "rwsyhb" }],
+  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
+  ["path", { d: "M7 12h14", key: "uoisry" }]
 ];
-const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$2a);
+const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$2a);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17526,11 +17541,10 @@ const ArrowLeftRight = createLucideIcon("ArrowLeftRight", __iconNode$2a);
 
 
 const __iconNode$29 = [
-  ["path", { d: "M3 19V5", key: "rwsyhb" }],
-  ["path", { d: "m13 6-6 6 6 6", key: "1yhaz7" }],
-  ["path", { d: "M7 12h14", key: "uoisry" }]
+  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
+  ["path", { d: "M19 12H5", key: "x3x0zl" }]
 ];
-const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$29);
+const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$29);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17541,10 +17555,11 @@ const ArrowLeftToLine = createLucideIcon("ArrowLeftToLine", __iconNode$29);
 
 
 const __iconNode$28 = [
-  ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
-  ["path", { d: "M19 12H5", key: "x3x0zl" }]
+  ["path", { d: "M17 12H3", key: "8awo09" }],
+  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
+  ["path", { d: "M21 5v14", key: "nzette" }]
 ];
-const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$28);
+const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$28);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17555,11 +17570,10 @@ const ArrowLeft = createLucideIcon("ArrowLeft", __iconNode$28);
 
 
 const __iconNode$27 = [
-  ["path", { d: "M17 12H3", key: "8awo09" }],
-  ["path", { d: "m11 18 6-6-6-6", key: "8c2y43" }],
-  ["path", { d: "M21 5v14", key: "nzette" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$27);
+const ArrowRight = createLucideIcon("ArrowRight", __iconNode$27);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17570,10 +17584,12 @@ const ArrowRightToLine = createLucideIcon("ArrowRightToLine", __iconNode$27);
 
 
 const __iconNode$26 = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
+  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
+  ["path", { d: "M17 20V4", key: "1ejh1v" }],
+  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
+  ["path", { d: "M7 4v16", key: "1glfcx" }]
 ];
-const ArrowRight = createLucideIcon("ArrowRight", __iconNode$26);
+const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$26);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17584,12 +17600,10 @@ const ArrowRight = createLucideIcon("ArrowRight", __iconNode$26);
 
 
 const __iconNode$25 = [
-  ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
-  ["path", { d: "M17 20V4", key: "1ejh1v" }],
-  ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
-  ["path", { d: "M7 4v16", key: "1glfcx" }]
+  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
+  ["path", { d: "M12 19V5", key: "x0mq9r" }]
 ];
-const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$25);
+const ArrowUp = createLucideIcon("ArrowUp", __iconNode$25);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17600,10 +17614,14 @@ const ArrowUpDown = createLucideIcon("ArrowUpDown", __iconNode$25);
 
 
 const __iconNode$24 = [
-  ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
-  ["path", { d: "M12 19V5", key: "x0mq9r" }]
+  ["path", { d: "M2 10v3", key: "1fnikh" }],
+  ["path", { d: "M6 6v11", key: "11sgs0" }],
+  ["path", { d: "M10 3v18", key: "yhl04a" }],
+  ["path", { d: "M14 8v7", key: "3a1oy3" }],
+  ["path", { d: "M18 5v13", key: "123xd1" }],
+  ["path", { d: "M22 10v3", key: "154ddg" }]
 ];
-const ArrowUp = createLucideIcon("ArrowUp", __iconNode$24);
+const AudioLines = createLucideIcon("AudioLines", __iconNode$24);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17614,24 +17632,6 @@ const ArrowUp = createLucideIcon("ArrowUp", __iconNode$24);
 
 
 const __iconNode$23 = [
-  ["path", { d: "M2 10v3", key: "1fnikh" }],
-  ["path", { d: "M6 6v11", key: "11sgs0" }],
-  ["path", { d: "M10 3v18", key: "yhl04a" }],
-  ["path", { d: "M14 8v7", key: "3a1oy3" }],
-  ["path", { d: "M18 5v13", key: "123xd1" }],
-  ["path", { d: "M22 10v3", key: "154ddg" }]
-];
-const AudioLines = createLucideIcon("AudioLines", __iconNode$23);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$22 = [
   ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
   ["path", { d: "M22 8c0-2.3-.8-4.3-2-6", key: "5bb3ad" }],
   [
@@ -17643,7 +17643,27 @@ const __iconNode$22 = [
   ],
   ["path", { d: "M4 2C2.8 3.7 2 5.7 2 8", key: "tap9e0" }]
 ];
-const BellRing = createLucideIcon("BellRing", __iconNode$22);
+const BellRing = createLucideIcon("BellRing", __iconNode$23);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$22 = [
+  ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
+  [
+    "path",
+    {
+      d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
+      key: "11g9vi"
+    }
+  ]
+];
+const Bell = createLucideIcon("Bell", __iconNode$22);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17654,16 +17674,16 @@ const BellRing = createLucideIcon("BellRing", __iconNode$22);
 
 
 const __iconNode$21 = [
-  ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
+  ["path", { d: "M12 7v14", key: "1akyts" }],
   [
     "path",
     {
-      d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
-      key: "11g9vi"
+      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+      key: "ruj8y"
     }
   ]
 ];
-const Bell = createLucideIcon("Bell", __iconNode$21);
+const BookOpen = createLucideIcon("BookOpen", __iconNode$21);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17674,16 +17694,11 @@ const Bell = createLucideIcon("Bell", __iconNode$21);
 
 
 const __iconNode$20 = [
-  ["path", { d: "M12 7v14", key: "1akyts" }],
-  [
-    "path",
-    {
-      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
-      key: "ruj8y"
-    }
-  ]
+  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }],
+  ["line", { x1: "12", x2: "12", y1: "7", y2: "13", key: "1cppfj" }],
+  ["line", { x1: "15", x2: "9", y1: "10", y2: "10", key: "1gty7f" }]
 ];
-const BookOpen = createLucideIcon("BookOpen", __iconNode$20);
+const BookmarkPlus = createLucideIcon("BookmarkPlus", __iconNode$20);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17694,11 +17709,9 @@ const BookOpen = createLucideIcon("BookOpen", __iconNode$20);
 
 
 const __iconNode$1$ = [
-  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }],
-  ["line", { x1: "12", x2: "12", y1: "7", y2: "13", key: "1cppfj" }],
-  ["line", { x1: "15", x2: "9", y1: "10", y2: "10", key: "1gty7f" }]
+  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
 ];
-const BookmarkPlus = createLucideIcon("BookmarkPlus", __iconNode$1$);
+const Bookmark = createLucideIcon("Bookmark", __iconNode$1$);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17709,9 +17722,10 @@ const BookmarkPlus = createLucideIcon("BookmarkPlus", __iconNode$1$);
 
 
 const __iconNode$1_ = [
-  ["path", { d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z", key: "1fy3hk" }]
+  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
+  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
 ];
-const Bookmark = createLucideIcon("Bookmark", __iconNode$1_);
+const Brackets = createLucideIcon("Brackets", __iconNode$1_);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17722,20 +17736,6 @@ const Bookmark = createLucideIcon("Bookmark", __iconNode$1_);
 
 
 const __iconNode$1Z = [
-  ["path", { d: "M16 3h3v18h-3", key: "1yor1f" }],
-  ["path", { d: "M8 21H5V3h3", key: "1qrfwo" }]
-];
-const Brackets = createLucideIcon("Brackets", __iconNode$1Z);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1Y = [
   [
     "path",
     {
@@ -17758,7 +17758,25 @@ const __iconNode$1Y = [
   ["path", { d: "M6 18a4 4 0 0 1-1.967-.516", key: "2e4loj" }],
   ["path", { d: "M19.967 17.484A4 4 0 0 1 18 18", key: "159ez6" }]
 ];
-const Brain = createLucideIcon("Brain", __iconNode$1Y);
+const Brain = createLucideIcon("Brain", __iconNode$1Z);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1Y = [
+  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
+  ["path", { d: "M16 2v4", key: "4m81vk" }],
+  ["path", { d: "M8 2v4", key: "1cmpym" }],
+  ["path", { d: "M3 10h5", key: "r794hk" }],
+  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
+  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
+];
+const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1Y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17769,24 +17787,6 @@ const Brain = createLucideIcon("Brain", __iconNode$1Y);
 
 
 const __iconNode$1X = [
-  ["path", { d: "M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5", key: "1osxxc" }],
-  ["path", { d: "M16 2v4", key: "4m81vk" }],
-  ["path", { d: "M8 2v4", key: "1cmpym" }],
-  ["path", { d: "M3 10h5", key: "r794hk" }],
-  ["path", { d: "M17.5 17.5 16 16.3V14", key: "akvzfd" }],
-  ["circle", { cx: "16", cy: "16", r: "6", key: "qoo3c4" }]
-];
-const CalendarClock = createLucideIcon("CalendarClock", __iconNode$1X);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1W = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -17798,7 +17798,27 @@ const __iconNode$1W = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1W);
+const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1X);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1W = [
+  [
+    "path",
+    {
+      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
+      key: "1tc9qg"
+    }
+  ],
+  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
+];
+const Camera = createLucideIcon("Camera", __iconNode$1W);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17809,31 +17829,11 @@ const CalendarDays = createLucideIcon("CalendarDays", __iconNode$1W);
 
 
 const __iconNode$1V = [
-  [
-    "path",
-    {
-      d: "M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z",
-      key: "1tc9qg"
-    }
-  ],
-  ["circle", { cx: "12", cy: "13", r: "3", key: "1vg3eu" }]
-];
-const Camera = createLucideIcon("Camera", __iconNode$1V);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1U = [
   ["line", { x1: "12", x2: "12", y1: "20", y2: "10", key: "1vz5eb" }],
   ["line", { x1: "18", x2: "18", y1: "20", y2: "4", key: "cun8e5" }],
   ["line", { x1: "6", x2: "6", y1: "20", y2: "16", key: "hq0ia6" }]
 ];
-const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1U);
+const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasing", __iconNode$1V);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17843,8 +17843,8 @@ const ChartNoAxesColumnIncreasing = createLucideIcon("ChartNoAxesColumnIncreasin
  */
 
 
-const __iconNode$1T = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("Check", __iconNode$1T);
+const __iconNode$1U = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("Check", __iconNode$1U);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17854,8 +17854,8 @@ const Check = createLucideIcon("Check", __iconNode$1T);
  */
 
 
-const __iconNode$1S = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1S);
+const __iconNode$1T = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1T);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17865,8 +17865,8 @@ const ChevronDown = createLucideIcon("ChevronDown", __iconNode$1S);
  */
 
 
-const __iconNode$1R = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1R);
+const __iconNode$1S = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1S);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17876,8 +17876,23 @@ const ChevronLeft = createLucideIcon("ChevronLeft", __iconNode$1R);
  */
 
 
-const __iconNode$1Q = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1Q);
+const __iconNode$1R = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1R);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1Q = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+];
+const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1Q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17889,10 +17904,9 @@ const ChevronRight = createLucideIcon("ChevronRight", __iconNode$1Q);
 
 const __iconNode$1P = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1P);
+const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1P);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17904,9 +17918,9 @@ const CircleAlert = createLucideIcon("CircleAlert", __iconNode$1P);
 
 const __iconNode$1O = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
 ];
-const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1O);
+const CircleDot = createLucideIcon("CircleDot", __iconNode$1O);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17918,9 +17932,10 @@ const CircleCheck = createLucideIcon("CircleCheck", __iconNode$1O);
 
 const __iconNode$1N = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }]
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const CircleDot = createLucideIcon("CircleDot", __iconNode$1N);
+const CircleX = createLucideIcon("CircleX", __iconNode$1N);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17931,21 +17946,6 @@ const CircleDot = createLucideIcon("CircleDot", __iconNode$1N);
 
 
 const __iconNode$1M = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
-];
-const CircleX = createLucideIcon("CircleX", __iconNode$1M);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1L = [
   [
     "path",
     { d: "M15 2H9a1 1 0 0 0-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z", key: "1pp7kr" }
@@ -17959,7 +17959,21 @@ const __iconNode$1L = [
   ],
   ["path", { d: "m17 10 4 4-4 4", key: "vp2hj1" }]
 ];
-const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1L);
+const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1M);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1L = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
+];
+const Clock = createLucideIcon("Clock", __iconNode$1L);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17970,10 +17984,14 @@ const ClipboardPaste = createLucideIcon("ClipboardPaste", __iconNode$1L);
 
 
 const __iconNode$1K = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
+  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
+  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
+  [
+    "path",
+    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
+  ]
 ];
-const Clock = createLucideIcon("Clock", __iconNode$1K);
+const CloudOff = createLucideIcon("CloudOff", __iconNode$1K);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -17984,14 +18002,11 @@ const Clock = createLucideIcon("Clock", __iconNode$1K);
 
 
 const __iconNode$1J = [
-  ["path", { d: "m2 2 20 20", key: "1ooewy" }],
-  ["path", { d: "M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193", key: "yfwify" }],
-  [
-    "path",
-    { d: "M21.532 16.5A4.5 4.5 0 0 0 17.5 10h-1.79A7.008 7.008 0 0 0 10 5.07", key: "jlfiyv" }
-  ]
+  ["path", { d: "M12 13v8", key: "1l5pq0" }],
+  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
+  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
 ];
-const CloudOff = createLucideIcon("CloudOff", __iconNode$1J);
+const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1J);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18002,11 +18017,9 @@ const CloudOff = createLucideIcon("CloudOff", __iconNode$1J);
 
 
 const __iconNode$1I = [
-  ["path", { d: "M12 13v8", key: "1l5pq0" }],
-  ["path", { d: "M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242", key: "1pljnt" }],
-  ["path", { d: "m8 17 4-4 4 4", key: "1quai1" }]
+  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
 ];
-const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1I);
+const Cloud = createLucideIcon("Cloud", __iconNode$1I);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18017,9 +18030,10 @@ const CloudUpload = createLucideIcon("CloudUpload", __iconNode$1I);
 
 
 const __iconNode$1H = [
-  ["path", { d: "M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z", key: "p7xjir" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
 ];
-const Cloud = createLucideIcon("Cloud", __iconNode$1H);
+const Contrast = createLucideIcon("Contrast", __iconNode$1H);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18030,10 +18044,11 @@ const Cloud = createLucideIcon("Cloud", __iconNode$1H);
 
 
 const __iconNode$1G = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 18a6 6 0 0 0 0-12v12z", key: "j4l70d" }]
+  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
+  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
+  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Contrast = createLucideIcon("Contrast", __iconNode$1G);
+const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1G);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18044,11 +18059,10 @@ const Contrast = createLucideIcon("Contrast", __iconNode$1G);
 
 
 const __iconNode$1F = [
-  ["path", { d: "m12 15 2 2 4-4", key: "2c609p" }],
   ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
   ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1F);
+const Copy = createLucideIcon("Copy", __iconNode$1F);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18059,10 +18073,10 @@ const CopyCheck = createLucideIcon("CopyCheck", __iconNode$1F);
 
 
 const __iconNode$1E = [
-  ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
-  ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
+  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
+  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
 ];
-const Copy = createLucideIcon("Copy", __iconNode$1E);
+const Crop = createLucideIcon("Crop", __iconNode$1E);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18073,10 +18087,13 @@ const Copy = createLucideIcon("Copy", __iconNode$1E);
 
 
 const __iconNode$1D = [
-  ["path", { d: "M6 2v14a2 2 0 0 0 2 2h14", key: "ron5a4" }],
-  ["path", { d: "M18 22V8a2 2 0 0 0-2-2H2", key: "7s9ehn" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
+  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
+  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
+  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
 ];
-const Crop = createLucideIcon("Crop", __iconNode$1D);
+const Crosshair = createLucideIcon("Crosshair", __iconNode$1D);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18087,13 +18104,11 @@ const Crop = createLucideIcon("Crop", __iconNode$1D);
 
 
 const __iconNode$1C = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "22", x2: "18", y1: "12", y2: "12", key: "l9bcsi" }],
-  ["line", { x1: "6", x2: "2", y1: "12", y2: "12", key: "13hhkx" }],
-  ["line", { x1: "12", x2: "12", y1: "6", y2: "2", key: "10w3f3" }],
-  ["line", { x1: "12", x2: "12", y1: "22", y2: "18", key: "15g9kq" }]
+  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
+  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
+  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
 ];
-const Crosshair = createLucideIcon("Crosshair", __iconNode$1C);
+const Database = createLucideIcon("Database", __iconNode$1C);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18104,21 +18119,6 @@ const Crosshair = createLucideIcon("Crosshair", __iconNode$1C);
 
 
 const __iconNode$1B = [
-  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
-  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
-  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
-];
-const Database = createLucideIcon("Database", __iconNode$1B);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1A = [
   ["path", { d: "M13 4h3a2 2 0 0 1 2 2v14", key: "hrm0s9" }],
   ["path", { d: "M2 20h3", key: "1gaodv" }],
   ["path", { d: "M13 20h9", key: "s90cdi" }],
@@ -18131,7 +18131,22 @@ const __iconNode$1A = [
     }
   ]
 ];
-const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1A);
+const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1B);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1A = [
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
+  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+];
+const Download = createLucideIcon("Download", __iconNode$1A);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18142,11 +18157,15 @@ const DoorOpen = createLucideIcon("DoorOpen", __iconNode$1A);
 
 
 const __iconNode$1z = [
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
-  ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }]
+  [
+    "path",
+    {
+      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
+      key: "c7niix"
+    }
+  ]
 ];
-const Download = createLucideIcon("Download", __iconNode$1z);
+const Droplet = createLucideIcon("Droplet", __iconNode$1z);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18157,15 +18176,11 @@ const Download = createLucideIcon("Download", __iconNode$1z);
 
 
 const __iconNode$1y = [
-  [
-    "path",
-    {
-      d: "M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z",
-      key: "c7niix"
-    }
-  ]
+  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
+  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
 ];
-const Droplet = createLucideIcon("Droplet", __iconNode$1y);
+const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1y);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18176,11 +18191,16 @@ const Droplet = createLucideIcon("Droplet", __iconNode$1y);
 
 
 const __iconNode$1x = [
-  ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
-  ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
-  ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }]
+  ["path", { d: "m15 15 6 6", key: "1s409w" }],
+  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
+  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
+  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
+  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
+  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
+  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
+  ["path", { d: "M9 9 3 3", key: "v551iv" }]
 ];
-const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1x);
+const Expand = createLucideIcon("Expand", __iconNode$1x);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18191,16 +18211,11 @@ const Ellipsis = createLucideIcon("Ellipsis", __iconNode$1x);
 
 
 const __iconNode$1w = [
-  ["path", { d: "m15 15 6 6", key: "1s409w" }],
-  ["path", { d: "m15 9 6-6", key: "ko1vev" }],
-  ["path", { d: "M21 16.2V21h-4.8", key: "1hrera" }],
-  ["path", { d: "M21 7.8V3h-4.8", key: "ul1q53" }],
-  ["path", { d: "M3 16.2V21h4.8", key: "1x04uo" }],
-  ["path", { d: "m3 21 6-6", key: "wwnumi" }],
-  ["path", { d: "M3 7.8V3h4.8", key: "1ijppm" }],
-  ["path", { d: "M9 9 3 3", key: "v551iv" }]
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
 ];
-const Expand = createLucideIcon("Expand", __iconNode$1w);
+const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1w);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18211,21 +18226,6 @@ const Expand = createLucideIcon("Expand", __iconNode$1w);
 
 
 const __iconNode$1v = [
-  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
-  ["path", { d: "M10 14 21 3", key: "gplh6r" }],
-  ["path", { d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6", key: "a6xqqp" }]
-];
-const ExternalLink = createLucideIcon("ExternalLink", __iconNode$1v);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1u = [
   [
     "path",
     {
@@ -18243,7 +18243,27 @@ const __iconNode$1u = [
   ],
   ["path", { d: "m2 2 20 20", key: "1ooewy" }]
 ];
-const EyeOff = createLucideIcon("EyeOff", __iconNode$1u);
+const EyeOff = createLucideIcon("EyeOff", __iconNode$1v);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1u = [
+  [
+    "path",
+    {
+      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
+      key: "1nclc0"
+    }
+  ],
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+];
+const Eye = createLucideIcon("Eye", __iconNode$1u);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18254,16 +18274,10 @@ const EyeOff = createLucideIcon("EyeOff", __iconNode$1u);
 
 
 const __iconNode$1t = [
-  [
-    "path",
-    {
-      d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
-      key: "1nclc0"
-    }
-  ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
+  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
 ];
-const Eye = createLucideIcon("Eye", __iconNode$1t);
+const FastForward = createLucideIcon("FastForward", __iconNode$1t);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18274,20 +18288,6 @@ const Eye = createLucideIcon("Eye", __iconNode$1t);
 
 
 const __iconNode$1s = [
-  ["polygon", { points: "13 19 22 12 13 5 13 19", key: "587y9g" }],
-  ["polygon", { points: "2 19 11 12 2 5 2 19", key: "3pweh0" }]
-];
-const FastForward = createLucideIcon("FastForward", __iconNode$1s);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1r = [
   ["path", { d: "M10 12v-1", key: "v7bkov" }],
   ["path", { d: "M10 18v-2", key: "1cjy8d" }],
   ["path", { d: "M10 7V6", key: "dljcrl" }],
@@ -18298,7 +18298,7 @@ const __iconNode$1r = [
   ],
   ["circle", { cx: "10", cy: "20", r: "2", key: "1xzdoj" }]
 ];
-const FileArchive = createLucideIcon("FileArchive", __iconNode$1r);
+const FileArchive = createLucideIcon("FileArchive", __iconNode$1s);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18308,7 +18308,7 @@ const FileArchive = createLucideIcon("FileArchive", __iconNode$1r);
  */
 
 
-const __iconNode$1q = [
+const __iconNode$1r = [
   ["path", { d: "M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3", key: "rslqgf" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
   [
@@ -18319,7 +18319,23 @@ const __iconNode$1q = [
     }
   ]
 ];
-const FileAudio = createLucideIcon("FileAudio", __iconNode$1q);
+const FileAudio = createLucideIcon("FileAudio", __iconNode$1r);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1q = [
+  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
+  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
+  ["path", { d: "M12 18v-6", key: "17g6i2" }],
+  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+];
+const FileDown = createLucideIcon("FileDown", __iconNode$1q);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18332,10 +18348,16 @@ const FileAudio = createLucideIcon("FileAudio", __iconNode$1q);
 const __iconNode$1p = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 18v-6", key: "17g6i2" }],
-  ["path", { d: "m9 15 3 3 3-3", key: "1npd3o" }]
+  [
+    "path",
+    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
+  ],
+  [
+    "path",
+    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
+  ]
 ];
-const FileDown = createLucideIcon("FileDown", __iconNode$1p);
+const FileJson = createLucideIcon("FileJson", __iconNode$1p);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18348,16 +18370,12 @@ const FileDown = createLucideIcon("FileDown", __iconNode$1p);
 const __iconNode$1o = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  [
-    "path",
-    { d: "M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1", key: "1oajmo" }
-  ],
-  [
-    "path",
-    { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
-  ]
+  ["path", { d: "M8 13h2", key: "yr2amv" }],
+  ["path", { d: "M14 13h2", key: "un5t4a" }],
+  ["path", { d: "M8 17h2", key: "2yhykz" }],
+  ["path", { d: "M14 17h2", key: "10kma7" }]
 ];
-const FileJson = createLucideIcon("FileJson", __iconNode$1o);
+const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1o);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18370,12 +18388,11 @@ const FileJson = createLucideIcon("FileJson", __iconNode$1o);
 const __iconNode$1n = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M8 13h2", key: "yr2amv" }],
-  ["path", { d: "M14 13h2", key: "un5t4a" }],
-  ["path", { d: "M8 17h2", key: "2yhykz" }],
-  ["path", { d: "M14 17h2", key: "10kma7" }]
+  ["path", { d: "M10 9H8", key: "b1mrlr" }],
+  ["path", { d: "M16 13H8", key: "t4e002" }],
+  ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1n);
+const FileText = createLucideIcon("FileText", __iconNode$1n);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18388,11 +18405,10 @@ const FileSpreadsheet = createLucideIcon("FileSpreadsheet", __iconNode$1n);
 const __iconNode$1m = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M10 9H8", key: "b1mrlr" }],
-  ["path", { d: "M16 13H8", key: "t4e002" }],
-  ["path", { d: "M16 17H8", key: "z1uh3a" }]
+  ["path", { d: "M12 12v6", key: "3ahymv" }],
+  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
 ];
-const FileText = createLucideIcon("FileText", __iconNode$1m);
+const FileUp = createLucideIcon("FileUp", __iconNode$1m);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18405,10 +18421,9 @@ const FileText = createLucideIcon("FileText", __iconNode$1m);
 const __iconNode$1l = [
   ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
   ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "M12 12v6", key: "3ahymv" }],
-  ["path", { d: "m15 15-3-3-3 3", key: "15xj92" }]
+  ["path", { d: "m10 11 5 3-5 3v-6Z", key: "7ntvm4" }]
 ];
-const FileUp = createLucideIcon("FileUp", __iconNode$1l);
+const FileVideo = createLucideIcon("FileVideo", __iconNode$1l);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18419,11 +18434,16 @@ const FileUp = createLucideIcon("FileUp", __iconNode$1l);
 
 
 const __iconNode$1k = [
-  ["path", { d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z", key: "1rqfz7" }],
-  ["path", { d: "M14 2v4a2 2 0 0 0 2 2h4", key: "tnqrlb" }],
-  ["path", { d: "m10 11 5 3-5 3v-6Z", key: "7ntvm4" }]
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
+  ["path", { d: "M7 3v18", key: "bbkbws" }],
+  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
+  ["path", { d: "M3 12h18", key: "1i2n21" }],
+  ["path", { d: "M3 16.5h4", key: "1230mu" }],
+  ["path", { d: "M17 3v18", key: "in4fa5" }],
+  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
+  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
 ];
-const FileVideo = createLucideIcon("FileVideo", __iconNode$1k);
+const Film = createLucideIcon("Film", __iconNode$1k);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18434,16 +18454,15 @@ const FileVideo = createLucideIcon("FileVideo", __iconNode$1k);
 
 
 const __iconNode$1j = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
-  ["path", { d: "M7 3v18", key: "bbkbws" }],
-  ["path", { d: "M3 7.5h4", key: "zfgn84" }],
-  ["path", { d: "M3 12h18", key: "1i2n21" }],
-  ["path", { d: "M3 16.5h4", key: "1230mu" }],
-  ["path", { d: "M17 3v18", key: "in4fa5" }],
-  ["path", { d: "M17 7.5h4", key: "myr1c1" }],
-  ["path", { d: "M17 16.5h4", key: "go4c1d" }]
+  [
+    "path",
+    {
+      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+      key: "96xj49"
+    }
+  ]
 ];
-const Film = createLucideIcon("Film", __iconNode$1j);
+const Flame = createLucideIcon("Flame", __iconNode$1j);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18454,15 +18473,14 @@ const Film = createLucideIcon("Film", __iconNode$1j);
 
 
 const __iconNode$1i = [
-  [
-    "path",
-    {
-      d: "M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z",
-      key: "96xj49"
-    }
-  ]
+  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
+  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "M12 14v2", key: "8jcxud" }],
+  ["path", { d: "M12 8v2", key: "1woqiv" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }]
 ];
-const Flame = createLucideIcon("Flame", __iconNode$1i);
+const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1i);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18473,14 +18491,14 @@ const Flame = createLucideIcon("Flame", __iconNode$1i);
 
 
 const __iconNode$1h = [
-  ["path", { d: "m3 7 5 5-5 5V7", key: "couhi7" }],
-  ["path", { d: "m21 7-5 5 5 5V7", key: "6ouia7" }],
-  ["path", { d: "M12 20v2", key: "1lh1kg" }],
-  ["path", { d: "M12 14v2", key: "8jcxud" }],
-  ["path", { d: "M12 8v2", key: "1woqiv" }],
-  ["path", { d: "M12 2v2", key: "tus03m" }]
+  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
+  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
+  ["path", { d: "M4 12H2", key: "rhcxmi" }],
+  ["path", { d: "M10 12H8", key: "s88cx1" }],
+  ["path", { d: "M16 12h-2", key: "10asgb" }],
+  ["path", { d: "M22 12h-2", key: "14jgyd" }]
 ];
-const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1h);
+const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1h);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18491,24 +18509,6 @@ const FlipHorizontal2 = createLucideIcon("FlipHorizontal2", __iconNode$1h);
 
 
 const __iconNode$1g = [
-  ["path", { d: "m17 3-5 5-5-5h10", key: "1ftt6x" }],
-  ["path", { d: "m17 21-5-5-5 5h10", key: "1m0wmu" }],
-  ["path", { d: "M4 12H2", key: "rhcxmi" }],
-  ["path", { d: "M10 12H8", key: "s88cx1" }],
-  ["path", { d: "M16 12h-2", key: "10asgb" }],
-  ["path", { d: "M22 12h-2", key: "14jgyd" }]
-];
-const FlipVertical2 = createLucideIcon("FlipVertical2", __iconNode$1g);
-
-/**
- * @license lucide-react v0.477.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-
-
-const __iconNode$1f = [
   [
     "path",
     {
@@ -18519,7 +18519,22 @@ const __iconNode$1f = [
   ["path", { d: "M2 13h10", key: "pgb2dq" }],
   ["path", { d: "m9 16 3-3-3-3", key: "6m91ic" }]
 ];
-const FolderInput = createLucideIcon("FolderInput", __iconNode$1f);
+const FolderInput = createLucideIcon("FolderInput", __iconNode$1g);
+
+/**
+ * @license lucide-react v0.477.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+
+
+const __iconNode$1f = [
+  ["path", { d: "M7 2h10", key: "nczekb" }],
+  ["path", { d: "M5 6h14", key: "u2x4p" }],
+  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
+];
+const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1f);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -18530,11 +18545,11 @@ const FolderInput = createLucideIcon("FolderInput", __iconNode$1f);
 
 
 const __iconNode$1e = [
-  ["path", { d: "M7 2h10", key: "nczekb" }],
-  ["path", { d: "M5 6h14", key: "u2x4p" }],
-  ["rect", { width: "18", height: "12", x: "3", y: "10", rx: "2", key: "l0tzu3" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20", key: "13o1zl" }],
+  ["path", { d: "M2 12h20", key: "9i4pu4" }]
 ];
-const GalleryVerticalEnd = createLucideIcon("GalleryVerticalEnd", __iconNode$1e);
+const Globe = createLucideIcon("Globe", __iconNode$1e);
 
 /**
  * @license lucide-react v0.477.0 - ISC
@@ -31253,6 +31268,39 @@ Biology,Cells,single_choice,Which stores DNA?,Nucleus,Nucleus|Ribosome|Vacuole,m
 Maths,Basics,short_answer,What is 7 x 8?,56,,numeric=56;true_false=true,
 Art,Colour,short_answer,Name one primary colour.,Red,,,`;
 
+// Ready-made question sets shipped with the app under public/packs/<id>/: index.json lists the topics,
+// each topic is its own file, and pictures are stored once in a shared file and referenced as "img:<key>".
+const packBase=id=>new URL(`public/packs/${id}/`,document.baseURI).href;
+
+async function getJson(url,fetcher){
+  let res;
+  try{res=await fetcher(url,{cache:'no-cache'});}catch{throw new Error('Could not download this set. Check your internet connection and try again.');}
+  if(!res.ok)throw new Error(`Could not download this set (error ${res.status}). Try again later.`);
+  try{return await res.json();}catch{throw new Error('This set could not be read. Try again later.');}
+}
+
+function expandImages(questions,images){
+  return questions.map(q=>{
+    if(typeof q.image!=='string'||!q.image.startsWith('img:'))return q;
+    const src=images?.[q.image.slice(4)];
+    if(typeof src!=='string'||!src.startsWith('data:image/'))throw new Error('A picture is missing from this set. Try again later.');
+    return {...q,image:src};
+  });
+}
+
+async function readPackIndex(base,fetcher=fetch){
+  const index=await getJson(base+'index.json',fetcher);
+  if(!Array.isArray(index?.topics)||!index.topics.length)throw new Error('This set could not be read. Try again later.');
+  return index;
+}
+
+async function loadPackQuestions(base,index,topicIds,fetcher=fetch){
+  const topics=index.topics.filter(t=>topicIds.includes(t.id));
+  if(!topics.length)throw new Error('Choose at least one topic.');
+  const [images,...files]=await Promise.all([index.images?getJson(base+index.images,fetcher):{},...topics.map(t=>getJson(base+t.file,fetcher))]);
+  return expandImages(files.flatMap(f=>Array.isArray(f?.questions)?f.questions:[]),images);
+}
+
 const formatIcons = { json: FileJson, csv: Sheet, tsv: Layers, text: FileText };
 const formatShort = { json: ['RecallFlow', 'Full backup'], csv: ['Spreadsheet', 'Excel · Sheets'], tsv: ['Flashcards', 'Anki · Quizlet'], text: ['Printable', 'Read or print'] };
 const importShort = { json: 'RecallFlow', csv: 'CSV', tsv: 'Tab separated', lines: 'Text lines' };
@@ -31445,8 +31493,55 @@ function AiHelper({ onCopyPrompt, promptCopied }) {
                 React.createElement("pre", { className: "tf-pre" }, example))),
         React.createElement("p", { className: "tf-note" }, "Pictures and sounds should be https links. Several types per question are kept."));
 }
+function ReadyMadeSets({ onLoaded, onClose }) {
+    const [index, setIndex] = reactExports.useState(null), [picked, setPicked] = reactExports.useState([]), [busy, setBusy] = reactExports.useState(false), [error, setError] = reactExports.useState('');
+    reactExports.useEffect(() => { let live = true; readPackIndex(packBase('world')).then(ix => { if (live) {
+        setIndex(ix);
+        setPicked(ix.topics.map((t) => t.id));
+    } }).catch((e) => { if (live)
+        setError(e.message); }); return () => { live = false; }; }, []);
+    const all = !!index && picked.length === index.topics.length, count = index ? index.topics.filter((t) => picked.includes(t.id)).reduce((n, t) => n + t.count, 0) : 0;
+    async function review() { setBusy(true); setError(''); try {
+        const questions = await loadPackQuestions(packBase('world'), index, picked);
+        onLoaded(JSON.stringify({ app: 'RecallFlow', version: 1, questions }), index.title);
+    }
+    catch (e) {
+        setError(e.message);
+    }
+    finally {
+        setBusy(false);
+    } }
+    return React.createElement("section", { className: "tf-card tf-sets" },
+        React.createElement("div", { className: "tf-card-head" },
+            React.createElement("span", { className: "tf-tile", "data-tone": "amber" },
+                React.createElement(Globe, { size: 18 })),
+            React.createElement("div", null,
+                React.createElement("h2", null, index?.title || 'World countries'),
+                React.createElement("p", null, index ? `${index.description} Leaders are as of ${index.asOf}.` : error ? 'Not available right now.' : 'Loading…'))),
+        index && React.createElement(React.Fragment, null,
+            React.createElement("div", { className: "tf-sets-head" },
+                React.createElement("span", null,
+                    plural(count, 'question'),
+                    " selected"),
+                React.createElement("button", { type: "button", className: "tf-link", onClick: () => setPicked(all ? [] : index.topics.map((t) => t.id)) }, all ? 'Select none' : 'Select all')),
+            React.createElement("ul", { className: "tf-rows tf-sets-list" }, index.topics.map((t) => React.createElement("li", { key: t.id },
+                React.createElement("label", { className: "tf-q", "data-on": picked.includes(t.id) || undefined },
+                    React.createElement("input", { type: "checkbox", className: "tf-check", "aria-label": `Include ${t.label}`, checked: picked.includes(t.id), onChange: e => { const on = e.target.checked; setPicked(p => on ? [...p, t.id] : p.filter(x => x !== t.id)); } }),
+                    React.createElement("span", { className: "tf-q-copy" },
+                        React.createElement("strong", null, t.label),
+                        React.createElement("small", null, plural(t.count, 'question')))))))),
+        error && React.createElement("p", { className: "tf-error", role: "alert" },
+            React.createElement(CircleAlert, { size: 16 }),
+            error),
+        React.createElement("div", { className: "tf-row-actions" },
+            React.createElement(Button, { variant: "outline", onClick: onClose }, "Cancel"),
+            React.createElement(Button, { disabled: !index || !count || busy, onClick: () => void review() }, busy ? 'Loading…' : React.createElement(React.Fragment, null,
+                "Review ",
+                count || '',
+                React.createElement(ChevronRight, { size: 16 })))));
+}
 function ImportPanel({ items, onImport, onUndo, onBack }) {
-    const [text, setText] = reactExports.useState(''), [fileName, setFileName] = reactExports.useState(''), [format, setFormat] = reactExports.useState('auto'), [pasting, setPasting] = reactExports.useState(false), [drag, setDrag] = reactExports.useState(false), [promptCopied, setPromptCopied] = reactExports.useState(''), [aiOpen, setAiOpen] = reactExports.useState(false), [optsOpen, setOptsOpen] = reactExports.useState(false);
+    const [text, setText] = reactExports.useState(''), [fileName, setFileName] = reactExports.useState(''), [format, setFormat] = reactExports.useState('auto'), [pasting, setPasting] = reactExports.useState(false), [drag, setDrag] = reactExports.useState(false), [promptCopied, setPromptCopied] = reactExports.useState(''), [aiOpen, setAiOpen] = reactExports.useState(false), [optsOpen, setOptsOpen] = reactExports.useState(false), [setsOpen, setSetsOpen] = reactExports.useState(false);
     const [subject, setSubject] = reactExports.useState(''), [topic, setTopic] = reactExports.useState(''), [tag, setTag] = reactExports.useState(''), [dupes, setDupes] = reactExports.useState('skip'), [keepProgress, setKeepProgress] = reactExports.useState(false), [excluded, setExcluded] = reactExports.useState(new Set()), [done, setDone] = reactExports.useState(null), [added, setAdded] = reactExports.useState({ ids: [], subjects: [] }), [undone, setUndone] = reactExports.useState(false);
     const input = reactExports.useRef(null);
     const parsed = reactExports.useMemo(() => {
@@ -31507,7 +31602,7 @@ function ImportPanel({ items, onImport, onUndo, onBack }) {
         setUndone(false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    function reset() { setUndone(false); setAdded({ ids: [], subjects: [] }); setText(''); setFileName(''); setFormat('auto'); setExcluded(new Set()); setDone(null); setSubject(''); setTopic(''); setTag(''); setPromptCopied(''); setAiOpen(false); setPasting(false); setOptsOpen(false); }
+    function reset() { setUndone(false); setAdded({ ids: [], subjects: [] }); setText(''); setFileName(''); setFormat('auto'); setExcluded(new Set()); setDone(null); setSubject(''); setTopic(''); setTag(''); setPromptCopied(''); setAiOpen(false); setPasting(false); setOptsOpen(false); setSetsOpen(false); }
     const detectedLabel = parsed?.detected ? importFormats.find(([id]) => id === parsed.detected)?.[1] : '';
     if (done !== null)
         return React.createElement("div", { className: "tf-stack" },
@@ -31557,6 +31652,9 @@ function ImportPanel({ items, onImport, onUndo, onBack }) {
                     React.createElement(Button, { disabled: !rows.length, onClick: () => setPasting(false) },
                         "Review",
                         React.createElement(ChevronRight, { size: 16 })))));
+    if (setsOpen && !text.trim())
+        return React.createElement("div", { className: "tf-stack" },
+            React.createElement(ReadyMadeSets, { onClose: () => setSetsOpen(false), onLoaded: (json, name) => { setText(json); setFileName(name); setFormat('json'); setExcluded(new Set()); setDone(null); setSetsOpen(false); } }));
     if (!text.trim())
         return React.createElement("div", { className: "tf-stack" },
             React.createElement("button", { type: "button", className: "tf-drop", "data-drag": drag || undefined, onClick: () => input.current?.click(), onDragOver: e => { e.preventDefault(); setDrag(true); }, onDragLeave: () => setDrag(false), onDrop: e => { e.preventDefault(); setDrag(false); void readFile(e.dataTransfer.files?.[0]); } },
@@ -31571,6 +31669,13 @@ function ImportPanel({ items, onImport, onUndo, onBack }) {
                 fileError),
             React.createElement("p", { className: "tf-label" }, "Other ways to add"),
             React.createElement("div", { className: "tf-list" },
+                React.createElement("button", { type: "button", className: "tf-item", onClick: () => setSetsOpen(true) },
+                    React.createElement("span", { className: "tf-tile", "data-tone": "amber" },
+                        React.createElement(Globe, { size: 18 })),
+                    React.createElement("span", { className: "tf-item-copy" },
+                        React.createElement("strong", null, "Ready-made sets"),
+                        React.createElement("small", null, "World countries: capitals, flags, currencies, leaders and more")),
+                    React.createElement(ChevronRight, { size: 18, className: "tf-item-chev" })),
                 React.createElement("button", { type: "button", className: "tf-item", onClick: () => setPasting(true) },
                     React.createElement("span", { className: "tf-tile", "data-tone": "blue" },
                         React.createElement(ClipboardPaste, { size: 18 })),

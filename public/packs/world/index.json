@@ -1,0 +1,70 @@
+{
+ "id": "world-countries",
+ "title": "World countries",
+ "asOf": "October 2026",
+ "description": "Capitals, flags, currencies, continents, languages, codes, neighbours, leaders and population for every country and territory.",
+ "images": "images.json",
+ "topics": [
+  {
+   "id": "capitals",
+   "label": "Capitals",
+   "file": "capitals.json",
+   "count": 1989
+  },
+  {
+   "id": "flags",
+   "label": "Flags",
+   "file": "flags.json",
+   "count": 961
+  },
+  {
+   "id": "currencies",
+   "label": "Currencies",
+   "file": "currencies.json",
+   "count": 1502
+  },
+  {
+   "id": "continents",
+   "label": "Continents & regions",
+   "file": "continents.json",
+   "count": 874
+  },
+  {
+   "id": "languages",
+   "label": "Languages",
+   "file": "languages.json",
+   "count": 584
+  },
+  {
+   "id": "codes",
+   "label": "Calling codes & domains",
+   "file": "codes.json",
+   "count": 988
+  },
+  {
+   "id": "people",
+   "label": "People & neighbours",
+   "file": "people.json",
+   "count": 911
+  },
+  {
+   "id": "leaders",
+   "label": "Leaders (as of October 2026)",
+   "file": "leaders.json",
+   "count": 996
+  },
+  {
+   "id": "size",
+   "label": "Population & size",
+   "file": "size.json",
+   "count": 417
+  },
+  {
+   "id": "mixed",
+   "label": "Mixed",
+   "file": "mixed.json",
+   "count": 243
+  }
+ ],
+ "count": 9465
+}

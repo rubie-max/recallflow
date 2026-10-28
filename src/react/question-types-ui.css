@@ -1216,3 +1216,5 @@ body.dark .aq-manage-row .is-danger,body.dark .aq-error,body.dark .aq-name-note[
 .rf-reduce-motion .aq-sheet,.rf-reduce-motion .aq-dialog,.rf-reduce-motion .aq-done-mark{animation:none}
 @media(prefers-reduced-motion:reduce){.aq-sheet,.aq-dialog,.aq-done-mark{animation:none}}
 @media(max-width:360px){.aq-what-tile span:last-child{font-size:10.5px}.aq-setup{flex-basis:140px}}
+.tf-sets-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 2px 0;font-size:13px;font-weight:600;color:var(--muted-foreground)}
+.tf-sets-list{max-height:none;margin:6px -16px 12px}
