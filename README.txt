@@ -201,7 +201,8 @@ LOGIN & CLOUD SYNC (Oct 2026)
   only read/write the private repo rubie-max/RecallFlow-data.
 - Data lives in RecallFlow-data: data/state.json (questions, reports, streak, quiz count, settings)
   and images/<hash>.<ext> (uploaded pictures). Each device keeps a full offline copy and syncs
-  automatically (a few seconds after a change, when the app is reopened, and every minute).
+  automatically (a few seconds after a change but at most every 30 seconds while changes keep coming,
+  when the app is reopened or left, and every minute).
 - Edits on different devices are merged per question; deletions and "Reset progress" / "Delete everything"
   apply to all devices.
 - Pictures are stored as files, so they no longer fill the browser's 5 MB storage. They are cached per device.

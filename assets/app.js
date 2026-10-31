@@ -29417,6 +29417,9 @@ function mergeState(base,local,remote){
 }
 function baseOf(state){return {items:hashMap(state.items),reports:hashMap(state.reports),streak:Object.fromEntries(state.streakDays.map(d=>[d,hash(d)])),count:state.quizCount,prefs:{...state.prefs}};}
 const parse=(raw,fallback)=>{try{return raw==null?fallback:JSON.parse(raw);}catch{return fallback;}};
+// Each sync uploads the whole state file, so a burst of changes (answering a quiz) is sent at most once per SYNC_GAP.
+const SYNC_DEBOUNCE=2500,SYNC_GAP=30000;
+const syncDelay=(now,lastStart)=>Math.max(SYNC_DEBOUNCE,lastStart+SYNC_GAP-now);
 function normalizeState(s){return {items:Array.isArray(s?.items)?s.items:[],reports:Array.isArray(s?.reports)?s.reports:[],streakDays:Array.isArray(s?.streakDays)?s.streakDays:[],quizCount:Number(s?.quizCount)||0,prefs:s?.prefs&&typeof s.prefs==='object'?s.prefs:{}};}
 
 // ---------- session ----------
@@ -29573,7 +29576,7 @@ async function uploadPending(auth){
 function rescueImages(){document.addEventListener('error',e=>{const img=e.target;if(!(img instanceof HTMLImageElement))return;const src=img.getAttribute('src')||'';if(!isStoredImage(src)||img.dataset.rfRescued)return;img.dataset.rfRescued='1';imageBlob(src.slice(IMAGE_DIR.length)).then(blob=>{if(blob)img.src=URL.createObjectURL(blob);}).catch(()=>{});},true);}
 
 // ---------- sync engine ----------
-let status={state:'idle'},running=null,again=false,timer=0,suppress=false;
+let status={state:'idle'},running=null,again=false,timer=0,suppress=false,lastStart=-Infinity;
 function setStatus(next){status={...status,...next};window.dispatchEvent(new CustomEvent('recallflow:sync-status',{detail:status}));}
 const syncStatus=()=>({...status,lastSynced:parse(localStorage.getItem(META_KEY),null)?.syncedAt||0,pendingImages:pendingImageCount()});
 function readLocal(){
@@ -29607,7 +29610,7 @@ function syncNow(){
   const auth=session();if(!auth)return Promise.resolve();
   if(running){again=true;return running;}
   if(!navigator.onLine){setStatus({state:'offline'});return Promise.resolve();}
-  setStatus({state:'syncing',error:''});
+  setStatus({state:'syncing',error:''});lastStart=Date.now();
   running=(async()=>{
     try{let tries=0;do{again=false;try{await syncOnce(auth);}catch(e){if(!e.conflict||++tries>4)throw e;const m=parse(localStorage.getItem(META_KEY),null);if(m)localStorage.setItem(META_KEY,JSON.stringify({...m,etag:null}));again=true;}}while(again);setStatus({state:'synced',error:''});}
     catch(e){setStatus({state:navigator.onLine?'error':'offline',error:e.message});}
@@ -29615,7 +29618,7 @@ function syncNow(){
   })();
   return running;
 }
-function schedule(){clearTimeout(timer);timer=setTimeout(syncNow,2500);}
+function schedule(){clearTimeout(timer);timer=setTimeout(syncNow,syncDelay(Date.now(),lastStart));}
 let started=false;
 function startSync(){
   if(started)return;started=true;rescueImages();

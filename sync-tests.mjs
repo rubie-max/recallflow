@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {mergeLists,mergeState,baseOf,normalizeState,sealVault,openVault,PREF_KEYS} from './src/sync.js';
+import {mergeLists,mergeState,baseOf,normalizeState,sealVault,openVault,PREF_KEYS,syncDelay,SYNC_DEBOUNCE,SYNC_GAP} from './src/sync.js';
 const q=(id,text='Q '+id)=>({id,type:'short',question:text,answer:'A'});
 const prefs=(over={})=>Object.fromEntries(PREF_KEYS.map(k=>[k,over[k]??null]));
 const state=(items,over={})=>normalizeState({items,reports:[],streakDays:[],quizCount:0,prefs:prefs(),...over});
@@ -42,8 +42,14 @@ assert.equal(s.prefs.recallflow_speech_engine,'kokoro');
 s=mergeState(b2,state([q('a')],{quizCount:0,prefs:b2.prefs}),state([q('a')],{quizCount:10,reports:[{id:'r_1'}],streakDays:['2026-10-01'],prefs:b2.prefs}));
 assert.deepEqual([s.reports,s.streakDays,s.quizCount],[[],[],0]);
 
+// A change syncs after the short pause, but no sooner than SYNC_GAP after the last sync started.
+assert.equal(syncDelay(1000,-Infinity),SYNC_DEBOUNCE);
+assert.equal(syncDelay(100000,100000-SYNC_GAP-5000),SYNC_DEBOUNCE);
+assert.equal(syncDelay(100000,100000-5000),SYNC_GAP-5000);
+assert.equal(syncDelay(100000,100000),SYNC_GAP);
+
 // The vault opens only with the right login (fewer rounds keep the test quick).
 const vault=await sealVault('Kaizen','pass-123',{token:'t',owner:'o',repo:'r'},1000);
 assert.deepEqual(await openVault(vault,' kaizen ','pass-123'),{token:'t',owner:'o',repo:'r'});
 await assert.rejects(openVault(vault,'Kaizen','wrong'),/Wrong username or password/);
-console.log('PASS: three-way merge of questions, deletions, first sync, counts, reports, streaks, settings and the login vault.');
+console.log('PASS: three-way merge of questions, deletions, first sync, counts, reports, streaks, settings, sync spacing and the login vault.');
