@@ -1,7 +1,8 @@
-// The question bank can outgrow localStorage (about 5 MB per site), so it is kept in IndexedDB.
-// A memory copy keeps localStorage.getItem/setItem/removeItem for this one key synchronous,
-// so the rest of the app and cloud sync keep working unchanged.
+// The question bank and the sync records that grow with it can outgrow localStorage (about 5 MB per site),
+// so they are kept in IndexedDB. A memory copy keeps localStorage.getItem/setItem/removeItem for these keys
+// synchronous, so the rest of the app and cloud sync keep working unchanged.
 export const BANK_KEY='recallflow_bank_v2';
+export const BIG_KEYS=[BANK_KEY,'rfsync_meta','rfsync_pages'];
 
 export function createBankStore(backend,onError){
   let value=null,latest=0,queue=Promise.resolve();
@@ -15,22 +16,26 @@ export function createBankStore(backend,onError){
   };
 }
 
-function idbBackend(){
-  const db=new Promise((resolve,reject)=>{const req=indexedDB.open('recallflow-bank',1);req.onupgradeneeded=()=>req.result.createObjectStore('kv');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
-  const run=(mode,fn)=>db.then(d=>new Promise((resolve,reject)=>{const tx=d.transaction('kv',mode),req=fn(tx.objectStore('kv'));tx.oncomplete=()=>resolve(req.result);tx.onerror=tx.onabort=()=>reject(tx.error||new Error('Saving failed.'));}));
-  return {get:()=>run('readonly',s=>s.get(BANK_KEY)),put:v=>run('readwrite',s=>s.put(v,BANK_KEY)),del:()=>run('readwrite',s=>s.delete(BANK_KEY))};
+let database=null;
+function idbBackend(key){
+  database??=new Promise((resolve,reject)=>{const req=indexedDB.open('recallflow-bank',1);req.onupgradeneeded=()=>req.result.createObjectStore('kv');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
+  const run=(mode,fn)=>database.then(d=>new Promise((resolve,reject)=>{const tx=d.transaction('kv',mode),req=fn(tx.objectStore('kv'));tx.oncomplete=()=>resolve(req.result);tx.onerror=tx.onabort=()=>reject(tx.error||new Error('Saving failed.'));}));
+  return {get:()=>run('readonly',s=>s.get(key)),put:v=>run('readwrite',s=>s.put(v,key)),del:()=>run('readwrite',s=>s.delete(key))};
 }
 
-// Falls back to plain localStorage (today's behaviour) when IndexedDB is missing or fails to load.
+// Each key falls back to plain localStorage on its own when IndexedDB is missing or fails to load it.
 export async function startBankStore(){
   if(typeof indexedDB==='undefined')return false;
   const proto=Storage.prototype,get=proto.getItem,set=proto.setItem,remove=proto.removeItem;
-  const store=createBankStore(idbBackend(),()=>window.dispatchEvent(new Event('recallflow:storage-full')));
-  try{await store.load(get.call(localStorage,BANK_KEY));}catch{return false;}
-  remove.call(localStorage,BANK_KEY);
-  proto.getItem=function(k){return this===localStorage&&k===BANK_KEY?store.get():get.call(this,k);};
-  proto.setItem=function(k,v){if(this===localStorage&&k===BANK_KEY)void store.set(v);else set.call(this,k,v);};
-  proto.removeItem=function(k){if(this===localStorage&&k===BANK_KEY)void store.remove();else remove.call(this,k);};
+  const full=()=>window.dispatchEvent(new Event('recallflow:storage-full'));
+  const stores=new Map();
+  await Promise.all(BIG_KEYS.map(async key=>{const store=createBankStore(idbBackend(key),full);try{await store.load(get.call(localStorage,key));stores.set(key,store);}catch{}}));
+  if(!stores.size)return false;
+  for(const key of stores.keys())remove.call(localStorage,key);
+  const big=(self,k)=>self===localStorage?stores.get(k):undefined;
+  proto.getItem=function(k){const s=big(this,k);return s?s.get():get.call(this,k);};
+  proto.setItem=function(k,v){const s=big(this,k);if(s)void s.set(v);else set.call(this,k,v);};
+  proto.removeItem=function(k){const s=big(this,k);if(s)void s.remove();else remove.call(this,k);};
   void navigator.storage?.persist?.().catch(()=>{});
-  return true;
+  return stores.has(BANK_KEY);
 }

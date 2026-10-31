@@ -1,9 +1,10 @@
 // Cloud sync. The app keeps reading and writing localStorage as before; this module mirrors
-// that data to data/state.json in a private GitHub repo and stores uploaded pictures there too.
+// that data to a private GitHub repo (data/state.json, or page files once moved; see page-sync.js) and stores uploaded pictures there too.
 // Sync keys use the rfsync_ prefix so "Delete everything" (which clears recallflow_*) keeps the
 // sync base, letting the deletion reach the other devices instead of being undone by them.
 import {encryptBackupPassword} from './backup-password.js';
-const SESSION_KEY='rfsync_session',META_KEY='rfsync_meta',PENDING_KEY='rfsync_pending_images';
+import {pagedSync,migrateToPages,MOVED_TEXT,BACKUP_WORKFLOW,BACKUP_MARK} from './page-sync.js';
+const SESSION_KEY='rfsync_session',META_KEY='rfsync_meta',PENDING_KEY='rfsync_pending_images',PAGES_KEY='rfsync_pages',SYNCED_AT_KEY='rfsync_synced_at';
 const STATE_PATH='data/state.json',IMAGE_CACHE='recallflow-images';
 export const IMAGE_DIR='rf-img/';
 const BANK='recallflow_bank_v2',REPORTS='recallflow_reports',STREAK='recallflow_streak_days',COUNT='recallflow_quiz_count';
@@ -97,7 +98,8 @@ async function readRemote(auth,etag){
   if(!res.ok)throw new Error(`GitHub said ${res.status} while reading your data.`);
   const meta=await res.json();let content=meta.encoding==='base64'&&meta.content?meta.content:'';
   if(!content){const blob=await gh(auth,`git/blobs/${meta.sha}`);content=(await blob.json()).content;}
-  return {state:normalizeState(JSON.parse(new TextDecoder().decode(unb64(content)))),sha:meta.sha,etag:res.headers.get('ETag')};
+  const text=new TextDecoder().decode(unb64(content));if(text===MOVED_TEXT)return {moved:true};
+  return {state:normalizeState(JSON.parse(text)),sha:meta.sha,etag:res.headers.get('ETag')};
 }
 async function writeRemote(auth,state,sha){
   const body={message:`Sync from ${navigator.userAgent.includes('Mobile')?'phone':'computer'}`,content:b64(utf8(JSON.stringify({app:'RecallFlow',version:1,updatedAt:new Date().toISOString(),...state}))),branch:'main',...(sha?{sha}:{})};
@@ -105,6 +107,31 @@ async function writeRemote(auth,state,sha){
   if(res.status===409||res.status===422)throw Object.assign(new Error('conflict'),{conflict:true});
   if(!res.ok)throw new Error(`GitHub said ${res.status} while saving your data.`);
   return (await res.json()).content.sha;
+}
+
+// Git data API calls for page-file sync (see page-sync.js), shaped like the ones the site deploy uses.
+function gitApi(auth){
+  const json=async(path,init={},what='reading your data')=>{const res=await gh(auth,path,init);if(!res.ok)throw new Error(`GitHub said ${res.status} while ${what}.`);return res.json();};
+  const post=(path,body)=>json(path,{method:'POST',body:JSON.stringify(body)},'saving your data');
+  return {
+    async getRef(etag){const res=await gh(auth,'git/ref/heads/main',{headers:etag?{'If-None-Match':etag}:{}});if(res.status===304)return {unchanged:true};if(!res.ok)throw new Error(`GitHub said ${res.status} while reading your data.`);return {sha:(await res.json()).object.sha,etag:res.headers.get('ETag')};},
+    commitTree:async sha=>(await json(`git/commits/${sha}`)).tree.sha,
+    async dataFiles(tree){
+      const dir=(await json(`git/trees/${tree}`)).tree.find(e=>e.path==='data'&&e.type==='tree');if(!dir)return new Map();
+      const list=await json(`git/trees/${dir.sha}?recursive=1`);if(list.truncated)throw new Error('Your data folder on GitHub has too many files to read.');
+      return new Map(list.tree.filter(e=>e.type==='blob').map(e=>[`data/${e.path}`,e.sha]));
+    },
+    blob:async sha=>new TextDecoder().decode(unb64((await json(`git/blobs/${sha}`)).content)),
+    createBlob:async text=>(await post('git/blobs',{content:b64(utf8(text)),encoding:'base64'})).sha,
+    createTree:async(base,entries)=>(await post('git/trees',{base_tree:base,tree:entries.map(e=>({path:e.path,mode:'100644',type:'blob',sha:e.sha}))})).sha,
+    createCommit:async(message,tree,parent)=>(await post('git/commits',{message,tree,parents:[parent]})).sha,
+    async updateRef(sha){
+      const res=await gh(auth,'git/refs/heads/main',{method:'PATCH',body:JSON.stringify({sha,force:false})});
+      if(res.status===409||res.status===422)throw Object.assign(new Error('conflict'),{conflict:true});
+      if(!res.ok)throw new Error(`GitHub said ${res.status} while saving your data.`);
+    },
+    async backupReady(){const res=await gh(auth,`contents/${BACKUP_WORKFLOW}`,{headers:{Accept:'application/vnd.github.raw+json'}});if(res.status===404)return true;return res.ok&&(await res.text()).includes(BACKUP_MARK);}
+  };
 }
 
 // ---------- Telegram backup ----------
@@ -215,7 +242,7 @@ function rescueImages(){document.addEventListener('error',e=>{const img=e.target
 // ---------- sync engine ----------
 let status={state:'idle'},running=null,again=false,timer=0,suppress=false,lastStart=-Infinity;
 function setStatus(next){status={...status,...next};window.dispatchEvent(new CustomEvent('recallflow:sync-status',{detail:status}));}
-export const syncStatus=()=>({...status,lastSynced:parse(localStorage.getItem(META_KEY),null)?.syncedAt||0,pendingImages:pendingImageCount()});
+export const syncStatus=()=>({...status,lastSynced:Number(localStorage.getItem(SYNCED_AT_KEY))||parse(localStorage.getItem(META_KEY),null)?.syncedAt||0,pendingImages:pendingImageCount()});
 function readLocal(){
   const prefs={};for(const k of PREF_KEYS)prefs[k]=localStorage.getItem(k);
   return {items:parse(localStorage.getItem(BANK),[]),reports:parse(localStorage.getItem(REPORTS),[]),streakDays:parse(localStorage.getItem(STREAK),[]),quizCount:Number(localStorage.getItem(COUNT)||0)||0,prefs};
@@ -229,19 +256,52 @@ function applyLocal(state){
   }finally{suppress=false;}
   window.dispatchEvent(new Event('recallflow:remote-update'));
 }
+const device=()=>navigator.userAgent.includes('Mobile')?'phone':'computer';
+function applyIfCurrent(merged,localHash){
+  if(hash(readLocal())!==localHash)return false;
+  if(hash(merged)!==localHash||localStorage.getItem(BANK)===null)applyLocal(merged);
+  return true;
+}
+// data/state.json format. Returns 'moved' once the data repo uses page files, 'again' when the device changed meanwhile.
+async function legacySync(auth,local,localHash){
+  const meta=parse(localStorage.getItem(META_KEY),null);
+  const remote=await readRemote(auth,meta?.etag);
+  if(remote.moved)return 'moved';
+  let merged=local,sha=meta?.sha||null,etag=remote.etag||null;
+  if(remote.unchanged){if(localHash===meta.stateHash)return 'synced';}
+  else{sha=remote.sha;merged=remote.state?mergeState(meta?.base||null,local,remote.state):meta?.base?local:mergeState(null,local,normalizeState(null));}
+  if(!applyIfCurrent(merged,localHash))return 'again';
+  if(remote.unchanged||!remote.state||hash(merged)!==hash(remote.state)){sha=await writeRemote(auth,merged,sha);etag=null;}
+  localStorage.setItem(META_KEY,JSON.stringify({base:baseOf(merged),stateHash:hash(merged),sha,etag,syncedAt:Date.now()}));
+  return 'synced';
+}
+// Moves the bank to page files once the data repo's backup workflow can read them (checked every BACKUP_RECHECK until it can).
+const BACKUP_RECHECK=10*60000;
+let backupReady=false,backupCheckedAt=-Infinity;
+async function maybeMoveToPages(api){
+  const meta=parse(localStorage.getItem(META_KEY),null),local=readLocal();
+  if(!meta?.sha||hash(local)!==meta.stateHash)return;
+  if(!backupReady&&Date.now()-backupCheckedAt>=BACKUP_RECHECK){backupCheckedAt=Date.now();backupReady=await api.backupReady();}
+  if(!backupReady)return;
+  const pages=await migrateToPages(api,{state:local,expectSha:meta.sha,baseOf,message:`Move questions to page files (from ${device()})`});
+  if(pages)localStorage.setItem(PAGES_KEY,JSON.stringify(pages));
+}
 async function syncOnce(auth){
   const local0=readLocal(),moved=await mapImages(local0.items,storeImage);
   if(moved.changed){suppress=true;try{localStorage.setItem(BANK,JSON.stringify(moved.items));}finally{suppress=false;}window.dispatchEvent(new Event('recallflow:remote-update'));}
   await uploadPending(auth);
-  const meta=parse(localStorage.getItem(META_KEY),null),local=readLocal(),localHash=hash(local);
-  const remote=await readRemote(auth,meta?.etag);
-  let merged=local,sha=meta?.sha||null,etag=remote.etag||null;
-  if(remote.unchanged){if(localHash===meta.stateHash)return;}
-  else{sha=remote.sha;merged=remote.state?mergeState(meta?.base||null,local,remote.state):meta?.base?local:mergeState(null,local,normalizeState(null));}
-  if(hash(readLocal())!==localHash){again=true;return;}
-  if(hash(merged)!==localHash||localStorage.getItem(BANK)===null)applyLocal(merged);
-  if(remote.unchanged||!remote.state||hash(merged)!==hash(remote.state)){sha=await writeRemote(auth,merged,sha);etag=null;}
-  localStorage.setItem(META_KEY,JSON.stringify({base:baseOf(merged),stateHash:hash(merged),sha,etag,syncedAt:Date.now()}));
+  const api=gitApi(auth),local=readLocal(),localHash=hash(local),wasLegacy=localStorage.getItem(PAGES_KEY)===null;
+  if(wasLegacy){
+    const done=await legacySync(auth,local,localHash);
+    if(done==='again'){again=true;return;}
+    if(done==='synced'){localStorage.setItem(SYNCED_AT_KEY,String(Date.now()));await maybeMoveToPages(api);return;}
+  }
+  const paged=await pagedSync(api,{local,meta:parse(localStorage.getItem(PAGES_KEY),null),legacyBase:parse(localStorage.getItem(META_KEY),null)?.base||null,
+    merge:mergeState,baseOf,apply:merged=>applyIfCurrent(merged,localHash),message:`Sync from ${device()}`});
+  if(paged.again){again=true;return;}
+  if(paged.legacy){if(wasLegacy)throw new Error('Your data on GitHub could not be read.');localStorage.removeItem(PAGES_KEY);again=true;return;}
+  if(!paged.idle)localStorage.setItem(PAGES_KEY,JSON.stringify(paged.meta));
+  localStorage.setItem(SYNCED_AT_KEY,String(Date.now()));
 }
 export function syncNow(){
   const auth=session();if(!auth)return Promise.resolve();
