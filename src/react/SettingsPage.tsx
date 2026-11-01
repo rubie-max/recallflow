@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight,Music,Play,Upload,Vibrate,Bell,BellRing,ListChecks} from 'lucide-react';
+import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight,Music,Play,Upload,Vibrate,Pointer,Bell,BellRing,ListChecks} from 'lucide-react';
 import {customSounds,saveCustomSound,readSoundFile,playFeedback,playPreset,feedback,haptic,countdownCue} from '../feedback-sounds.js';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
@@ -15,7 +15,7 @@ import {useProfilePhoto,PhotoEditor} from './ProfilePhoto';
 import {localDay,APP_TIME_ZONE} from '../streak-stats.js';
 import {REMINDER_DAY_NAMES,EVERY_DAY,WEEKDAYS,validReminderTime,formatReminderTime,reminderDaysLabel,reminderSupport,askReminderPermission,registerReminderSync,showReminder} from '../reminders.js';
 
-const sections:[string,string,any][]=[['profile','Profile',UserRound],['account','Account',Cloud],['appearance','Appearance',Palette],['voice','Voice',Volume2],['quiz','Quiz',SlidersHorizontal],['data','Data',Database],['app','App',Smartphone]];
+const sections:[string,string,any][]=[['profile','Profile',UserRound],['account','Account',Cloud],['appearance','Appearance',Palette],['voice','Voice & sound',Volume2],['quiz','Quiz',SlidersHorizontal],['data','Data',Database],['app','App',Smartphone]];
 const menuGroups:[string,string[]][]=[['Sync',['account']],['Learning',['quiz','voice']],['App',['appearance','data','app']]];
 
 function Toggle({icon:Icon,title,detail,checked,onChange}:any){
@@ -104,7 +104,11 @@ function SoundEffects(){
   <div className="settings-sound-preview">{([['correct','Correct'],['incorrect','Wrong'],['save','Saved'],['delete','Deleted'],['complete','Finished']] as const).map(([kind,label])=><button key={kind} type="button" className="settings-sound-btn" onClick={()=>feedback(kind)}><Play size={14}/>{label}</button>)}<button type="button" className="settings-sound-btn" onClick={()=>void previewCountdown()}><Play size={14}/>3-2-1 Go</button></div></>}
   {prefs.soundEffects==='custom'&&<div className="settings-sound-list">{row('correct','Correct answer')}{row('incorrect','Wrong answer')}<p className="settings-hint">Short clips work best (under 400 KB). Empty slots use the default chime.</p></div>}
   {error&&<p className="settings-error" role="alert">{error}</p>}
-  <div className="settings-switch-list"><Toggle icon={Vibrate} title="Vibration" detail="A short buzz with each sound. Works on Android phones." checked={prefs.vibration} onChange={(v:boolean)=>{update({vibration:v});if(v)haptic('correct',true);}}/></div>
+  <div className="settings-switch-list">
+   <Toggle icon={Vibrate} title="Vibrate with sounds" detail="A short buzz for right, wrong, saving and finishing." checked={prefs.vibration} onChange={(v:boolean)=>{update({vibration:v});if(v)haptic('correct',true);}}/>
+   <Toggle icon={Pointer} title="Vibrate on taps" detail="A light tick on buttons, switches and when you move between pages." checked={prefs.tapVibration} onChange={(v:boolean)=>{update({tapVibration:v});if(v)haptic('nav',true);}}/>
+  </div>
+  <p className="settings-hint">Vibration works on Android phones. iPhones don’t allow websites to vibrate.</p>
  </Panel>;
 }
 
@@ -287,21 +291,21 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
  const jump=(id:string)=>{setActiveSection(id);document.getElementById(`settings-${id}`)?.scrollIntoView({behavior:document.documentElement.classList.contains('rf-reduce-motion')?'auto':'smooth',block:'start'});};
  const open=(id:string)=>{history.pushState({...history.state,rfSettings:id},'',location.href);setOpenSection(id);window.scrollTo(0,0);};
  const close=()=>{if(history.state?.rfSettings)history.back();else setOpenSection(null);window.scrollTo(0,0);};
- const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Device voice or Kokoro, speed',quiz:'Questions, reminder, sounds, vibration',data:'Import, export, backup, reset',app:'Install, offline, about'};
+ const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Voice, sounds, vibration',quiz:'Questions, countdown, reminder',data:'Import, export, backup, reset',app:'Install, offline, about'};
  const quizLength=quizPreferences().count,speechEngine=localStorage.getItem('recallflow_speech_engine')==='kokoro'?'Kokoro AI voice':'Device voice',speed=Number(localStorage.getItem(speechEngine==='Device voice'?'recallflow_system_rate':'recallflow_kokoro_speed')||1);
  const live:Record<string,string>={
   account:sync.state==='syncing'?'Syncing…':sync.state==='offline'?'Offline':sync.state==='error'?'Sync problem':ago(sync.lastSynced),
   appearance:`${({light:'Light',dark:'Dark',system:'System'} as any)[theme]||'Theme'} · ${(textSizes.find((t:any)=>t[0]===prefs.textSize)||[,'Default'])[1]} text`,
-  voice:`${speechEngine} · ${speed.toFixed(1)}×`,
-  quiz:`${quizLength?`${quizLength} questions`:'All due'} · ${prefs.reminder?`reminder ${formatReminderTime(prefs.reminderTime)}`:`sounds ${prefs.soundEffects==='off'?'off':prefs.soundEffects==='custom'?'custom':'on'}`}`,
+  voice:`${speechEngine} · ${speed.toFixed(1)}× · sounds ${prefs.soundEffects==='off'?'off':prefs.soundEffects==='custom'?'custom':'on'}`,
+  quiz:`${quizLength?`${quizLength} questions`:'All due'} · ${prefs.reminder?`reminder ${formatReminderTime(prefs.reminderTime)}`:'no reminder'}`,
   data:`${items.length} ${items.length===1?'question':'questions'} · backup & import`,
  };
  const groups:Record<string,React.ReactNode>={
   profile:<ProfileSettings/>,
   account:<AccountSettings/>,
   appearance:<AppearanceSettings theme={theme} onTheme={onTheme}/>,
-  voice:<><KokoroPanel/><VoiceBehaviour/></>,
-  quiz:<><QuizDefaults onSaved={onQuizDefaults}/><ReminderSettings/><SoundEffects/></>,
+  voice:<><KokoroPanel/><VoiceBehaviour/><SoundEffects/></>,
+  quiz:<><QuizDefaults onSaved={onQuizDefaults}/><ReminderSettings/></>,
   data:<>
    <Panel icon={Database} title="Storage" detail="A copy on this device, so it works offline."><StorageMeter items={items}/></Panel>
    <button className="settings-link-card" onClick={onOpenTransfer}><span className="settings-icon"><ArrowLeftRight size={19}/></span><span><strong>Import & export questions</strong><small>CSV, Anki, JSON or plain text</small></span><ArrowRight size={18}/></button>

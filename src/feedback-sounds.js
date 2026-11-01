@@ -143,11 +143,27 @@ export async function countdownCue(n,mode=appPreferences().soundEffects){
 }
 
 // Android phones vibrate; iPhones and most computers ignore this silently.
-export const hapticPatterns={correct:[18],incorrect:[40,60,40],tick:[12],go:[30],save:[20],complete:[20,60,20,60,60],delete:[25],error:[45,50,45],tap:[8]};
-export function haptic(kind,on=appPreferences().vibration){
+// Taps and navigation follow their own setting; everything else follows the "with sounds" setting.
+export const hapticPatterns={correct:[18],incorrect:[40,60,40],tick:[12],go:[30],save:[20],complete:[20,60,20,60,60],delete:[25],error:[45,50,45],tap:[10],nav:[16]};
+export const TAP_KINDS=['tap','nav'];
+export function haptic(kind,on){
   const pattern=hapticPatterns[kind];
+  if(on===undefined){const p=appPreferences();on=TAP_KINDS.includes(kind)?p.tapVibration:p.vibration;}
   if(!on||!pattern||typeof navigator==='undefined'||typeof navigator.vibrate!=='function')return false;
   try{return navigator.vibrate(pattern)!==false;}catch{return false;}
+}
+
+// Which tap tick a pressed element gets: 'nav' inside navigation bars, 'tap' for other controls, null otherwise.
+const TAPPABLE='button,a[href],summary,select,[role=button],[role=radio],[role=switch],[role=tab],[role=checkbox],[role=menuitem],input[type=checkbox],input[type=radio]';
+export function tapKind(target){
+  const el=target&&typeof target.closest==='function'?target.closest(TAPPABLE):null;
+  if(!el||el.disabled||el.getAttribute('aria-disabled')==='true')return null;
+  return el.closest('nav')?'nav':'tap';
+}
+if(typeof document!=='undefined'){
+  // Capture phase runs first, so an answer's own right/wrong buzz replaces this tick instead of mixing with it.
+  document.addEventListener('click',e=>{const kind=tapKind(e.target);if(kind)haptic(kind);},{capture:true,passive:true});
+  window.addEventListener('popstate',()=>haptic('nav'));
 }
 
 export function customSounds(){try{const v=JSON.parse(localStorage.getItem(customSoundsKey)||'{}');return {correct:typeof v.correct==='string'?v.correct:'',incorrect:typeof v.incorrect==='string'?v.incorrect:''};}catch{return {correct:'',incorrect:''};}}
