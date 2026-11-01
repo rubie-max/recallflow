@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight,Music,Play,Upload,Vibrate,Bell,BellRing,ListChecks} from 'lucide-react';
-import {customSounds,saveCustomSound,readSoundFile,playFeedback,feedback,haptic} from '../feedback-sounds.js';
+import {customSounds,saveCustomSound,readSoundFile,playFeedback,playPreset,feedback,haptic,countdownCue} from '../feedback-sounds.js';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
 import {BackupRestore,OfflineSettings} from './LearningFeatures';
@@ -89,6 +89,7 @@ function QuizDefaults({onSaved}:any){
 function SoundEffects(){
  const [prefs,update]=usePrefs(),[custom,setCustom]=useState(customSounds),[error,setError]=useState('');
  const pickers={correct:useRef<HTMLInputElement>(null),incorrect:useRef<HTMLInputElement>(null)};
+ async function previewCountdown(){for(const n of [3,2,1,0]){void countdownCue(n);await new Promise(r=>setTimeout(r,850));}}
  async function upload(kind:'correct'|'incorrect',file?:File){if(!file)return;setError('');try{setCustom(saveCustomSound(kind,await readSoundFile(file)));}catch(e:any){setError(e.message);}}
  const row=(kind:'correct'|'incorrect',label:string)=><div className="settings-sound-row" key={kind}>
   <span className="settings-sound-copy"><strong>{label}</strong><small>{custom[kind]?'Custom file':'Using default chime'}</small></span>
@@ -97,9 +98,10 @@ function SoundEffects(){
   {custom[kind]&&<button type="button" className="settings-sound-btn is-remove" aria-label={`Remove custom ${label.toLowerCase()}`} onClick={()=>setCustom(saveCustomSound(kind,''))}><Trash2 size={14}/></button>}
   <input ref={pickers[kind]} type="file" accept="audio/*" hidden onChange={e=>{void upload(kind,e.target.files?.[0]);e.target.value='';}}/>
  </div>;
- return <Panel icon={Music} title="Sounds & vibration" detail="For right and wrong answers, saving and deleting questions, finishing a quiz and the 3-2-1 countdown.">
+ return <Panel icon={Music} title="Sounds & vibration" detail="For right and wrong answers, saving and deleting questions, finishing a quiz, and a spoken 3-2-1 countdown.">
   <div className="settings-segmented" role="radiogroup" aria-label="Sound effects">{[['default','Default'],['custom','Custom'],['off','Off']].map(([id,label])=><button key={id} role="radio" aria-checked={prefs.soundEffects===id} onClick={()=>{update({soundEffects:id});if(id!=='off')playFeedback('correct',id);}}>{label}</button>)}</div>
-  {prefs.soundEffects==='default'&&<div className="settings-sound-preview">{([['correct','Correct'],['incorrect','Wrong'],['save','Saved'],['complete','Finished']] as const).map(([kind,label])=><button key={kind} type="button" className="settings-sound-btn" onClick={()=>feedback(kind)}><Play size={14}/>{label}</button>)}</div>}
+  {prefs.soundEffects==='default'&&<><p className="settings-label">Style</p><div className="settings-segmented" role="radiogroup" aria-label="Sound style">{[['arcade','Arcade'],['bells','Bells']].map(([id,label])=><button key={id} role="radio" aria-checked={prefs.soundStyle===id} onClick={()=>{update({soundStyle:id});playPreset('correct',id);}}>{label}</button>)}</div>
+  <div className="settings-sound-preview">{([['correct','Correct'],['incorrect','Wrong'],['save','Saved'],['delete','Deleted'],['complete','Finished']] as const).map(([kind,label])=><button key={kind} type="button" className="settings-sound-btn" onClick={()=>feedback(kind)}><Play size={14}/>{label}</button>)}<button type="button" className="settings-sound-btn" onClick={()=>void previewCountdown()}><Play size={14}/>3-2-1 Go</button></div></>}
   {prefs.soundEffects==='custom'&&<div className="settings-sound-list">{row('correct','Correct answer')}{row('incorrect','Wrong answer')}<p className="settings-hint">Short clips work best (under 400 KB). Empty slots use the default chime.</p></div>}
   {error&&<p className="settings-error" role="alert">{error}</p>}
   <div className="settings-switch-list"><Toggle icon={Vibrate} title="Vibration" detail="A short buzz with each sound. Works on Android phones." checked={prefs.vibration} onChange={(v:boolean)=>{update({vibration:v});if(v)haptic('correct',true);}}/></div>

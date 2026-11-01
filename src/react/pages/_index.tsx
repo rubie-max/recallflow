@@ -14,7 +14,7 @@ import {appPreferences, applyAppPreferences} from "../../app-preferences.js";
 import {removeWithPositions,restoreRemoved} from "../../undo-delete.js";
 import {dropPickedFromSetups} from "../../quiz-setups.js";
 import {saveReminderState,reminderSupport,msUntilNextReminder,reminderDue,lastReminderShown,showReminder,markReminderShown} from "../../reminders.js";
-import {feedback} from "../../feedback-sounds.js";
+import {feedback,countdownCue} from "../../feedback-sounds.js";
 import {PROGRESS_KEY,makeReport,currentProgress,unfinishedReport} from "../../quiz-progress.js";
 import {resolveVariant, variantAt, retakeVariant, seededShuffle, itemTypes, draftFromSpec, specFromDraft, isPictureLabel} from "../../question-variants.js";
 import {audioCache} from "../../audio-cache.js";
@@ -278,8 +278,8 @@ export default function IndexPage(){
   }
   useEffect(()=>{
     if(countdown===null)return;
-    feedback('tick');
-    const timer=window.setTimeout(()=>{if(countdown<=1){feedback('go');setCountdown(null);setStarted(Date.now());}else setCountdown(countdown-1);},1000);
+    void countdownCue(countdown);
+    const timer=window.setTimeout(()=>{if(countdown<=1){void countdownCue(0);setCountdown(null);setStarted(Date.now());}else setCountdown(countdown-1);},1000);
     return()=>window.clearTimeout(timer);
   },[countdown]);
   useEffect(()=>{

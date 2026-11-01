@@ -1,0 +1,22 @@
+{
+  "engine": "Kokoro-82M-v1.0",
+  "voice": "af_heart",
+  "words": [
+    {
+      "file": "three.wav",
+      "text": "Three!"
+    },
+    {
+      "file": "two.wav",
+      "text": "Two!"
+    },
+    {
+      "file": "one.wav",
+      "text": "One!"
+    },
+    {
+      "file": "go.wav",
+      "text": "Go!"
+    }
+  ]
+}

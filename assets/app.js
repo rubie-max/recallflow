@@ -20071,28 +20071,28 @@ function getElementRef(element) {
   return element.props.ref || element.ref;
 }
 
-var styles$3 = {"button":"rf_Button_button","sm":"rf_Button_sm","md":"rf_Button_md","lg":"rf_Button_lg","icon":"rf_Button_icon","icon-md":"rf_Button_icon-md","icon-sm":"rf_Button_icon-sm","icon-lg":"rf_Button_icon-lg","primary":"rf_Button_primary","secondary":"rf_Button_secondary","destructive":"rf_Button_destructive","outline":"rf_Button_outline","ghost":"rf_Button_ghost","link":"rf_Button_link","disabled":"rf_Button_disabled"};
+var styles$4 = {"button":"rf_Button_button","sm":"rf_Button_sm","md":"rf_Button_md","lg":"rf_Button_lg","icon":"rf_Button_icon","icon-md":"rf_Button_icon-md","icon-sm":"rf_Button_icon-sm","icon-lg":"rf_Button_icon-lg","primary":"rf_Button_primary","secondary":"rf_Button_secondary","destructive":"rf_Button_destructive","outline":"rf_Button_outline","ghost":"rf_Button_ghost","link":"rf_Button_link","disabled":"rf_Button_disabled"};
 
 const Button = React.forwardRef(({ children, variant = "primary", size = "md", asChild = false, className, disabled, type = "button", ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     return (React.createElement(Comp, { ref: ref, type: type, className: `
-        ${styles$3.button} 
-        ${styles$3[variant]} 
-        ${styles$3[size]} 
-        ${disabled ? styles$3.disabled : ""} 
+        ${styles$4.button} 
+        ${styles$4[variant]} 
+        ${styles$4[size]} 
+        ${disabled ? styles$4.disabled : ""} 
         ${className || ""}
       `, disabled: disabled, ...props }, children));
 });
 Button.displayName = "Button";
 
-var styles$2 = {"input":"rf_Input_input"};
+var styles$3 = {"input":"rf_Input_input"};
 
 const Input = reactExports.forwardRef(({ className, ...props }, ref) => {
-    return (React.createElement("input", { ref: ref, className: `${styles$2.input} ${className || ""}`, ...props }));
+    return (React.createElement("input", { ref: ref, className: `${styles$3.input} ${className || ""}`, ...props }));
 });
 Input.displayName = "Input";
 
-var styles$1 = {"shell":"rf__index_shell","main":"rf__index_main","mini":"rf__index_mini","intro":"rf__index_intro","pageTitle":"rf__index_pageTitle","finish":"rf__index_finish","eyebrow":"rf__index_eyebrow","streakCard":"rf__index_streakCard","streakOpen":"rf__index_streakOpen","streakTop":"rf__index_streakTop","week":"rf__index_week","dayMissed":"rf__index_dayMissed","dayDone":"rf__index_dayDone","dayToday":"rf__index_dayToday","streakHint":"rf__index_streakHint","homeStats":"rf__index_homeStats","nav":"rf__index_nav","active":"rf__index_active","plus":"rf__index_plus","quizNav":"rf__index_quizNav","note":"rf__index_note","reviewPage":"rf__index_reviewPage","track":"rf__index_track","flipCard":"rf__index_flipCard","flipInner":"rf__index_flipInner","flipped":"rf__index_flipped","flipFront":"rf__index_flipFront","flipBack":"rf__index_flipBack","two":"rf__index_two","options":"rf__index_options","answerArea":"rf__index_answerArea","feedbackGood":"rf__index_feedbackGood","feedbackBad":"rf__index_feedbackBad","feedbackIcon":"rf__index_feedbackIcon","feedbackCopy":"rf__index_feedbackCopy","finishBadge":"rf__index_finishBadge","scoreRing":"rf__index_scoreRing","finishStats":"rf__index_finishStats","reportsPage":"rf__index_reportsPage","reportList":"rf__index_reportList","reportCard":"rf__index_reportCard","reportHead":"rf__index_reportHead","emptyReports":"rf__index_emptyReports","homeStreakBadge":"rf__index_homeStreakBadge","homeTileDone":"rf__index_homeTileDone","homeMain":"rf__index_homeMain","headerRight":"rf__index_headerRight","homeTheme":"rf__index_homeTheme","profilePlaceholder":"rf__index_profilePlaceholder","homeQuizIcon":"rf__index_homeQuizIcon","homeTileUpcoming":"rf__index_homeTileUpcoming","homeTileToday":"rf__index_homeTileToday","homeTileCompletedToday":"rf__index_homeTileCompletedToday","daySkipped":"rf__index_daySkipped","reportSectionTitle":"rf__index_reportSectionTitle"};
+var styles$2 = {"shell":"rf__index_shell","main":"rf__index_main","mini":"rf__index_mini","intro":"rf__index_intro","pageTitle":"rf__index_pageTitle","finish":"rf__index_finish","eyebrow":"rf__index_eyebrow","streakCard":"rf__index_streakCard","streakOpen":"rf__index_streakOpen","streakTop":"rf__index_streakTop","week":"rf__index_week","dayMissed":"rf__index_dayMissed","dayDone":"rf__index_dayDone","dayToday":"rf__index_dayToday","streakHint":"rf__index_streakHint","homeStats":"rf__index_homeStats","nav":"rf__index_nav","active":"rf__index_active","plus":"rf__index_plus","quizNav":"rf__index_quizNav","note":"rf__index_note","reviewPage":"rf__index_reviewPage","track":"rf__index_track","flipCard":"rf__index_flipCard","flipInner":"rf__index_flipInner","flipped":"rf__index_flipped","flipFront":"rf__index_flipFront","flipBack":"rf__index_flipBack","two":"rf__index_two","options":"rf__index_options","answerArea":"rf__index_answerArea","feedbackGood":"rf__index_feedbackGood","feedbackBad":"rf__index_feedbackBad","feedbackIcon":"rf__index_feedbackIcon","feedbackCopy":"rf__index_feedbackCopy","finishBadge":"rf__index_finishBadge","scoreRing":"rf__index_scoreRing","finishStats":"rf__index_finishStats","reportsPage":"rf__index_reportsPage","reportList":"rf__index_reportList","reportCard":"rf__index_reportCard","reportHead":"rf__index_reportHead","emptyReports":"rf__index_emptyReports","homeStreakBadge":"rf__index_homeStreakBadge","homeTileDone":"rf__index_homeTileDone","homeMain":"rf__index_homeMain","headerRight":"rf__index_headerRight","homeTheme":"rf__index_homeTheme","profilePlaceholder":"rf__index_profilePlaceholder","homeQuizIcon":"rf__index_homeQuizIcon","homeTileUpcoming":"rf__index_homeTileUpcoming","homeTileToday":"rf__index_homeTileToday","homeTileCompletedToday":"rf__index_homeTileCompletedToday","daySkipped":"rf__index_daySkipped","reportSectionTitle":"rf__index_reportSectionTitle"};
 
 // Only generated audio lives here; other RecallFlow data stays in localStorage.
 let database$1;
@@ -21137,8 +21137,8 @@ async function showReminder(dueCount,{test=false}={}){
 
 const appPreferencesKey='recallflow_app_preferences_v1';
 const textSizes=[['small','Small',.92],['default','Default',1],['large','Large',1.1],['larger','Larger',1.2]];
-const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default',vibration:true,...reminderDefaults};
-const soundEffectModes=['default','custom','off'];
+const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default',soundStyle:'arcade',vibration:true,...reminderDefaults};
+const soundEffectModes=['default','custom','off'],soundStyleIds=['arcade','bells'];
 
 function validateAppPreferences(value){
   const v={...appDefaults,...(value&&typeof value==='object'?value:{})};
@@ -21152,6 +21152,7 @@ function validateAppPreferences(value){
     autoAdvance:v.autoAdvance===true,
     confirmExit:v.confirmExit!==false,
     soundEffects:soundEffectModes.includes(v.soundEffects)?v.soundEffects:'default',
+    soundStyle:soundStyleIds.includes(v.soundStyle)?v.soundStyle:'arcade',
     vibration:v.vibration!==false,
     ...cleanReminderSettings(v),
   };
@@ -21177,7 +21178,7 @@ function audioContext(){
   if(!ctx||ctx.state==='closed'){
     // iOS mutes Web Audio with the ring/silent switch unless the session is "playback".
     try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch{}
-    ctx=new AC();
+    ctx=new AC({latencyHint:'interactive'});
   }
   // Safari reports "interrupted" after other media plays or the app is backgrounded.
   if(ctx.state!=='running')ctx.resume().catch(()=>{});
@@ -21185,7 +21186,9 @@ function audioContext(){
 }
 
 function unlock(){
-  if((ctx&&ctx.state==='running')||appPreferences().soundEffects==='off')return;
+  if(appPreferences().soundEffects==='off')return;
+  void loadCountdownVoice();
+  if(ctx&&ctx.state==='running')return;
   const c=audioContext();if(!c)return;
   try{const b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0);}catch{}
 }
@@ -21194,50 +21197,119 @@ if(typeof window!=='undefined'){
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&ctx&&ctx.state!=='running')ctx.resume().catch(()=>{});});
 }
 
-// All effects share one output: a small generated room echo and a limiter so stacked notes never clip.
+// Everything goes through one output: a short generated room echo, then a hard limiter so effects
+// can be mixed loud for phone speakers without clipping.
 let bus=null;
 function output(c){
   if(bus&&bus.ctx===c)return bus.input;
   const input=c.createGain(),limit=c.createDynamicsCompressor(),echo=c.createConvolver(),wet=c.createGain();
-  limit.threshold.value=-12;limit.knee.value=8;limit.ratio.value=6;limit.attack.value=.002;limit.release.value=.15;
-  const len=Math.round(c.sampleRate*.6),room=c.createBuffer(2,len,c.sampleRate);
-  for(let ch=0;ch<2;ch++){const d=room.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,4);}
-  echo.buffer=room;wet.gain.value=.14;
+  limit.threshold.value=-4;limit.knee.value=0;limit.ratio.value=20;limit.attack.value=.001;limit.release.value=.08;
+  const len=Math.round(c.sampleRate*.5),room=c.createBuffer(2,len,c.sampleRate);
+  for(let ch=0;ch<2;ch++){const d=room.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,5);}
+  echo.buffer=room;wet.gain.value=.12;
   input.connect(limit);input.connect(echo);echo.connect(wet).connect(limit);limit.connect(c.destination);
-  bus={ctx:c,input};return input;
+  const noise=c.createBuffer(1,c.sampleRate,c.sampleRate),nd=noise.getChannelData(0);
+  for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+  bus={ctx:c,input,noise};return input;
 }
 
-// A struck note: the main pitch plus quieter overtones that fade faster, like a bell or marimba bar.
-function note(c,{freq,start=0,dur=.4,gain=.14,type='sine',slide,overtones=[[2,.22],[3,.06]],lowpass}){
-  const t=c.currentTime+start,amp=c.createGain();
+function envelope(c,t,gain,dur,attack=.004){
+  const amp=c.createGain();
   amp.gain.setValueAtTime(0.0001,t);
-  amp.gain.exponentialRampToValueAtTime(gain,t+.005);
+  amp.gain.exponentialRampToValueAtTime(gain,t+attack);
   amp.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-  if(lowpass){const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=lowpass;amp.connect(f).connect(output(c));}
-  else amp.connect(output(c));
-  for(const [mult,level] of [[1,1],...overtones]){
-    const osc=c.createOscillator(),g=c.createGain();
-    osc.type=type;osc.frequency.setValueAtTime(freq*mult,t);
-    if(slide)osc.frequency.exponentialRampToValueAtTime(slide*mult,t+dur);
-    g.gain.setValueAtTime(level,t);
-    if(mult>1)g.gain.exponentialRampToValueAtTime(level*.01,t+dur/mult);
-    osc.connect(g).connect(amp);osc.start(t);osc.stop(t+dur+.05);
-  }
+  return amp;
+}
+function filtered(c,node,type,freq){
+  if(!freq)return node.connect(output(c));
+  const f=c.createBiquadFilter();f.type=type;f.frequency.value=freq;node.connect(f);f.connect(output(c));
 }
 
-const presets={
-  correct:c=>{note(c,{freq:1046.5,dur:.32});note(c,{freq:1568,start:.09,dur:.6});},
-  incorrect:c=>{note(c,{freq:392,slide:370,dur:.22,type:'triangle',gain:.16,overtones:[[2,.12]],lowpass:1400});note(c,{freq:311.1,start:.14,slide:290,dur:.4,type:'triangle',gain:.16,overtones:[[2,.12]],lowpass:1200});},
-  tick:c=>note(c,{freq:1250,slide:950,dur:.07,gain:.09,overtones:[]}),
-  go:c=>{for(const f of [1046.5,1318.5,1568])note(c,{freq:f,dur:.7,gain:.07});note(c,{freq:2093,start:.04,dur:.45,gain:.025,overtones:[]});},
-  save:c=>{note(c,{freq:520,slide:1040,dur:.09,gain:.1,overtones:[]});note(c,{freq:1568,start:.07,dur:.4,gain:.08});},
-  complete:c=>[523.25,659.25,783.99,1046.5].forEach((f,i)=>note(c,{freq:f,start:i*.09,dur:i===3?.95:.35,gain:.11})),
-  delete:c=>note(c,{freq:420,slide:150,dur:.16,gain:.12,overtones:[],lowpass:900}),
-  error:c=>{note(c,{freq:220,dur:.12,type:'triangle',gain:.13,overtones:[],lowpass:1000});note(c,{freq:220,start:.16,dur:.14,type:'triangle',gain:.13,overtones:[],lowpass:1000});},
+// One oscillator with a quick attack and decay; `to` glides the pitch for sweeps and "bwah" sounds.
+function tone(c,{freq,to,start=0,dur=.2,type='square',gain=.2,lowpass}){
+  const t=c.currentTime+start,osc=c.createOscillator(),amp=envelope(c,t,gain,dur);
+  osc.type=type;osc.frequency.setValueAtTime(freq,t);
+  if(to)osc.frequency.exponentialRampToValueAtTime(to,t+dur);
+  osc.connect(amp);filtered(c,amp,'lowpass',lowpass);
+  osc.start(t);osc.stop(t+dur+.05);
+}
+
+// FM bell: an inharmonic modulator whose depth fades, so the strike is bright and the tail is pure.
+function bell(c,{freq,start=0,dur=.9,gain=.3,ratio=3.5,depth=2.2,lowpass}){
+  const t=c.currentTime+start,car=c.createOscillator(),mod=c.createOscillator(),modGain=c.createGain(),amp=envelope(c,t,gain,dur,.002);
+  car.frequency.value=freq;mod.frequency.value=freq*ratio;
+  modGain.gain.setValueAtTime(freq*depth,t);modGain.gain.exponentialRampToValueAtTime(freq*.05,t+dur*.6);
+  mod.connect(modGain).connect(car.frequency);car.connect(amp);filtered(c,amp,'lowpass',lowpass);
+  for(const o of [car,mod]){o.start(t);o.stop(t+dur+.05);}
+}
+
+// Filtered noise for sparkles and whooshes.
+function hiss(c,{start=0,dur=.2,gain=.1,from=6000,to,type='bandpass'}){
+  const t=c.currentTime+start,src=c.createBufferSource(),f=c.createBiquadFilter(),amp=envelope(c,t,gain,dur,.01);
+  output(c);src.buffer=bus.noise;f.type=type;f.Q.value=1.2;f.frequency.setValueAtTime(from,t);
+  if(to)f.frequency.exponentialRampToValueAtTime(to,t+dur);
+  src.connect(f).connect(amp).connect(output(c));src.start(t);src.stop(t+dur+.05);
+}
+
+const C5=523.25,E5=659.25,G5=783.99,B5=987.77,C6=1046.5,E6=1318.5,G6=1568,B6=1975.5,C7=2093;
+
+const styles$1={
+  arcade:{
+    correct:c=>{tone(c,{freq:E6,dur:.09,gain:.2,lowpass:5000});tone(c,{freq:E5,dur:.09,type:'triangle',gain:.4});tone(c,{freq:B6,start:.08,dur:.34,gain:.2,lowpass:6500});tone(c,{freq:B5,start:.08,dur:.34,type:'triangle',gain:.4});hiss(c,{start:.08,dur:.16,gain:.08,from:9000});},
+    incorrect:c=>{tone(c,{freq:196,to:180,dur:.15,type:'sawtooth',gain:.4,lowpass:1600});tone(c,{freq:150,to:98,start:.17,dur:.34,type:'sawtooth',gain:.45,lowpass:1300});tone(c,{freq:75,to:50,start:.17,dur:.34,type:'sine',gain:.35});},
+    tick:c=>{tone(c,{freq:C6,dur:.06,gain:.22,lowpass:4500});tone(c,{freq:C5,dur:.06,type:'triangle',gain:.35});},
+    go:c=>{tone(c,{freq:C5,to:C7,dur:.18,gain:.16,lowpass:5000});hiss(c,{dur:.2,gain:.12,from:1500,to:9000});for(const f of [C6,E6,G6])tone(c,{freq:f,start:.16,dur:.6,type:'triangle',gain:.3});tone(c,{freq:C7,start:.16,dur:.45,gain:.1,lowpass:7000});},
+    save:c=>{tone(c,{freq:G5,to:G6,dur:.08,gain:.32,lowpass:4500});tone(c,{freq:C7,start:.07,dur:.28,type:'triangle',gain:.6});hiss(c,{start:.07,dur:.12,gain:.08,from:9000});},
+    complete:c=>{[C6,E6,G6].forEach((f,i)=>{tone(c,{freq:f,start:i*.08,dur:.1,gain:.2,lowpass:6000});tone(c,{freq:f/2,start:i*.08,dur:.1,type:'triangle',gain:.3});});tone(c,{freq:C7,start:.24,dur:.7,gain:.18,lowpass:7000});for(const f of [C6,E6,G6])tone(c,{freq:f,start:.24,dur:.9,type:'triangle',gain:.22});hiss(c,{start:.24,dur:.5,gain:.1,from:8000});},
+    delete:c=>{hiss(c,{dur:.24,gain:.4,from:3500,to:300});tone(c,{freq:620,to:180,dur:.2,type:'triangle',gain:.6});},
+    error:c=>{tone(c,{freq:165,dur:.1,gain:.3,lowpass:1400});tone(c,{freq:165,start:.14,dur:.12,gain:.3,lowpass:1400});},
+  },
+  bells:{
+    correct:c=>{bell(c,{freq:G6,dur:.5,gain:.35});bell(c,{freq:C7,start:.1,dur:1,gain:.4});},
+    incorrect:c=>{bell(c,{freq:233,ratio:1.4,depth:3,dur:.35,gain:.5,lowpass:2200});bell(c,{freq:185,ratio:1.4,depth:3,start:.18,dur:.6,gain:.55,lowpass:1800});},
+    tick:c=>bell(c,{freq:1760,dur:.14,gain:.3}),
+    go:c=>{for(const f of [C6,E6,G6])bell(c,{freq:f,dur:1,gain:.22});bell(c,{freq:C7,start:.05,dur:.8,gain:.2});},
+    save:c=>{bell(c,{freq:E6,dur:.3,gain:.45});bell(c,{freq:B6,start:.07,dur:.6,gain:.48});},
+    complete:c=>[C6,E6,G6,C7].forEach((f,i)=>bell(c,{freq:f,start:i*.1,dur:i===3?1.4:.6,gain:.45})),
+    delete:c=>bell(c,{freq:330,ratio:1.4,depth:2,dur:.3,gain:.45,lowpass:1600}),
+    error:c=>{bell(c,{freq:196,ratio:1.4,depth:3,dur:.16,gain:.45,lowpass:1600});bell(c,{freq:196,ratio:1.4,depth:3,start:.18,dur:.2,gain:.45,lowpass:1600});},
+  },
 };
 
+// The spoken countdown is recorded with Kokoro (tools/build-countdown-voice.mjs) and shipped in public/countdown/.
+const COUNTDOWN_WORDS=['go','one','two','three'];
+const voice={buffers:{},loading:null};
+function loadCountdownVoice(){
+  if(voice.loading)return voice.loading;
+  const c=audioContext();
+  if(!c||typeof fetch!=='function'||typeof document==='undefined')return Promise.resolve(false);
+  voice.loading=Promise.all(COUNTDOWN_WORDS.map(async word=>{
+    const res=await fetch(new URL(`public/countdown/${word}.wav`,document.baseURI));
+    if(!res.ok)throw new Error(`${word}.wav: HTTP ${res.status}`);
+    const data=await res.arrayBuffer();
+    voice.buffers[word]=await new Promise((resolve,reject)=>c.decodeAudioData(data,resolve,reject));
+  })).then(()=>true,e=>{console.warn('RecallFlow: spoken countdown unavailable, using beeps',e);voice.loading=null;return false;});
+  return voice.loading;
+}
+function playBuffer(c,buffer,gain=1){
+  const src=c.createBufferSource(),amp=c.createGain();
+  src.buffer=buffer;amp.gain.value=gain;src.connect(amp).connect(output(c));src.start();
+}
+
+// n is 3, 2 or 1 while counting, 0 for "Go!". Falls back to beeps if the recordings cannot load in time.
+async function countdownCue(n,mode=appPreferences().soundEffects){
+  haptic(n?'tick':'go');
+  if(mode==='off')return;
+  const word=COUNTDOWN_WORDS[n],ready=await Promise.race([loadCountdownVoice(),new Promise(r=>setTimeout(()=>r(false),250))]);
+  const c=audioContext();
+  if(ready&&c&&voice.buffers[word]){
+    try{playBuffer(c,voice.buffers[word]);if(!n)playPreset('go');return;}catch(e){console.warn('RecallFlow: countdown voice failed',e);}
+  }
+  playPreset(n?'tick':'go');
+}
+
 // Android phones vibrate; iPhones and most computers ignore this silently.
-const hapticPatterns={correct:[14],incorrect:[30,60,30],tick:[8],go:[22],save:[18],complete:[16,70,16,70,40],delete:[20],error:[40,50,40],tap:[8]};
+const hapticPatterns={correct:[18],incorrect:[40,60,40],tick:[12],go:[30],save:[20],complete:[20,60,20,60,60],delete:[25],error:[45,50,45],tap:[8]};
 function haptic(kind,on=appPreferences().vibration){
   const pattern=hapticPatterns[kind];
   if(!on||!pattern||typeof navigator==='undefined'||typeof navigator.vibrate!=='function')return false;
@@ -21260,12 +21332,13 @@ function readSoundFile(file){
   });
 }
 
-function playUrl(url){try{const a=new Audio(url);a.volume=.9;return a.play().then(()=>true).catch(()=>false);}catch{return Promise.resolve(false);}}
+function playUrl(url){try{const a=new Audio(url);a.volume=1;return a.play().then(()=>true).catch(()=>false);}catch{return Promise.resolve(false);}}
 
-function playPreset(kind){
-  if(!presets[kind])return;
+function playPreset(kind,style=appPreferences().soundStyle){
+  const play=(styles$1[style]||styles$1.arcade)[kind];
+  if(!play)return;
   const c=audioContext();if(!c)return;
-  try{presets[kind](c);}catch(e){console.warn('RecallFlow: sound effect failed',e);}
+  try{play(c);}catch(e){console.warn('RecallFlow: sound effect failed',e);}
 }
 
 function playFeedback(kind,mode=appPreferences().soundEffects){
@@ -30733,6 +30806,10 @@ function QuizDefaults({ onSaved }) {
 function SoundEffects() {
     const [prefs, update] = usePrefs(), [custom, setCustom] = reactExports.useState(customSounds), [error, setError] = reactExports.useState('');
     const pickers = { correct: reactExports.useRef(null), incorrect: reactExports.useRef(null) };
+    async function previewCountdown() { for (const n of [3, 2, 1, 0]) {
+        void countdownCue(n);
+        await new Promise(r => setTimeout(r, 850));
+    } }
     async function upload(kind, file) { if (!file)
         return; setError(''); try {
         setCustom(saveCustomSound(kind, await readSoundFile(file)));
@@ -30752,12 +30829,19 @@ function SoundEffects() {
         custom[kind] && React.createElement("button", { type: "button", className: "settings-sound-btn is-remove", "aria-label": `Remove custom ${label.toLowerCase()}`, onClick: () => setCustom(saveCustomSound(kind, '')) },
             React.createElement(Trash2, { size: 14 })),
         React.createElement("input", { ref: pickers[kind], type: "file", accept: "audio/*", hidden: true, onChange: e => { void upload(kind, e.target.files?.[0]); e.target.value = ''; } }));
-    return React.createElement(Panel, { icon: Music, title: "Sounds & vibration", detail: "For right and wrong answers, saving and deleting questions, finishing a quiz and the 3-2-1 countdown." },
+    return React.createElement(Panel, { icon: Music, title: "Sounds & vibration", detail: "For right and wrong answers, saving and deleting questions, finishing a quiz, and a spoken 3-2-1 countdown." },
         React.createElement("div", { className: "settings-segmented", role: "radiogroup", "aria-label": "Sound effects" }, [['default', 'Default'], ['custom', 'Custom'], ['off', 'Off']].map(([id, label]) => React.createElement("button", { key: id, role: "radio", "aria-checked": prefs.soundEffects === id, onClick: () => { update({ soundEffects: id }); if (id !== 'off')
                 playFeedback('correct', id); } }, label))),
-        prefs.soundEffects === 'default' && React.createElement("div", { className: "settings-sound-preview" }, [['correct', 'Correct'], ['incorrect', 'Wrong'], ['save', 'Saved'], ['complete', 'Finished']].map(([kind, label]) => React.createElement("button", { key: kind, type: "button", className: "settings-sound-btn", onClick: () => feedback(kind) },
-            React.createElement(Play, { size: 14 }),
-            label))),
+        prefs.soundEffects === 'default' && React.createElement(React.Fragment, null,
+            React.createElement("p", { className: "settings-label" }, "Style"),
+            React.createElement("div", { className: "settings-segmented", role: "radiogroup", "aria-label": "Sound style" }, [['arcade', 'Arcade'], ['bells', 'Bells']].map(([id, label]) => React.createElement("button", { key: id, role: "radio", "aria-checked": prefs.soundStyle === id, onClick: () => { update({ soundStyle: id }); playPreset('correct', id); } }, label))),
+            React.createElement("div", { className: "settings-sound-preview" },
+                [['correct', 'Correct'], ['incorrect', 'Wrong'], ['save', 'Saved'], ['delete', 'Deleted'], ['complete', 'Finished']].map(([kind, label]) => React.createElement("button", { key: kind, type: "button", className: "settings-sound-btn", onClick: () => feedback(kind) },
+                    React.createElement(Play, { size: 14 }),
+                    label)),
+                React.createElement("button", { type: "button", className: "settings-sound-btn", onClick: () => void previewCountdown() },
+                    React.createElement(Play, { size: 14 }),
+                    "3-2-1 Go"))),
         prefs.soundEffects === 'custom' && React.createElement("div", { className: "settings-sound-list" },
             row('correct', 'Correct answer'),
             row('incorrect', 'Wrong answer'),
@@ -35125,8 +35209,8 @@ function clearSavedQuiz() { try {
 catch { } }
 const dayHeading = (day) => { const t = localDay(), y = localDay(new Date(Date.now() - 864e5)); return day === t ? "Today" : day === y ? "Yesterday" : new Date(day + "T00:00:00Z").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }); };
 function ReportHistoryCard({ report: r, index: i, onOpen, grouped }) {
-    return React.createElement("article", { className: styles$1.reportCard },
-        React.createElement("button", { className: `${styles$1.reportHead} rx-qhead`, onClick: () => onOpen(r.id) },
+    return React.createElement("article", { className: styles$2.reportCard },
+        React.createElement("button", { className: `${styles$2.reportHead} rx-qhead`, onClick: () => onOpen(r.id) },
             React.createElement(ScoreRing, { pct: r.accuracy }, r.accuracy),
             React.createElement("span", { className: "rx-qmain" },
                 React.createElement("b", null,
@@ -35553,9 +35637,9 @@ function IndexPage() {
     reactExports.useEffect(() => {
         if (countdown === null)
             return;
-        feedback('tick');
+        void countdownCue(countdown);
         const timer = window.setTimeout(() => { if (countdown <= 1) {
-            feedback('go');
+            void countdownCue(0);
             setCountdown(null);
             setStarted(Date.now());
         }
@@ -35981,13 +36065,13 @@ function IndexPage() {
         counts.set(day, (counts.get(day) || 0) + 1);
     } return counts; }, [reportHistory]);
     if (showAdd)
-        return React.createElement("main", { className: `${styles$1.reviewPage} question-editor-page` },
+        return React.createElement("main", { className: `${styles$2.reviewPage} question-editor-page` },
             React.createElement("section", { className: "question-editor-shell" },
                 React.createElement("div", { className: "editor-navigation-brand" },
                     React.createElement(Brand, null)),
                 React.createElement("button", { className: "quiz-options-back", disabled: savingQuestion, onClick: () => requestLeave(closeEditor) }, "\u2190 Question bank"),
                 React.createElement("header", null,
-                    React.createElement("p", { className: styles$1.eyebrow }, editingId ? "EDIT QUESTION" : "NEW QUESTION"),
+                    React.createElement("p", { className: styles$2.eyebrow }, editingId ? "EDIT QUESTION" : "NEW QUESTION"),
                     React.createElement("h1", null, editingId ? "Edit question" : "Create a question"),
                     React.createElement("p", null, editingId ? "Refine what you learn, one question at a time." : "Turn something worth remembering into practice.")),
                 React.createElement(QuestionEditor, { draft: draft, setDraft: setDraft, onSave: saveQuestion, onCancel: () => requestLeave(closeEditor), busy: savingQuestion, status: saveStatus, saved: savedQuestion, editing: !!editingId, prepareAudio: prepareAudio, setPrepareAudio: setPrepareAudio, onAnother: () => openAdd() })),
@@ -36015,13 +36099,13 @@ function IndexPage() {
                     " in your library")),
             React.createElement("footer", null, "Nice work keeping your reviews current."));
     if (showQuizBuilder)
-        return React.createElement("main", { className: `${styles$1.reviewPage} quiz-options-page` },
+        return React.createElement("main", { className: `${styles$2.reviewPage} quiz-options-page` },
             React.createElement("div", { className: "quiz-options-shell" },
                 React.createElement("header", { className: "app-top-bar" },
                     React.createElement("div", null,
                         React.createElement(Brand, { size: 28 })),
-                    React.createElement("div", { className: styles$1.headerRight },
-                        React.createElement(Button, { variant: "ghost", size: "icon-md", className: styles$1.homeTheme, "aria-label": "Change theme", onClick: toggleTheme }, isDark ? React.createElement(Moon, { size: 14 }) : React.createElement(Sun, { size: 14 })))),
+                    React.createElement("div", { className: styles$2.headerRight },
+                        React.createElement(Button, { variant: "ghost", size: "icon-md", className: styles$2.homeTheme, "aria-label": "Change theme", onClick: toggleTheme }, isDark ? React.createElement(Moon, { size: 14 }) : React.createElement(Sun, { size: 14 })))),
                 React.createElement("button", { className: "quiz-options-back", onClick: () => setShowQuizBuilder(false) }, "\u2190 Back"),
                 React.createElement("h1", null, "Advanced quiz"),
                 React.createElement("p", null, "Build exactly the quiz you want."),
@@ -36047,21 +36131,21 @@ function IndexPage() {
             const accuracy = results.length ? Math.round(correct / results.length * 100) : 0;
             const missed = missedItems(results, items), missedAs = new Set(results.filter(x => !x.correct).map(x => x.knowledge_id + "|" + x.type)), canSwitch = missed.some(x => itemTypes(x).some(t => !missedAs.has(x.id + "|" + t)));
             const skipped = review.length - results.length;
-            return React.createElement("main", { className: styles$1.reviewPage },
-                React.createElement("section", { className: styles$1.finish },
+            return React.createElement("main", { className: styles$2.reviewPage },
+                React.createElement("section", { className: styles$2.finish },
                     React.createElement("div", { className: "editor-navigation-brand" },
                         React.createElement(Brand, null)),
-                    React.createElement("div", { className: styles$1.finishBadge },
+                    React.createElement("div", { className: styles$2.finishBadge },
                         React.createElement(Sparkles, { size: 18 }),
                         " ",
                         skipped > 0 ? (reviewKind === "retry_mistakes" ? "PRACTICE FINISHED" : "QUIZ FINISHED") : reviewKind === "retry_mistakes" ? "PRACTICE COMPLETE" : "QUIZ COMPLETE"),
-                    React.createElement("div", { className: styles$1.scoreRing },
+                    React.createElement("div", { className: styles$2.scoreRing },
                         React.createElement("strong", null,
                             accuracy,
                             "%"),
                         React.createElement("span", null, "accuracy")),
                     React.createElement("h1", null, reviewKind === "retry_mistakes" ? "Practice complete." : accuracy >= 80 ? "Great work." : accuracy >= 50 ? "Nice work." : "Keep practising."),
-                    React.createElement("div", { className: styles$1.finishStats },
+                    React.createElement("div", { className: styles$2.finishStats },
                         React.createElement("div", null,
                             React.createElement("b", null, correct),
                             React.createElement("span", null, "Correct")),
@@ -36099,13 +36183,13 @@ function IndexPage() {
                         React.createElement(Copy, { size: 17 }),
                         " Copy full report"),
                     React.createElement(Button, { variant: "outline", onClick: exitQuiz }, "Back home"),
-                    message && React.createElement("p", { className: styles$1.note }, message)));
+                    message && React.createElement("p", { className: styles$2.note }, message)));
         }
         const choiceQuestion = current?.type === "single_choice" || current?.type === "true_false";
         const soundOnly = !!current && !!current.audio && !current.video && !current.image && !["flashcard", "fill_blank_options", "image_tap"].includes(current.type || "");
         const extraTitles = { list_recall: "Name them", categorize: "Sort into groups", highlight: "Tap the words", image_tap: "Tap the picture", slider: "Your estimate" };
         const answerTitle = extraTitles[current?.type || ""] ? extraTitles[current.type] : current?.type === "fill_blank_options" ? "Choose from the word bank" : current?.type === "matching" ? "Match the pairs" : current?.type === "ordering" ? "Arrange in order" : current?.type === "cloze" ? "Complete the blanks" : current?.type === "flashcard" ? "How did you do?" : current?.type === "multi_select" ? "Choose your answers" : current?.type === "true_false" ? (revealed ? "Your answer" : "True or false?") : choiceQuestion ? "Choose an answer" : "Your answer";
-        return React.createElement("main", { className: `${styles$1.reviewPage} quiz-screen split-quiz` },
+        return React.createElement("main", { className: `${styles$2.reviewPage} quiz-screen split-quiz` },
             React.createElement("section", { className: "split-quiz-shell" },
                 React.createElement("header", { className: "split-quiz-header" },
                     React.createElement("div", { className: "split-quiz-brand" },
@@ -36118,7 +36202,7 @@ function IndexPage() {
                             "\u00D7",
                             React.createElement("span", null, "Exit"))),
                     React.createElement("div", { className: "split-quiz-progress" },
-                        React.createElement("div", { className: styles$1.track, role: "progressbar", "aria-label": "Quiz progress", "aria-valuemin": 0, "aria-valuemax": review.length, "aria-valuenow": idx + 1 },
+                        React.createElement("div", { className: styles$2.track, role: "progressbar", "aria-label": "Quiz progress", "aria-valuemin": 0, "aria-valuemax": review.length, "aria-valuenow": idx + 1 },
                             React.createElement("span", { style: { width: `${((idx + 1) / review.length) * 100}%` } })),
                         React.createElement("small", null,
                             idx + 1,
@@ -36138,15 +36222,15 @@ function IndexPage() {
                             React.createElement("span", { className: "split-type-badge" }, typeLabel(current?.type))),
                         current && React.createElement(QuestionMedia, { key: current.id, image: current.type !== "image_tap" && current.type !== "flashcard" ? current.image : undefined, imageAlt: current.imageAlt, audio: current.type !== "flashcard" && current.type !== "image_tap" && !soundOnly ? current.audio : undefined, audioEdit: current.audioEdit, video: current.type !== "flashcard" && current.type !== "image_tap" ? current.video : undefined, videoEdit: current.videoEdit, soundBar: current.type === "fill_blank_options" || current.type === "image_tap" }),
                         current?.type === "flashcard" ? React.createElement("div", { className: "flashcard-stage" },
-                            React.createElement("div", { role: "button", tabIndex: 0, className: `${styles$1.flipCard} ${revealed ? styles$1.flipped : ""}`, onClick: () => result === null && setRevealed(v => !v), onKeyDown: e => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+                            React.createElement("div", { role: "button", tabIndex: 0, className: `${styles$2.flipCard} ${revealed ? styles$2.flipped : ""}`, onClick: () => result === null && setRevealed(v => !v), onKeyDown: e => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
                                     e.preventDefault();
                                     if (result === null)
                                         setRevealed(v => !v);
                                 } }, "aria-label": revealed ? "Show question" : "Reveal answer" },
-                                React.createElement("div", { className: styles$1.flipInner },
-                                    React.createElement("div", { className: `${styles$1.flipFront} fc-face`, "data-media": current.image || current.video || current.audio ? "" : undefined, "aria-hidden": revealed },
+                                React.createElement("div", { className: styles$2.flipInner },
+                                    React.createElement("div", { className: `${styles$2.flipFront} fc-face`, "data-media": current.image || current.video || current.audio ? "" : undefined, "aria-hidden": revealed },
                                         React.createElement(FlashcardFace, { key: `${current.id}-q`, side: "question", text: current.prompt || "What does the picture show?", speech: !revealed && React.createElement(SpeechButton, { questionId: current.id, role: "question", text: current.prompt, label: "Read flashcard question" }), hint: "Tap card to flip", image: current.image, imageAlt: current.imageAlt, audio: current.audio, audioEdit: current.audioEdit, video: current.video, videoEdit: current.videoEdit })),
-                                    React.createElement("div", { className: `${styles$1.flipBack} fc-face`, "data-media": current.answerImage || current.answerVideo || current.answerAudio ? "" : undefined, "aria-hidden": !revealed },
+                                    React.createElement("div", { className: `${styles$2.flipBack} fc-face`, "data-media": current.answerImage || current.answerVideo || current.answerAudio ? "" : undefined, "aria-hidden": !revealed },
                                         React.createElement(FlashcardFace, { key: `${current.id}-a`, side: "answer", text: current.answer, speech: revealed && React.createElement(SpeechButton, { questionId: current.id, role: "answer", text: current.answer, label: "Read flashcard answer" }), hint: "Tap to see question", image: current.answerImage, audio: current.answerAudio, audioEdit: current.answerAudioEdit, video: current.answerVideo, videoEdit: current.answerVideoEdit }))))) : (() => {
                             const heading = React.createElement("h1", null, current?.type === "fill_blank_options" ? "Choose the missing words." : current?.type === "fill_blank" ? (isMultiBlank(current) ? "Fill in the missing words." : "Fill in the missing word.") : current?.type === "cloze" ? "Fill in the missing words." : current?.prompt || (current?.type === "image_tap" ? "Tap the right place on the picture." : soundOnly ? "What do you hear?" : "Look at the picture."));
                             const speech = current && React.createElement(SpeechButton, { questionId: current.id, text: current.prompt, spokenText: current.type === "fill_blank" ? current.prompt.replace(/_{2,}/g, "blank") : undefined });
@@ -36166,9 +36250,9 @@ function IndexPage() {
                                 setAnswer(values); grade(undefined, values); } }) : ["matching", "ordering"].includes(current?.type || "") ? React.createElement(StructuredAnswer, { item: current, value: selected, onChange: setSelected, disabled: revealed, onGrade: values => { setSelected(values); grade(undefined, values); } }) : current?.type === "flashcard" ? React.createElement("div", { className: "split-flash-actions" },
                             React.createElement("p", { className: "split-answer-help" }, revealed ? "Mark whether you recalled the answer." : "Recall the answer, then reveal the card."),
                             !revealed && React.createElement(Button, { onClick: () => setRevealed(true) }, "Reveal answer"),
-                            revealed && result === null && React.createElement("div", { className: styles$1.two },
+                            revealed && result === null && React.createElement("div", { className: styles$2.two },
                                 React.createElement(Button, { variant: "outline", onClick: () => grade(false) }, "Didn't know"),
-                                React.createElement(Button, { onClick: () => grade(true) }, "Knew it"))) : current?.type === "multi_select" ? React.createElement("div", { className: styles$1.options },
+                                React.createElement(Button, { onClick: () => grade(true) }, "Knew it"))) : current?.type === "multi_select" ? React.createElement("div", { className: styles$2.options },
                             React.createElement("p", { className: "split-answer-help" }, "Select all correct answers."),
                             (current.options || []).map((o, i) => React.createElement("label", { key: o, className: "split-choice", "data-state": revealed ? ((current.correctAnswers || current.answer.split('; ')).includes(o) ? "correct" : selected.includes(o) ? "incorrect" : "idle") : selected.includes(o) ? "selected" : "idle" },
                                 React.createElement("input", { type: "checkbox", "aria-label": o, checked: selected.includes(o), disabled: revealed, onChange: e => setSelected(xs => e.target.checked ? [...xs, o] : xs.filter(x => x !== o)) }),
@@ -36183,7 +36267,7 @@ function IndexPage() {
                             React.createElement("span", { className: "tf-circle" }, o === "True" ? React.createElement(Check, { size: 32, strokeWidth: 3 }) : React.createElement(X, { size: 32, strokeWidth: 3 })),
                             picked ? React.createElement("span", { className: "tf-chip", "data-kind": result ? "correct" : "wrong" },
                                 result ? React.createElement(Check, { size: 12, strokeWidth: 3.6 }) : React.createElement(X, { size: 12, strokeWidth: 3.6 }),
-                                result ? "Correct" : "Wrong") : showAnswer ? React.createElement("span", { className: "tf-chip", "data-kind": "answer" }, "Answer") : React.createElement("span", { className: "tf-label" }, o)); })) : choiceQuestion ? React.createElement("div", { className: styles$1.options },
+                                result ? "Correct" : "Wrong") : showAnswer ? React.createElement("span", { className: "tf-chip", "data-kind": "answer" }, "Answer") : React.createElement("span", { className: "tf-label" }, o)); })) : choiceQuestion ? React.createElement("div", { className: styles$2.options },
                             React.createElement("fieldset", { className: "split-choice-group", "aria-label": "Choose an answer" }, (current?.options || []).map((o, i) => React.createElement("label", { key: o, className: "split-choice", "data-state": revealed ? (gradeQuestion(current, o) ? "correct" : answer === o ? "incorrect" : "idle") : answer === o ? "selected" : "idle" },
                                 React.createElement("input", { type: "radio", name: `quiz-answer-${current.id}`, "aria-label": o, checked: answer === o, disabled: revealed, onChange: () => setAnswer(o) }),
                                 React.createElement("span", { className: "split-choice-letter" }, String.fromCharCode(65 + i)),
@@ -36193,14 +36277,14 @@ function IndexPage() {
                                     isPictureLabel(o) && current.optionImages?.[o] ? React.createElement("span", { className: "visually-hidden" }, o) : o),
                                 React.createElement(ItemExtras, { item: current, text: o }),
                                 React.createElement("span", { className: "split-choice-indicator", "aria-hidden": "true" })))),
-                            !revealed && React.createElement(Button, { className: "split-submit", disabled: !answer, onClick: () => grade() }, "Check answer")) : React.createElement("div", { className: styles$1.answerArea },
+                            !revealed && React.createElement(Button, { className: "split-submit", disabled: !answer, onClick: () => grade() }, "Check answer")) : React.createElement("div", { className: styles$2.answerArea },
                             React.createElement("p", { className: "split-answer-help" }, current?.type === "numeric" ? "Enter a number." : "Write what you remember."),
                             React.createElement(Input, { "aria-label": current?.type === "numeric" ? "Numeric answer" : "Your answer", inputMode: current?.type === "numeric" ? "decimal" : undefined, value: answer, onChange: e => setAnswer(e.target.value), placeholder: current?.type === "numeric" ? "Enter a number…" : "Type your answer…", disabled: revealed, onKeyDown: e => { if (e.key === "Enter" && answer && !revealed)
                                     grade(); } }),
                             !revealed && React.createElement(Button, { className: "split-submit", disabled: !answer, onClick: () => grade() }, "Check answer")),
-                        result !== null && React.createElement("div", { className: `${result ? styles$1.feedbackGood : styles$1.feedbackBad} split-feedback`, "data-result": result ? "correct" : "incorrect", role: "status" },
-                            React.createElement("div", { className: styles$1.feedbackIcon }, result ? React.createElement(CircleCheck, null) : React.createElement(CircleX, null)),
-                            React.createElement("div", { className: styles$1.feedbackCopy },
+                        result !== null && React.createElement("div", { className: `${result ? styles$2.feedbackGood : styles$2.feedbackBad} split-feedback`, "data-result": result ? "correct" : "incorrect", role: "status" },
+                            React.createElement("div", { className: styles$2.feedbackIcon }, result ? React.createElement(CircleCheck, null) : React.createElement(CircleX, null)),
+                            React.createElement("div", { className: styles$2.feedbackCopy },
                                 React.createElement("strong", null, result ? (results[results.length - 1]?.grading === "typo" ? "Accepted — likely typo" : "Correct!") : "Not quite"),
                                 current && answerText(current) && !/^\(answer (picture|video|sound)\)$/.test(answerText(current)) && React.createElement("span", null, result ? `Answer: ${answerText(current)}` : `Correct answer: ${answerText(current)}`),
                                 current && React.createElement(SpeechButton, { questionId: current.id, role: "answer", text: current.answer || answerText(current), label: "Read correct answer" }),
@@ -36239,19 +36323,19 @@ function IndexPage() {
                             React.createElement(Button, { variant: "outline", onClick: () => setConfirmFinish(false) }, "Keep going"),
                             React.createElement(Button, { onClick: finishEarly }, "Finish"))))));
     }
-    return React.createElement("div", { className: styles$1.shell },
-        React.createElement("main", { className: `${styles$1.main} ${tab === "streak" ? 'streak-layout-shell' : tab === "home" ? styles$1.homeMain : ''}` },
+    return React.createElement("div", { className: styles$2.shell },
+        React.createElement("main", { className: `${styles$2.main} ${tab === "streak" ? 'streak-layout-shell' : tab === "home" ? styles$2.homeMain : ''}` },
             React.createElement("header", { className: "app-top-bar", "data-scrolled": scrolled || undefined },
                 React.createElement("div", null,
                     React.createElement(Brand, { size: 28 })),
-                React.createElement("div", { className: styles$1.headerRight },
-                    tab !== "home" && React.createElement("span", { className: styles$1.mini },
+                React.createElement("div", { className: styles$2.headerRight },
+                    tab !== "home" && React.createElement("span", { className: styles$2.mini },
                         items.length,
                         " questions"),
-                    React.createElement(Button, { variant: "ghost", size: "icon-md", className: styles$1.homeTheme, "aria-label": "Change theme", onClick: toggleTheme }, isDark ? React.createElement(Moon, { size: 14 }) : React.createElement(Sun, { size: 14 })),
-                    tab === "home" && React.createElement("button", { className: styles$1.profilePlaceholder, "aria-label": "Profile settings", title: "Profile settings", onClick: () => { setTab("settings"); window.setTimeout(() => document.getElementById("settings-profile")?.scrollIntoView({ block: "start" }), 50); } }, profilePhoto ? React.createElement("img", { src: profilePhoto, alt: "" }) : (prefs.name[0] || "?").toUpperCase()))),
+                    React.createElement(Button, { variant: "ghost", size: "icon-md", className: styles$2.homeTheme, "aria-label": "Change theme", onClick: toggleTheme }, isDark ? React.createElement(Moon, { size: 14 }) : React.createElement(Sun, { size: 14 })),
+                    tab === "home" && React.createElement("button", { className: styles$2.profilePlaceholder, "aria-label": "Profile settings", title: "Profile settings", onClick: () => { setTab("settings"); window.setTimeout(() => document.getElementById("settings-profile")?.scrollIntoView({ block: "start" }), 50); } }, profilePhoto ? React.createElement("img", { src: profilePhoto, alt: "" }) : (prefs.name[0] || "?").toUpperCase()))),
             tab === "home" && React.createElement(React.Fragment, null,
-                React.createElement("section", { className: `${styles$1.intro} home-greeting` },
+                React.createElement("section", { className: `${styles$2.intro} home-greeting` },
                     React.createElement("p", null, dayLabel()),
                     React.createElement("h1", null,
                         greeting(),
@@ -36261,7 +36345,7 @@ function IndexPage() {
                     React.createElement("p", null, due.length ? `${due.length} due today` : "Nothing due today")),
                 React.createElement("section", { className: "home-quiz", "aria-label": "Today's quiz" }, resumable ? React.createElement(React.Fragment, null,
                     React.createElement("div", { className: "home-quiz-head" },
-                        React.createElement("span", { className: styles$1.homeQuizIcon },
+                        React.createElement("span", { className: styles$2.homeQuizIcon },
                             React.createElement(BookOpen, { size: 23 })),
                         React.createElement("div", null,
                             React.createElement("h2", null, "Quiz in progress"),
@@ -36292,23 +36376,23 @@ function IndexPage() {
                         homeCurrent.count,
                         " ",
                         homeCurrent.count === 1 ? "question" : "questions"))),
-                React.createElement("section", { className: styles$1.streakCard },
-                    React.createElement("button", { className: styles$1.streakOpen, onClick: () => setTab("streak"), "aria-label": `Current streak: ${streak} ${streak === 1 ? "day" : "days"}. View streak details` },
-                        React.createElement("div", { className: styles$1.streakTop },
+                React.createElement("section", { className: styles$2.streakCard },
+                    React.createElement("button", { className: styles$2.streakOpen, onClick: () => setTab("streak"), "aria-label": `Current streak: ${streak} ${streak === 1 ? "day" : "days"}. View streak details` },
+                        React.createElement("div", { className: styles$2.streakTop },
                             React.createElement("strong", null, "Your streak"),
-                            React.createElement("span", { className: styles$1.homeStreakBadge },
+                            React.createElement("span", { className: styles$2.homeStreakBadge },
                                 React.createElement(Flame, { size: 20 }),
                                 React.createElement("b", null,
                                     streak,
                                     " ",
                                     streak === 1 ? 'day' : 'days'))),
-                        React.createElement("div", { className: styles$1.week }, last7.map(d => React.createElement("div", { key: d.key, className: streakDays.includes(d.key) && d.key <= today() ? (d.key === today() ? `${styles$1.homeTileDone} ${styles$1.homeTileCompletedToday}` : styles$1.homeTileDone) : d.key === today() ? styles$1.homeTileToday : d.key > today() ? styles$1.homeTileUpcoming : styles$1.homeTile },
+                        React.createElement("div", { className: styles$2.week }, last7.map(d => React.createElement("div", { key: d.key, className: streakDays.includes(d.key) && d.key <= today() ? (d.key === today() ? `${styles$2.homeTileDone} ${styles$2.homeTileCompletedToday}` : styles$2.homeTileDone) : d.key === today() ? styles$2.homeTileToday : d.key > today() ? styles$2.homeTileUpcoming : styles$2.homeTile },
                             React.createElement("span", null, d.key === today() ? 'Today' : d.label),
-                            React.createElement("div", { "aria-label": `${d.key}${streakDays.includes(d.key) && d.key <= today() ? ', studied' : d.key === today() ? ', today' : d.key > today() ? ', upcoming' : ', no quiz completed'}`, className: streakDays.includes(d.key) && d.key <= today() ? styles$1.dayDone : (d.key === today() ? styles$1.dayToday : d.key < today() ? styles$1.daySkipped : styles$1.dayMissed) }, streakDays.includes(d.key) && d.key <= today() ? React.createElement(Flame, { size: 20, fill: "currentColor", strokeWidth: 1.5 }) : d.key <= today() ? React.createElement(Flame, { size: 18 }) : null)))),
-                        React.createElement("span", { className: styles$1.streakHint },
+                            React.createElement("div", { "aria-label": `${d.key}${streakDays.includes(d.key) && d.key <= today() ? ', studied' : d.key === today() ? ', today' : d.key > today() ? ', upcoming' : ', no quiz completed'}`, className: streakDays.includes(d.key) && d.key <= today() ? styles$2.dayDone : (d.key === today() ? styles$2.dayToday : d.key < today() ? styles$2.daySkipped : styles$2.dayMissed) }, streakDays.includes(d.key) && d.key <= today() ? React.createElement(Flame, { size: 20, fill: "currentColor", strokeWidth: 1.5 }) : d.key <= today() ? React.createElement(Flame, { size: 18 }) : null)))),
+                        React.createElement("span", { className: styles$2.streakHint },
                             "Streak details ",
                             React.createElement(ArrowRight, { size: 16 })))),
-                React.createElement("div", { className: styles$1.homeStats },
+                React.createElement("div", { className: styles$2.homeStats },
                     React.createElement("div", null,
                         React.createElement(ChartNoAxesColumnIncreasing, { size: 20 }),
                         React.createElement("strong", null, quizCount),
@@ -36334,7 +36418,7 @@ function IndexPage() {
                             React.createElement(Plus, { size: 17 }),
                             " New",
                             React.createElement("span", { className: "qb-new-word" }, " question")))),
-                message && React.createElement("p", { className: styles$1.note }, message),
+                message && React.createElement("p", { className: styles$2.note }, message),
                 !!items.length && React.createElement("div", { className: "qb-stats", role: "group", "aria-label": "Quick filters" }, [["due", "Due today", bankStats.due, CalendarClock, dueOnly, () => setDueOnly(v => !v)], ["mistakes", "Got wrong", bankStats.mistakes, RotateCcw, performanceFilter === "mistakes", () => setPerformanceFilter(p => p === "mistakes" ? "all" : "mistakes")], ["pictures", "With pictures", bankStats.pictures, Image$1, withImagesOnly, () => setWithImagesOnly(v => !v)], ["multi", "Multi-type", bankStats.multi, Shuffle, multiTypeOnly, () => setMultiTypeOnly(v => !v)]].map(([id, label, count, Icon, on, toggle]) => React.createElement("button", { type: "button", key: id, className: "qb-stat", "data-kind": id, "aria-pressed": on, onClick: toggle },
                     React.createElement("span", { className: "qb-stat-icon" },
                         React.createElement(Icon, { size: 16 })),
@@ -36590,8 +36674,8 @@ function IndexPage() {
                                 " Find duplicates")),
                         React.createElement("button", { className: "question-tools-cancel", onClick: () => setShowQuestionTools(false) }, "Cancel")))),
             tab === "results" && reviewReport && React.createElement(QuizReviewPage, { report: reviewReport, items: items, onBack: closeReview, onRetry: retryMistakes, onCopy: copySavedReport }),
-            tab === "results" && !reviewReport && React.createElement("section", { className: `${styles$1.reportsPage} rx-page` },
-                React.createElement("div", { className: styles$1.pageTitle },
+            tab === "results" && !reviewReport && React.createElement("section", { className: `${styles$2.reportsPage} rx-page` },
+                React.createElement("div", { className: styles$2.pageTitle },
                     React.createElement("div", null,
                         React.createElement("h1", null, "Reports"))),
                 React.createElement(ReportTabs, { value: reportView, onChange: showReport }),
@@ -36599,7 +36683,7 @@ function IndexPage() {
                         return; const t = e.changedTouches[0]; const next = swipeTarget(REPORT_ORDER, reportView, t.clientX - s.x, t.clientY - s.y); if (next)
                         showReport(next); } },
                     !!reportHistory.length && ["overview", "history", "progress", "insights"].includes(reportView) && React.createElement(RangePicker, { value: reportRange, onChange: setReportRange }),
-                    reportView === "memory" ? React.createElement(MemoryPanel, { counts: memoryCounts, forecast: forecast, onStart: () => startReview() }) : !reportHistory.length ? React.createElement("div", { className: styles$1.emptyReports },
+                    reportView === "memory" ? React.createElement(MemoryPanel, { counts: memoryCounts, forecast: forecast, onStart: () => startReview() }) : !reportHistory.length ? React.createElement("div", { className: styles$2.emptyReports },
                         React.createElement(History, { size: 34 }),
                         React.createElement("h2", null, "No reports yet"),
                         React.createElement("p", null, "Finish your first quiz and its report will appear here. Progress, mistakes and activity will fill in as you practice."),
@@ -36611,12 +36695,12 @@ function IndexPage() {
                                 "No quizzes in ",
                                 rangeLabel,
                                 ". Pick a longer range to see older results."),
-                            React.createElement("div", { className: styles$1.reportSectionTitle },
+                            React.createElement("div", { className: styles$2.reportSectionTitle },
                                 React.createElement("strong", null, "Recent quizzes"),
                                 React.createElement("button", { onClick: () => setReportView("history") },
                                     "View all ",
                                     React.createElement(ArrowRight, { size: 13 }))),
-                            React.createElement("div", { className: styles$1.reportList }, reportHistory.slice(0, 3).map((r, i) => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: i, onOpen: openReview }))),
+                            React.createElement("div", { className: styles$2.reportList }, reportHistory.slice(0, 3).map((r, i) => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: i, onOpen: openReview }))),
                             React.createElement("div", { className: "report-shortcuts" },
                                 React.createElement("button", { onClick: () => setReportView("progress") },
                                     React.createElement(ChartNoAxesColumnIncreasing, null),
@@ -36646,7 +36730,7 @@ function IndexPage() {
                                 React.createElement(Button, { variant: "outline", size: "sm", onClick: exportCsv, disabled: !historyReports.length },
                                     React.createElement(FileSpreadsheet, { size: 15 }),
                                     " Export CSV")),
-                            React.createElement("div", { className: styles$1.reportSectionTitle },
+                            React.createElement("div", { className: styles$2.reportSectionTitle },
                                 React.createElement("strong", null, "Quiz history"),
                                 React.createElement("span", null,
                                     historyReports.length,
@@ -36655,7 +36739,7 @@ function IndexPage() {
                                     " \u00B7 Tap one to review")),
                             historyReports.length ? React.createElement("div", { className: "rx-days" }, groupByDay(historyReports).map(([day, list]) => React.createElement("section", { key: day, className: "rx-day" },
                                 React.createElement("h3", null, dayHeading(day)),
-                                React.createElement("div", { className: styles$1.reportList }, list.map(r => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: reportHistory.indexOf(r), grouped: true, onOpen: openReview })))))) : React.createElement("div", { className: "report-inline-empty" },
+                                React.createElement("div", { className: styles$2.reportList }, list.map(r => React.createElement(ReportHistoryCard, { key: r.id, report: r, index: reportHistory.indexOf(r), grouped: true, onOpen: openReview })))))) : React.createElement("div", { className: "report-inline-empty" },
                                 "Nothing here for ",
                                 rangeLabel,
                                 ".")),
@@ -36762,7 +36846,7 @@ function IndexPage() {
                             "No quizzes in ",
                             rangeLabel,
                             ", so there\u2019s nothing to analyse yet.")))),
-                message && React.createElement("p", { className: styles$1.note }, message)),
+                message && React.createElement("p", { className: styles$2.note }, message)),
             tab === "settings" && React.createElement(SettingsPage, { items: items, reports: reportHistory, quizCount: quizCount, streakDays: streakDays, theme: themeChoice, onTheme: chooseTheme, onQuizDefaults: setQuizDefaults, onOpenTransfer: () => openTransfer("import"), onResetProgress: resetProgress, onDeleteAll: deleteEverything }),
             tab === "transfer" && React.createElement(TransferPage, { key: transferTab + transferSelection.join(), items: items, selectedIds: transferSelection, initial: transferTab, onImport: importItems, onUndo: (ids) => removeForever(ids), onBack: () => { setTab("library"); window.scrollTo({ top: 0 }); } }),
             tab === "streak" && React.createElement(StreakPage, { days: streakDays, reports: reportHistory, onBack: () => setTab("home"), onQuiz: startReview })),
@@ -36772,20 +36856,20 @@ function IndexPage() {
             React.createElement("button", { type: "button", onClick: undoDelete },
                 React.createElement(RotateCcw, { size: 15 }),
                 "Undo")),
-        React.createElement("nav", { className: styles$1.nav },
-            React.createElement("button", { className: tab === "home" ? styles$1.active : "", onClick: () => setTab("home") },
+        React.createElement("nav", { className: styles$2.nav },
+            React.createElement("button", { className: tab === "home" ? styles$2.active : "", onClick: () => setTab("home") },
                 React.createElement(House, null),
                 React.createElement("span", null, "Home")),
-            React.createElement("button", { className: tab === "library" || tab === "transfer" ? styles$1.active : "", onClick: () => setTab("library") },
+            React.createElement("button", { className: tab === "library" || tab === "transfer" ? styles$2.active : "", onClick: () => setTab("library") },
                 React.createElement(Library, null),
                 React.createElement("span", null, "Questions")),
-            React.createElement("button", { className: styles$1.quizNav, onClick: startReview },
-                React.createElement(Play, { className: styles$1.plus, fill: "currentColor" }),
+            React.createElement("button", { className: styles$2.quizNav, onClick: startReview },
+                React.createElement(Play, { className: styles$2.plus, fill: "currentColor" }),
                 React.createElement("span", null, "Quiz")),
-            React.createElement("button", { className: tab === "results" ? styles$1.active : "", onClick: () => setTab("results") },
+            React.createElement("button", { className: tab === "results" ? styles$2.active : "", onClick: () => setTab("results") },
                 React.createElement(History, null),
                 React.createElement("span", null, "Report")),
-            React.createElement("button", { className: tab === "settings" ? styles$1.active : "", onClick: () => setTab("settings") },
+            React.createElement("button", { className: tab === "settings" ? styles$2.active : "", onClick: () => setTab("settings") },
                 React.createElement(Settings, null),
                 React.createElement("span", null, "Settings"))));
 }
