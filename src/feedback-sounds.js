@@ -20,7 +20,7 @@ function audioContext(){
 
 function unlock(){
   if(appPreferences().soundEffects==='off')return;
-  void loadCountdownVoice();
+  void preloadSounds();
   if(ctx&&ctx.state==='running')return;
   const c=audioContext();if(!c)return;
   try{const b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0);}catch{}
@@ -108,37 +108,60 @@ const styles={
     error:c=>{bell(c,{freq:196,ratio:1.4,depth:3,dur:.16,gain:.45,lowpass:1600});bell(c,{freq:196,ratio:1.4,depth:3,start:.18,dur:.2,gain:.45,lowpass:1600});},
   },
 };
-export const feedbackKinds=Object.keys(styles.arcade),soundStyles=Object.keys(styles);
+export const feedbackKinds=Object.keys(styles.arcade);
 
-// The spoken countdown is recorded with Kokoro (tools/build-countdown-voice.mjs) and shipped in public/countdown/.
-export const COUNTDOWN_WORDS=['go','one','two','three'];
-const voice={buffers:{},loading:null};
-export function loadCountdownVoice(){
-  if(voice.loading)return voice.loading;
+// Recorded sounds shipped in public/sounds/ (all CC0, see public/sounds/CREDITS.txt). Until a file is
+// decoded, or if this browser can't decode it, the Arcade synth plays instead.
+export const soundPacks={
+  gameshow:{correct:'gameshow/correct.mp3',incorrect:'gameshow/wrong.mp3',tick:'gameshow/beep.mp3',go:'gameshow/go.mp3',save:'gameshow/point-up.mp3',complete:'gameshow/fanfare-win.mp3',done:'gameshow/fanfare.mp3',delete:'gameshow/delete.ogg',error:'gameshow/error.ogg'},
+};
+export const soundStyles=[...Object.keys(soundPacks),...Object.keys(styles)];
+export const announcerVoices=['male','female'];
+export const ANNOUNCER_LINES=['3','2','1','go','correct','wrong','level_up','congratulations','mission_completed'];
+export const announcerClip=(voice,line)=>`announcer/${voice}/${line}.ogg`;
+export const answerLine=(ok,streak=0)=>ok?(streak>=5&&streak%5===0?'level_up':'correct'):'wrong';
+export const finishLine=accuracy=>accuracy>=80?'congratulations':'mission_completed';
+
+// A path maps to its decoded buffer, or to null once it has failed (so it isn't refetched every answer).
+const clips=new Map(),loading=new Map();
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function loadClip(path){
+  if(clips.has(path))return Promise.resolve(clips.get(path));
+  if(loading.has(path))return loading.get(path);
   const c=audioContext();
-  if(!c||typeof fetch!=='function'||typeof document==='undefined')return Promise.resolve(false);
-  voice.loading=Promise.all(COUNTDOWN_WORDS.map(async word=>{
-    const res=await fetch(new URL(`public/countdown/${word}.wav`,document.baseURI));
-    if(!res.ok)throw new Error(`${word}.wav: HTTP ${res.status}`);
-    const data=await res.arrayBuffer();
-    voice.buffers[word]=await new Promise((resolve,reject)=>c.decodeAudioData(data,resolve,reject));
-  })).then(()=>true,e=>{console.warn('RecallFlow: spoken countdown unavailable, using beeps',e);voice.loading=null;return false;});
-  return voice.loading;
+  if(!c||typeof fetch!=='function'||typeof document==='undefined')return Promise.resolve(null);
+  const job=fetch(new URL(`public/sounds/${path}`,document.baseURI))
+    .then(res=>{if(!res.ok)throw new Error(`HTTP ${res.status}`);return res.arrayBuffer();})
+    .then(data=>new Promise((resolve,reject)=>c.decodeAudioData(data,resolve,reject)))
+    .then(buffer=>buffer,e=>{console.warn(`RecallFlow: ${path} unavailable, using the built-in sound`,e);return null;})
+    .then(buffer=>{clips.set(path,buffer);loading.delete(path);return buffer;});
+  loading.set(path,job);return job;
 }
-function playBuffer(c,buffer,gain=1){
-  const src=c.createBufferSource(),amp=c.createGain();
-  src.buffer=buffer;amp.gain.value=gain;src.connect(amp).connect(output(c));src.start();
+export function preloadSounds(p=appPreferences()){
+  if(p.soundEffects==='off')return Promise.resolve([]);
+  const voice=announcerVoices.includes(p.announcer)?ANNOUNCER_LINES.map(line=>announcerClip(p.announcer,line)):[];
+  return Promise.all([...Object.values(soundPacks[p.soundPack]||{}),...voice].map(loadClip));
+}
+function playClip(path,delay=0){
+  const buffer=clips.get(path),c=audioContext();
+  if(!buffer||!c)return false;
+  try{const src=c.createBufferSource();src.buffer=buffer;src.connect(output(c));src.start(c.currentTime+delay);return true;}
+  catch(e){console.warn('RecallFlow: sound failed',e);return false;}
 }
 
-// n is 3, 2 or 1 while counting, 0 for "Go!". Falls back to beeps if the recordings cannot load in time.
+// Plays an announcer line; waits briefly for the file the first time so the line isn't skipped.
+export async function announce(line,delay=0,p=appPreferences(),patience=250){
+  if(p.soundEffects==='off'||!announcerVoices.includes(p.announcer))return false;
+  const path=announcerClip(p.announcer,line);
+  if(!clips.has(path))await Promise.race([loadClip(path),wait(patience)]);
+  return playClip(path,delay);
+}
+
+// n is 3, 2 or 1 while counting, 0 for "Go!". Without the announcer (or its files) it beeps.
 export async function countdownCue(n,mode=appPreferences().soundEffects){
   haptic(n?'tick':'go');
   if(mode==='off')return;
-  const word=COUNTDOWN_WORDS[n],ready=await Promise.race([loadCountdownVoice(),new Promise(r=>setTimeout(()=>r(false),250))]);
-  const c=audioContext();
-  if(ready&&c&&voice.buffers[word]){
-    try{playBuffer(c,voice.buffers[word]);if(!n)playPreset('go');return;}catch(e){console.warn('RecallFlow: countdown voice failed',e);}
-  }
+  if(await announce(n?String(n):'go',0,{...appPreferences(),soundEffects:mode})){if(!n)playPreset('go');return;}
   playPreset(n?'tick':'go');
 }
 
@@ -184,11 +207,19 @@ export function readSoundFile(file){
 
 function playUrl(url){try{const a=new Audio(url);a.volume=1;return a.play().then(()=>true).catch(()=>false);}catch{return Promise.resolve(false);}}
 
-export function playPreset(kind,style=appPreferences().soundStyle){
-  const play=(styles[style]||styles.arcade)[kind];
+export function playPreset(kind,style=appPreferences().soundPack){
+  const path=soundPacks[style]?.[kind];
+  if(path){if(playClip(path))return;void loadClip(path);}
+  const set=styles[style]||styles.arcade,play=set[kind]||(kind==='done'&&set.complete);
   if(!play)return;
   const c=audioContext();if(!c)return;
   try{play(c);}catch(e){console.warn('RecallFlow: sound effect failed',e);}
+}
+// For Settings: loads a style's recording before playing it, so the first preview isn't the fallback.
+export async function previewPreset(kind,style){
+  const path=soundPacks[style]?.[kind];
+  if(path)await Promise.race([loadClip(path),wait(600)]);
+  playPreset(kind,style);
 }
 
 export function playFeedback(kind,mode=appPreferences().soundEffects){
@@ -201,3 +232,13 @@ export function playFeedback(kind,mode=appPreferences().soundEffects){
 }
 
 export function feedback(kind){playFeedback(kind);haptic(kind);}
+
+// streak counts this answer, so 5, 10, 15… right in a row says "Level up!".
+export function answerFeedback(ok,streak=0,p=appPreferences()){
+  feedback(ok?'correct':'incorrect');
+  if(p.announceAnswers)void announce(answerLine(ok,streak),.4,p);
+}
+export function finishFeedback(accuracy,p=appPreferences()){
+  playFeedback(accuracy>=80?'complete':'done',p.soundEffects);haptic('complete');
+  void announce(finishLine(accuracy),.6,p);
+}

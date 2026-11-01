@@ -1,0 +1,14 @@
+RecallFlow sound credits. Every file here is CC0 1.0 (public domain):
+https://creativecommons.org/publicdomain/zero/1.0/
+
+announcer/male, announcer/female
+  "Voiceover Pack" by Kenney (www.kenney.nl). Male voice: Jeffrey M. Smith. Female voice: Giselle.
+  https://kenney.nl/assets/voiceover-pack
+
+gameshow/correct, wrong, beep, go, point-up, fanfare, fanfare-win
+  "Quiz & Game Show Sound Effects Pack" from Quiz Zukan (https://quiz-zukan.com/sozai/).
+  Original names: correct_pinpon, wrong_buzzer, countdown_beep, countdown_go, point_up, fanfare, fanfare_win.
+
+gameshow/delete, error
+  "Interface Sounds" by Kenney (www.kenney.nl): drop_003, error_006.
+  https://kenney.nl/assets/interface-sounds

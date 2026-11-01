@@ -14,7 +14,7 @@ import {appPreferences, applyAppPreferences} from "../../app-preferences.js";
 import {removeWithPositions,restoreRemoved} from "../../undo-delete.js";
 import {dropPickedFromSetups} from "../../quiz-setups.js";
 import {saveReminderState,reminderSupport,msUntilNextReminder,reminderDue,lastReminderShown,showReminder,markReminderShown} from "../../reminders.js";
-import {feedback,countdownCue} from "../../feedback-sounds.js";
+import {feedback,answerFeedback,finishFeedback,countdownCue} from "../../feedback-sounds.js";
 import {PROGRESS_KEY,makeReport,currentProgress,unfinishedReport} from "../../quiz-progress.js";
 import {resolveVariant, variantAt, retakeVariant, seededShuffle, itemTypes, draftFromSpec, specFromDraft, isPictureLabel} from "../../question-variants.js";
 import {audioCache} from "../../audio-cache.js";
@@ -325,7 +325,8 @@ export default function IndexPage(){
     const ok=forced ?? gradeQuestion(current,Array.isArray(givenAnswer)?givenAnswer:["multi_select","matching","ordering","cloze","fill_blank_options"].includes(current.type||"")?selected:givenAnswer);
     const category=forced!==undefined?(ok?"correct":"wrong"):["short_answer","fill_blank"].includes(current.type||"short_answer")?textGrade(current,givenAnswer):(ok?"correct":"wrong");
     const seconds=Math.max(1,Math.round((Date.now()-started)/1000));
-    setResult(ok);setRevealed(true);feedback(ok?'correct':'incorrect');
+    let streak=0;if(ok){streak=1;for(let i=results.length-1;i>=0&&results[i].correct;i--)streak++;}
+    setResult(ok);setRevealed(true);answerFeedback(ok,streak);
     setResults(r=>[...r,{grading:category,knowledge_id:current.id,subject:current.subject,topic:current.topic,type:current.type||"short_answer",prompt:current.prompt||"Picture question",correct_answer:answerText(current),user_answer:current.type==="flashcard"?(ok?"self-marked: knew":"self-marked: did not know"):extraTypes.includes(current.type||"")?describeAnswer(current,givenAnswer):["multi_select","matching","ordering","cloze","fill_blank_options"].includes(current.type||"")?(Array.isArray(givenAnswer)?givenAnswer:selected).join("; "):givenAnswer,selected_answers:current.type==="multi_select"?selected:undefined,correct:ok,response_time_seconds:seconds}]);
     setItems(xs=>xs.map(x=>x.id===current.id&&(!reviewedOn(x,today())||!x.due||x.due<=today())?scheduled(x,ok):x));
   }
@@ -336,7 +337,8 @@ export default function IndexPage(){
   }
   function saveFinished(){
     const report=makeReport(results,{mode:reviewKind,source:sourceReportId}) as QuizReport;
-    saveReport(report);setCompletedReportId(report.id);clearSavedQuiz();setResumable(null);feedback('complete');
+    saveReport(report);setCompletedReportId(report.id);clearSavedQuiz();setResumable(null);
+    finishFeedback(Math.round(100*results.filter(r=>r.correct).length/Math.max(1,results.length)));
   }
   function keepUnfinished(discard=false){
     const raw=progressText();

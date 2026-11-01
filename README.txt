@@ -211,6 +211,7 @@ LOGIN & CLOUD SYNC (Oct 2026)
   RecallFlow-data only), then run  node tools/make-vault.mjs rubie-max RecallFlow-data Kaizen
   and type the new password; publish the updated public/sync-vault.json.
 - Default voice is now the phone's built-in voice; Kokoro can be chosen in Settings > Voice.
-- Sound effects come in two styles (Arcade, Bells) in Settings > Quiz > Sounds & vibration. The spoken
-  3-2-1-Go countdown is four Kokoro recordings in public/countdown/; re-record them with
-  node tools/build-countdown-voice.mjs [voice]   (development only; downloads the model once).
+- Sound effects come in three styles (Game show, Arcade, Bells) in Settings > Voice & sound > Sounds &
+  vibration, plus a male or female announcer for 3-2-1-Go, right/wrong, "Level up!" every 5 in a row and
+  the finish. Game show and the announcer are CC0 recordings in public/sounds/ (credits in
+  public/sounds/CREDITS.txt); Arcade and Bells are generated and also stand in if a file can't load.
