@@ -1,6 +1,5 @@
 /* Slim top bar: icon + page name on the left, page actions on the right */
-main header.app-top-bar.app-slim-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;margin-bottom:16px;box-shadow:0 0 0 100vmax var(--background);clip-path:inset(0 -100vmax)}
-main header.app-top-bar.app-slim-bar::after{content:"";position:absolute;left:-100vmax;right:-100vmax;bottom:0;height:1px;background:var(--border);pointer-events:none}
+main header.app-top-bar.app-slim-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;margin-bottom:16px;border-bottom:1px solid transparent;border-image:linear-gradient(var(--border),var(--border)) 0 0 1 0/0 0 1px 0/0 100vmax;box-shadow:0 0 0 100vmax var(--background);clip-path:inset(0 -100vmax)}
 .app-slim-title{display:flex;align-items:center;gap:10px;min-width:0}
 .app-slim-title h1{margin:0;font:700 19px/1.2 var(--font-family-base);letter-spacing:-.015em;color:var(--foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .app-slim-bar[data-page=home] .recallflow-wordmark{font-size:19px}
