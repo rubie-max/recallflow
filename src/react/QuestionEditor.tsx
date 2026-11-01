@@ -12,6 +12,7 @@ import {SoundField,SoundPlayer,soundDisplayName,soundFileTitle} from './Question
 import {VideoField,VideoPlayer} from './QuestionVideo';
 import {QuestionMedia,AnswerMediaToggle} from './QuestionMedia';
 import {Button} from './components/Button';
+import {haptic} from '../feedback-sounds.js';
 import {SpeechButton} from './KokoroPanel';
 import {storeImage} from '../sync.js';
 import {ItemMediaButton,ItemMediaSheet,ItemExtras} from './ItemMedia';
@@ -196,7 +197,7 @@ function seedVariant(type:string,base:any){
 export function QuestionEditor({draft,setDraft,onSave,onCancel,busy,status,saved,editing,prepareAudio,setPrepareAudio,onAnother}:any){
  const [mediaError,setMediaErrorRaw]=useState(''),[step,setStep]=useState(0),[zoom,setZoom]=useState<string|null>(null),[vi,setVi]=useState(0),[addingType,setAddingType]=useState(false),[mediaFor,setMediaFor]=useState<string|null>(null),[editImg,setEditImg]=useState<{src:string;key?:string;target:'image'|'answerImage';temp?:boolean}|null>(null);
  // Show every editor error as a bottom toast: buzz once, auto-dismiss after 5s, dismissable with the close button.
- const setMediaError=React.useCallback((msg:string)=>{setMediaErrorRaw(msg);if(msg){try{navigator.vibrate?.([30,20,30]);}catch{}}},[]);
+ const setMediaError=React.useCallback((msg:string)=>{setMediaErrorRaw(msg);if(msg)haptic('error');},[]);
  React.useEffect(()=>{if(!mediaError)return;const t=window.setTimeout(()=>setMediaErrorRaw(''),5000);return()=>window.clearTimeout(t);},[mediaError]);
  // Surface save/validation failures through the same toast.
  React.useEffect(()=>{if(busy||!status)return;if(!/^Saved successfully|Saving question|Question saved|preparing/i.test(status))setMediaError(status);},[status,busy,setMediaError]);

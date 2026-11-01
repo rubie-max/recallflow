@@ -9,6 +9,7 @@ import {seededShuffle,itemTypes} from '../question-variants.js';
 import {openBackupFiles,readArchive,asBackup} from '../backup-archive.js';
 import {restoreImages} from '../sync.js';
 import {APP_TIME_ZONE} from '../streak-stats.js';
+import {haptic} from '../feedback-sounds.js';
 const GROUP_LABEL:Record<string,string>={new:'New',weak:'Weak',mistakes:'Mistakes'};
 const MEDIA_LABEL:Record<string,string>={picture:'Picture',sound:'Sound',video:'Video'};
 const ORDER_LABEL:Record<string,string>={shuffle:'Shuffle',due:'Oldest due',bank:'Bank order'};
@@ -133,7 +134,7 @@ function OrderingSteps({item,values,onChange,disabled}:any){
  const [drag,setDrag]=useState<null|{from:number,to:number,dy:number}>(null);
  useEffect(()=>{const el=list.current;if(!el)return;const block=(e:TouchEvent)=>{if(info.current?.active)e.preventDefault();};el.addEventListener('touchmove',block,{passive:false});return()=>el.removeEventListener('touchmove',block);},[]);
  function move(from:number,to:number){if(from===to)return;const x=[...values];const [step]=x.splice(from,1);x.splice(to,0,step);onChange(x);}
- function activate(){const d=info.current;if(!d)return;d.active=true;try{d.el.setPointerCapture(d.pointerId);}catch{}navigator.vibrate?.(8);setDrag({from:d.i,to:d.i,dy:0});}
+ function activate(){const d=info.current;if(!d)return;d.active=true;try{d.el.setPointerCapture(d.pointerId);}catch{}haptic('tap');setDrag({from:d.i,to:d.i,dy:0});}
  function down(i:number,e:React.PointerEvent<HTMLDivElement>){
   if(disabled||e.button>0||values.length<2)return;const target=e.target as HTMLElement;const grip=!!target.closest('.sequence-grip');
   if(!grip&&target.closest('button,a,input'))return;

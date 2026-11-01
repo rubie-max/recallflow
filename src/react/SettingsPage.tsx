@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight,Music,Play,Upload,Bell,BellRing,ListChecks} from 'lucide-react';
-import {customSounds,saveCustomSound,readSoundFile,playFeedback} from '../feedback-sounds.js';
+import {KeyRound,Eye,EyeOff,Camera,ImagePlus,Pencil,Send,CalendarClock,CircleAlert,UserRound,Palette,Volume2,SlidersHorizontal,Database,Smartphone,Sun,Moon,MonitorSmartphone,Type,ArrowLeftRight,ArrowRight,TriangleAlert,Info,Check,Download,Copy,Trash2,RotateCcw,Timer,Shuffle,FastForward,DoorOpen,Sparkles,Mic,Cloud,CloudOff,RefreshCw,LogOut,CircleCheck,ChevronLeft,ChevronRight,Music,Play,Upload,Vibrate,Bell,BellRing,ListChecks} from 'lucide-react';
+import {customSounds,saveCustomSound,readSoundFile,playFeedback,feedback,haptic} from '../feedback-sounds.js';
 import {Button} from './components/Button';
 import {KokoroPanel} from './KokoroPanel';
 import {BackupRestore,OfflineSettings} from './LearningFeatures';
@@ -97,11 +97,12 @@ function SoundEffects(){
   {custom[kind]&&<button type="button" className="settings-sound-btn is-remove" aria-label={`Remove custom ${label.toLowerCase()}`} onClick={()=>setCustom(saveCustomSound(kind,''))}><Trash2 size={14}/></button>}
   <input ref={pickers[kind]} type="file" accept="audio/*" hidden onChange={e=>{void upload(kind,e.target.files?.[0]);e.target.value='';}}/>
  </div>;
- return <Panel icon={Music} title="Sound effects" detail="Chimes for right and wrong answers and the 3-2-1 countdown.">
+ return <Panel icon={Music} title="Sounds & vibration" detail="For right and wrong answers, saving and deleting questions, finishing a quiz and the 3-2-1 countdown.">
   <div className="settings-segmented" role="radiogroup" aria-label="Sound effects">{[['default','Default'],['custom','Custom'],['off','Off']].map(([id,label])=><button key={id} role="radio" aria-checked={prefs.soundEffects===id} onClick={()=>{update({soundEffects:id});if(id!=='off')playFeedback('correct',id);}}>{label}</button>)}</div>
-  {prefs.soundEffects==='default'&&<div className="settings-sound-preview"><button type="button" className="settings-sound-btn" onClick={()=>playFeedback('correct','default')}><Play size={14}/>Correct</button><button type="button" className="settings-sound-btn" onClick={()=>playFeedback('incorrect','default')}><Play size={14}/>Incorrect</button></div>}
+  {prefs.soundEffects==='default'&&<div className="settings-sound-preview">{([['correct','Correct'],['incorrect','Wrong'],['save','Saved'],['complete','Finished']] as const).map(([kind,label])=><button key={kind} type="button" className="settings-sound-btn" onClick={()=>feedback(kind)}><Play size={14}/>{label}</button>)}</div>}
   {prefs.soundEffects==='custom'&&<div className="settings-sound-list">{row('correct','Correct answer')}{row('incorrect','Wrong answer')}<p className="settings-hint">Short clips work best (under 400 KB). Empty slots use the default chime.</p></div>}
   {error&&<p className="settings-error" role="alert">{error}</p>}
+  <div className="settings-switch-list"><Toggle icon={Vibrate} title="Vibration" detail="A short buzz with each sound. Works on Android phones." checked={prefs.vibration} onChange={(v:boolean)=>{update({vibration:v});if(v)haptic('correct',true);}}/></div>
  </Panel>;
 }
 
@@ -284,7 +285,7 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
  const jump=(id:string)=>{setActiveSection(id);document.getElementById(`settings-${id}`)?.scrollIntoView({behavior:document.documentElement.classList.contains('rf-reduce-motion')?'auto':'smooth',block:'start'});};
  const open=(id:string)=>{history.pushState({...history.state,rfSettings:id},'',location.href);setOpenSection(id);window.scrollTo(0,0);};
  const close=()=>{if(history.state?.rfSettings)history.back();else setOpenSection(null);window.scrollTo(0,0);};
- const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Device voice or Kokoro, speed',quiz:'Questions, reminder, sound effects',data:'Import, export, backup, reset',app:'Install, offline, about'};
+ const summaries:Record<string,string>={profile:prefs.name||'Your name',account:'Sync and log out',appearance:'Theme, text size, motion',voice:'Device voice or Kokoro, speed',quiz:'Questions, reminder, sounds, vibration',data:'Import, export, backup, reset',app:'Install, offline, about'};
  const quizLength=quizPreferences().count,speechEngine=localStorage.getItem('recallflow_speech_engine')==='kokoro'?'Kokoro AI voice':'Device voice',speed=Number(localStorage.getItem(speechEngine==='Device voice'?'recallflow_system_rate':'recallflow_kokoro_speed')||1);
  const live:Record<string,string>={
   account:sync.state==='syncing'?'Syncing…':sync.state==='offline'?'Offline':sync.state==='error'?'Sync problem':ago(sync.lastSynced),

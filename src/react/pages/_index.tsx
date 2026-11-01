@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
-import { BookOpen, Download, Upload, ArrowRight, Home, Library, History, ChartNoAxesColumnIncreasing, Check, CheckCircle2, XCircle, Flame, Sparkles, Moon, Sun, Star, Play, Settings, Plus, Pencil, Trash2, Volume2, Search, ChevronDown, MoreHorizontal, X, FileUp, FileDown, CopyCheck, Layers, SlidersHorizontal, Copy, LayoutDashboard, CalendarDays, Lightbulb, CircleDot, ListChecks, Hash, ArrowLeftRight, ListOrdered, Puzzle, ToggleLeft, PenLine, TextCursorInput, GalleryVerticalEnd, Brackets, CalendarClock, Image as ImageIcon, Shuffle, ArrowUpDown, RotateCcw, TrendingDown, TrendingUp, Brain, FileSpreadsheet, ListTodo, LayoutGrid, Highlighter, Crosshair, ChevronRight } from "lucide-react";
+import { BookOpen, Download, Upload, ArrowRight, Home, Library, History, ChartNoAxesColumnIncreasing, Check, CheckCircle2, XCircle, Flame, Sparkles, Moon, Sun, Star, Play, Settings, Plus, Pencil, Trash2, Volume2, Search, ChevronDown, MoreHorizontal, X, FileUp, FileDown, CopyCheck, Layers, SlidersHorizontal, Copy, LayoutDashboard, CalendarDays, Lightbulb, CircleDot, ListChecks, Hash, ArrowLeftRight, ListOrdered, Puzzle, ToggleLeft, PenLine, TextCursorInput, GalleryVerticalEnd, Brackets, CalendarClock, Image as ImageIcon, Shuffle, ArrowUpDown, RotateCcw, TrendingDown, TrendingUp, Brain, FileSpreadsheet, ListTodo, LayoutGrid, Highlighter, Crosshair, ChevronRight, Flag } from "lucide-react";
 import { Button } from "../components/Button";
 import { Input } from "../components/Input";
 import { Textarea } from "../components/Textarea";
@@ -14,7 +14,8 @@ import {appPreferences, applyAppPreferences} from "../../app-preferences.js";
 import {removeWithPositions,restoreRemoved} from "../../undo-delete.js";
 import {dropPickedFromSetups} from "../../quiz-setups.js";
 import {saveReminderState,reminderSupport,msUntilNextReminder,reminderDue,lastReminderShown,showReminder,markReminderShown} from "../../reminders.js";
-import {playFeedback} from "../../feedback-sounds.js";
+import {feedback} from "../../feedback-sounds.js";
+import {PROGRESS_KEY,makeReport,currentProgress,unfinishedReport} from "../../quiz-progress.js";
 import {resolveVariant, variantAt, retakeVariant, seededShuffle, itemTypes, draftFromSpec, specFromDraft, isPictureLabel} from "../../question-variants.js";
 import {audioCache} from "../../audio-cache.js";
 import {quizPreferences, prepareQuiz} from "../../quiz-preferences.js";
@@ -50,10 +51,9 @@ function questionCardDetail(item:Item){const x:any=item;if(item.type==="list_rec
 const choiceTypes=["single_choice","multi_select","fill_blank_options"];
 function prepareForQuiz(q:Item[],types:string[]=[]){const prefs=appPreferences(),seed=String(Date.now());return q.map(item=>{const shaped:Item={...resolveVariant(item,types),shuffleSeed:seed};if(prefs.shuffleChoices&&choiceTypes.includes(shaped.type||"")&&shaped.options)shaped.options=seededShuffle(shaped.options,shaped.id+seed);return shaped;});}
 function prepareRetake(q:Item[],attempts:Result[]){const seed=String(Date.now()),missedAs=new Map(attempts.filter(a=>!a.correct).map(a=>[a.knowledge_id,a.type]));return seededShuffle(q,seed).map(item=>{const shaped:Item={...retakeVariant(item,missedAs.get(item.id)),shuffleSeed:seed};if(choiceTypes.includes(shaped.type||"")&&shaped.options)shaped.options=seededShuffle(shaped.options,shaped.id+seed);return shaped;});}
-// An unfinished quiz is kept on this device until the end of the day so it can be continued.
-const PROGRESS_KEY="recallflow_quiz_progress";
-type SavedQuiz={day:string;kind:"all"|"retry_mistakes"|"daily"|"due";source?:string;questions:{id:string;variant:number;options?:string[]}[];results:Result[]};
-function savedQuiz():SavedQuiz|null{try{const p=JSON.parse(localStorage.getItem(PROGRESS_KEY)||"null");return p&&p.day===today()&&Array.isArray(p.questions)&&Array.isArray(p.results)&&p.results.length<p.questions.length?p:null;}catch{return null;}}
+type SavedQuiz={day:string;at?:string;kind:"all"|"retry_mistakes"|"daily"|"due";source?:string;questions:{id:string;variant:number;options?:string[]}[];results:Result[]};
+function progressText(){try{return localStorage.getItem(PROGRESS_KEY);}catch{return null;}}
+function savedQuiz():SavedQuiz|null{return currentProgress(progressText(),today()) as SavedQuiz|null;}
 function clearSavedQuiz(){try{localStorage.removeItem(PROGRESS_KEY);}catch{}}
 type Result = { grading?:string; knowledge_id:string; subject:string; topic:string; type:string; prompt:string; correct_answer:string; user_answer:string; correct:boolean; response_time_seconds:number; selected_answers?:string[] };
 type QuizReport = { id:string; date:string; duration_seconds:number; total:number; correct:number; accuracy:number; questions:Result[]; mode?:"all"|"retry_mistakes"|"daily"|"due"; source_report_id?:string };
@@ -98,7 +98,7 @@ export default function IndexPage(){
   const [prefs,setPrefs]=useState(appPreferences),profilePhoto=useProfilePhoto();
   useEffect(()=>{applyAppPreferences(prefs);const sync=(e:any)=>setPrefs(e.detail);window.addEventListener("recallflow:preferences",sync);return()=>window.removeEventListener("recallflow:preferences",sync);},[]);
   const [transferTab,setTransferTab]=useState<"import"|"export">("import"),[transferSelection,setTransferSelection]=useState<string[]>([]);
-  const [confirmLeaveQuiz,setConfirmLeaveQuiz]=useState(false);
+  const [confirmLeaveQuiz,setConfirmLeaveQuiz]=useState(false),[confirmFinish,setConfirmFinish]=useState(false);
   const [showQuizBuilder,setShowQuizBuilder]=useState(location.hash==="#/quiz-settings");
   const [libraryTag,setLibraryTag]=useState<string[]>([]),[libraryTopic,setLibraryTopic]=useState<string[]>([]),[librarySort,setLibrarySort]=useState("recent"),[duplicatesOnly,setDuplicatesOnly]=useState(false);
   const [items,setItems]=useState<Item[]>(()=>{try{const x=localStorage.getItem("recallflow_bank_v2");return x?withoutExamples(JSON.parse(x)):starter;}catch{return starter;}});
@@ -222,17 +222,17 @@ export default function IndexPage(){
   function startReview(fresh?:unknown){
     if(!items.length){setTab("library");setMessage("Add a question before starting a quiz.");return;}
     if(fresh!==true&&savedQuiz()){resumeQuiz();return;}
-    if(fresh===true){clearSavedQuiz();setResumable(null);}
+    if(fresh===true)keepUnfinished(true);
     const q=filterQuiz(items,reportHistory,{mode:'daily',count:quizDefaults.count,subject:'',topic:'',types:[],shuffle:quizDefaults.shuffle,focus:'all'});
     if(!q.length){setCaughtUp(true);return;}
     beginReview(q,"daily");
   }
   function exitQuiz(){if(review&&idx<review.length&&results.length===review.length)saveFinished();setConfirmLeaveQuiz(false);setCaughtUp(false);kokoroVoice.stop();kokoroVoice.cancelPrefetch();setCountdown(null);setReview(null);setResumable(savedQuiz());setTab("home");}
   function resumeQuiz(){
-    const p=savedQuiz();setResumable(p);if(!p)return;
+    const p=savedQuiz();setResumable(p);if(!p){keepUnfinished();return;}
     const n=p.results.length,shape=(s:SavedQuiz["questions"][number])=>{const item=items.find(x=>x.id===s.id);if(!item)return null;const shaped:Item={...variantAt(item,s.variant),shuffleSeed:p.day};if(s.options&&shaped.options&&s.options.length===shaped.options.length&&s.options.every(o=>shaped.options!.includes(o)))shaped.options=s.options;return shaped;};
     const done=p.questions.slice(0,n).map(s=>shape(s)||{id:s.id,subject:"",topic:"",prompt:"",answer:""}),rest=p.questions.slice(n).map(shape).filter(Boolean) as Item[];
-    if(!rest.length){clearSavedQuiz();setResumable(null);setMessage("The rest of that quiz was deleted, so it can’t be continued.");return;}
+    if(!rest.length){keepUnfinished(true);setMessage("The rest of that quiz was deleted, so it can’t be continued. Your answers were saved as a report.");return;}
     setCaughtUp(false);setShowQuizBuilder(false);setConfirmLeaveQuiz(false);setCountdown(null);setRetakeDismissed(false);window.scrollTo({top:0});
     kokoroVoice.stop();kokoroVoice.warm();setReview([...done,...rest]);setReviewKind(p.kind);setSourceReportId(p.source);setCompletedReportId(undefined);
     setIdx(n);setResults(p.results);setAnswer("");setSelected([]);setRevealed(false);setResult(null);setStarted(Date.now());setMessage("");
@@ -241,10 +241,18 @@ export default function IndexPage(){
     if(!review||countdown!==null)return;
     if(results.length>=review.length){clearSavedQuiz();return;}
     if(!results.length)return;
-    const p:SavedQuiz={day:today(),kind:reviewKind,source:sourceReportId,questions:review.map(x=>({id:x.id,variant:x.variantIndex||0,...(x.options?{options:x.options}:{})})),results};
+    const p:SavedQuiz={day:today(),at:new Date().toISOString(),kind:reviewKind,source:sourceReportId,questions:review.map(x=>({id:x.id,variant:x.variantIndex||0,...(x.options?{options:x.options}:{})})),results};
     try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(p));}catch{}
   },[review,results,countdown]);
+  useEffect(()=>{
+    if(review)return;
+    const check=()=>{if(document.visibilityState==="visible")keepUnfinished();};
+    check();document.addEventListener("visibilitychange",check);
+    return()=>document.removeEventListener("visibilitychange",check);
+  },[review]);
   function requestExitQuiz(){if(prefs.confirmExit&&review&&idx<review.length&&(idx>0||result!==null))setConfirmLeaveQuiz(true);else exitQuiz();}
+  function finishEarly(){if(!review||!results.length)return;setConfirmFinish(false);setConfirmLeaveQuiz(false);kokoroVoice.stop();saveFinished();setIdx(review.length);}
+  function requestFinish(){if(prefs.confirmExit)setConfirmFinish(true);else finishEarly();}
   useEffect(()=>{
     if(!prefs.autoRead||!review||countdown!==null||idx>=review.length||result!==null)return;
     const item=review[idx];
@@ -252,7 +260,7 @@ export default function IndexPage(){
     return()=>window.clearTimeout(timer);
   },[review,idx,countdown,prefs.autoRead]);
   useEffect(()=>{
-    if(!prefs.autoAdvance||result!==true||!review)return;
+    if(!prefs.autoAdvance||result!==true||!review||idx>=review.length)return;
     const timer=window.setTimeout(()=>next(),1400);
     return()=>window.clearTimeout(timer);
   },[result,idx,prefs.autoAdvance]);
@@ -263,15 +271,15 @@ export default function IndexPage(){
   },[review,idx]);
   function beginReview(q:Item[],kind:"all"|"retry_mistakes"|"daily"|"due",source?:string,types:string[]=[],prepared=false){
     if(!q.length)return;
-    clearSavedQuiz();setResumable(null);setRetakeDismissed(false);
+    keepUnfinished(true);setRetakeDismissed(false);
     setCaughtUp(false);setShowQuizBuilder(false);setConfirmLeaveQuiz(false);setCountdown(appPreferences().countdown?3:null);window.scrollTo({top:0});
     kokoroVoice.stop();kokoroVoice.warm();setReview(prepared?q:prepareForQuiz(q,types));setReviewKind(kind);setSourceReportId(source);setCompletedReportId(undefined);
     setIdx(0);setResults([]);setAnswer("");setSelected([]);setRevealed(false);setResult(null);setStarted(Date.now());setMessage("");
   }
   useEffect(()=>{
     if(countdown===null)return;
-    playFeedback('tick');
-    const timer=window.setTimeout(()=>{if(countdown<=1){playFeedback('go');setCountdown(null);setStarted(Date.now());}else setCountdown(countdown-1);},1000);
+    feedback('tick');
+    const timer=window.setTimeout(()=>{if(countdown<=1){feedback('go');setCountdown(null);setStarted(Date.now());}else setCountdown(countdown-1);},1000);
     return()=>window.clearTimeout(timer);
   },[countdown]);
   useEffect(()=>{
@@ -317,19 +325,28 @@ export default function IndexPage(){
     const ok=forced ?? gradeQuestion(current,Array.isArray(givenAnswer)?givenAnswer:["multi_select","matching","ordering","cloze","fill_blank_options"].includes(current.type||"")?selected:givenAnswer);
     const category=forced!==undefined?(ok?"correct":"wrong"):["short_answer","fill_blank"].includes(current.type||"short_answer")?textGrade(current,givenAnswer):(ok?"correct":"wrong");
     const seconds=Math.max(1,Math.round((Date.now()-started)/1000));
-    setResult(ok);setRevealed(true);playFeedback(ok?'correct':'incorrect');
+    setResult(ok);setRevealed(true);feedback(ok?'correct':'incorrect');
     setResults(r=>[...r,{grading:category,knowledge_id:current.id,subject:current.subject,topic:current.topic,type:current.type||"short_answer",prompt:current.prompt||"Picture question",correct_answer:answerText(current),user_answer:current.type==="flashcard"?(ok?"self-marked: knew":"self-marked: did not know"):extraTypes.includes(current.type||"")?describeAnswer(current,givenAnswer):["multi_select","matching","ordering","cloze","fill_blank_options"].includes(current.type||"")?(Array.isArray(givenAnswer)?givenAnswer:selected).join("; "):givenAnswer,selected_answers:current.type==="multi_select"?selected:undefined,correct:ok,response_time_seconds:seconds}]);
     setItems(xs=>xs.map(x=>x.id===current.id&&(!reviewedOn(x,today())||!x.due||x.due<=today())?scheduled(x,ok):x));
   }
-  function saveFinished(){
+  function saveReport(report:QuizReport,day=today()){
     setQuizCount(c=>{const n=c+1;localStorage.setItem("recallflow_quiz_count",String(n));return n});
-    setStreakDays(ds=>{const t=today();const n=ds.includes(t)?ds:[...ds,t];localStorage.setItem("recallflow_streak_days",JSON.stringify(n));return n});
-    const report:QuizReport={id:`report_${Date.now()}`,mode:reviewKind,source_report_id:sourceReportId,date:new Date().toISOString(),duration_seconds:results.reduce((a,b)=>a+b.response_time_seconds,0),total:results.length,correct:results.filter(x=>x.correct).length,accuracy:results.length?Math.round(results.filter(x=>x.correct).length/results.length*100):0,questions:results};
-    setCompletedReportId(report.id);clearSavedQuiz();setResumable(null);
-    setReportHistory(prev=>{const nextReports=[report,...prev];localStorage.setItem("recallflow_reports",JSON.stringify(nextReports));return nextReports});
+    setStreakDays(ds=>{const n=ds.includes(day)?ds:[...ds,day];localStorage.setItem("recallflow_streak_days",JSON.stringify(n));return n});
+    setReportHistory(prev=>{if(prev.some(r=>r.id===report.id))return prev;const nextReports=[report,...prev];localStorage.setItem("recallflow_reports",JSON.stringify(nextReports));return nextReports});
+  }
+  function saveFinished(){
+    const report=makeReport(results,{mode:reviewKind,source:sourceReportId}) as QuizReport;
+    saveReport(report);setCompletedReportId(report.id);clearSavedQuiz();setResumable(null);feedback('complete');
+  }
+  function keepUnfinished(discard=false){
+    const raw=progressText();
+    if(!raw){if(discard)setResumable(null);return;}
+    const left=unfinishedReport(raw,today(),discard);
+    if(left)saveReport(left.report as QuizReport,left.day);
+    if(discard||!currentProgress(raw,today())){clearSavedQuiz();setResumable(null);}
   }
   function next(){
-    if(!review)return;
+    if(!review||idx>=review.length)return;
     if(idx+1>=review.length){saveFinished();setIdx(review.length);return;}
     setIdx(i=>i+1);setAnswer("");setSelected([]);setRevealed(false);setResult(null);setStarted(Date.now());
   }
@@ -378,7 +395,7 @@ export default function IndexPage(){
       const candidate=editingId?items.map(x=>x.id===id?saved:x):[...items,saved];
       setSavingQuestion(true);setSaveStatus("Saving question…");
       await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
-      localStorage.setItem("recallflow_bank_v2",JSON.stringify(candidate));setItems(candidate);
+      localStorage.setItem("recallflow_bank_v2",JSON.stringify(candidate));setItems(candidate);feedback("save");
       let audioNote="";
       if(prepareAudio&&speechEngine()==="kokoro"){
         try{
@@ -391,7 +408,7 @@ export default function IndexPage(){
         }catch{audioNote="Your question is saved. Voice could not be prepared; use the speaker button to try again.";}
       }
       setSaveStatus(`Saved successfully. ${audioNote}`.trim());setSavedQuestion(saved);window.scrollTo({top:0});
-    }catch(error:any){setSaveStatus(error.message||"Could not save. Please try again.");}finally{setSavingQuestion(false);}
+    }catch(error:any){setSaveStatus(error.message||"Could not save. Please try again.");feedback("error");}finally{setSavingQuestion(false);}
   }
 
   function removeForever(ids:string[]){const remove=new Set(ids);setItems(xs=>xs.filter(x=>!remove.has(x.id)));ids.forEach(id=>void kokoroVoice.deleteQuestion(id));forgetInSetups(ids);}
@@ -400,7 +417,7 @@ export default function IndexPage(){
     const {kept,removed}=removeWithPositions(items,ids);if(!removed.length)return;
     finishPendingDelete();setItems(kept);setMessage("");
     const label=`${removed.length===1?"Question":`${removed.length} questions`} deleted`;
-    pendingDelete.current={removed,timer:window.setTimeout(finishPendingDelete,6000)};setUndoLabel(label);
+    pendingDelete.current={removed,timer:window.setTimeout(finishPendingDelete,6000)};setUndoLabel(label);feedback("delete");
   }
   useEffect(()=>{
     if(!cardMenuId)return;
@@ -411,6 +428,7 @@ export default function IndexPage(){
   useEffect(()=>{
     const onKey=(e:KeyboardEvent)=>{
       if(e.key!=="Escape")return;
+      if(confirmFinish){setConfirmFinish(false);return;}
       if(confirmLeaveQuiz){setConfirmLeaveQuiz(false);return;}
       if(cardMenuId){setCardMenuId(null);return;}
       if(showAdvancedFilters){setShowAdvancedFilters(false);return;}
@@ -422,7 +440,7 @@ export default function IndexPage(){
       if(selectionMode)exitSelection();
     };
     window.addEventListener("keydown",onKey);return()=>window.removeEventListener("keydown",onKey);
-  },[cardMenuId,showAdvancedFilters,showQuestionTools,pendingLeave,bulkDelete,bulkEdit,deleteId,selectionMode,confirmLeaveQuiz]);
+  },[cardMenuId,showAdvancedFilters,showQuestionTools,pendingLeave,bulkDelete,bulkEdit,deleteId,selectionMode,confirmLeaveQuiz,confirmFinish]);
   function toggleTheme(){chooseTheme(isDark?"light":"dark");}
   const weekStart=new Date(today()+"T00:00:00Z");weekStart.setUTCDate(weekStart.getUTCDate()-(weekStart.getUTCDay()+6)%7);
   const last7=Array.from({length:7},(_,i)=>{const d=new Date(weekStart);d.setUTCDate(d.getUTCDate()+i);return {key:d.toISOString().slice(0,10),label:d.toLocaleDateString(undefined,{weekday:"narrow",timeZone:"UTC"})}});
@@ -474,11 +492,13 @@ export default function IndexPage(){
       const correct=results.filter(x=>x.correct).length;
       const accuracy=results.length?Math.round(correct/results.length*100):0;
       const missed=missedItems(results,items),missedAs=new Set(results.filter(x=>!x.correct).map(x=>x.knowledge_id+"|"+x.type)),canSwitch=missed.some(x=>itemTypes(x).some(t=>!missedAs.has(x.id+"|"+t)));
+      const skipped=review.length-results.length;
       return <main className={styles.reviewPage}><section className={styles.finish}><div className="editor-navigation-brand"><Brand/></div>
-        <div className={styles.finishBadge}><Sparkles size={18}/> {reviewKind==="retry_mistakes"?"PRACTICE COMPLETE":"QUIZ COMPLETE"}</div>
+        <div className={styles.finishBadge}><Sparkles size={18}/> {skipped>0?(reviewKind==="retry_mistakes"?"PRACTICE FINISHED":"QUIZ FINISHED"):reviewKind==="retry_mistakes"?"PRACTICE COMPLETE":"QUIZ COMPLETE"}</div>
         <div className={styles.scoreRing}><strong>{accuracy}%</strong><span>accuracy</span></div>
         <h1>{reviewKind==="retry_mistakes"?"Practice complete.":accuracy>=80?"Great work.":accuracy>=50?"Nice work.":"Keep practising."}</h1>
         <div className={styles.finishStats}><div><b>{correct}</b><span>Correct</span></div><div><b>{results.length-correct}</b><span>Missed</span></div><div><b>{results.length}</b><span>Total</span></div></div>
+        {skipped>0&&<p className="quiz-finished-early">You finished after {results.length} of {review.length}. The other {skipped} {skipped===1?"was":"were"} skipped for now.</p>}
         {missed.length>0&&(!retakeDismissed?<section className="retake-offer" aria-labelledby="retake-offer-title">
           <span className="retake-offer-icon" aria-hidden="true"><RotateCcw size={20}/></span>
           <div className="retake-offer-copy"><h2 id="retake-offer-title">{reviewKind==="retry_mistakes"?(missed.length===1?"Try the last one again?":`Try the ${missed.length} you still missed again?`):(missed.length===1?"Retake the one you missed?":`Retake the ${missed.length} you missed?`)}</h2><p>{canSwitch?"Shuffled into a new order, and asked a different way where possible.":"Shuffled into a new order."} It’s extra practice — they’ll still come back in your next daily quiz.</p></div>
@@ -494,7 +514,7 @@ export default function IndexPage(){
     const extraTitles:Record<string,string>={list_recall:"Name them",categorize:"Sort into groups",highlight:"Tap the words",image_tap:"Tap the picture",slider:"Your estimate"};
     const answerTitle=extraTitles[current?.type||""]?extraTitles[current!.type!]:current?.type==="fill_blank_options"?"Choose from the word bank":current?.type==="matching"?"Match the pairs":current?.type==="ordering"?"Arrange in order":current?.type==="cloze"?"Complete the blanks":current?.type==="flashcard"?"How did you do?":current?.type==="multi_select"?"Choose your answers":current?.type==="true_false"?(revealed?"Your answer":"True or false?"):choiceQuestion?"Choose an answer":"Your answer";
     return <main className={`${styles.reviewPage} quiz-screen split-quiz`}><section className="split-quiz-shell">
-      <header className="split-quiz-header"><div className="split-quiz-brand"><Brand size={22}/></div><button className="split-quiz-exit" aria-label="Exit quiz" onClick={requestExitQuiz}>×<span>Exit</span></button><div className="split-quiz-progress"><div className={styles.track} role="progressbar" aria-label="Quiz progress" aria-valuemin={0} aria-valuemax={review.length} aria-valuenow={idx+1}><span style={{width:`${((idx+1)/review.length)*100}%`}}/></div><small>{idx+1} of {review.length}{reviewKind==="retry_mistakes"?" · Retry":""}</small></div></header>
+      <header className="split-quiz-header"><div className="split-quiz-brand"><Brand size={22}/></div><div className="split-quiz-actions">{results.length>0&&!(result!==null&&idx+1===review.length)&&<button className="split-quiz-finish" onClick={requestFinish}><Flag size={15} aria-hidden="true"/>Finish</button>}<button className="split-quiz-exit" aria-label="Exit quiz" onClick={requestExitQuiz}>×<span>Exit</span></button></div><div className="split-quiz-progress"><div className={styles.track} role="progressbar" aria-label="Quiz progress" aria-valuemin={0} aria-valuemax={review.length} aria-valuenow={idx+1}><span style={{width:`${((idx+1)/review.length)*100}%`}}/></div><small>{idx+1} of {review.length}{reviewKind==="retry_mistakes"?" · Retry":""}</small></div></header>
       <div className="quiz-workspace" data-media-focus={answerMediaOpen?"answer":questionMediaOpen?"question":undefined}>
         <section className="quiz-question-card" aria-label="Question">
           <div className="split-question-meta"><p>{current?.subject}{current?.topic&&<> <span>·</span> {current.topic}</>}</p><span className="split-type-badge">{typeLabel(current?.type)}</span></div>
@@ -516,7 +536,8 @@ export default function IndexPage(){
           {result!==null&&<div className={`${result?styles.feedbackGood:styles.feedbackBad} split-feedback`} data-result={result?"correct":"incorrect"} role="status"><div className={styles.feedbackIcon}>{result?<CheckCircle2/>:<XCircle/>}</div><div className={styles.feedbackCopy}><strong>{result?(results[results.length-1]?.grading==="typo"?"Accepted — likely typo":"Correct!"):"Not quite"}</strong>{current&&answerText(current)&&!/^\(answer (picture|video|sound)\)$/.test(answerText(current))&&<span>{result?`Answer: ${answerText(current)}`:`Correct answer: ${answerText(current)}`}</span>}{current&&<SpeechButton questionId={current.id} role="answer" text={current.answer||answerText(current)} label="Read correct answer"/>}{current&&current.type!=="flashcard"&&<AnswerMediaToggle key={`${current.id}-answer`} onOpenChange={setAnswerMediaOpen} image={current.answerImage} imageAlt={current.imageAlt} audio={(current as any).answerAudio} audioEdit={(current as any).answerAudioEdit} video={(current as any).answerVideo} videoEdit={(current as any).answerVideoEdit}/>}</div><Button onClick={next}>{idx+1===review.length?"See results":"Continue"} <ArrowRight size={17}/></Button></div>}
         </section>
       </div>
-      {confirmLeaveQuiz&&<div className="quiz-leave-layer" role="presentation"><button className="question-tools-scrim" aria-label="Keep practising" onClick={()=>setConfirmLeaveQuiz(false)}/><section className="quiz-leave-dialog" role="alertdialog" aria-modal="true" aria-labelledby="quiz-leave-title"><h2 id="quiz-leave-title">Leave this quiz?</h2><p>{results.length} of {review.length} answered. Your progress is saved — continue any time today from the home screen.</p><div><Button variant="outline" onClick={()=>setConfirmLeaveQuiz(false)}>Keep going</Button><Button variant="destructive" onClick={exitQuiz}>Leave quiz</Button></div></section></div>}
+      {confirmLeaveQuiz&&<div className="quiz-leave-layer" role="presentation"><button className="question-tools-scrim" aria-label="Keep practising" onClick={()=>setConfirmLeaveQuiz(false)}/><section className="quiz-leave-dialog" role="alertdialog" aria-modal="true" aria-labelledby="quiz-leave-title"><h2 id="quiz-leave-title">Leave this quiz?</h2><p>{results.length} of {review.length} answered. Your progress is saved — continue any time today from the home screen. If you don’t, your answers are kept as a report.</p><div><Button variant="outline" onClick={()=>setConfirmLeaveQuiz(false)}>Keep going</Button><Button variant="destructive" onClick={exitQuiz}>Leave quiz</Button></div></section></div>}
+      {confirmFinish&&<div className="quiz-leave-layer" role="presentation"><button className="question-tools-scrim" aria-label="Keep practising" onClick={()=>setConfirmFinish(false)}/><section className="quiz-leave-dialog" role="alertdialog" aria-modal="true" aria-labelledby="quiz-finish-title"><h2 id="quiz-finish-title">Finish now?</h2><p>Your {results.length} {results.length===1?"answer is":"answers are"} saved as a report. The other {review.length-results.length} {review.length-results.length===1?"question is":"questions are"} skipped for now.</p><div><Button variant="outline" onClick={()=>setConfirmFinish(false)}>Keep going</Button><Button onClick={finishEarly}>Finish</Button></div></section></div>}
     </section></main>
   }
 

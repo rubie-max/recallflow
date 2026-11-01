@@ -6,6 +6,7 @@ import {listNeed,listMatches,listAlternatives,passageTokens,tapSpots,tapResults}
 import {seededShuffle,isPictureLabel} from '../question-variants.js';
 import {ItemText} from './QuestionInteractions';
 import {ItemExtras} from './ItemMedia';
+import {haptic} from '../feedback-sounds.js';
 
 // Answer areas for the newer question types. Each keeps its own answer and reports it through onGrade.
 const clamp=(v:number,lo=0,hi=1)=>Math.min(hi,Math.max(lo,v));
@@ -47,7 +48,7 @@ export function CategorizeAnswer({item,disabled,onGrade}:any){
  function down(x:string,e:React.PointerEvent){if(disabled||(e.pointerType==='mouse'&&e.button!==0))return;press.current={x,sx:e.clientX,sy:e.clientY,id:e.pointerId,moved:false,el:e.currentTarget};}
  function move(e:React.PointerEvent){
   const p=press.current;if(!p||p.id!==e.pointerId)return;
-  if(!p.moved){if(Math.hypot(e.clientX-p.sx,e.clientY-p.sy)<7)return;p.moved=true;try{p.el.setPointerCapture(e.pointerId);}catch{}setActive(null);setNote('');try{navigator.vibrate?.(8);}catch{}}
+  if(!p.moved){if(Math.hypot(e.clientX-p.sx,e.clientY-p.sy)<7)return;p.moved=true;try{p.el.setPointerCapture(e.pointerId);}catch{}setActive(null);setNote('');haptic('tap');}
   setDrag({x:p.x,px:e.clientX,py:e.clientY,over:zoneAt(e.clientX,e.clientY)});
  }
  function up(e:React.PointerEvent){

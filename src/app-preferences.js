@@ -1,7 +1,7 @@
 import {reminderDefaults,cleanReminderSettings} from './reminders.js';
 export const appPreferencesKey='recallflow_app_preferences_v1';
 export const textSizes=[['small','Small',.92],['default','Default',1],['large','Large',1.1],['larger','Larger',1.2]];
-export const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default',...reminderDefaults};
+export const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default',vibration:true,...reminderDefaults};
 export const soundEffectModes=['default','custom','off'];
 
 export function validateAppPreferences(value){
@@ -16,6 +16,7 @@ export function validateAppPreferences(value){
     autoAdvance:v.autoAdvance===true,
     confirmExit:v.confirmExit!==false,
     soundEffects:soundEffectModes.includes(v.soundEffects)?v.soundEffects:'default',
+    vibration:v.vibration!==false,
     ...cleanReminderSettings(v),
   };
 }
