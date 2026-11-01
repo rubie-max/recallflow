@@ -112,8 +112,11 @@ export const feedbackKinds=Object.keys(styles.arcade);
 
 // Recorded sounds shipped in public/sounds/ (all CC0, see public/sounds/CREDITS.txt). Until a file is
 // decoded, or if this browser can't decode it, the Arcade synth plays instead.
+// start/length (seconds) trim the original recording; gain evens out quiet ones (the limiter catches peaks).
+const clip=(file,start=0,length=0,gain=1)=>({file,start,length,gain});
 export const soundPacks={
-  gameshow:{correct:'gameshow/correct.mp3',incorrect:'gameshow/wrong.mp3',tick:'gameshow/beep.mp3',go:'gameshow/go.mp3',save:'gameshow/point-up.mp3',complete:'gameshow/fanfare-win.mp3',done:'gameshow/fanfare.mp3',delete:'gameshow/delete.ogg',error:'gameshow/error.ogg'},
+  real:{correct:clip('real/correct.mp3',.79,1.4,1.5),incorrect:clip('real/wrong.mp3',.19,.75),streak:clip('real/streak.mp3',.05,2.4),tick:clip('real/tick.mp3',.02,.16,5),go:clip('real/whistle.mp3',.02,.5,1.3),save:clip('real/save.mp3',0,.3),complete:clip('real/cheer.mp3',.1,3.2,1.2),done:clip('real/applause.mp3',0,3,2),delete:clip('real/delete.mp3',.12,1,2.2),error:clip('real/error.mp3',.19,.4,3)},
+  gameshow:{correct:clip('gameshow/correct.mp3'),incorrect:clip('gameshow/wrong.mp3'),tick:clip('gameshow/beep.mp3'),go:clip('gameshow/go.mp3'),save:clip('gameshow/point-up.mp3'),complete:clip('gameshow/fanfare-win.mp3'),done:clip('gameshow/fanfare.mp3'),delete:clip('gameshow/delete.ogg'),error:clip('gameshow/error.ogg')},
 };
 export const soundStyles=[...Object.keys(soundPacks),...Object.keys(styles)];
 export const announcerVoices=['male','female'];
@@ -140,13 +143,20 @@ function loadClip(path){
 export function preloadSounds(p=appPreferences()){
   if(p.soundEffects==='off')return Promise.resolve([]);
   const voice=announcerVoices.includes(p.announcer)?ANNOUNCER_LINES.map(line=>announcerClip(p.announcer,line)):[];
-  return Promise.all([...Object.values(soundPacks[p.soundPack]||{}),...voice].map(loadClip));
+  return Promise.all([...Object.values(soundPacks[p.soundSet]||{}).map(s=>s.file),...voice].map(loadClip));
 }
-function playClip(path,delay=0){
-  const buffer=clips.get(path),c=audioContext();
+function playClip(spec,delay=0){
+  const {file,start=0,length=0,gain=1}=typeof spec==='string'?{file:spec}:spec;
+  const buffer=clips.get(file),c=audioContext();
   if(!buffer||!c)return false;
-  try{const src=c.createBufferSource();src.buffer=buffer;src.connect(output(c));src.start(c.currentTime+delay);return true;}
-  catch(e){console.warn('RecallFlow: sound failed',e);return false;}
+  try{
+    const t=c.currentTime+delay,src=c.createBufferSource(),amp=c.createGain();
+    src.buffer=buffer;amp.gain.setValueAtTime(gain,t);
+    if(length){amp.gain.setValueAtTime(gain,t+Math.max(0,length-.15));amp.gain.linearRampToValueAtTime(0,t+length);}
+    src.connect(amp).connect(output(c));
+    if(length)src.start(t,start,length+.02);else src.start(t,start);
+    return true;
+  }catch(e){console.warn('RecallFlow: sound failed',e);return false;}
 }
 
 // Plays an announcer line; waits briefly for the file the first time so the line isn't skipped.
@@ -207,9 +217,10 @@ export function readSoundFile(file){
 
 function playUrl(url){try{const a=new Audio(url);a.volume=1;return a.play().then(()=>true).catch(()=>false);}catch{return Promise.resolve(false);}}
 
-export function playPreset(kind,style=appPreferences().soundPack){
-  const path=soundPacks[style]?.[kind];
-  if(path){if(playClip(path))return;void loadClip(path);}
+// Kinds a style has no sound for (like Realistic's crowd "yay" on a streak) play nothing.
+export function playPreset(kind,style=appPreferences().soundSet,delay=0){
+  const spec=soundPacks[style]?.[kind];
+  if(spec){if(playClip(spec,delay))return;void loadClip(spec.file);}
   const set=styles[style]||styles.arcade,play=set[kind]||(kind==='done'&&set.complete);
   if(!play)return;
   const c=audioContext();if(!c)return;
@@ -217,8 +228,8 @@ export function playPreset(kind,style=appPreferences().soundPack){
 }
 // For Settings: loads a style's recording before playing it, so the first preview isn't the fallback.
 export async function previewPreset(kind,style){
-  const path=soundPacks[style]?.[kind];
-  if(path)await Promise.race([loadClip(path),wait(600)]);
+  const spec=soundPacks[style]?.[kind];
+  if(spec)await Promise.race([loadClip(spec.file),wait(600)]);
   playPreset(kind,style);
 }
 
@@ -233,10 +244,13 @@ export function playFeedback(kind,mode=appPreferences().soundEffects){
 
 export function feedback(kind){playFeedback(kind);haptic(kind);}
 
-// streak counts this answer, so 5, 10, 15… right in a row says "Level up!".
+// streak counts this answer, so 5, 10, 15… right in a row says "Level up!" (with a cheer in Realistic).
+// "Wrong" waits for the buzzer to finish so the two don't blur together.
 export function answerFeedback(ok,streak=0,p=appPreferences()){
   feedback(ok?'correct':'incorrect');
-  if(p.announceAnswers)void announce(answerLine(ok,streak),.4,p);
+  const line=answerLine(ok,streak);
+  if(line==='level_up'&&p.soundEffects==='default')playPreset('streak',p.soundSet,.15);
+  if(p.announceAnswers)void announce(line,ok?.4:.65,p);
 }
 export function finishFeedback(accuracy,p=appPreferences()){
   playFeedback(accuracy>=80?'complete':'done',p.soundEffects);haptic('complete');

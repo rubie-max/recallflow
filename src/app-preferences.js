@@ -1,8 +1,8 @@
 import {reminderDefaults,cleanReminderSettings} from './reminders.js';
 export const appPreferencesKey='recallflow_app_preferences_v1';
 export const textSizes=[['small','Small',.92],['default','Default',1],['large','Large',1.1],['larger','Larger',1.2]];
-export const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default',soundPack:'gameshow',announcer:'male',announceAnswers:true,vibration:true,tapVibration:true,...reminderDefaults};
-export const soundEffectModes=['default','custom','off'],soundStyleIds=['gameshow','arcade','bells'],announcerIds=['male','female','off'];
+export const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default',soundSet:'real',announcer:'male',announceAnswers:true,vibration:true,tapVibration:true,...reminderDefaults};
+export const soundEffectModes=['default','custom','off'],soundStyleIds=['real','gameshow','arcade','bells'],announcerIds=['male','female','off'];
 
 export function validateAppPreferences(value){
   const v={...appDefaults,...(value&&typeof value==='object'?value:{})};
@@ -16,7 +16,7 @@ export function validateAppPreferences(value){
     autoAdvance:v.autoAdvance===true,
     confirmExit:v.confirmExit!==false,
     soundEffects:soundEffectModes.includes(v.soundEffects)?v.soundEffects:'default',
-    soundPack:soundStyleIds.includes(v.soundPack)?v.soundPack:'gameshow',
+    soundSet:soundStyleIds.includes(v.soundSet)?v.soundSet:'real',
     announcer:announcerIds.includes(v.announcer)?v.announcer:'male',
     announceAnswers:v.announceAnswers!==false,
     vibration:v.vibration!==false,

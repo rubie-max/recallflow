@@ -21174,8 +21174,8 @@ async function showReminder(dueCount,{test=false}={}){
 
 const appPreferencesKey='recallflow_app_preferences_v1';
 const textSizes=[['small','Small',.92],['default','Default',1],['large','Large',1.1],['larger','Larger',1.2]];
-const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default',soundPack:'gameshow',announcer:'male',announceAnswers:true,vibration:true,tapVibration:true,...reminderDefaults};
-const soundEffectModes=['default','custom','off'],soundStyleIds=['gameshow','arcade','bells'],announcerIds=['male','female','off'];
+const appDefaults={name:'Kaizen',textSize:'default',reduceMotion:false,countdown:true,autoRead:false,shuffleChoices:false,autoAdvance:false,confirmExit:true,soundEffects:'default',soundSet:'real',announcer:'male',announceAnswers:true,vibration:true,tapVibration:true,...reminderDefaults};
+const soundEffectModes=['default','custom','off'],soundStyleIds=['real','gameshow','arcade','bells'],announcerIds=['male','female','off'];
 
 function validateAppPreferences(value){
   const v={...appDefaults,...(value&&typeof value==='object'?value:{})};
@@ -21189,7 +21189,7 @@ function validateAppPreferences(value){
     autoAdvance:v.autoAdvance===true,
     confirmExit:v.confirmExit!==false,
     soundEffects:soundEffectModes.includes(v.soundEffects)?v.soundEffects:'default',
-    soundPack:soundStyleIds.includes(v.soundPack)?v.soundPack:'gameshow',
+    soundSet:soundStyleIds.includes(v.soundSet)?v.soundSet:'real',
     announcer:announcerIds.includes(v.announcer)?v.announcer:'male',
     announceAnswers:v.announceAnswers!==false,
     vibration:v.vibration!==false,
@@ -21318,8 +21318,11 @@ const styles$1={
 
 // Recorded sounds shipped in public/sounds/ (all CC0, see public/sounds/CREDITS.txt). Until a file is
 // decoded, or if this browser can't decode it, the Arcade synth plays instead.
+// start/length (seconds) trim the original recording; gain evens out quiet ones (the limiter catches peaks).
+const clip=(file,start=0,length=0,gain=1)=>({file,start,length,gain});
 const soundPacks={
-  gameshow:{correct:'gameshow/correct.mp3',incorrect:'gameshow/wrong.mp3',tick:'gameshow/beep.mp3',go:'gameshow/go.mp3',save:'gameshow/point-up.mp3',complete:'gameshow/fanfare-win.mp3',done:'gameshow/fanfare.mp3',delete:'gameshow/delete.ogg',error:'gameshow/error.ogg'},
+  real:{correct:clip('real/correct.mp3',.79,1.4,1.5),incorrect:clip('real/wrong.mp3',.19,.75),streak:clip('real/streak.mp3',.05,2.4),tick:clip('real/tick.mp3',.02,.16,5),go:clip('real/whistle.mp3',.02,.5,1.3),save:clip('real/save.mp3',0,.3),complete:clip('real/cheer.mp3',.1,3.2,1.2),done:clip('real/applause.mp3',0,3,2),delete:clip('real/delete.mp3',.12,1,2.2),error:clip('real/error.mp3',.19,.4,3)},
+  gameshow:{correct:clip('gameshow/correct.mp3'),incorrect:clip('gameshow/wrong.mp3'),tick:clip('gameshow/beep.mp3'),go:clip('gameshow/go.mp3'),save:clip('gameshow/point-up.mp3'),complete:clip('gameshow/fanfare-win.mp3'),done:clip('gameshow/fanfare.mp3'),delete:clip('gameshow/delete.ogg'),error:clip('gameshow/error.ogg')},
 };
 [...Object.keys(soundPacks),...Object.keys(styles$1)];
 const announcerVoices=['male','female'];
@@ -21346,13 +21349,20 @@ function loadClip(path){
 function preloadSounds(p=appPreferences()){
   if(p.soundEffects==='off')return Promise.resolve([]);
   const voice=announcerVoices.includes(p.announcer)?ANNOUNCER_LINES.map(line=>announcerClip(p.announcer,line)):[];
-  return Promise.all([...Object.values(soundPacks[p.soundPack]||{}),...voice].map(loadClip));
+  return Promise.all([...Object.values(soundPacks[p.soundSet]||{}).map(s=>s.file),...voice].map(loadClip));
 }
-function playClip(path,delay=0){
-  const buffer=clips.get(path),c=audioContext();
+function playClip(spec,delay=0){
+  const {file,start=0,length=0,gain=1}=typeof spec==='string'?{file:spec}:spec;
+  const buffer=clips.get(file),c=audioContext();
   if(!buffer||!c)return false;
-  try{const src=c.createBufferSource();src.buffer=buffer;src.connect(output(c));src.start(c.currentTime+delay);return true;}
-  catch(e){console.warn('RecallFlow: sound failed',e);return false;}
+  try{
+    const t=c.currentTime+delay,src=c.createBufferSource(),amp=c.createGain();
+    src.buffer=buffer;amp.gain.setValueAtTime(gain,t);
+    if(length){amp.gain.setValueAtTime(gain,t+Math.max(0,length-.15));amp.gain.linearRampToValueAtTime(0,t+length);}
+    src.connect(amp).connect(output(c));
+    if(length)src.start(t,start,length+.02);else src.start(t,start);
+    return true;
+  }catch(e){console.warn('RecallFlow: sound failed',e);return false;}
 }
 
 // Plays an announcer line; waits briefly for the file the first time so the line isn't skipped.
@@ -21413,9 +21423,10 @@ function readSoundFile(file){
 
 function playUrl(url){try{const a=new Audio(url);a.volume=1;return a.play().then(()=>true).catch(()=>false);}catch{return Promise.resolve(false);}}
 
-function playPreset(kind,style=appPreferences().soundPack){
-  const path=soundPacks[style]?.[kind];
-  if(path){if(playClip(path))return;void loadClip(path);}
+// Kinds a style has no sound for (like Realistic's crowd "yay" on a streak) play nothing.
+function playPreset(kind,style=appPreferences().soundSet,delay=0){
+  const spec=soundPacks[style]?.[kind];
+  if(spec){if(playClip(spec,delay))return;void loadClip(spec.file);}
   const set=styles$1[style]||styles$1.arcade,play=set[kind]||(kind==='done'&&set.complete);
   if(!play)return;
   const c=audioContext();if(!c)return;
@@ -21423,8 +21434,8 @@ function playPreset(kind,style=appPreferences().soundPack){
 }
 // For Settings: loads a style's recording before playing it, so the first preview isn't the fallback.
 async function previewPreset(kind,style){
-  const path=soundPacks[style]?.[kind];
-  if(path)await Promise.race([loadClip(path),wait(600)]);
+  const spec=soundPacks[style]?.[kind];
+  if(spec)await Promise.race([loadClip(spec.file),wait(600)]);
   playPreset(kind,style);
 }
 
@@ -21439,10 +21450,13 @@ function playFeedback(kind,mode=appPreferences().soundEffects){
 
 function feedback(kind){playFeedback(kind);haptic(kind);}
 
-// streak counts this answer, so 5, 10, 15… right in a row says "Level up!".
+// streak counts this answer, so 5, 10, 15… right in a row says "Level up!" (with a cheer in Realistic).
+// "Wrong" waits for the buzzer to finish so the two don't blur together.
 function answerFeedback(ok,streak=0,p=appPreferences()){
   feedback(ok?'correct':'incorrect');
-  if(p.announceAnswers)void announce(answerLine(ok,streak),.4,p);
+  const line=answerLine(ok,streak);
+  if(line==='level_up'&&p.soundEffects==='default')playPreset('streak',p.soundSet,.15);
+  if(p.announceAnswers)void announce(line,ok?.4:.65,p);
 }
 function finishFeedback(accuracy,p=appPreferences()){
   playFeedback(accuracy>=80?'complete':'done',p.soundEffects);haptic('complete');
@@ -30927,12 +30941,12 @@ function SoundEffects() {
             React.createElement(Trash2, { size: 14 })),
         React.createElement("input", { ref: pickers[kind], type: "file", accept: "audio/*", hidden: true, onChange: e => { void upload(kind, e.target.files?.[0]); e.target.value = ''; } }));
     const previews = [['Correct', () => answerFeedback(true, 1)], ['Wrong', () => answerFeedback(false)], ['Level up', () => answerFeedback(true, 5)], ['Saved', () => feedback('save')], ['Deleted', () => feedback('delete')], ['Finished', () => finishFeedback(100)]];
-    return React.createElement(Panel, { icon: Music, title: "Sounds & vibration", detail: "Game-show sounds and an announcer for answers, saving, deleting, finishing a quiz and the 3-2-1 countdown." },
+    return React.createElement(Panel, { icon: Music, title: "Sounds & vibration", detail: "Real recorded sounds and an announcer for answers, saving, deleting, finishing a quiz and the 3-2-1 countdown." },
         React.createElement("div", { className: "settings-segmented", role: "radiogroup", "aria-label": "Sound effects" }, [['default', 'Default'], ['custom', 'Custom'], ['off', 'Off']].map(([id, label]) => React.createElement("button", { key: id, role: "radio", "aria-checked": prefs.soundEffects === id, onClick: () => { update({ soundEffects: id }); if (id !== 'off')
                 playFeedback('correct', id); } }, label))),
         prefs.soundEffects === 'default' && React.createElement(React.Fragment, null,
             React.createElement("p", { className: "settings-label" }, "Style"),
-            React.createElement("div", { className: "settings-segmented", role: "radiogroup", "aria-label": "Sound style" }, [['gameshow', 'Game show'], ['arcade', 'Arcade'], ['bells', 'Bells']].map(([id, label]) => React.createElement("button", { key: id, role: "radio", "aria-checked": prefs.soundPack === id, onClick: () => { update({ soundPack: id }); void previewPreset('correct', id); } }, label)))),
+            React.createElement("div", { className: "settings-segmented", role: "radiogroup", "aria-label": "Sound style" }, [['real', 'Realistic'], ['gameshow', 'Game show'], ['arcade', 'Arcade'], ['bells', 'Bells']].map(([id, label]) => React.createElement("button", { key: id, role: "radio", "aria-checked": prefs.soundSet === id, onClick: () => { update({ soundSet: id }); void previewPreset('correct', id); } }, label)))),
         prefs.soundEffects !== 'off' && React.createElement(React.Fragment, null,
             React.createElement("p", { className: "settings-label" }, "Announcer voice"),
             React.createElement("div", { className: "settings-segmented", role: "radiogroup", "aria-label": "Announcer voice" }, [['male', 'Male'], ['female', 'Female'], ['off', 'Off']].map(([id, label]) => React.createElement("button", { key: id, role: "radio", "aria-checked": prefs.announcer === id, onClick: () => { update({ announcer: id }); if (id !== 'off')

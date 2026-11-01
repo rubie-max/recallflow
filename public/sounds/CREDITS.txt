@@ -1,6 +1,18 @@
 RecallFlow sound credits. Every file here is CC0 1.0 (public domain):
 https://creativecommons.org/publicdomain/zero/1.0/
 
+real/ (real recordings from Freesound, https://freesound.org/people/<user>/sounds/<id>/)
+  correct   desk bell center        tonmayster/685111
+  wrong     buzzer2                 hypocore/164089
+  error     buzzer                  hypocore/164090
+  streak    Small group cheering    dr_skitz/353923
+  cheer     Cheer 2                 jayfrosting/333404
+  applause  Small applause          Breviceps/462362
+  whistle   Referee whistle sound   Rosa-Orenes256/538422
+  tick      clock-tick-01           pbimal/534094
+  save      glass_ding              hihirex/66876
+  delete    paper - crumple 01      Anthousai/398898
+
 announcer/male, announcer/female
   "Voiceover Pack" by Kenney (www.kenney.nl). Male voice: Jeffrey M. Smith. Female voice: Giselle.
   https://kenney.nl/assets/voiceover-pack
