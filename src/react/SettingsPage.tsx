@@ -327,7 +327,6 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
   </section>;
   const row=(id:string)=>{const [,label,Icon]=sections.find(s=>s[0]===id)!;return <button type="button" key={id} onClick={()=>open(id)}><span className="settings-menu-icon" data-section={id}><Icon size={18} aria-hidden="true"/></span><span className="settings-menu-copy"><strong>{label}</strong><small>{live[id]||summaries[id]}</small></span><ChevronRight size={18} aria-hidden="true"/></button>;};
   return <section className="settings-page settings-mobile">
-   <header className="settings-hero"><h1>Settings</h1></header>
    <nav aria-label="Settings sections" className="settings-menu-groups">
     <button type="button" className="settings-profile-card" onClick={()=>open('profile')}>
      <span className="settings-profile-avatar">{photo?<img src={photo} alt=""/>:(prefs.name||'?').trim().charAt(0).toUpperCase()}</span>
@@ -340,7 +339,6 @@ export function SettingsPage({items,reports,quizCount,streakDays,theme,onTheme,o
   </section>;
  }
  return <section className="settings-page settings-layout">
-  <header className="settings-hero"><h1>Settings</h1></header>
   <nav className="settings-jump" aria-label="Settings sections">{sections.map(([id,label,Icon])=><a key={id} href="#/settings" aria-current={activeSection===id?'true':undefined} onClick={e=>{e.preventDefault();jump(id);}}><Icon size={16} aria-hidden="true"/><span>{label}</span></a>)}</nav>
   <div className="settings-content">
    {sections.map(([id,label])=><div className="settings-group" id={`settings-${id}`} key={id}><h2 className="settings-group-title">{label}</h2>{groups[id]}</div>)}

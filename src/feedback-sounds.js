@@ -115,7 +115,7 @@ export const feedbackKinds=Object.keys(styles.arcade);
 // start/length (seconds) trim the original recording; gain evens out quiet ones (the limiter catches peaks).
 const clip=(file,start=0,length=0,gain=1)=>({file,start,length,gain});
 export const soundPacks={
-  real:{correct:clip('real/correct.mp3',.79,1.4,1.5),incorrect:clip('real/wrong.mp3',.19,.75),streak:clip('real/streak.mp3',.05,2.4),tick:clip('real/tick.mp3',.02,.16,5),go:clip('real/whistle.mp3',.02,.5,1.3),save:clip('real/save.mp3',0,.3),complete:clip('real/cheer.mp3',.1,3.2,1.2),done:clip('real/applause.mp3',0,3,2),delete:clip('real/delete.mp3',.12,1,2.2),error:clip('real/error.mp3',.19,.4,3)},
+  real:{correct:clip('real/correct.wav',0,1.3),incorrect:clip('real/wrong.mp3',.01,1.05),streak:clip('real/streak.mp3',.02,1.6,1.8),tick:clip('real/tick.mp3',0,.12,2.2),go:clip('real/go.mp3',.03,.85,.55),save:clip('real/save.mp3',.01,.65,1.2),complete:clip('real/complete.mp3',.01,3.1,1.3),done:clip('real/done.mp3',.2,3.3),delete:clip('real/delete.mp3',.01,.6,1.4),error:clip('real/error.mp3',0,.28)},
   gameshow:{correct:clip('gameshow/correct.mp3'),incorrect:clip('gameshow/wrong.mp3'),tick:clip('gameshow/beep.mp3'),go:clip('gameshow/go.mp3'),save:clip('gameshow/point-up.mp3'),complete:clip('gameshow/fanfare-win.mp3'),done:clip('gameshow/fanfare.mp3'),delete:clip('gameshow/delete.ogg'),error:clip('gameshow/error.ogg')},
 };
 export const soundStyles=[...Object.keys(soundPacks),...Object.keys(styles)];

@@ -1,6 +1,6 @@
 import React,{useState,useEffect,useRef,useMemo} from 'react';
 import {readSetups,writeSetups,normalizeControls,prunePickedSetups,setupNameError,dropGone,readLastQuiz,writeLastQuiz} from '../quiz-setups.js';
-import {Bookmark,BookmarkPlus,Check,ChevronRight,Search,Pencil,Trash2,X,Plus,Play,Undo2,Upload,Smartphone,GripVertical,Lock,LockOpen,Eye,EyeOff,FileArchive} from 'lucide-react';
+import {Bookmark,BookmarkPlus,Check,ChevronRight,Search,Pencil,Trash2,X,Plus,Play,Undo2,Upload,Smartphone,GripVertical,Lock,LockOpen,Eye,EyeOff,FileArchive,BookOpen,Folder,Tag,Shapes,Image as ImageIcon,ListChecks} from 'lucide-react';
 import {MatchingAnswer,ItemMedia,ItemZoom,ItemText} from './QuestionInteractions';
 import {Button} from './components/Button';
 import {questionTypes,validateQuestion,typeLabel} from '../question-types.js';
@@ -14,6 +14,8 @@ const GROUP_LABEL:Record<string,string>={new:'New',weak:'Weak',mistakes:'Mistake
 const MEDIA_LABEL:Record<string,string>={picture:'Picture',sound:'Sound',video:'Video'};
 const ORDER_LABEL:Record<string,string>={shuffle:'Shuffle',due:'Oldest due',bank:'Bank order'};
 const FILTERS:[string,string][]=[['subjects','Subjects'],['topics','Topics'],['tags','Tags'],['types','Question types'],['media','Has media']];
+const FILTER_TILES:Record<string,[any,string]>={subjects:[BookOpen,'violet'],topics:[Folder,'sky'],tags:[Tag,'amber'],types:[Shapes,'green'],media:[ImageIcon,'pink'],picked:[ListChecks,'teal'],skipped:[EyeOff,'slate']};
+const FilterTile=({k}:{k:string})=>{const [Icon,tone]=FILTER_TILES[k];return <i className="rf-tile" data-tone={tone} aria-hidden="true"><Icon/></i>;};
 const PICKER_LIMIT=200,SEARCH_FROM=8,COUNTS=[0,5,10,20],MINUTES=[5,10,15,20];
 const filterLabel=(k:string,v:string)=>k==='tags'?'#'+v:k==='types'?typeLabel(v):k==='media'?MEDIA_LABEL[v]||v:v;
 function whatText(c:any,long=false){const g=c.groups.map((x:string)=>GROUP_LABEL[x]),due=c.mode!=='all';if(!g.length)return due?(long?'Questions due now.':'Due'):(long?'Every question, due or not.':'All');const names=g.join(long?' or ':' + ');return due?(long?`${names} questions, only ones due now.`:`${names} · due only`):(long?`${names} questions, due or not.`:names);}
@@ -83,9 +85,9 @@ export function QuizBuilder({items,reports,defaults,onStart,keepIds=[]}:any){
   {byTime&&<p className="aq-hint">{c.minutes?`Fits about ${quizLimit(c,reports)} questions at your usual pace.`:'Type how many minutes you have.'}</p>}</section>
  <section className="aq-block" aria-labelledby="aq-filter-title"><div className="aq-label"><h2 id="aq-filter-title">Filters</h2>{(chips.length>0||c.picked.length>0||c.skipped.length>0)&&<button type="button" onClick={()=>set({subjects:[],topics:[],tags:[],types:[],media:[],picked:[],pickedMode:'add',skipped:[]})}>Clear all</button>}</div>
   {chips.length>0&&<div className="aq-active">{chips.map(([k,v]:string[])=><button key={k+v} type="button" aria-label={`Remove ${filterLabel(k,v)}`} onClick={()=>toggleIn(k,v)}>{filterLabel(k,v)}<X size={13}/></button>)}</div>}
-  <div className="aq-rows">{FILTERS.map(([k,label])=><button key={k} type="button" onClick={()=>openFilter(k)}><span>{label}</span><em data-any={!c[k].length||undefined}>{c[k].length?c[k].map((v:string)=>filterLabel(k,v)).join(', '):'Any'}</em><ChevronRight size={16}/></button>)}
-  <button type="button" onClick={()=>{setSearch('');setPinned(c.picked);setSheet('questions');}}><span>Specific questions</span><em data-any={!c.picked.length||undefined}>{c.picked.length?`${c.picked.length} picked · ${c.pickedMode==='only'?'only these':'added'}`:'Any'}</em><ChevronRight size={16}/></button>
-  {c.skipped.length>0&&<button type="button" onClick={()=>setSheet('skipped')}><span>Skipped questions</span><em>{c.skipped.length} left out</em><ChevronRight size={16}/></button>}</div></section>
+  <div className="aq-rows">{FILTERS.map(([k,label])=><button key={k} type="button" onClick={()=>openFilter(k)}><FilterTile k={k}/><span>{label}</span><em data-any={!c[k].length||undefined}>{c[k].length?c[k].map((v:string)=>filterLabel(k,v)).join(', '):'Any'}</em><ChevronRight size={16}/></button>)}
+  <button type="button" onClick={()=>{setSearch('');setPinned(c.picked);setSheet('questions');}}><FilterTile k="picked"/><span>Specific questions</span><em data-any={!c.picked.length||undefined}>{c.picked.length?`${c.picked.length} picked · ${c.pickedMode==='only'?'only these':'added'}`:'Any'}</em><ChevronRight size={16}/></button>
+  {c.skipped.length>0&&<button type="button" onClick={()=>setSheet('skipped')}><FilterTile k="skipped"/><span>Skipped questions</span><em>{c.skipped.length} left out</em><ChevronRight size={16}/></button>}</div></section>
  <section className="aq-block" aria-labelledby="aq-order-title"><div className="aq-label"><h2 id="aq-order-title">Order</h2></div>
   <div className="aq-seg" role="radiogroup" aria-label="Question order">{Object.entries(ORDER_LABEL).map(([id,label])=><button key={id} type="button" role="radio" aria-checked={c.order===id} onClick={()=>set({order:id})}>{label}</button>)}</div></section>
  {status&&<p className="aq-status" role="status">{status}</p>}

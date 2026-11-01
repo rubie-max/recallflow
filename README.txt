@@ -214,5 +214,9 @@ LOGIN & CLOUD SYNC (Oct 2026)
 - Sound effects come in four styles (Realistic, Game show, Arcade, Bells) in Settings > Voice & sound >
   Sounds & vibration, plus a male or female announcer for 3-2-1-Go, right/wrong, "Level up!" every 5 in a
   row and the finish. Realistic, Game show and the announcer are CC0 recordings in public/sounds/
-  (credits in public/sounds/CREDITS.txt; Realistic clips are trimmed and levelled in feedback-sounds.js);
+  (credits in public/sounds/CREDITS.txt; Realistic clips are trimmed and levelled in feedback-sounds.js;
+  its correct-answer chime, real/correct.wav, is generated, not recorded);
   Arcade and Bells are generated and also stand in if a file can't load.
+- Look: every main page has one slim top bar (icon + page name, page buttons on the right). Shared
+  "Settings look" styles (solid icon tiles, uppercase labels, grouped lists, one glowing top card per page)
+  live in src/react/look.css, loaded last so they win over older styles.

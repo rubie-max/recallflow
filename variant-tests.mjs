@@ -80,6 +80,35 @@ assert.match(serialize(items,'text'),/\*\*Answer:\*\* Na[\s\S]*Also asked as: Ty
 assert.throws(()=>parseImport('{"nope":1}'),/no questions/);
 assert.throws(()=>parseImport('subject,answer\nA,B','csv'),/prompt/);
 
+// Tab-separated files with a header row are read by column name, not as Anki front/back cards
+const tsvSheet=['type\tsubject\ttopic\tprompt\tanswer\toptions\tcorrectAnswers\tblanks\tpassage\ttags\tvariants',
+  'single_choice\tGeography\tCapitals\tCapital of Kenya?\tNairobi\tNairobi|Mombasa|Kisumu\t\t\t\tafrica|capitals\tshort_answer=Nairobi',
+  'true_false\tGeography\tCapitals\tCanberra is the capital of Australia.\tTRUE\t\t\t\t\t\t',
+  'matching\tGeography\tCapitals\tMatch country to capital.\tFrance: Paris; Italy: Rome\t\t\t\t\t\t',
+  'categorize\tGeography\tCapitals\tSort by continent.\tAsia: Tokyo, Seoul; Europe: Paris, Rome\t\t\t\t\t\t',
+  'ordering\tGeography\tCapitals\tWest to East.\tWashington, D.C., London, Tokyo\t\t\t\t\t\t',
+  'list_recall\tGeography\tCapitals\tName two capitals.\tOttawa; Washington, D.C.\t\t\t\t\t\t',
+  'slider\tGeography\tCapitals\tHow many UN members?\t193\t\t\t\t\t\t',
+  'highlight\tGeography\tCapitals\tTap the capital.\t\t\t\t\tGyumri is big but *Yerevan* is the capital.\t\t',
+].join('\r\n');
+const sheet=parseImport(tsvSheet,'auto','capitals.tsv');
+assert.equal(sheet.format,'tsv');assert.equal(sheet.records.length,8);
+const [kenya,canberra,match,sort,order,named,slide,mark]=sheet.records.map(r=>validateQuestion(r));
+assert.deepEqual([kenya.type,kenya.subject,kenya.topic,kenya.prompt,kenya.answer],['single_choice','Geography','Capitals','Capital of Kenya?','Nairobi']);
+assert.deepEqual(kenya.options,['Nairobi','Mombasa','Kisumu']);assert.deepEqual(kenya.tags,['africa','capitals']);assert.equal(kenya.variants[0].type,'short_answer');
+assert.equal(canberra.answer,'True');
+assert.deepEqual(match.pairs,[{left:'France',right:'Paris'},{left:'Italy',right:'Rome'}]);
+assert.deepEqual(sort.groups,[{name:'Asia',items:['Tokyo','Seoul']},{name:'Europe',items:['Paris','Rome']}]);
+assert.deepEqual(order.sequence,['Washington, D.C.','London','Tokyo']);
+assert.deepEqual(named.listItems,['Ottawa','Washington, D.C.']);
+assert.deepEqual([slide.sliderMin,slide.sliderMax,slide.answer],[0,400,'193']);
+assert.match(mark.passage,/\*Yerevan\*/);
+// Header names are matched loosely in CSV too, and plain Anki tab files still import as front/back
+const camel=parseImport('Question,Answer,Options,Correct Answers,type\nPick primes,2; 3,2|3|4,2|3,multi_select','csv').records[0];
+assert.deepEqual(camel.correctAnswers,['2','3']);
+assert.deepEqual(parseImport('Capital of Peru?\tLima\ngeo','tsv').records[0],{type:'short_answer',prompt:'Capital of Peru?',answer:'Lima'});
+assert.match(aiImportPrompt,/type, subject, topic, prompt, answer/);
+
 const clip='data:audio/wav;base64,YQ==',link='https://example.com/chime.mp3';
 const audioItem=validateQuestion({type:'short_answer',prompt:'What sound?',answer:'Bell',audio:clip});
 const linkItem=validateQuestion({type:'short_answer',prompt:'Which note?',answer:'A',audio:link});

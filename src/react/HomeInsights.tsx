@@ -1,5 +1,5 @@
 import React,{useMemo} from 'react';
-import {ArrowRight,TrendingUp,TrendingDown,Minus,CalendarClock,Target,Plus,FileUp,Play,Trophy} from 'lucide-react';
+import {ArrowRight,TrendingUp,TrendingDown,Minus,CalendarClock,Target,Plus,FileUp,Play,Trophy,CircleCheck,RotateCcw,History,ChevronRight} from 'lucide-react';
 import {reportsInRange,summarize,dailySeries,formatDuration,MASTERY_LEVELS} from '../report-stats.js';
 import {analytics} from '../learning-core.js';
 
@@ -31,7 +31,7 @@ export function HomeInsights({items,reports,forecast,memory,mistakes,onPracticeM
 
  return <div className="hx">
   <button type="button" className="hx-card hx-week" onClick={()=>onOpenReport('progress')} aria-label={`This week: ${week.accuracy??0}% correct. Open progress report`}>
-   <div className="hx-head"><span className="hx-title">This week</span>{last&&<span className="hx-last" data-level={level(last.accuracy)}>Last quiz {last.accuracy}% · {ago(last.date)}</span>}</div>
+   <div className="hx-head"><span className="hx-title"><span className="rf-tile" data-tone="green"><CircleCheck size={18}/></span>This week</span>{last&&<span className="hx-last" data-level={level(last.accuracy)}>Last quiz {last.accuracy}% · {ago(last.date)}</span>}</div>
    {week.quizzes?<>
     <div className="hx-week-main">
      <div className="hx-big"><strong data-level={level(week.accuracy)}>{week.accuracy}%</strong><span>correct</span></div>
@@ -43,7 +43,7 @@ export function HomeInsights({items,reports,forecast,memory,mistakes,onPracticeM
   </button>
 
   <button type="button" className="hx-card hx-plan" onClick={()=>onOpenReport('memory')} aria-label="Coming up and memory strength. Open memory report">
-   <div className="hx-head"><span className="hx-title"><CalendarClock size={16}/>Coming up</span><ArrowRight size={16} className="hx-go"/></div>
+   <div className="hx-head"><span className="hx-title"><span className="rf-tile" data-tone="teal"><CalendarClock size={18}/></span>Coming up</span><ArrowRight size={16} className="hx-go"/></div>
    <div className="hx-plan-grid">
     <div><strong>{forecast.days[0]?.count||0}</strong><span>Due today</span></div>
     <div><strong>{tomorrow}</strong><span>Tomorrow</span></div>
@@ -54,14 +54,17 @@ export function HomeInsights({items,reports,forecast,memory,mistakes,onPracticeM
    <p className="hx-muted">{studied} of {items.length} questions studied{memory.mastered?` · ${memory.mastered} mastered`:''}</p>
   </button>
 
-  {(mistakes.length>0||weakest)&&<section className="hx-card hx-focus">
-   <div className="hx-head"><span className="hx-title"><Target size={16}/>Needs practice</span></div>
-   {mistakes.length>0&&<div className="hx-focus-row"><div><strong>{mistakes.length} {mistakes.length===1?'question':'questions'} to revisit</strong><small>Each one clears after two right answers in a row.</small></div><button type="button" className="hx-pill" onClick={onPracticeMistakes}><Play size={13} fill="currentColor"/>Practice</button></div>}
-   {weakest&&<div className="hx-focus-row"><div><strong>{weakest.name} · {weakest.pct}%</strong><small>Your weakest subject this month.</small></div><button type="button" className="hx-pill is-soft" onClick={()=>onPracticeSubject(weakest.name)}><Play size={13} fill="currentColor"/>Drill</button></div>}
-   {mistakes.length>0&&<button type="button" className="hx-link" onClick={()=>onOpenReport('mistakes')}>See all mistakes <ArrowRight size={14}/></button>}
-  </section>}
+  {(mistakes.length>0||weakest)&&<><p className="rf-label">Needs practice</p><section className="hx-card hx-focus rf-group">
+   {mistakes.length>0&&<div className="hx-focus-row"><span className="rf-tile" data-tone="red"><RotateCcw size={18}/></span><div><strong>{mistakes.length} {mistakes.length===1?'question':'questions'} to revisit</strong><small>Each one clears after two right answers in a row.</small></div><button type="button" className="hx-pill" onClick={onPracticeMistakes}><Play size={13} fill="currentColor"/>Practice</button></div>}
+   {weakest&&<div className="hx-focus-row"><span className="rf-tile" data-tone="amber"><Target size={18}/></span><div><strong>{weakest.name} · {weakest.pct}%</strong><small>Your weakest subject this month.</small></div><button type="button" className="hx-pill is-soft" onClick={()=>onPracticeSubject(weakest.name)}><Play size={13} fill="currentColor"/>Drill</button></div>}
+   {mistakes.length>0&&<button type="button" className="hx-link rf-row" onClick={()=>onOpenReport('mistakes')}><span className="rf-tile" data-tone="slate"><History size={18}/></span><strong>See all mistakes</strong><ChevronRight size={18}/></button>}
+  </section></>}
   {!mistakes.length&&!weakest&&week.quizzes>0&&<section className="hx-card hx-great"><Trophy size={20}/><div><strong>Nothing to fix right now</strong><small>No open mistakes and every subject is above 80%.</small></div></section>}
 
-  <div className="hx-actions"><button type="button" onClick={onAdd}><Plus size={17}/>New question</button><button type="button" onClick={onImport}><FileUp size={17}/>Import</button></div>
+  <p className="rf-label">Add</p>
+  <div className="rf-group hx-add">
+   <button type="button" className="rf-row" onClick={onAdd}><span className="rf-tile" data-tone="violet"><Plus size={18}/></span><span className="rf-row-copy"><strong>New question</strong><small>Type, picture, sound or video</small></span><ChevronRight size={18}/></button>
+   <button type="button" className="rf-row" onClick={onImport}><span className="rf-tile" data-tone="sky"><FileUp size={18}/></span><span className="rf-row-copy"><strong>Import</strong><small>CSV, Anki, JSON or plain text</small></span><ChevronRight size={18}/></button>
+  </div>
  </div>;
 }

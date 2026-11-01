@@ -120,7 +120,16 @@ Example: { "prompt": "Capital of France?", "type": "short_answer", "answer": "Pa
 In CSV, put extra types in the "variants" column: type=opt|opt, separate several with ;
 
 Question sound — add "audio": "https://..." (direct mp3/wav link). Links only, never base64.
-In CSV, use an "audio" column with the https link.`;
+In CSV, use an "audio" column with the https link.
+
+If you are asked for a spreadsheet, CSV or TSV file instead of JSON:
+- The FIRST row must be this header (comma-separated for CSV, tab-separated for TSV):
+  type, subject, topic, prompt, answer, options, correctAnswers, acceptedAnswers, blanks, tags, variants
+- One question per row after that. Leave a cell empty when it does not apply.
+- Separate several values inside one cell with | (options, correctAnswers, acceptedAnswers, blanks, tags), e.g. Paris|Lyon|Nice
+- true_false answers are True or False.
+- variants: type=opt|opt, several separated with ; e.g. single_choice=Paris|Lyon|Nice;short_answer=Paris
+- Never put commentary, a title or blank rows above the header.`;
 
 export function parseVariantsCell(cell){
   if(!cell||!String(cell).trim())return undefined;
@@ -184,7 +193,37 @@ export function parseCSV(text,delimiter=','){
 }
 
 const split=s=>String(s||'').split('|').map(x=>x.trim()).filter(Boolean);
-const headerAlias={question:'prompt',front:'prompt',term:'prompt',back:'answer',definition:'answer',choices:'options',correct:'correct_answers',accepted:'accepted_answers',alternatives:'accepted_answers',category:'subject',deck:'subject',chapter:'topic'};
+const headerAlias={question:'prompt',front:'prompt',term:'prompt',back:'answer',definition:'answer',choices:'options',correct:'correct_answers',accepted:'accepted_answers',alternatives:'accepted_answers',category:'subject',deck:'subject',chapter:'topic',numeric_tolerance:'tolerance'};
+// "correctAnswers", "Correct answers" and "correct_answers" all name the same column.
+export const headerKey=h=>{const k=String(h??'').replace(/^\uFEFF/,'').trim().replace(/([a-z0-9])([A-Z])/g,'$1_$2').toLowerCase().replace(/[\s-]+/g,'_');return headerAlias[k]||k;};
+const knownColumns=new Set(['answer','type','subject','topic','options','correct_answers','accepted_answers','tags','blanks','variants']);
+const isHeaderRow=cells=>{const keys=cells.map(headerKey);return keys.includes('prompt')&&keys.some(k=>knownColumns.has(k));};
+function fromTable(rows){
+  if(rows.length<2)throw new Error('The spreadsheet needs a header row and at least one question.');
+  const head=rows[0].map(headerKey);
+  if(!head.includes('prompt'))throw new Error('Add a “prompt” or “question” column.');
+  return rows.slice(1).map(r=>fromRecord(Object.fromEntries(head.map((h,i)=>[h,(r[i]||'').trim()]))));
+}
+const parts=s=>String(s||'').split(';').map(x=>x.trim()).filter(Boolean);
+// Splits "Washington, D.C., London" on commas without breaking "D.C."-style abbreviations.
+const commaList=s=>String(s||'').split(',').map(x=>x.trim()).filter(Boolean).reduce((a,x)=>{if(/^([A-Z]\.)+$/.test(x)&&a.length)a[a.length-1]+=', '+x;else a.push(x);return a;},[]);
+const itemList=s=>{const text=String(s||'');if(text.includes('→'))return text.split('→').map(x=>x.trim()).filter(Boolean);const p=parts(text);return p.length>1?p:commaList(text);};
+const niceMax=n=>{const v=Math.abs(n)*2||10,mag=10**Math.floor(Math.log10(v));return Math.ceil(v/mag)*mag;};
+// AI tools often write matching, categorize, list, ordering and slider answers only in the short form the app
+// shows ("France: Paris; Germany: Berlin"); rebuild the structure the question needs from that.
+function structureFromAnswer(type,out,rec){
+  const answer=out.answer;
+  if(type==='matching'&&!out.pairs){const pairs=parts(answer).map(p=>p.split(/=>|->|→|:/)).filter(x=>x.length>1).map(([left,...right])=>({left:left.trim(),right:right.join(':').trim()}));if(pairs.length)return {pairs};}
+  if(type==='categorize'){const groups=parts(rec.groups||answer).map(g=>{const i=g.indexOf(':');return i<0?null:{name:g.slice(0,i).trim(),items:commaList(g.slice(i+1))};}).filter(Boolean);if(groups.length)return {groups};}
+  if(type==='list_recall'&&!out.listItems){const listItems=itemList(answer);if(listItems.length)return {listItems};}
+  if(type==='ordering'&&!out.sequence){const sequence=itemList(answer);if(sequence.length)return {sequence};}
+  if(type==='slider'&&(out.sliderMin===undefined||out.sliderMax===undefined)){
+    const n=Number(answer);if(!Number.isFinite(n))return {};
+    const max=out.sliderMax??niceMax(n),min=out.sliderMin??(n<0?-niceMax(n):0);
+    return {sliderMin:min,sliderMax:max,...(out.sliderStep===undefined&&!Number.isInteger(n)?{sliderStep:(max-min)/100}:{})};
+  }
+  return {};
+}
 function fromRecord(rec){
   const type=typeIds.has(rec.type)?rec.type:[...typeIds].find(id=>typeLabel(id).toLowerCase()===String(rec.type||'').toLowerCase())||(split(rec.options).length?'single_choice':'short_answer');
   const out={type,prompt:rec.prompt||'',answer:rec.answer||'',subject:rec.subject||'',topic:rec.topic||''};
@@ -194,9 +233,15 @@ function fromRecord(rec){
   if(split(rec.pairs).length)out.pairs=split(rec.pairs).map(p=>{const [left,...right]=p.split(/=>|->|→/);return {left:left.trim(),right:right.join('').trim()};});
   if(split(rec.sequence).length)out.sequence=split(rec.sequence);
   if(split(rec.blanks).length)out.blanks=split(rec.blanks);
+  if(split(rec.list_items).length)out.listItems=split(rec.list_items);
+  if(rec.passage?.trim())out.passage=rec.passage.trim();
   if(rec.tolerance)out.numericTolerance=rec.tolerance;
   if(rec.tags)out.tags=String(rec.tags).split(/[|,]/).map(x=>x.trim()).filter(Boolean);
   if(type==='true_false')out.answer=/^t/i.test(out.answer)?'True':'False';
+  for(const [col,key] of [['slider_min','sliderMin'],['slider_max','sliderMax'],['slider_step','sliderStep']])if(rec[col]?.trim()&&Number.isFinite(Number(rec[col])))out[key]=Number(rec[col]);
+  if(rec.unit?.trim())out.unit=rec.unit.trim();
+  if(rec.list_count?.trim())out.listCount=rec.list_count.trim();
+  Object.assign(out,structureFromAnswer(type,out,rec));
   for(const [col,key] of [['audio','audio'],['video','video'],['answer_audio','answerAudio'],['answer_video','answerVideo']])if(rec[col]?.trim())out[key]=resolveMediaLink(rec[col].trim());
   const variants=parseVariantsCell(rec.variants);
   if(variants)out.variants=variants.map(v=>{
@@ -225,14 +270,10 @@ export function parseImport(text,format='auto',filename=''){
     if(!Array.isArray(arr))throw new Error('This file has no questions list.');
     return {format:fmt,records:arr.map(x=>({...x,prompt:x?.prompt||x?.question||''}))};
   }
-  if(fmt==='csv'){
-    const rows=parseCSV(text.replace(/^\uFEFF/,''));
-    if(rows.length<2)throw new Error('The spreadsheet needs a header row and at least one question.');
-    const head=rows[0].map(h=>{const k=h.trim().toLowerCase().replace(/\s+/g,'_');return headerAlias[k]||k;});
-    if(!head.includes('prompt'))throw new Error('Add a “prompt” or “question” column.');
-    return {format:fmt,records:rows.slice(1).map(r=>fromRecord(Object.fromEntries(head.map((h,i)=>[h,(r[i]||'').trim()]))))};
-  }
+  if(fmt==='csv')return {format:fmt,records:fromTable(parseCSV(text.replace(/^\uFEFF/,'')))};
   const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim()&&!l.startsWith('#'));
+  // A tab-separated file with a header row (type, prompt, answer…) is a spreadsheet, not Anki front/back cards.
+  if(fmt==='tsv'&&lines.length&&isHeaderRow(lines[0].split('\t')))return {format:fmt,records:fromTable(parseCSV(text.replace(/^\uFEFF/,''),'\t'))};
   if(fmt==='tsv')return {format:fmt,records:lines.map(l=>{const [prompt,answer,tags]=l.split('\t');return {type:'short_answer',prompt:(prompt||'').trim(),answer:(answer||'').trim(),...(tags?.trim()?{tags:tags.trim().split(/\s+/)}:{})};})};
   return {format:fmt,records:lines.map(l=>{const m=l.match(/^(.*?)\s*(?:\||::|\t| = | - )\s*(.*)$/)||l.match(/^(.*\?)\s*,?\s*(\S.*)$/)||l.match(/^(.+),\s*([^,]+)$/);return {type:'short_answer',prompt:(m?m[1]:l).trim(),answer:(m?m[2]:'').trim()};})};
 }

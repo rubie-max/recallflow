@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {TrendingUp,TrendingDown,Play,ChevronDown,History,CalendarDays,Lightbulb} from 'lucide-react';
+import {TrendingUp,TrendingDown,Play,ChevronDown,History,CalendarDays,Lightbulb,Trophy,Clock,Timer,CircleCheck,Target} from 'lucide-react';
 import {Button} from './components/Button';
 import {REPORT_RANGES,MASTERY_LEVELS,formatDuration} from '../report-stats.js';
 
@@ -63,13 +63,14 @@ export function OverviewStats({now,before,days,mastered,total}:{now:Summary;befo
   return <section className="rx-overview" aria-label="Summary">
     <div className="rx-lead"><ScoreRing pct={now.accuracy??0} size={92} stroke={10} tone="brand"><strong>{now.accuracy??0}%</strong><small>accuracy</small></ScoreRing>
       <div className="rx-lead-copy"><Delta now={now.accuracy} before={prev?.accuracy??null} days={days} unit=" pts"/><span>{now.answers} {now.answers===1?'answer':'answers'} in {now.quizzes} {now.quizzes===1?'quiz':'quizzes'}</span><small>{days?`Last ${days} days`:'All time'}</small></div></div>
+    <p className="rf-label">This period</p>
     <div className="rx-tiles">
-      <div><span>Quizzes</span><strong>{now.quizzes}</strong>{prev||!days?<Delta now={now.quizzes} before={prev?.quizzes??null} days={days}/>:<small className="rx-note">None in the {periodName(days)}</small>}</div>
-      <div><span>Study time</span><strong>{formatDuration(now.seconds)}</strong><Delta now={now.seconds} before={prev?.seconds??null} days={days} format={formatDuration}/></div>
-      <div><span>Per question</span><strong>{now.perAnswer==null?'—':`${now.perAnswer.toFixed(1)}s`}</strong><Delta now={now.perAnswer==null?null:Math.round(now.perAnswer*10)/10} before={prev?.perAnswer==null?null:Math.round(prev.perAnswer*10)/10} days={days} lowerIsBetter format={n=>n.toFixed(1)} unit="s"/></div>
-      <div><span>First-try accuracy</span><strong>{now.firstTryAccuracy==null?'—':`${now.firstTryAccuracy}%`}</strong><small className="rx-note">{now.retakes?`Leaves out ${now.retakes} ${now.retakes===1?'retake':'retakes'}`:'Daily and custom quizzes'}</small></div>
-      <div><span>Days studied</span><strong>{now.days}{days?<small> / {days}</small>:null}</strong><small className="rx-note">{days?`${Math.round(now.days/days*100)}% of days`:'Days with a quiz'}</small></div>
-      <div><span>Mastered</span><strong>{mastered}<small> / {total}</small></strong><small className="rx-note">Questions you know well</small></div>
+      <div><span><i className="rf-tile" data-tone="sky"><Trophy aria-hidden="true"/></i>Quizzes</span><strong>{now.quizzes}</strong>{prev||!days?<Delta now={now.quizzes} before={prev?.quizzes??null} days={days}/>:<small className="rx-note">None in the {periodName(days)}</small>}</div>
+      <div><span><i className="rf-tile" data-tone="teal"><Clock aria-hidden="true"/></i>Study time</span><strong>{formatDuration(now.seconds)}</strong><Delta now={now.seconds} before={prev?.seconds??null} days={days} format={formatDuration}/></div>
+      <div><span><i className="rf-tile" data-tone="amber"><Timer aria-hidden="true"/></i>Per question</span><strong>{now.perAnswer==null?'—':`${now.perAnswer.toFixed(1)}s`}</strong><Delta now={now.perAnswer==null?null:Math.round(now.perAnswer*10)/10} before={prev?.perAnswer==null?null:Math.round(prev.perAnswer*10)/10} days={days} lowerIsBetter format={n=>n.toFixed(1)} unit="s"/></div>
+      <div><span><i className="rf-tile" data-tone="green"><CircleCheck aria-hidden="true"/></i>First-try accuracy</span><strong>{now.firstTryAccuracy==null?'—':`${now.firstTryAccuracy}%`}</strong><small className="rx-note">{now.retakes?`Leaves out ${now.retakes} ${now.retakes===1?'retake':'retakes'}`:'Daily and custom quizzes'}</small></div>
+      <div><span><i className="rf-tile" data-tone="violet"><CalendarDays aria-hidden="true"/></i>Days studied</span><strong>{now.days}{days?<small> / {days}</small>:null}</strong><small className="rx-note">{days?`${Math.round(now.days/days*100)}% of days`:'Days with a quiz'}</small></div>
+      <div><span><i className="rf-tile" data-tone="pink"><Target aria-hidden="true"/></i>Mastered</span><strong>{mastered}<small> / {total}</small></strong><small className="rx-note">Questions you know well</small></div>
     </div>
   </section>;
 }
