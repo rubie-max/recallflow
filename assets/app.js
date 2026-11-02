@@ -35267,7 +35267,7 @@ function DiscardChangesDialog({ onKeep, onDiscard }) {
 }
 
 function Brand({ size = 28 }) { return React.createElement("button", { type: "button", className: "recallflow-home-logo", "aria-label": "RecallFlow, go to home", title: "Go to home", onClick: () => window.dispatchEvent(new Event('recallflow-home')) },
-    React.createElement(BookOpen, { size: size, className: "recallflow-brand-icon", "aria-hidden": "true" }),
+    React.createElement(Lightbulb, { size: size, className: "recallflow-brand-icon", "aria-hidden": "true" }),
     React.createElement("strong", { className: "recallflow-wordmark" },
         "Recall",
         React.createElement("span", null, "Flow"))); }
