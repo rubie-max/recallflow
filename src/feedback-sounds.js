@@ -186,6 +186,18 @@ export function haptic(kind,on){
   try{return navigator.vibrate(pattern)!==false;}catch{return false;}
 }
 
+// A short, quiet click under taps and navigation, synthesised so it's instant and needs no file.
+// Follows the "sound effects" setting; the matching vibration is handled by haptic() above.
+export function playTap(kind='tap',mode=appPreferences().soundEffects){
+  if(mode==='off')return false;
+  const c=audioContext();if(!c)return false;
+  try{
+    if(kind==='nav')tone(c,{freq:760,to:1180,dur:.05,type:'sine',gain:.13,lowpass:5200});
+    else tone(c,{freq:1850,dur:.024,type:'sine',gain:.09,lowpass:6000});
+    return true;
+  }catch(e){console.warn('RecallFlow: tap sound failed',e);return false;}
+}
+
 // Which tap tick a pressed element gets: 'nav' inside navigation bars, 'tap' for other controls, null otherwise.
 const TAPPABLE='button,a[href],summary,select,[role=button],[role=radio],[role=switch],[role=tab],[role=checkbox],[role=menuitem],input[type=checkbox],input[type=radio]';
 export function tapKind(target){
@@ -195,8 +207,8 @@ export function tapKind(target){
 }
 if(typeof document!=='undefined'){
   // Capture phase runs first, so an answer's own right/wrong buzz replaces this tick instead of mixing with it.
-  document.addEventListener('click',e=>{const kind=tapKind(e.target);if(kind)haptic(kind);},{capture:true,passive:true});
-  window.addEventListener('popstate',()=>haptic('nav'));
+  document.addEventListener('click',e=>{const kind=tapKind(e.target);if(kind){haptic(kind);playTap(kind);}},{capture:true,passive:true});
+  window.addEventListener('popstate',()=>{haptic('nav');playTap('nav');});
 }
 
 export function customSounds(){try{const v=JSON.parse(localStorage.getItem(customSoundsKey)||'{}');return {correct:typeof v.correct==='string'?v.correct:'',incorrect:typeof v.incorrect==='string'?v.incorrect:''};}catch{return {correct:'',incorrect:''};}}

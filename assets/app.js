@@ -21431,6 +21431,18 @@ function haptic(kind,on){
   try{return navigator.vibrate(pattern)!==false;}catch{return false;}
 }
 
+// A short, quiet click under taps and navigation, synthesised so it's instant and needs no file.
+// Follows the "sound effects" setting; the matching vibration is handled by haptic() above.
+function playTap(kind='tap',mode=appPreferences().soundEffects){
+  if(mode==='off')return false;
+  const c=audioContext();if(!c)return false;
+  try{
+    if(kind==='nav')tone(c,{freq:760,to:1180,dur:.05,type:'sine',gain:.13,lowpass:5200});
+    else tone(c,{freq:1850,dur:.024,type:'sine',gain:.09,lowpass:6000});
+    return true;
+  }catch(e){console.warn('RecallFlow: tap sound failed',e);return false;}
+}
+
 // Which tap tick a pressed element gets: 'nav' inside navigation bars, 'tap' for other controls, null otherwise.
 const TAPPABLE='button,a[href],summary,select,[role=button],[role=radio],[role=switch],[role=tab],[role=checkbox],[role=menuitem],input[type=checkbox],input[type=radio]';
 function tapKind(target){
@@ -21440,8 +21452,8 @@ function tapKind(target){
 }
 if(typeof document!=='undefined'){
   // Capture phase runs first, so an answer's own right/wrong buzz replaces this tick instead of mixing with it.
-  document.addEventListener('click',e=>{const kind=tapKind(e.target);if(kind)haptic(kind);},{capture:true,passive:true});
-  window.addEventListener('popstate',()=>haptic('nav'));
+  document.addEventListener('click',e=>{const kind=tapKind(e.target);if(kind){haptic(kind);playTap(kind);}},{capture:true,passive:true});
+  window.addEventListener('popstate',()=>{haptic('nav');playTap('nav');});
 }
 
 function customSounds(){try{const v=JSON.parse(localStorage.getItem(customSoundsKey)||'{}');return {correct:typeof v.correct==='string'?v.correct:'',incorrect:typeof v.incorrect==='string'?v.incorrect:''};}catch{return {correct:'',incorrect:''};}}
@@ -32439,35 +32451,6 @@ function HomeInsights({ items, reports, forecast, memory, mistakes, onPracticeMi
                     React.createElement("span", null,
                         React.createElement("b", null, formatDuration(week.seconds)),
                         " studied"))) : React.createElement("p", { className: "hx-muted" }, "No quizzes in the last 7 days yet. Start today\u2019s quiz and your week will fill in here.")),
-        React.createElement("button", { type: "button", className: "hx-card hx-plan", onClick: () => onOpenReport('memory'), "aria-label": "Coming up and memory strength. Open memory report" },
-            React.createElement("div", { className: "hx-head" },
-                React.createElement("span", { className: "hx-title" },
-                    React.createElement("span", { className: "rf-tile", "data-tone": "teal" },
-                        React.createElement(CalendarClock, { size: 18 })),
-                    "Coming up"),
-                React.createElement(ArrowRight, { size: 16, className: "hx-go" })),
-            React.createElement("div", { className: "hx-plan-grid" },
-                React.createElement("div", null,
-                    React.createElement("strong", null, forecast.days[0]?.count || 0),
-                    React.createElement("span", null, "Due today")),
-                React.createElement("div", null,
-                    React.createElement("strong", null, tomorrow),
-                    React.createElement("span", null, "Tomorrow")),
-                React.createElement("div", null,
-                    React.createElement("strong", null, later),
-                    React.createElement("span", null, "Next 7 days"))),
-            React.createElement("div", { className: "hx-memory", role: "img", "aria-label": MASTERY_LEVELS.map(([id, label]) => `${memory[id] || 0} ${label}`).join(', ') }, MASTERY_LEVELS.map(([id]) => memory[id] ? React.createElement("i", { key: id, "data-level": id, style: { flexGrow: memory[id] } }) : null)),
-            React.createElement("div", { className: "hx-legend" }, MASTERY_LEVELS.map(([id, label]) => React.createElement("span", { key: id, "data-level": id },
-                React.createElement("i", null),
-                label,
-                " ",
-                memory[id] || 0))),
-            React.createElement("p", { className: "hx-muted" },
-                studied,
-                " of ",
-                items.length,
-                " questions studied",
-                memory.mastered ? ` · ${memory.mastered} mastered` : '')),
         (mistakes.length > 0 || weakest) && React.createElement(React.Fragment, null,
             React.createElement("p", { className: "rf-label" }, "Needs practice"),
             React.createElement("section", { className: "hx-card hx-focus rf-group" },
@@ -32507,22 +32490,45 @@ function HomeInsights({ items, reports, forecast, memory, mistakes, onPracticeMi
             React.createElement("div", null,
                 React.createElement("strong", null, "Nothing to fix right now"),
                 React.createElement("small", null, "No open mistakes and every subject is above 80%."))),
+        React.createElement("button", { type: "button", className: "hx-card hx-plan", onClick: () => onOpenReport('memory'), "aria-label": "Coming up and memory strength. Open memory report" },
+            React.createElement("div", { className: "hx-head" },
+                React.createElement("span", { className: "hx-title" },
+                    React.createElement("span", { className: "rf-tile", "data-tone": "teal" },
+                        React.createElement(CalendarClock, { size: 18 })),
+                    "Coming up"),
+                React.createElement(ArrowRight, { size: 16, className: "hx-go" })),
+            React.createElement("div", { className: "hx-plan-grid" },
+                React.createElement("div", null,
+                    React.createElement("strong", null, forecast.days[0]?.count || 0),
+                    React.createElement("span", null, "Due today")),
+                React.createElement("div", null,
+                    React.createElement("strong", null, tomorrow),
+                    React.createElement("span", null, "Tomorrow")),
+                React.createElement("div", null,
+                    React.createElement("strong", null, later),
+                    React.createElement("span", null, "Next 7 days"))),
+            React.createElement("div", { className: "hx-memory", role: "img", "aria-label": MASTERY_LEVELS.map(([id, label]) => `${memory[id] || 0} ${label}`).join(', ') }, MASTERY_LEVELS.map(([id]) => memory[id] ? React.createElement("i", { key: id, "data-level": id, style: { flexGrow: memory[id] } }) : null)),
+            React.createElement("div", { className: "hx-legend" }, MASTERY_LEVELS.map(([id, label]) => React.createElement("span", { key: id, "data-level": id },
+                React.createElement("i", null),
+                label,
+                " ",
+                memory[id] || 0))),
+            React.createElement("p", { className: "hx-muted" },
+                studied,
+                " of ",
+                items.length,
+                " questions studied",
+                memory.mastered ? ` · ${memory.mastered} mastered` : '')),
         React.createElement("p", { className: "rf-label" }, "Add"),
-        React.createElement("div", { className: "rf-group hx-add" },
-            React.createElement("button", { type: "button", className: "rf-row", onClick: onAdd },
+        React.createElement("div", { className: "hx-add-pair" },
+            React.createElement("button", { type: "button", onClick: onAdd },
                 React.createElement("span", { className: "rf-tile", "data-tone": "violet" },
                     React.createElement(Plus, { size: 18 })),
-                React.createElement("span", { className: "rf-row-copy" },
-                    React.createElement("strong", null, "New question"),
-                    React.createElement("small", null, "Type, picture, sound or video")),
-                React.createElement(ChevronRight, { size: 18 })),
-            React.createElement("button", { type: "button", className: "rf-row", onClick: onImport },
+                React.createElement("strong", null, "New question")),
+            React.createElement("button", { type: "button", onClick: onImport },
                 React.createElement("span", { className: "rf-tile", "data-tone": "sky" },
                     React.createElement(FileUp, { size: 18 })),
-                React.createElement("span", { className: "rf-row-copy" },
-                    React.createElement("strong", null, "Import"),
-                    React.createElement("small", null, "CSV, Anki, JSON or plain text")),
-                React.createElement(ChevronRight, { size: 18 }))));
+                React.createElement("strong", null, "Import"))));
 }
 
 const clamp$2 = (v, a, b) => Math.min(b, Math.max(a, v));
