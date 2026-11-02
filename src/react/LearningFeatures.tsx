@@ -1,6 +1,8 @@
 import React,{useState,useEffect,useRef,useMemo} from 'react';
 import {readSetups,writeSetups,normalizeControls,prunePickedSetups,setupNameError,dropGone,readLastQuiz,writeLastQuiz} from '../quiz-setups.js';
-import {Bookmark,BookmarkPlus,Check,ChevronRight,Search,Pencil,Trash2,X,Plus,Play,Undo2,Upload,Smartphone,GripVertical,Lock,LockOpen,Eye,EyeOff,FileArchive,BookOpen,Folder,Tag,Shapes,Image as ImageIcon,ListChecks} from 'lucide-react';
+import {Bookmark,BookmarkPlus,Check,CheckCircle2,ChevronRight,Search,Pencil,Trash2,X,Plus,Play,Undo2,Upload,Download,Share,Smartphone,RefreshCw,GripVertical,Lock,LockOpen,Eye,EyeOff,FileArchive,BookOpen,Folder,Tag,Shapes,Image as ImageIcon,ListChecks} from 'lucide-react';
+import {installState,promptInstall} from '../pwa-install.js';
+import {checkForUpdate} from '../pwa-update.js';
 import {MatchingAnswer,ItemMedia,ItemZoom,ItemText} from './QuestionInteractions';
 import {Button} from './components/Button';
 import {questionTypes,validateQuestion,typeLabel} from '../question-types.js';
@@ -179,4 +181,44 @@ export function BackupRestore(){
   {data&&<div className="settings-confirm"><p>Replace with {data.questions.length} questions, {images.length?`${images.length} ${images.length===1?'picture':'pictures'}, `:''}{data.reports.length} {data.reports.length===1?'report':'reports'} and {data.streakDays.length} activity {data.streakDays.length===1?'day':'days'}?</p><Button onClick={confirm}>Confirm restore backup</Button><Button variant="outline" onClick={reset}>Cancel restore</Button></div>}
   {status&&<p className="settings-error" role="alert">{status}</p>}
  </section>;}
-export function OfflineSettings(){const [ready,setReady]=useState(false),[install,setInstall]=useState<any>(null);useEffect(()=>{let active=true;const check=()=>{if(active)setReady(!!navigator.serviceWorker?.controller);};check();navigator.serviceWorker?.addEventListener('controllerchange',check);navigator.serviceWorker?.ready.then(check);const prompt=(e:any)=>{e.preventDefault();setInstall(e);};window.addEventListener('beforeinstallprompt',prompt);return()=>{active=false;navigator.serviceWorker?.removeEventListener('controllerchange',check);window.removeEventListener('beforeinstallprompt',prompt);};},[]);return <section className="settings-panel"><div className="settings-heading"><span className="settings-icon"><Smartphone size={19}/></span><div><h2>Install &amp; offline</h2><p>Study without a connection.</p></div><span className="settings-badge" data-ready={ready}>{ready?'Ready':'Preparing'}</span></div>{install?<Button onClick={async()=>{await install.prompt();setInstall(null);}}>Install RecallFlow</Button>:<small className="settings-hint">To install, use your browser’s “Add to Home Screen” or “Install app”.</small>}</section>;}
+export function OfflineSettings(){
+ const [ready,setReady]=useState(false);
+ const [state,setState]=useState(()=>installState());
+ const [busy,setBusy]=useState(false);
+ const [upd,setUpd]=useState('');
+ useEffect(()=>{
+  let active=true;
+  const check=()=>{if(active)setReady(!!navigator.serviceWorker?.controller);};
+  const sync=()=>{if(active)setState(installState());};
+  check();sync();
+  navigator.serviceWorker?.addEventListener('controllerchange',check);
+  navigator.serviceWorker?.ready.then(check).catch(()=>{});
+  window.addEventListener('recallflow:installable',sync);
+  return()=>{active=false;navigator.serviceWorker?.removeEventListener('controllerchange',check);window.removeEventListener('recallflow:installable',sync);};
+ },[]);
+ async function install(){
+  setBusy(true);
+  try{await promptInstall();}finally{setBusy(false);setState(installState());}
+ }
+ async function update(){
+  if(upd==='checking'||upd==='updating')return;
+  setUpd('checking');
+  setUpd(await checkForUpdate());
+ }
+ return <section className="settings-panel"><div className="settings-heading"><span className="settings-icon"><Smartphone size={19}/></span><div><h2>Install &amp; offline</h2><p>Add RecallFlow to your home screen and study without a connection.</p></div><span className="settings-badge" data-ready={ready}>{ready?'Ready':'Preparing'}</span></div>
+  {state.installed
+   ?<p className="settings-install-done"><CheckCircle2 size={16}/>RecallFlow is installed on this device.</p>
+   :state.canPrompt
+    ?<><Button className="settings-install-btn" disabled={busy} onClick={install}><Download size={16}/>{busy?'Opening…':'Install RecallFlow'}</Button><small className="settings-hint">Adds an app icon to your home screen. No app store needed.</small></>
+    :state.ios
+     ?<p className="settings-hint settings-install-ios">To install: tap the <Share size={14}/> Share button in your browser, then choose <b>“Add to Home Screen”</b>.</p>
+     :<small className="settings-hint">To install, open your browser’s menu and choose <b>“Install app”</b> or <b>“Add to Home Screen”</b>.</small>}
+  <div className="settings-update">
+   <Button variant="outline" className="settings-update-btn" disabled={upd==='checking'||upd==='updating'} onClick={update}><RefreshCw size={16}/>{upd==='checking'?'Checking…':upd==='updating'?'Updating…':'Check for updates'}</Button>
+   {upd==='current'&&<small className="settings-hint"><CheckCircle2 size={14}/>You’re on the latest version.</small>}
+   {upd==='updating'&&<small className="settings-hint">New version found — refreshing now.</small>}
+   {(upd==='error'||upd==='unsupported')&&<small className="settings-hint">{upd==='error'?'Couldn’t check just now. Check your connection and try again.':'Install the app first to get updates here.'}</small>}
+   {upd===''&&<small className="settings-hint">Gets the newest version after an update is published.</small>}
+  </div>
+ </section>;
+}

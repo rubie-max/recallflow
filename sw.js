@@ -1,4 +1,4 @@
-const CACHE='recallflow-shell-v157';
+const CACHE='recallflow-shell-v158';
 const IMAGE_CACHE='recallflow-images';
 const ROOT=new URL('./',self.location.href);
 const REAL=['correct.wav','wrong.mp3','streak.mp3','tick.mp3','go.mp3','save.mp3','complete.mp3','done.mp3','delete.mp3','error.mp3'];
@@ -8,6 +8,8 @@ const FILES=['./','./index.html','./assets/app.js','./assets/app.css','./public/
 const TYPES={webp:'image/webp',jpg:'image/jpeg',png:'image/png',gif:'image/gif'};
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES.map(x=>new URL(x,ROOT).href))).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('recallflow-shell-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+// The Settings "Check for updates" button posts this so a waiting worker activates right away.
+self.addEventListener('message',event=>{if(event.data&&event.data.type==='SKIP_WAITING')self.skipWaiting();});
 function syncAuth(){return new Promise(resolve=>{const req=indexedDB.open('recallflow-sync',1);req.onupgradeneeded=()=>req.result.createObjectStore('kv');req.onerror=()=>resolve(null);req.onsuccess=()=>{const db=req.result;try{const get=db.transaction('kv').objectStore('kv').get('auth');get.onsuccess=()=>{resolve(get.result||null);db.close();};get.onerror=()=>{resolve(null);db.close();};}catch{resolve(null);db.close();}};});}
 // Pictures saved by the app live in the private data repo as images/<hash>.<ext>; they never change, so cache first.
 async function storedImage(request,name){

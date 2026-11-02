@@ -14,6 +14,7 @@ type ThemeChangeListener = (mode: ThemeMode) => void;
 const listeners = new Set<ThemeChangeListener>();
 
 function notifyThemeChange() {
+  syncThemeColor();
   const mode = getCurrentThemeMode();
   listeners.forEach((listener) => listener(mode));
 }
@@ -25,12 +26,30 @@ function subscribeToThemeChange(listener: ThemeChangeListener) {
   };
 }
 
+// Background colours the system status/navigation bars pick up in an installed PWA. Keeping the
+// <meta name="theme-color"> in step with the active theme makes those bars blend with the app instead
+// of showing the old fixed indigo block behind Android's navigation buttons.
+const THEME_BAR_COLOR = { dark: "#17181d", light: "#f7f5ef" } as const;
+
+export function syncThemeColor(): void {
+  if (typeof document === "undefined") return;
+  const dark = document.body.classList.contains("dark");
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute("content", dark ? THEME_BAR_COLOR.dark : THEME_BAR_COLOR.light);
+}
+
 function updateTheme(darkPreferred: boolean): void {
   if (darkPreferred) {
     document.body.classList.add("dark");
   } else {
     document.body.classList.remove("dark");
   }
+  syncThemeColor();
 }
 
 let currentMediaQuery: MediaQueryList | null = null;
